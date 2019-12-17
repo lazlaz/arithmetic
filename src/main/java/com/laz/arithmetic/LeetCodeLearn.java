@@ -2,7 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -178,15 +180,51 @@ public class LeetCodeLearn {
 	public void test12() {
 
 		ListNode head = new ListNode(1);
-//		ListNode node1 = new ListNode(2);
-//		ListNode node2 = new ListNode(2);
-//		ListNode node3 = new ListNode(1);
-//		head.next = node1;
-//		node1.next = node2;
-//		node2.next = node3;
-		
+		// ListNode node1 = new ListNode(2);
+		// ListNode node2 = new ListNode(2);
+		// ListNode node3 = new ListNode(1);
+		// head.next = node1;
+		// node1.next = node2;
+		// node2.next = node3;
+
 		System.out.println("");
 		System.out.println(isPalindrome(head));
+	}
+
+	// 环形链表
+	@Test
+	public void test13() {
+
+		ListNode head = new ListNode(1);
+		ListNode node1 = new ListNode(2);
+		ListNode node2 = new ListNode(2);
+		ListNode node3 = new ListNode(1);
+		head.next = node1;
+		node1.next = node2;
+		node2.next = node3;
+
+		System.out.println("");
+		System.out.println(hasCycle(head));
+	}
+
+	public boolean hasCycle(ListNode head) {
+		if (head==null) {
+			return false;
+		}
+		ListNode temp = head;
+		Set<ListNode> sets = new HashSet<ListNode>();
+		sets.add(temp);
+		while (temp.next!=null) {
+			ListNode node = temp.next;
+			if (sets.contains(node)) {
+				return true;
+			} else {
+				sets.add(node);
+				temp = node;
+			}
+		}
+		
+		return false;
 	}
 
 	public boolean isPalindrome(ListNode head) {
@@ -201,9 +239,9 @@ public class LeetCodeLearn {
 			lists.add(left);
 		}
 		int start = 0;
-		int end = lists.size()-1;
-		while(start<=end) {
-			if (lists.get(start).val!=lists.get(end).val) {
+		int end = lists.size() - 1;
+		while (start <= end) {
+			if (lists.get(start).val != lists.get(end).val) {
 				return false;
 			}
 			start++;
