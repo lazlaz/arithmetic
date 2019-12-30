@@ -56,20 +56,22 @@ public class LeetCodeDynamicPlanning {
 		int[] nums = new int[] { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
 		System.out.println(maxSubArray2(nums));
 	}
+
 	public int maxSubArray2(int[] nums) {
 		int sum = 0;
 		int res = nums[0];
 		for (int i = 0; i < nums.length; i++) {
-			if (sum>0) {
-				sum=sum+nums[i];
+			if (sum > 0) {
+				sum = sum + nums[i];
 			} else {
 				sum = nums[i];
 			}
 			res = Math.max(sum, res);
-			
+
 		}
 		return res;
 	}
+
 	public int maxSubArray(int[] nums) {
 		int max = 0;
 		if (nums.length == 1) {
@@ -90,4 +92,24 @@ public class LeetCodeDynamicPlanning {
 		}
 		return max;
 	}
+
+	// 打家劫舍
+	@Test
+	public void test5() {
+		int[] nums = new int[] { 4, 1, 2, 7, 5, 3, 1 };
+		System.out.println(rob(nums));
+	}
+
+	public int rob(int[] nums) {
+		int prevMax = 0;
+		int currMax = 0;
+		for (int x : nums) {
+			int temp = currMax;
+			currMax = Math.max(prevMax + x, currMax);
+			prevMax = temp;
+		}
+		return currMax;
+
+	}
+
 }
