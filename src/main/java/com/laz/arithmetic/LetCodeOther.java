@@ -117,12 +117,12 @@ public class LetCodeOther {
 		Stack<Character> stack = new Stack<Character>();
 		char[] chars = s.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
-			if (stack.size()>0) {
+			if (stack.size() > 0) {
 				Character c = stack.peek();
 				if (c != null) {
 					if (c == '(' && chars[i] == ')') {
 						stack.pop();
-					}else if (c == '{' && chars[i] == '}') {
+					} else if (c == '{' && chars[i] == '}') {
 						stack.pop();
 					} else if (c == '[' && chars[i] == ']') {
 						stack.pop();
@@ -133,11 +133,33 @@ public class LetCodeOther {
 			} else {
 				stack.push(chars[i]);
 			}
-			
+
 		}
 		if (stack.size() == 0) {
 			return true;
 		}
 		return false;
+	}
+
+	// 缺失数字
+	@Test
+	public void test6() {
+		int[] nums  = new int[] {9,6,4,2,3,5,7,0,1};
+		System.out.println(missingNumber(nums));
+	}
+
+	public int missingNumber(int[] nums) {
+		for (int i=0; i<=nums.length; i++) {
+			boolean find = false;
+			for (int j=0; j<nums.length; j++) {
+				if (nums[j] == i) {
+					find = true;
+				}
+			}
+			if (!find) {
+				return i;
+			}
+		}
+		return nums.length;
 	}
 }
