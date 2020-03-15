@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+
+import javafx.util.Pair;
 
 public class LeetCode {
 
@@ -225,6 +228,323 @@ public class LeetCode {
 		s = s.trim();
 		int index = s.lastIndexOf(" ");
 		System.out.println(index);
-		return s.substring(index+1, s.length()).length();
+		return s.substring(index + 1, s.length()).length();
 	}
+
+	// 二进制求和
+	@Test
+	public void test9() {
+		System.out.println(addBinary("1010", "1011"));
+	}
+
+	// Line 3: java.lang.NumberFormatException: For input string:
+	// "10100000100100110110010000010101111011011001101110111111111101000000101111001110001111100001101"
+	// under radix 2
+	public String addBinary(String a, String b) {
+		char[] ac = a.toCharArray();
+		char[] bc = b.toCharArray();
+		int max = ac.length > bc.length ? ac.length : bc.length;
+
+		if (ac.length < bc.length) {
+			int diff = max - ac.length;
+			char[] newA = new char[max];
+			for (int i = 0; i < max; i++) {
+				if (i < diff) {
+					newA[i] = '0';
+				} else {
+					newA[i] = ac[i - diff];
+				}
+			}
+			ac = newA;
+
+		}
+		if (bc.length < ac.length) {
+			int diff = max - bc.length;
+			char[] newA = new char[max];
+			for (int i = 0; i < max; i++) {
+				if (i < diff) {
+					newA[i] = '0';
+				} else {
+					newA[i] = bc[i - diff];
+				}
+			}
+			bc = newA;
+
+		}
+
+		StringBuffer sb = new StringBuffer();
+		boolean carry = false;
+		for (int i = (max - 1); i >= 0; i--) {
+			String res = binaryAdd(ac[i], bc[i], carry);
+			if (res.length() == 2) {
+				carry = true;
+				sb.append(res.substring(1));
+			} else {
+				carry = false;
+				sb.append(res.substring(0));
+			}
+		}
+		if (carry) {
+			sb.append("1");
+		}
+		return sb.reverse().toString();
+	}
+
+	private String binaryAdd(char c, char d, boolean carry) {
+		// carry为true代表有上一进位
+		int res = Integer.parseInt(new String(new char[] { c })) + Integer.parseInt(new String(new char[] { d }));
+		if (carry) {
+			res += 1;
+		}
+		if (res == 0) {
+			return "0";
+		}
+		if (res == 1) {
+			return "1";
+		}
+		if (res == 2) {
+			return "10";
+		}
+		if (res == 3) {
+			return "11";
+		}
+		return "0";
+	}
+
+	// 最后一个单词的长度
+	@Test
+	public void test10() {
+		System.out.println(mySqrt(8));
+	}
+
+	// 借鉴牛顿公式法
+	public int mySqrt(int x) {
+		if (x < 2) {
+			return x;
+		}
+		double x0 = x;
+		double x1 = (x0 + x / x0) / 2.0;
+		while (Math.abs(x0 - x1) >= 1) {
+			x0 = x1;
+			x1 = (x0 + x / x0) / 2.0;
+		}
+		System.out.println(x1);
+		return (int) x1;
+	}
+
+	class ListNode {
+		int val;
+		ListNode next;
+
+		ListNode(int x) {
+			val = x;
+		}
+	}
+
+	// 删除排序链表中的重复元素
+	@Test
+	public void test11() {
+		ListNode node = new ListNode(1);
+		ListNode node1 = new ListNode(1);
+		ListNode node2 = new ListNode(2);
+		ListNode node3 = new ListNode(3);
+		ListNode node4 = new ListNode(3);
+		node.next = node1;
+		node1.next = node2;
+		node2.next = node3;
+		node3.next = node4;
+		deleteDuplicates(node);
+		while (node.next != null) {
+			System.out.print(node.val + "->");
+			node = node.next;
+		}
+		System.out.print(node.val);
+	}
+
+	public ListNode deleteDuplicates(ListNode head) {
+		if (head == null) {
+			return null;
+		}
+		ListNode first = head;
+		ListNode newHead = first;
+		while (head.next != null) {
+			ListNode node = head.next;
+			if (node.val == head.val) {
+				head = node;
+				continue;
+			}
+			first.next = node;
+			first = first.next;
+			head = node;
+		}
+		first.next = null;
+		return newHead;
+
+	}
+
+	public class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+
+		TreeNode(int x) {
+			val = x;
+		}
+	}
+
+	// 相同的树
+	@Test
+	public void test12() {
+		TreeNode node = new TreeNode(1);
+		TreeNode node1 = new TreeNode(2);
+		TreeNode node2 = new TreeNode(3);
+		node.left = node1;
+		node.right = node2;
+		
+		TreeNode node11 = new TreeNode(1);
+		TreeNode node111 = new TreeNode(2);
+		TreeNode node211 = new TreeNode(3);
+		node11.left = node111;
+		node11.right = node211;
+		System.out.println(isSameTree(node,node11));
+	}
+
+	public boolean isSameTree(TreeNode p, TreeNode q) {
+		List<String> listP = new ArrayList<String>();
+		List<String> listQ = new ArrayList<String>();
+	    deep(p,listP);
+	    deep(q,listQ);
+		if (listP.size() == listQ.size()) {
+			boolean same = true;
+			for (int i=0; i<listP.size(); i++) {
+				if (!listP.get(i).equals(listQ.get(i))) {
+					same = false;
+				}
+			}
+			return same;
+		}
+		return false;
+	}
+
+	private void deep(TreeNode p, List list) {
+		if (p==null) {
+			list.add("null");
+			return;
+		}
+		list.add(p.val+"");
+		deep(p.left,list);
+		deep(p.right,list);
+	}
+	
+	//二叉树的层次遍历 II
+	@Test
+	public void test13() {
+		TreeNode root = new TreeNode(3);
+		TreeNode node1 = new TreeNode(9);
+		TreeNode node2 = new TreeNode(20);
+		root.left = node1;
+		root.right = node2;
+		
+		TreeNode node3 = new TreeNode(15);
+		TreeNode node4 = new TreeNode(7);
+		node2.left = node3;
+		node2.right = node4;
+		
+		List<List<Integer>> result = levelOrderBottom(root);
+		if (result!=null) {
+			for (List<Integer> list : result) {
+				for (Integer l : list) {
+					System.out.print(l+" ");
+				}
+				System.out.println();
+			}
+		}
+		
+	}
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+    	List<List<Integer>> result = new ArrayList<List<Integer>>();
+    	Map<Integer,List<Integer>> map = new LinkedHashMap<Integer,List<Integer>>();
+    	levelTraverse(root,map,0);
+    	
+    	if (root!=null) {
+    		
+    		int maxLevel = 0;
+    		for (Integer i : map.keySet()) {
+    			if (maxLevel<i) {
+    				maxLevel =i;
+    			}
+    		}
+    		for (int i=maxLevel;i>0;i--) {
+    			result.add(map.get(i));
+    		}
+    		List rootLevel = new ArrayList();
+    		rootLevel.add(root.val);
+    		result.add(rootLevel);
+    	}
+    	return result;
+    }
+    
+    private void levelTraverse(TreeNode p, Map<Integer,List<Integer>> map, int level) {
+    	++level;
+		if (p==null) {
+			return;
+		}
+		List list = map.get(level);
+		if (list ==null) {
+			list = new ArrayList<Integer>();
+			
+		}
+		if (p.left!=null ) {
+			list.add(p.left.val);
+			levelTraverse(p.left,map,level);
+		}
+		if (p.right!=null) {
+			list.add(p.right.val);
+			levelTraverse(p.right,map,level);
+		}
+		if (list.size()>0) {
+			map.put(level,list);
+		}
+	}
+    
+    //二叉树的最小深度
+    public void test14() {
+    	TreeNode root = new TreeNode(3);
+		TreeNode node1 = new TreeNode(9);
+		TreeNode node2 = new TreeNode(20);
+		root.left = node1;
+		root.right = node2;
+		
+		TreeNode node3 = new TreeNode(15);
+		TreeNode node4 = new TreeNode(7);
+		node2.left = node3;
+		node2.right = node4;
+		System.out.println(minDepth(root));
+    }
+    public int minDepth(TreeNode root) {
+    	LinkedList<Pair<TreeNode, Integer>> stack = new LinkedList<>();
+        if (root == null) {
+          return 0;
+        }
+        else {
+          stack.add(new Pair(root, 1));
+        }
+
+        int min_depth = Integer.MAX_VALUE;
+        while (!stack.isEmpty()) {
+          Pair<TreeNode, Integer> current = stack.pollLast();
+          root = current.getKey();
+          int current_depth = current.getValue();
+          if ((root.left == null) && (root.right == null)) {
+            min_depth = Math.min(min_depth, current_depth);
+          }
+          if (root.left != null) {
+            stack.add(new Pair(root.left, current_depth + 1));
+          }
+          if (root.right != null) {
+            stack.add(new Pair(root.right, current_depth + 1));
+          }
+        }
+        return min_depth;
+    }
 }
