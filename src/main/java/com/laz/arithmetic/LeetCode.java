@@ -547,4 +547,216 @@ public class LeetCode {
         }
         return min_depth;
     }
-}
+    
+    //字符串压缩
+    @Test
+    public void test15() {
+    	System.out.println(compressString("aabcccccaaa"));
+    }
+    public String compressString(String S) {
+    	char[] chars = S.toCharArray();
+    	StringBuffer sb = new StringBuffer();
+
+    	if (S==null ||chars.length == 0) {
+    		return S;
+    	}
+    	int count = 1;
+    	char preChar = chars[0];
+    	sb.append(chars[0]);
+    	for (int i=1; i<chars.length; i++) {
+    		if (preChar==chars[i]) {
+    			count++;
+    		} else {
+    			sb.append(count);
+    			count=1;
+    			preChar=chars[i];
+    			sb.append(preChar);
+    		}
+    	}
+    	sb.append(count);
+    	if(sb.toString().length()>=S.length()) {
+    		return S;
+    	}
+    	return sb.toString();
+    }
+    
+    //拼写单词
+    @Test
+    public void test16() {
+    	String[] words = new String[] {"boygirdlggnh"};
+    	String chars ="usdruypficfbpfbivlrhutcgvyjenlxzeovdyjtgvvfdjzcmikjraspdfp";
+    	System.out.println(countCharacters(words,chars));
+    }
+    public int countCharacters(String[] words, String chars) {
+    	int count =0;
+    	for (int i=0; i<words.length; i++) {
+    		char[] word = words[i].toCharArray();
+    		String newChars = chars;
+    		boolean flag = true;
+    		for (int j=0; j<word.length; j++) {
+    			String w = String.valueOf(word[j]);
+    			if (!newChars.contains(w)) {
+    				flag = false;
+    			} else {
+    				newChars=newChars.replaceFirst(w, "");
+    			}
+    		}
+    		if (flag) {
+    			System.out.println(word);
+    			count+= word.length;
+    		}
+    	}
+    	return count;
+    }
+    
+    //矩阵重叠
+    @Test
+    public void test17() {
+    	int[] rec1 = new int[] {0,0,2,2};
+    	int[] rec2 = new int[] {1,1,3,3};
+    	
+    	System.out.println(isRectangleOverlap(rec1, rec2));
+    }
+    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+    	  return (Math.min(rec1[2], rec2[2]) > Math.max(rec1[0], rec2[0]) &&
+                  Math.min(rec1[3], rec2[3]) > Math.max(rec1[1], rec2[1]));
+    }
+    
+    // 平衡二叉树
+    @Test
+    public void test18() {
+    	TreeNode root = new TreeNode(3);
+		TreeNode node1 = new TreeNode(9);
+		TreeNode node2 = new TreeNode(20);
+		root.left = node1;
+		root.right = node2;
+		
+		TreeNode node3 = new TreeNode(15);
+		TreeNode node4 = new TreeNode(7);
+		node2.left = node3;
+		node2.right = node4;
+		System.out.println(isBalanced(root));
+    }
+    
+    public boolean isBalanced(TreeNode root) {
+    	if (root==null) {
+    		return true;
+    	}
+    	int leftHeight = treeHeight(root.left);
+    	int rightHeight = treeHeight(root.right);
+    	return Math.abs(leftHeight-rightHeight)<=1 && isBalanced(root.left) && isBalanced(root.right);
+    }
+
+	private int treeHeight(TreeNode node) {
+		if (node==null) {
+			return 0;
+		}
+		return Math.max(treeHeight(node.left), treeHeight(node.right))+1;
+	}
+    
+	//路径总和
+	@Test
+	public void test19() {
+//		TreeNode root = new TreeNode(5);
+//		TreeNode node1 = new TreeNode(4);
+//		TreeNode node2 = new TreeNode(8);
+//		root.left = node1;
+//		root.right = node2;
+//		
+//		TreeNode node3 = new TreeNode(11);
+//		node1.left = node3;
+//		
+//		TreeNode node4 = new TreeNode(7);
+//		TreeNode node5 = new TreeNode(2);
+//		node3.left = node4;
+//		node3.right =node5;
+//		
+//		TreeNode node6 = new TreeNode(13);
+//		TreeNode node7 = new TreeNode(4);
+//		node2.left = node6;
+//		node2.right = node7;
+//		
+//		TreeNode node8 = new TreeNode(1);
+//		node7.right = node8;
+		TreeNode root = new TreeNode(1);
+		System.out.println(hasPathSum(root,1));
+	}
+	 public boolean hasPathSum(TreeNode root, int sum) {
+		 if (root==null) {
+			 return false;
+		 }
+		 if (root.val == sum && root.left ==null && root.right == null) {
+			 return true;
+		 }
+		 return value(root,root.val,sum);
+	 }
+
+	private boolean value(TreeNode root, int count, int sum) {
+		boolean leftValue = false;
+		boolean rightValue = false;
+		if (root.left!=null) {
+			if (root.left.val+count == sum && root.left.left==null && root.left.right==null) {
+				return true;
+			}
+			leftValue= value(root.left,root.left.val+count,sum);
+		}
+		if (root.right!=null) {
+			if (root.right.val+count == sum && root.right.left==null && root.right.right==null) {
+				return true;
+			}
+			rightValue= value(root.right,root.right.val+count,sum);
+		}
+		return leftValue||rightValue;
+	}
+	
+	//相交链表
+	@Test
+	public void test20() {
+		ListNode headA = new ListNode(0);
+		ListNode headA1 = new ListNode(9);
+		ListNode headA2 = new ListNode(1);
+		ListNode headA3 = new ListNode(2);
+		ListNode headA4 = new ListNode(4);
+		headA.next = headA1;
+		headA1.next = headA2;
+		headA2.next = headA3;
+		headA3.next = headA4;
+		
+		ListNode headB = new ListNode(3);
+		ListNode headB1 = new ListNode(2);
+		ListNode headB2 = new ListNode(4);
+		headB.next = headA3;
+		//headB1.next = headA4;
+		ListNode node = getIntersectionNode(headA,headB);
+		System.out.println(node==null?null:node.val);
+	}
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+//        ListNode result = null;
+//        ListNode headA2 = headA;
+//        ListNode headB2 = headB;
+//        boolean find = false;
+//        while (headA2!=null) {
+//        	if (!find) {
+//        		ListNode init = headB2;
+//        		while (headB2!=null) {
+//        			if (headA2 == headB2) {
+//        				result = headA2;
+//        				find = true;
+//        				break;
+//        			}
+//        			headB2 = headB2.next;
+//        		}
+//        		headB2 = init;
+//        	}
+//        	headA2 = headA2.next;
+//        }
+//        return result;	
+    	if (headA == null || headB == null) return null;
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA == null ? headB : pA.next;
+            pB = pB == null ? headA : pB.next;
+        }
+        return pA;
+    }
+ }
