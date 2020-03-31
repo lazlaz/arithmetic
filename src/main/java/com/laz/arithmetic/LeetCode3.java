@@ -66,4 +66,40 @@ public class LeetCode3 {
 	    	}
 	    	return maxs[nums.length-1];
 	    }
+	    
+	    //排序数组
+	    @Test
+	    public void test3() {
+	    	int[] res = sortArray(new int[] {5,1,1,2,0,0});
+	    	for (int i : res) {
+				System.out.print(i+" ");
+			}
+	    	System.out.println();
+	    }
+	    public int[] sortArray(int[] nums) {
+	    	//冒泡超时
+//	        for (int i=0; i<nums.length; i++) {
+//	        	for (int j=i+1; j<nums.length; j++) {
+//	        		if (nums[i]>nums[j]) {
+//	        			int temp = nums[i];
+//	        			nums[i] = nums[j];
+//	        			nums[j] = temp;
+//	        		}
+//	        	}
+//	        }
+	    	
+	    	for (int i = 0; i < nums.length; i++) {
+	            int minIndex=i;   //从0索引开始，将索引赋给minIndex
+	            for (int j = i+1; j < nums.length; j++) {
+	                if (nums[j]<nums[minIndex]){
+	                    minIndex=j;//找到最小值的索引
+	                }
+	            }
+	            //将最小元素放到本次循环的前端
+	            int temp=nums[i];
+	            nums[i]=nums[minIndex];
+	            nums[minIndex]=temp;
+	        }
+	    	return nums;
+	    }
 }
