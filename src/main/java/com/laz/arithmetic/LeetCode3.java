@@ -119,11 +119,12 @@ public class LeetCode3 {
 		int param_2 = obj.pop();
 		int param_3 = obj.top();
 		boolean param_4 = obj.empty();
-		System.out.println(param_2+" "+param_3+" "+param_4);
+		System.out.println(param_2 + " " + param_3 + " " + param_4);
 	}
 
 	class MyStack {
 		private List list;
+
 		/** Initialize your data structure here. */
 		public MyStack() {
 			list = new ArrayList();
@@ -136,9 +137,9 @@ public class LeetCode3 {
 
 		/** Removes the element on top of the stack and returns that element. */
 		public int pop() {
-			if (list.size()-1>=0) {
-				int x = (int) list.get(list.size()-1);
-				list.remove(list.size()-1);
+			if (list.size() - 1 >= 0) {
+				int x = (int) list.get(list.size() - 1);
+				list.remove(list.size() - 1);
 				return x;
 			}
 			return 0;
@@ -146,8 +147,8 @@ public class LeetCode3 {
 
 		/** Get the top element. */
 		public int top() {
-			if (list.size()-1>=0) {
-				int x = (int) list.get(list.size()-1);
+			if (list.size() - 1 >= 0) {
+				int x = (int) list.get(list.size() - 1);
 				return x;
 			}
 			return 0;
@@ -158,24 +159,136 @@ public class LeetCode3 {
 			return list.isEmpty();
 		}
 	}
-	
-	//合并排序的数组
+
+	// 合并排序的数组
 	@Test
 	public void test5() {
-		int[] A = new int[] {0};
-		int[] B = new int[] {1};
-		merge(A,0,B,B.length);	
-		 for (int i = 0; i < A.length; i++)
-	            System.out.print(A[i] + ",");
+		int[] A = new int[] { 0 };
+		int[] B = new int[] { 1 };
+		merge(A, 0, B, B.length);
+		for (int i = 0; i < A.length; i++)
+			System.out.print(A[i] + ",");
 	}
-    public void merge(int[] A, int m, int[] B, int n) {
-    	int j=0;
-    	for (int i=0;i<n+m; i++) {
-    		if (i>=m) {
-    			A[i] = B[j];
-    			j++;
-    		}
-    	}
-    	Arrays.parallelSort(A);
-    }
+
+	public void merge(int[] A, int m, int[] B, int n) {
+		int j = 0;
+		for (int i = 0; i < n + m; i++) {
+			if (i >= m) {
+				A[i] = B[j];
+				j++;
+			}
+		}
+		Arrays.parallelSort(A);
+	}
+
+	// 字符串转换整数 (atoi)
+	@Test
+	public void test6() {
+		System.out.println(myAtoi("-+1"));
+	}
+
+	public int myAtoi(String str) {
+		str = str.trim();
+		if (str.length() == 0)
+			return 0;
+		if (!Character.isDigit(str.charAt(0)) && str.charAt(0) != '-' && str.charAt(0) != '+')
+			return 0;
+		long ans = 0L;
+		boolean neg = str.charAt(0) == '-';
+		int i = !Character.isDigit(str.charAt(0)) ? 1 : 0;
+		while (i < str.length() && Character.isDigit(str.charAt(i))) {
+			ans = ans * 10 + (str.charAt(i++) - '0');
+			if (!neg && ans > Integer.MAX_VALUE) {
+				ans = Integer.MAX_VALUE;
+				break;
+			}
+			if (neg && ans > 1L + Integer.MAX_VALUE) {
+				ans = 1L + Integer.MAX_VALUE;
+				break;
+			}
+		}
+		return neg ? (int) -ans : (int) ans;
+	}
+
+	public int myAtoi2(String str) {
+		char[] chars = str.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		boolean falg = true;
+		boolean cut = false;
+		boolean pOrm = false;
+		int count = 0;
+		boolean zero = false;
+		boolean findChar = false;
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] != 32) {
+				falg = false;
+			}
+			if (!falg) {
+				if (!findChar && sb.length() == 0 && chars[i] == 45) {
+					count++;
+					pOrm = true;
+				} else if (!findChar && sb.length() == 0 && chars[i] == 43) {
+					count++;
+					pOrm = false;
+				} else {
+					if (count == 2) {
+						return 0;
+					}
+					findChar = true;
+					if (!zero && chars[i] == 48) {
+						continue;
+					}
+					zero = true;
+					if (48 <= chars[i] && chars[i] <= 57) {
+						sb.append(chars[i]);
+					} else {
+						cut = true;
+					}
+				}
+			}
+
+			if (cut) {
+				break;
+			}
+		}
+		if (sb.length() == 0) {
+			return 0;
+		}
+		if (sb.toString().length() > 10) {
+			return pOrm ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		}
+		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb.toString());
+		if (value > Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		}
+		if (value < Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		}
+		return (int) value;
+	}
+
+	// 旋转矩阵
+	@Test
+	public void test7() {
+		int[][] matrix = new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+		rotate(matrix);
+		for (int[] row : matrix) {
+			System.out.println(Arrays.toString(row));
+		}
+	}
+
+	public void rotate(int[][] matrix) {
+		int N = matrix.length;
+		for (int i = 0; i < N / 2; i++) {
+			for (int j = i; j < N - i - 1; j++) {
+				int temp = matrix[i][j];
+				matrix[i][j] = matrix[N - j - 1][i];
+				matrix[N - j - 1][i] = matrix[N - i - 1][N - j - 1];
+				matrix[N - i - 1][N - j - 1] = matrix[j][N - i - 1];
+				matrix[j][N - i - 1] = temp;
+			}
+		}
+
+	}
+
 }
