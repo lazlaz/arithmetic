@@ -1,6 +1,9 @@
 package com.laz.arithmetic;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import org.junit.Test;
@@ -262,4 +265,84 @@ public class LeetCode2 {
         count+=n%10*(n%10);
         return count;
 	}
+	
+	//移除链表元素
+	 @Test
+    public void test10() {
+		 ListNode headA = new ListNode(0);
+			ListNode headA1 = new ListNode(9);
+			ListNode headA2 = new ListNode(2);
+			ListNode headA3 = new ListNode(2);
+			ListNode headA4 = new ListNode(4);
+			headA.next = headA1;
+			headA1.next = headA2;
+			headA2.next = headA3;
+			headA3.next = headA4;
+			ListNode n = removeElements(headA,0);
+			while (n!=null) {
+				System.out.print(n.val+" ");
+				n = n.next;
+			}
+    }
+  public ListNode removeElements(ListNode head, int val) {
+	    ListNode sentinel = new ListNode(0);
+	    sentinel.next = head;
+
+	    ListNode prev = sentinel, curr = head;
+	    while (curr != null) {
+	      if (curr.val == val) prev.next = curr.next;
+	      else prev = curr;
+	      curr = curr.next;
+	    }
+	    return sentinel.next;
+	  }
+
+   public ListNode removeElements2(ListNode head, int val) {
+	    ListNode temp = head;
+	    ListNode newHead = null;
+	    head = null;
+		while (temp!=null) {
+			if (temp.val != val) {
+				if (head == null) {
+					head = temp;
+					newHead = head;
+				}else {
+					head.next = temp;
+					head = head.next;
+				}
+			} 
+			temp= temp.next;
+		}
+		if (head!=null) {
+			head.next=null;
+		}
+		return newHead;
+    }
+   
+ // 同构字符串
+ 	 @Test
+     public void test11() {
+ 		System.out.println(isIsomorphic("foo","bar"));
+     }
+     public boolean isIsomorphic(String s, String t) {
+    	//设s为集合A，t为集合B
+         if(s.length()!=t.length()){
+             return false;
+         }
+         HashMap<Character,Character> map=new HashMap<>();//关于A->B的映射
+         for (int i = 0; i < s.length(); i++) {
+             char sc=s.charAt(i);
+             char tc=t.charAt(i);
+             if(map.get(sc)==null){//保证A中当前元素未建立映射
+                 if(map.containsValue(tc)){//保证B中当前元素未建立映射
+                     return false;
+                 }
+                 map.put(sc,tc);//建立A中当前元素与B中当前元素一一映射关系
+             }else if(map.get(sc)!=tc){
+                 return false;
+             }
+         }
+         return true;
+     }
+	
 }
