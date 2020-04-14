@@ -388,7 +388,6 @@ public class LeetCode3 {
 		}
 		
 	}
-
 	private ListNode reverseList(ListNode l) {
 		ListNode resultList = new ListNode(-1);
         resultList.next= l;
@@ -463,6 +462,4 @@ public class LeetCode3 {
 		list.add(0);
 		return list;
 	}
-
-
 }
