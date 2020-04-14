@@ -371,5 +371,98 @@ public class LeetCode3 {
 		}
 		return (balance == 0);
 	}
+	
+
+	// 两数相加 II
+	@Test
+	public void test9() {
+		ListNode l1 = new ListNode(5);
+		ListNode l11 = new ListNode(9);
+		//l1.next = l11;
+		ListNode l2 = new ListNode(5);
+		ListNode res = addTwoNumbers(l1,l2);
+		ListNode temp = res;
+		while (temp!=null) {
+			System.out.print(temp.val+"->");
+			temp = temp.next;
+		}
+		
+	}
+
+	private ListNode reverseList(ListNode l) {
+		ListNode resultList = new ListNode(-1);
+        resultList.next= l;
+        ListNode p = l;
+        ListNode pNext = p.next;
+        while (pNext!=null){
+            p.next = pNext.next;
+            pNext.next = resultList.next;
+            resultList.next = pNext;
+            pNext=p.next;
+        }
+        return resultList.next;
+	}
+	 public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+	
+		ListNode l11 =reverseList(l1);
+		ListNode l21 =reverseList(l2);
+		
+		ListNode temp1 = l11;
+		ListNode temp11 = l11;
+		ListNode temp2 = l21;
+		
+		ListNode lastNode = null;
+		Integer last = 0;
+		while (temp1!=null) {
+			if (temp2!=null) {
+				List value = customSum(last,temp1.val,temp2.val);
+				temp1.val = (int) value.get(0);
+				if (value.size()==2) {
+					last = (Integer) value.get(1);
+				}
+				temp2 = temp2.next;
+			}else {
+				List value = customSum(last,temp1.val,0);
+				temp1.val = (int) value.get(0);
+				if (value.size()==2) {
+					last = (Integer) value.get(1);
+				}
+			}
+			temp11 = temp1;
+			lastNode = temp1;
+			temp1 = temp1.next;
+		}
+		if (temp2!=null) {
+			temp11.next = temp2;
+			while (temp2!=null) {
+				List value = customSum(last,0,temp2.val);
+				temp2.val = (int) value.get(0);
+				if (value.size()==2) {
+					last = (Integer) value.get(1);
+				}
+				lastNode = temp2;
+				temp2 = temp2.next;
+			}
+		}
+		if (last!=0) {
+			lastNode.next = new ListNode(last);
+		}
+		l11 = reverseList(l11);
+		return l11;
+	 }
+
+	private List customSum(Integer last, int val1, int val2) {
+		List list = new ArrayList();
+		int res = val1+val2+last;
+		if(res>=10) {
+			list.add(res%10);
+			list.add(res/10);
+			return list; 
+		}
+		list.add(res);
+		list.add(0);
+		return list;
+	}
+
 
 }
