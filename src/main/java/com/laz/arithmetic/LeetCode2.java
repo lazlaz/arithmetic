@@ -1,12 +1,15 @@
 package com.laz.arithmetic;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
 
 import org.junit.Test;
+
 
 class ListNode {
 	      int val;
@@ -344,5 +347,138 @@ public class LeetCode2 {
          }
          return true;
      }
+     
+     // 存在重复元素 II
+ 	 @Test
+     public void test12() {
+ 		int[] nums = new int[] {99,99};
+ 		System.out.println(containsNearbyDuplicate(nums,2));
+     }
+ 	  public boolean containsNearbyDuplicate(int[] nums, int k) {
+ 		  Map<Integer,List<Integer>> counts = new HashMap<Integer,List<Integer>>();
+ 		  for (int i=0;i<nums.length;i++) {
+ 			  if (counts.get(nums[i])!=null) {
+ 				   List<Integer> list = counts.get(nums[i]);
+ 				   for (Integer integer : list) {
+ 					   if (i-integer <= k) {
+ 	 						return true;
+ 	 					}
+				   }
+ 				  list.add(i);
+ 			  } else {
+ 				 List<Integer> list = new ArrayList<Integer>();
+ 				 list.add(i);
+ 				 counts.put(nums[i],list);
+ 			  }
+ 		  }
+ 		  return false;
+ 	  }
+ 	 public class TreeNode {
+ 		      int val;
+ 		      TreeNode left;
+ 		      TreeNode right;
+ 		      TreeNode(int x) { val = x; }
+ 	 }
+ 	  // 翻转二叉树
+ 	 @Test
+     public void test13() {
+ 		TreeNode root = new TreeNode(4);
+ 		TreeNode node1 = new TreeNode(2);
+ 		TreeNode node2 = new TreeNode(7);
+ 		TreeNode node3 = new TreeNode(1);
+ 		TreeNode node4 = new TreeNode(3);
+ 		
+ 		root.left = node1;
+ 		root.right = node2;
+ 		node1.left = node3;
+ 		node1.right = node4;
+ 		
+ 		TreeNode n = invertTree(root);
+ 		System.out.println(n);
+     }
+    public TreeNode invertTree(TreeNode root) {
+       swapNode(root);
+	   return root;
+    }
+	private void swapNode(TreeNode root) {
+		if (root==null) {
+			return;
+		}
+		TreeNode n = root.left;
+		root.left = root.right;
+		root.right = n;
+		swapNode(root.left);
+		swapNode(root.right);
+	}
 	
+	//2的幂
+	 @Test
+     public void test14() {
+		 System.out.println(Math.pow(2, 1000));
+		 System.out.println(isPowerOfTwo(8));
+	 }
+	 public boolean isPowerOfTwo(int n) {
+		 if (n==1) {
+			 return true;
+		 }
+		 int count = 1000;
+		 int c  = 2;
+		 for (int i=1;i<=count;i++) {
+			 if (c>n) {
+				 return false;
+			 }
+			 if (c==n) {
+				 return true;
+			 }
+			 c = c*2;
+		 }
+		 return false;
+	 }
+	 
+	 //用栈实现队列
+	 @Test
+	 public void test15() {
+	  MyQueue obj = new MyQueue();
+	  obj.push(1);
+	  obj.push(2);
+	  int param_2 = obj.pop();
+	  int param_3 = obj.peek();
+	  boolean param_4 = obj.empty();
+	 }
+	 
+	 class MyQueue {
+		private Stack<Integer> stack;
+	    /** Initialize your data structure here. */
+	    public MyQueue() {
+			stack = new Stack<Integer>();
+	    }
+	    
+	    /** Push element x to the back of queue. */
+	    public void push(int x) {
+	    	int size = stack.size();
+	    	int[] array = new int[size];
+	    	for (int i=0;i<size;i++) {
+	    		array[i]=stack.pop();
+	    	}
+	    	stack.push(x);
+	    	for (int i=array.length-1;i>=0;i--) {
+	    		stack.push(array[i]);
+	    	}
+	    }
+	    
+	    /** Removes the element from in front of queue and returns that element. */
+	    public int pop() {
+	    	return stack.pop();
+	    }
+	    
+	    /** Get the front element. */
+	    public int peek() {
+	    	return stack.peek();
+	    }
+	    
+	    /** Returns whether the queue is empty. */
+	    public boolean empty() {
+	    	return stack.isEmpty();
+	    }
+	}
 }
