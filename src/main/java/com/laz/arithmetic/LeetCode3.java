@@ -371,5 +371,55 @@ public class LeetCode3 {
 		}
 		return (balance == 0);
 	}
+	
+
+	// 两数相加 II
+	@Test
+	public void test9() {
+		ListNode l1 = new ListNode(1);
+		ListNode l11 = new ListNode(2);
+		l1.next = l11;
+		ListNode l2 = new ListNode(2);
+		ListNode res = addTwoNumbers(l1,l2);
+		ListNode temp = res;
+		while (temp!=null) {
+			System.out.print(temp.val+"->");
+			temp = temp.next;
+		}
+		
+	}
+	 public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+		ListNode temp1 = l1;
+		StringBuffer sb = new StringBuffer();
+		while (temp1!=null) {
+			sb.append(temp1.val);
+			temp1 = temp1.next;
+		}
+		long l1Vale = 0;
+		if (sb.length()!=0) {
+			l1Vale=Long.valueOf(sb.toString());
+		}
+		sb = new StringBuffer();
+		ListNode temp2 = l2;
+		while (temp2!=null) {
+			sb.append(temp2.val);
+			temp2 = temp2.next;
+		}
+		long l2Vale = 0;
+		if (sb.length()!=0) {
+			l2Vale=Long.valueOf(sb.toString());
+		}
+		long res = l1Vale+l2Vale;
+		ListNode node =  new ListNode(0);
+		while (res/10>0) {
+			node.val=(int) (res%10);
+			res = res/10;
+			ListNode n = new ListNode(0);
+			n.next = node;
+			node = n;
+		}
+		node.val=(int) res;
+		return node;
+	 }
 
 }
