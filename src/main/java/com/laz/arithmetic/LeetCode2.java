@@ -1,7 +1,6 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -388,16 +387,6 @@ public class LeetCode2 {
 		return false;
 	}
 
-	public class TreeNode {
-		int val;
-		TreeNode left;
-		TreeNode right;
-
-		TreeNode(int x) {
-			val = x;
-		}
-	}
-
 	// 翻转二叉树
 	@Test
 	public void test13() {
@@ -523,7 +512,7 @@ public class LeetCode2 {
 		int m = matrix.length, n = matrix[0].length;
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
-				dist[i][j] = Integer.MAX_VALUE/2;
+				dist[i][j] = Integer.MAX_VALUE / 2;
 			}
 		}
 		// 如果 (i, j) 的元素为 0，那么距离为 0
@@ -579,6 +568,134 @@ public class LeetCode2 {
 			}
 		}
 		return dist;
+	}
+
+	// 二叉搜索树的最近公共祖先
+	@Test
+	public void test17() {
+		Integer[] arr = new Integer[] { 6, 2, 8, 0, 4, 7, 9, null, null, 3, 5 };
+		TreeNode root = Utils.createTree(arr, 0);
+		TreeNode result = lowestCommonAncestor(root, root.left, root.right);
+		System.out.println(result.val);
+	}
+
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+		// 解题:根据二叉搜索树特点，左子树小于根值，右子树大于根值
+		// Value of current node or parent node.
+		int parentVal = root.val;
+
+		// Value of p
+		int pVal = p.val;
+
+		// Value of q;
+		int qVal = q.val;
+
+		if (pVal > parentVal && qVal > parentVal) {
+			// If both p and q are greater than parent
+			return lowestCommonAncestor(root.right, p, q);
+		} else if (pVal < parentVal && qVal < parentVal) {
+			// If both p and q are lesser than parent
+			return lowestCommonAncestor(root.left, p, q);
+		} else {
+			// We have found the split point, i.e. the LCA node.
+			return root;
+		}
+	}
+
+	// 二叉树的所有路径
+	@Test
+	public void test18() {
+		Integer[] arr = new Integer[] { 1, 2, 3, null, 5 };
+		TreeNode root = Utils.createTree(arr, 0);
+		List<String> list = binaryTreePaths(root);
+		for (String string : list) {
+			System.out.println(string);
+		}
+	}
+
+	public List<String> binaryTreePaths(TreeNode root) {
+		LinkedList<String> paths = new LinkedList();
+		traverse(root, "", paths);
+		return paths;
+	}
+
+	private void traverse(TreeNode root, String path, LinkedList<String> paths) {
+		if (root != null) {
+			path += Integer.toString(root.val);
+			if ((root.left == null) && (root.right == null)) // 当前节点是叶子节点
+				paths.add(path); // 把路径加入到答案中
+			else {
+				path += "->"; // 当前节点不是叶子节点，继续递归遍历
+				traverse(root.left, path, paths);
+				traverse(root.right, path, paths);
+			}
+		}
+	}
+
+	// 岛屿数量
+	@Test
+	public void test19() {
+		char[][] grid1 = { { '1', '1', '1', '1', '0' }, { '1', '1', '0', '1', '0' }, { '1', '1', '0', '0', '0' },
+				{ '0', '0', '0', '0', '0' } };
+		int numIslands1 = numIslands(grid1);
+		System.out.println(numIslands1);
+
+		char[][] grid2 = { { '1', '1', '0', '0', '0' }, { '1', '1', '0', '0', '0' }, { '0', '0', '1', '0', '0' },
+				{ '0', '0', '0', '1', '1' } };
+		int numIslands2 = numIslands(grid2);
+		System.out.println(numIslands2);
+	}
+
+// 方向数组，它表示了相对于当前位置的 4 个方向的横、纵坐标的偏移量，这是一个常见的技巧
+	private static final int[][] directions = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+// 标记数组，标记了 grid 的坐标对应的格子是否被访问过
+	private boolean[][] marked;
+// grid 的行数
+	private int rows;
+// grid 的列数
+	private int cols;
+	private char[][] grid;
+
+	public int numIslands(char[][] grid) {
+		rows = grid.length;
+		if (rows == 0) {
+			return 0;
+		}
+		cols = grid[0].length;
+		this.grid = grid;
+		marked = new boolean[rows][cols];
+		int count = 0;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				// 如果是岛屿中的一个点，并且没有被访问过
+				// 就进行深度优先遍历
+				if (!marked[i][j] && grid[i][j] == '1') {
+					count++;
+					dfs(i, j);
+				}
+			}
+		}
+		return count;
+	}
+
+// 从坐标为 (i,j) 的点开始进行深度优先遍历
+	private void dfs(int i, int j) {
+		marked[i][j] = true;
+// 得到 4 个方向的坐标
+		for (int k = 0; k < 4; k++) {
+			int newX = i + directions[k][0];
+			int newY = j + directions[k][1];
+			// 如果不越界、没有被访问过、并且还要是陆地
+			if (inArea(newX, newY) && grid[newX][newY] == '1' && !marked[newX][newY]) {
+				dfs(newX, newY);
+			}
+		}
+	}
+
+// 封装成 inArea 方法语义更清晰
+	private boolean inArea(int x, int y) {
+// 等于号不要忘了
+		return x >= 0 && x < rows && y >= 0 && y < cols;
 	}
 
 }
