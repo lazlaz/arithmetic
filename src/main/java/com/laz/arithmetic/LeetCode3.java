@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -462,4 +463,100 @@ public class LeetCode3 {
 		list.add(0);
 		return list;
 	}
+	
+	//  合并区间
+	@Test
+	public void test10() {
+		int[][] intervals = new int[][] {
+			{1,4},
+			{0,0}
+		};
+		int[][] res = merge(intervals);
+		for (int[] is : res) {
+			for (int a:is) {
+				System.out.print(a+" ");
+			}
+			System.out.println();
+		}
+	}
+	 public int[][] merge(int[][] intervals) {
+		// 先按照区间起始位置排序
+	      for (int i=0;i<intervals.length;i++) {
+	    	  for (int j=i;j<intervals.length;j++) {
+	    		  if (intervals[i][0]>intervals[j][0]) {
+	    			  int[] temp = intervals[i];
+	    			  intervals[i] = intervals[j];
+	    			  intervals[j] = temp;
+	    		  }
+	    	  }
+	      }
+	        // 遍历区间
+	        int[][] res = new int[intervals.length][2];
+	        int idx = -1;
+	        for (int[] interval: intervals) {
+	            // 如果结果数组是空的，或者当前区间的起始位置 > 结果数组中最后区间的终止位置，
+	            // 则不合并，直接将当前区间加入结果数组。
+	            if (idx == -1 || interval[0] > res[idx][1]) {
+	                res[++idx] = interval;
+	            } else {
+	                // 反之将当前区间合并至结果数组的最后区间
+	                res[idx][1] = Math.max(res[idx][1], interval[1]);
+	            }
+	        }
+	        return Arrays.copyOf(res, idx + 1);
+	 }
+	 
+	 //统计「优美子数组」
+	 @Test
+	 public void test11() {
+		 int[] nums = new int[] {2,2,2,1,2,2,1,2,2,2};
+		 System.out.println(numberOfSubarrays(nums,2));
+	 }
+	 
+	 public int numberOfSubarrays(int[] nums, int k) {
+		    List<Integer> odd  = new ArrayList<Integer>();
+	        odd.add(-1);
+
+	        int ans = 0;
+	        int i = 1;
+	        for (int j = 0; j <= nums.length; j++)
+	        {
+	            if (j == nums.length || (nums[j]%2!=0))
+	            {
+	                odd.add(j);
+	            }
+
+	            if (odd.size() - i > k)
+	            {
+	                int left = odd.get(i) - odd.get(i - 1);
+	                int right = j - odd.get(odd.size() - 2);
+	                ans += left * right;
+	                i++;
+	            }
+	        }
+	        return ans;
+	 }
+	 // 超时
+	 public int numberOfSubarrays2(int[] nums, int k) {
+		 int value = 0;
+		 List<String> list = new ArrayList<String>();
+		 for (int i=0;i<nums.length;i++) {
+			 int count = 0;
+			 boolean flag = false; //是否找到
+			 for (int j=i;j<nums.length;j++) {
+				 if (nums[j]%2!=0 && !flag) {
+					 count++;
+				 } else if (flag && nums[j]%2==0) { //如果不为奇数，可增加组合
+					 value++;
+				 } else if (flag && nums[j]%2!=0){
+					 break;
+				 }
+				 if (!flag && count == k) {
+					 flag = true;
+					 value++;
+				 }
+			 }
+		 }
+		 return value;
+	 }
 }
