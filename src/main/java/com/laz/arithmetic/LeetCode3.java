@@ -505,4 +505,58 @@ public class LeetCode3 {
 	        }
 	        return Arrays.copyOf(res, idx + 1);
 	 }
+	 
+	 //统计「优美子数组」
+	 @Test
+	 public void test11() {
+		 int[] nums = new int[] {2,2,2,1,2,2,1,2,2,2};
+		 System.out.println(numberOfSubarrays(nums,2));
+	 }
+	 
+	 public int numberOfSubarrays(int[] nums, int k) {
+		    List<Integer> odd  = new ArrayList<Integer>();
+	        odd.add(-1);
+
+	        int ans = 0;
+	        int i = 1;
+	        for (int j = 0; j <= nums.length; j++)
+	        {
+	            if (j == nums.length || (nums[j]%2!=0))
+	            {
+	                odd.add(j);
+	            }
+
+	            if (odd.size() - i > k)
+	            {
+	                int left = odd.get(i) - odd.get(i - 1);
+	                int right = j - odd.get(odd.size() - 2);
+	                ans += left * right;
+	                i++;
+	            }
+	        }
+	        return ans;
+	 }
+	 // 超时
+	 public int numberOfSubarrays2(int[] nums, int k) {
+		 int value = 0;
+		 List<String> list = new ArrayList<String>();
+		 for (int i=0;i<nums.length;i++) {
+			 int count = 0;
+			 boolean flag = false; //是否找到
+			 for (int j=i;j<nums.length;j++) {
+				 if (nums[j]%2!=0 && !flag) {
+					 count++;
+				 } else if (flag && nums[j]%2==0) { //如果不为奇数，可增加组合
+					 value++;
+				 } else if (flag && nums[j]%2!=0){
+					 break;
+				 }
+				 if (!flag && count == k) {
+					 flag = true;
+					 value++;
+				 }
+			 }
+		 }
+		 return value;
+	 }
 }
