@@ -697,5 +697,43 @@ public class LeetCode2 {
 // 等于号不要忘了
 		return x >= 0 && x < rows && y >= 0 && y < cols;
 	}
+	
+	// 二叉树的右视图
+	@Test
+	public void test20() {
+		Integer[] nums = new Integer[] {1,2,3,null,5,null,4};
+		TreeNode root = Utils.createTree(nums, 0);
+		List<Integer> list = rightSideView(root);
+		for (Integer integer : list) {
+			System.out.print(integer+" ");
+		}
+	}
+	public List<Integer> rightSideView(TreeNode root) {
+		List<Integer> list = new ArrayList<Integer>();
+		if (root == null) {
+			return list;
+		}
+		Map<Integer,Integer> values = new HashMap<Integer,Integer>();
+		travese(root,values,0);
+		list.addAll(values.values());
+		return list;
+		
+	}
+
+	private void travese(TreeNode root, Map<Integer, Integer> values,int level) {
+		if (root == null) {
+			return ;
+		}
+		if (values.get(level)==null) {
+			values.put(level, root.val);
+		}
+		level++;
+		if (root.right!=null) {
+			travese(root.right,values,level);
+		}
+		if (root.left!=null) {
+			travese(root.left,values,level);
+		}
+	}
 
 }
