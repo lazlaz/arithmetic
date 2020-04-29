@@ -32,7 +32,6 @@ public class LeetCode4 {
 		 }
 		 return false;
 	 }
-
 	//单词规律
 	@Test
 	public void test2() {
@@ -79,5 +78,28 @@ public class LeetCode4 {
 	           return true;
 	       }
 	       return false;
+	}
+	
+	//区域和检索 - 数组不可变
+	@Test
+	public void test3() {
+		int[] nums = new int[] {-2,0,3,-5,2,-1};
+		NumArray obj = new NumArray(nums);
+		int param_1 = obj.sumRange(0,2);
+		System.out.println(param_1);
+	}
+	class NumArray {
+		private int[] nums;
+	    public NumArray(int[] nums) {
+	    	this.nums = nums;
+	    }
+	    
+	    public int sumRange(int i, int j) {
+	    	int count = 0;
+	    	for (int z=i;z<=j;z++) {
+	    		count+=nums[z];
+	    	}
+	    	return count;
+	    }
 	}
 }
