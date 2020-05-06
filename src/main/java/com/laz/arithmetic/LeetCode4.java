@@ -1,7 +1,9 @@
 package com.laz.arithmetic;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -102,4 +104,41 @@ public class LeetCode4 {
 	    	return count;
 	    }
 	}
+	
+	//最低票价
+	@Test
+	public void test4() {
+		int[] days = new int[] {1,4,6,7,8,20};
+		int[] costs = new int[] {2,7,15};
+		System.out.println(mincostTickets(days, costs));
+	}
+	int[] costs;
+    Integer[] memo;
+    Set<Integer> dayset;
+    //dp(i) 来表示从第 i 天开始到一年的结束，我们需要花的钱
+	public int mincostTickets(int[] days, int[] costs) {
+		 this.costs = costs;
+	        memo = new Integer[366];
+	        dayset = new HashSet();
+	        for (int d: days) {
+	            dayset.add(d);
+	        }
+	        return dp(1);
+	}
+	public int dp(int i) {
+        if (i > 365) {
+            return 0;
+        }
+        if (memo[i] != null) {
+            return memo[i];
+        }
+        if (dayset.contains(i)) {
+        	int value = Math.min(dp(i + 1) + costs[0], dp(i + 7) + costs[1]);
+            memo[i] = Math.min(value, dp(i + 30) + costs[2]);
+        }
+        else {
+            memo[i] = dp(i + 1);
+        }
+        return memo[i];
+    }
 }
