@@ -206,5 +206,45 @@ public class LeetCode4 {
 			return (isSubtree2(s.left, t, false) || isSubtree2(s.right, t, false));
 		}
 	}
-
+	
+	
+	//最大正方形
+	@Test
+	public void test6() {
+		char[][] matrix = new char[][] {
+			
+		};
+		System.out.println(maximalSquare(matrix));
+	}
+	public int maximalSquare(char[][] matrix) {
+		if (matrix == null || matrix.length == 0) {
+			return 0;
+		}
+		int row = matrix.length;
+		int col = matrix[0].length;
+		int len = row>col?col:row;
+		for (int i=len;i>0;i--) {
+			//System.out.println("--");
+			for (int row1=0;row1<=(row-i);row1++) {
+			    for (int col1=0;col1<=col-i;col1++) {
+			    		boolean find = true;
+			    		for (int j=row1; j<row1+i;j++) {
+			    			for (int z=col1;z<col1+i;z++) {
+			    				if (matrix[j][z]!='1') {
+			    					find = false;
+			    					break;
+			    				}
+			    			}
+			    			if (!find) {
+			    				break;
+			    			}
+			    		}
+			    		if (find) {
+			    			return i*i;
+			    		}
+			    	}
+			    }
+		}
+		return 0;
+    }
 }
