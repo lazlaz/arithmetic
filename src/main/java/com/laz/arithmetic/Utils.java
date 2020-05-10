@@ -13,4 +13,16 @@ public class Utils {
 		root.right = createTree(arr, 2*i+2); // 递归建立右孩子结点
 		return root;
 	}
+	
+	public static ListNode createListNode(Integer[] arr) {
+		ListNode root = null;
+		ListNode n = new ListNode(arr[0]);
+		root = n;
+		for (int i=1; i<arr.length; i++) {
+			ListNode node  = new ListNode(arr[i]);
+			n.next=node;
+			n = node;
+		}
+		return root;
+	}
 }

@@ -10,14 +10,6 @@ import java.util.Stack;
 
 import org.junit.Test;
 
-class ListNode {
-	int val;
-	ListNode next;
-
-	ListNode(int x) {
-		val = x;
-	}
-}
 
 public class LeetCode2 {
 	// 链表的中间结点
