@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -331,5 +332,25 @@ public class LeetCode4 {
 			temp.next = q;
 
 		return ret.next;
+	}
+	
+	//分发饼干
+	@Test
+	public void test9() {
+		int[] g = new int[] {1,2,3};
+		int[] s = new int[] {1,1};
+		System.out.println(findContentChildren(g,s));
+	}
+	//贪心算法
+	public int findContentChildren(int[] g, int[] s) {
+	   Arrays.sort(g);
+	   Arrays.sort(s);
+	   int count = 0;
+	   for (int i=0;i<s.length;i++) {
+		   if (count<g.length&&g[count]<=s[i]) {
+			   count++;
+		   }
+	   }
+	   return count;
 	}
 }
