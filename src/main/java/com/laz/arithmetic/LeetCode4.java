@@ -247,4 +247,41 @@ public class LeetCode4 {
 		}
 		return 0;
     }
+	
+	//Pow(x, n)
+	@Test
+	public void test7() {
+		long start = System.currentTimeMillis();
+		System.out.println(myPow(2,-2147483647));
+		//System.out.println(System.currentTimeMillis()-start);
+	}
+	
+	//超出时间限制 输入：0.00001 2147483647
+//	public double myPow2(double x, int n) {
+//		if (n == 0 ) {
+//			return 1.0;
+//		}
+//		int count = n>0?n:(-n);
+//		double res = myPow2(x,count/2);
+//		if (count%2==1) {
+//			res = res*res*x;
+//		} else {
+//			res = res*res;
+//		}
+//		return n>0?res:(1.0/res);
+//	}
+//	
+	 public double quickMul(double x, long N) {
+	        if (N == 0) {
+	            return 1.0;
+	        }
+	        double y = quickMul(x, N / 2);
+	        return N % 2 == 0 ? y * y : y * y * x;
+	    }
+
+	    public double myPow(double x, int n) {
+	        long N = n;
+	        return N >= 0 ? quickMul(x, N) : 1.0 / quickMul(x, -N);
+	    }
+
 }
