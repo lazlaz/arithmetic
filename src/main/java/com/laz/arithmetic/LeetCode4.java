@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -152,28 +153,35 @@ public class LeetCode4 {
 	// 另一个树的子树
 	@Test
 	public void test5() {
-		Integer[] sArr = new Integer[] { 1,2,3,4,5,6,7,8};
+		Integer[] sArr = new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 		TreeNode s = Utils.createTree(sArr, 0);
-		Integer[] tArr = new Integer[] {4,8 };
+		Integer[] tArr = new Integer[] { 4, 8 };
 		TreeNode t = Utils.createTree(tArr, 0);
 		System.out.println(isSubtree(s, t));
 
 	}
-	 public boolean isSubtree(TreeNode s, TreeNode t) {
-	        if (t == null) return true;   // t 为 null 一定都是 true
-	        if (s == null) return false;  // 这里 t 一定不为 null, 只要 s 为 null，肯定是 false
-	        return isSubtree(s.left, t) || isSubtree(s.right, t) || isSameTree(s,t);
-	    }
 
-	    /**
-	     * 判断两棵树是否相同
-	     */
-	    public boolean isSameTree(TreeNode s, TreeNode t){
-	        if (s == null && t == null) return true;
-	        if (s == null || t == null) return false;
-	        if (s.val != t.val) return false;
-	        return isSameTree(s.left, t.left) && isSameTree(s.right, t.right);
-	    }
+	public boolean isSubtree(TreeNode s, TreeNode t) {
+		if (t == null)
+			return true; // t 为 null 一定都是 true
+		if (s == null)
+			return false; // 这里 t 一定不为 null, 只要 s 为 null，肯定是 false
+		return isSubtree(s.left, t) || isSubtree(s.right, t) || isSameTree(s, t);
+	}
+
+	/**
+	 * 判断两棵树是否相同
+	 */
+	public boolean isSameTree(TreeNode s, TreeNode t) {
+		if (s == null && t == null)
+			return true;
+		if (s == null || t == null)
+			return false;
+		if (s.val != t.val)
+			return false;
+		return isSameTree(s.left, t.left) && isSameTree(s.right, t.right);
+	}
+
 	public boolean isSubtree_2(TreeNode s, TreeNode t) {
 		return isSubtree2(s, t, false);
 	}
@@ -197,60 +205,159 @@ public class LeetCode4 {
 			boolean falg = (isSubtree2(s.left, t.left, true) && isSubtree2(s.right, t.right, true));
 			if (falg) {
 				return falg;
-			} else if(!falg&&b) {
+			} else if (!falg && b) {
 				return falg;
-			}else {
+			} else {
 				return (isSubtree2(s.left, t, false) || isSubtree2(s.right, t, false));
 			}
 		} else {
 			return (isSubtree2(s.left, t, false) || isSubtree2(s.right, t, false));
 		}
 	}
-	
-	
-	//最大正方形
+
+	// 最大正方形
 	@Test
 	public void test6() {
 		char[][] matrix = new char[][] {
-			
+
 		};
 		System.out.println(maximalSquare(matrix));
 	}
+
 	public int maximalSquare(char[][] matrix) {
 		if (matrix == null || matrix.length == 0) {
 			return 0;
 		}
 		int row = matrix.length;
 		int col = matrix[0].length;
-		int len = row>col?col:row;
-		for (int i=len;i>0;i--) {
-			//System.out.println("--");
-			for (int row1=0;row1<=(row-i);row1++) {
-			    for (int col1=0;col1<=col-i;col1++) {
-			    		boolean find = true;
-			    		for (int j=row1; j<row1+i;j++) {
-			    			for (int z=col1;z<col1+i;z++) {
-			    				if (matrix[j][z]!='1') {
-			    					find = false;
-			    					break;
-			    				}
-			    			}
-			    			if (!find) {
-			    				break;
-			    			}
-			    		}
-			    		if (find) {
-			    			return i*i;
-			    		}
-			    	}
-			    }
+		int len = row > col ? col : row;
+		for (int i = len; i > 0; i--) {
+			// System.out.println("--");
+			for (int row1 = 0; row1 <= (row - i); row1++) {
+				for (int col1 = 0; col1 <= col - i; col1++) {
+					boolean find = true;
+					for (int j = row1; j < row1 + i; j++) {
+						for (int z = col1; z < col1 + i; z++) {
+							if (matrix[j][z] != '1') {
+								find = false;
+								break;
+							}
+						}
+						if (!find) {
+							break;
+						}
+					}
+					if (find) {
+						return i * i;
+					}
+				}
+			}
 		}
 		return 0;
-    }
+	}
+
+	// 二叉树的最近公共祖先
+	@Test
+	public void test7() {
+		Integer[] rows = new Integer[] { 3, 5, 1, 6, 2, 0, 8, null, null, 7, 4 };
+		TreeNode node = Utils.createTree(rows, 0);
+		TreeNode p = node.left;
+		TreeNode q = node.right;
+		lowestCommonAncestor(node, p, q);
+	}
+
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+		if (root == null) {
+			return null;
+		}
+		if (root == p || root == q) {
+			return root;
+		}
+		TreeNode left = lowestCommonAncestor(root.left, p, q);
+		TreeNode right = lowestCommonAncestor(root.right, p, q);
+		// p q 都在右侧
+		if (left == null)
+			return right;
+		// p q 都在左侧
+		if (right == null)
+			return left;
+		if (left != null && right != null) // p和q在两侧
+			return root;
+		return null; // 必须有返回值
+	}
+
+	// 合并K个排序链表
+	@Test
+	public void test8() {
+		ListNode node = Utils.createListNode(new Integer[] { 1, 4, 5 });
+		ListNode node1 = Utils.createListNode(new Integer[] { 1, 3, 4 });
+		ListNode node2 = Utils.createListNode(new Integer[] { 2, 6 });
+		ListNode[] lists = new ListNode[] { node, node1, node2 };
+		//分治算法
+		ListNode n = mergeKLists(lists);
+	}
+
+	public ListNode mergeKLists(ListNode[] lists) {
+		int n = lists.length;
+		if (n == 0) {
+			return null;
+		}
+		if (n == 1) {
+			return lists[0];
+		}
+		ListNode p = lists[0];
+		for (int i = 1; i < n; i++) {
+			p = merge2Lists(p, lists[i]);
+		}
+		return p;
+
+	}
+
+	private ListNode merge2Lists(ListNode p, ListNode q) {
+		ListNode ret = new ListNode(0);// 虚拟头节点
+		ListNode temp = ret;
+		while (p != null && q != null) {
+			if (p.val > q.val) {
+				temp.next = q;
+				q = q.next;
+			} else {
+				temp.next = p;
+				p = p.next;
+			}
+			temp = temp.next;
+		}
+		if (p != null)// 只有一个链表存在时，直接将剩下的链接到结果中去
+			temp.next = p;
+		else
+			temp.next = q;
+
+		return ret.next;
+	}
+	
+	//分发饼干
+	
+	@Test
+	public void test9() {
+		int[] g = new int[] {1,2,3};
+		int[] s = new int[] {1,1};
+		System.out.println(findContentChildren(g,s));
+	}
+	//贪心算法
+	public int findContentChildren(int[] g, int[] s) {
+	   Arrays.sort(g);
+	   Arrays.sort(s);
+	   int count = 0;
+	   for (int i=0;i<s.length;i++) {
+		   if (count<g.length&&g[count]<=s[i]) {
+			   count++;
+		   }
+	   }
+	   return count;
+	}
 	
 	//Pow(x, n)
 	@Test
-	public void test7() {
+	public void test10() {
 		long start = System.currentTimeMillis();
 		System.out.println(myPow(2,-2147483647));
 		//System.out.println(System.currentTimeMillis()-start);
