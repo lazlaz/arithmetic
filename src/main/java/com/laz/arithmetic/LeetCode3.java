@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -300,47 +301,47 @@ public class LeetCode3 {
 			System.out.println(str);
 		}
 	}
-	   // 做减法
+	// 做减法
 
-    public List<String> generateParenthesis(int n) {
-        List<String> res = new ArrayList<>();
-        // 特判
-        if (n == 0) {
-            return res;
-        }
+	public List<String> generateParenthesis(int n) {
+		List<String> res = new ArrayList<>();
+		// 特判
+		if (n == 0) {
+			return res;
+		}
 
-        // 执行深度优先遍历，搜索可能的结果
-        dfs("", n, n, res);
-        return res;
-    }
+		// 执行深度优先遍历，搜索可能的结果
+		dfs("", n, n, res);
+		return res;
+	}
 
-    /**
-     * @param curStr 当前递归得到的结果
-     * @param left   左括号还有几个可以使用
-     * @param right  右括号还有几个可以使用
-     * @param res    结果集
-     */
-    private void dfs(String curStr, int left, int right, List<String> res) {
-        // 因为每一次尝试，都使用新的字符串变量，所以无需回溯
-        // 在递归终止的时候，直接把它添加到结果集即可，注意与「力扣」第 46 题、第 39 题区分
-        if (left == 0 && right == 0) {
-            res.add(curStr);
-            return;
-        }
+	/**
+	 * @param curStr 当前递归得到的结果
+	 * @param left   左括号还有几个可以使用
+	 * @param right  右括号还有几个可以使用
+	 * @param res    结果集
+	 */
+	private void dfs(String curStr, int left, int right, List<String> res) {
+		// 因为每一次尝试，都使用新的字符串变量，所以无需回溯
+		// 在递归终止的时候，直接把它添加到结果集即可，注意与「力扣」第 46 题、第 39 题区分
+		if (left == 0 && right == 0) {
+			res.add(curStr);
+			return;
+		}
 
-        // 剪枝（如图，左括号可以使用的个数严格大于右括号可以使用的个数，才剪枝，注意这个细节）
-        if (left > right) {
-            return;
-        }
+		// 剪枝（如图，左括号可以使用的个数严格大于右括号可以使用的个数，才剪枝，注意这个细节）
+		if (left > right) {
+			return;
+		}
 
-        if (left > 0) {
-            dfs(curStr + "(", left - 1, right, res);
-        }
+		if (left > 0) {
+			dfs(curStr + "(", left - 1, right, res);
+		}
 
-        if (right > 0) {
-            dfs(curStr + ")", left, right - 1, res);
-        }
-    }
+		if (right > 0) {
+			dfs(curStr + ")", left, right - 1, res);
+		}
+	}
 
 	public List<String> generateParenthesis2(int n) {
 		List<String> combinations = new ArrayList();
@@ -372,59 +373,60 @@ public class LeetCode3 {
 		}
 		return (balance == 0);
 	}
-	
 
 	// 两数相加 II
 	@Test
 	public void test9() {
 		ListNode l1 = new ListNode(5);
 		ListNode l11 = new ListNode(9);
-		//l1.next = l11;
+		// l1.next = l11;
 		ListNode l2 = new ListNode(5);
-		ListNode res = addTwoNumbers(l1,l2);
+		ListNode res = addTwoNumbers(l1, l2);
 		ListNode temp = res;
-		while (temp!=null) {
-			System.out.print(temp.val+"->");
+		while (temp != null) {
+			System.out.print(temp.val + "->");
 			temp = temp.next;
 		}
-		
+
 	}
+
 	private ListNode reverseList(ListNode l) {
 		ListNode resultList = new ListNode(-1);
-        resultList.next= l;
-        ListNode p = l;
-        ListNode pNext = p.next;
-        while (pNext!=null){
-            p.next = pNext.next;
-            pNext.next = resultList.next;
-            resultList.next = pNext;
-            pNext=p.next;
-        }
-        return resultList.next;
+		resultList.next = l;
+		ListNode p = l;
+		ListNode pNext = p.next;
+		while (pNext != null) {
+			p.next = pNext.next;
+			pNext.next = resultList.next;
+			resultList.next = pNext;
+			pNext = p.next;
+		}
+		return resultList.next;
 	}
-	 public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-	
-		ListNode l11 =reverseList(l1);
-		ListNode l21 =reverseList(l2);
-		
+
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+
+		ListNode l11 = reverseList(l1);
+		ListNode l21 = reverseList(l2);
+
 		ListNode temp1 = l11;
 		ListNode temp11 = l11;
 		ListNode temp2 = l21;
-		
+
 		ListNode lastNode = null;
 		Integer last = 0;
-		while (temp1!=null) {
-			if (temp2!=null) {
-				List value = customSum(last,temp1.val,temp2.val);
+		while (temp1 != null) {
+			if (temp2 != null) {
+				List value = customSum(last, temp1.val, temp2.val);
 				temp1.val = (int) value.get(0);
-				if (value.size()==2) {
+				if (value.size() == 2) {
 					last = (Integer) value.get(1);
 				}
 				temp2 = temp2.next;
-			}else {
-				List value = customSum(last,temp1.val,0);
+			} else {
+				List value = customSum(last, temp1.val, 0);
 				temp1.val = (int) value.get(0);
-				if (value.size()==2) {
+				if (value.size() == 2) {
 					last = (Integer) value.get(1);
 				}
 			}
@@ -432,131 +434,277 @@ public class LeetCode3 {
 			lastNode = temp1;
 			temp1 = temp1.next;
 		}
-		if (temp2!=null) {
+		if (temp2 != null) {
 			temp11.next = temp2;
-			while (temp2!=null) {
-				List value = customSum(last,0,temp2.val);
+			while (temp2 != null) {
+				List value = customSum(last, 0, temp2.val);
 				temp2.val = (int) value.get(0);
-				if (value.size()==2) {
+				if (value.size() == 2) {
 					last = (Integer) value.get(1);
 				}
 				lastNode = temp2;
 				temp2 = temp2.next;
 			}
 		}
-		if (last!=0) {
+		if (last != 0) {
 			lastNode.next = new ListNode(last);
 		}
 		l11 = reverseList(l11);
 		return l11;
-	 }
+	}
 
 	private List customSum(Integer last, int val1, int val2) {
 		List list = new ArrayList();
-		int res = val1+val2+last;
-		if(res>=10) {
-			list.add(res%10);
-			list.add(res/10);
-			return list; 
+		int res = val1 + val2 + last;
+		if (res >= 10) {
+			list.add(res % 10);
+			list.add(res / 10);
+			return list;
 		}
 		list.add(res);
 		list.add(0);
 		return list;
 	}
-	
-	//  合并区间
+
+	// 合并区间
 	@Test
 	public void test10() {
-		int[][] intervals = new int[][] {
-			{1,4},
-			{0,0}
-		};
+		int[][] intervals = new int[][] { { 1, 4 }, { 0, 0 } };
 		int[][] res = merge(intervals);
 		for (int[] is : res) {
-			for (int a:is) {
-				System.out.print(a+" ");
+			for (int a : is) {
+				System.out.print(a + " ");
 			}
 			System.out.println();
 		}
 	}
-	 public int[][] merge(int[][] intervals) {
+
+	public int[][] merge(int[][] intervals) {
 		// 先按照区间起始位置排序
-	      for (int i=0;i<intervals.length;i++) {
-	    	  for (int j=i;j<intervals.length;j++) {
-	    		  if (intervals[i][0]>intervals[j][0]) {
-	    			  int[] temp = intervals[i];
-	    			  intervals[i] = intervals[j];
-	    			  intervals[j] = temp;
-	    		  }
-	    	  }
-	      }
-	        // 遍历区间
-	        int[][] res = new int[intervals.length][2];
-	        int idx = -1;
-	        for (int[] interval: intervals) {
-	            // 如果结果数组是空的，或者当前区间的起始位置 > 结果数组中最后区间的终止位置，
-	            // 则不合并，直接将当前区间加入结果数组。
-	            if (idx == -1 || interval[0] > res[idx][1]) {
-	                res[++idx] = interval;
-	            } else {
-	                // 反之将当前区间合并至结果数组的最后区间
-	                res[idx][1] = Math.max(res[idx][1], interval[1]);
-	            }
-	        }
-	        return Arrays.copyOf(res, idx + 1);
-	 }
-	 
-	 //统计「优美子数组」
-	 @Test
-	 public void test11() {
-		 int[] nums = new int[] {2,2,2,1,2,2,1,2,2,2};
-		 System.out.println(numberOfSubarrays(nums,2));
-	 }
-	 
-	 public int numberOfSubarrays(int[] nums, int k) {
-		    List<Integer> odd  = new ArrayList<Integer>();
-	        odd.add(-1);
+		for (int i = 0; i < intervals.length; i++) {
+			for (int j = i; j < intervals.length; j++) {
+				if (intervals[i][0] > intervals[j][0]) {
+					int[] temp = intervals[i];
+					intervals[i] = intervals[j];
+					intervals[j] = temp;
+				}
+			}
+		}
+		// 遍历区间
+		int[][] res = new int[intervals.length][2];
+		int idx = -1;
+		for (int[] interval : intervals) {
+			// 如果结果数组是空的，或者当前区间的起始位置 > 结果数组中最后区间的终止位置，
+			// 则不合并，直接将当前区间加入结果数组。
+			if (idx == -1 || interval[0] > res[idx][1]) {
+				res[++idx] = interval;
+			} else {
+				// 反之将当前区间合并至结果数组的最后区间
+				res[idx][1] = Math.max(res[idx][1], interval[1]);
+			}
+		}
+		return Arrays.copyOf(res, idx + 1);
+	}
 
-	        int ans = 0;
-	        int i = 1;
-	        for (int j = 0; j <= nums.length; j++)
-	        {
-	            if (j == nums.length || (nums[j]%2!=0))
-	            {
-	                odd.add(j);
-	            }
+	// 统计「优美子数组」
+	@Test
+	public void test11() {
+		int[] nums = new int[] { 2, 2, 2, 1, 2, 2, 1, 2, 2, 2 };
+		System.out.println(numberOfSubarrays(nums, 2));
+	}
 
-	            if (odd.size() - i > k)
-	            {
-	                int left = odd.get(i) - odd.get(i - 1);
-	                int right = j - odd.get(odd.size() - 2);
-	                ans += left * right;
-	                i++;
-	            }
-	        }
-	        return ans;
-	 }
-	 // 超时
-	 public int numberOfSubarrays2(int[] nums, int k) {
-		 int value = 0;
-		 List<String> list = new ArrayList<String>();
-		 for (int i=0;i<nums.length;i++) {
-			 int count = 0;
-			 boolean flag = false; //是否找到
-			 for (int j=i;j<nums.length;j++) {
-				 if (nums[j]%2!=0 && !flag) {
-					 count++;
-				 } else if (flag && nums[j]%2==0) { //如果不为奇数，可增加组合
-					 value++;
-				 } else if (flag && nums[j]%2!=0){
-					 break;
-				 }
-				 if (!flag && count == k) {
-					 flag = true;
-					 value++;
-				 }
-			 }
-		 }
-		 return value;
-	 }
+	public int numberOfSubarrays(int[] nums, int k) {
+		List<Integer> odd = new ArrayList<Integer>();
+		odd.add(-1);
+
+		int ans = 0;
+		int i = 1;
+		for (int j = 0; j <= nums.length; j++) {
+			if (j == nums.length || (nums[j] % 2 != 0)) {
+				odd.add(j);
+			}
+
+			if (odd.size() - i > k) {
+				int left = odd.get(i) - odd.get(i - 1);
+				int right = j - odd.get(odd.size() - 2);
+				ans += left * right;
+				i++;
+			}
+		}
+		return ans;
+	}
+
+	// 超时
+	public int numberOfSubarrays2(int[] nums, int k) {
+		int value = 0;
+		List<String> list = new ArrayList<String>();
+		for (int i = 0; i < nums.length; i++) {
+			int count = 0;
+			boolean flag = false; // 是否找到
+			for (int j = i; j < nums.length; j++) {
+				if (nums[j] % 2 != 0 && !flag) {
+					count++;
+				} else if (flag && nums[j] % 2 == 0) { // 如果不为奇数，可增加组合
+					value++;
+				} else if (flag && nums[j] % 2 != 0) {
+					break;
+				}
+				if (!flag && count == k) {
+					flag = true;
+					value++;
+				}
+			}
+		}
+		return value;
+	}
+
+	// 数组中数字出现的次数
+	@Test
+	public void test12() {
+		int[] nums = new int[] { 1, 2, 10, 4, 1, 4, 3, 3 };
+		System.out.println(2^10);
+		int[] r = singleNumbers(nums);
+		for (int i : r) {
+			System.out.print(i + " ");
+		}
+	}
+
+	// 利用异或方法
+	public int[] singleNumbers(int[] nums) {
+		int ret = 0;
+		int a = 0;
+		int b = 0;
+
+		for (int n : nums) {
+			ret ^= n;
+		}
+		// 找到第一位不是0的
+		int h = 1;
+		while ((ret & h) == 0) {
+			h <<= 1;
+		}
+		for (int n : nums) {
+			// 根据该位是否为0将其分为两组
+			if ((h & n) == 0) {
+				a ^= n;
+			} else {
+				b ^= n;
+			}
+		}
+		int[] r = new int[2];
+		r[0] = a;
+		r[1] = b;
+		return r;
+
+	}
+
+	public int[] singleNumbers2(int[] nums) {
+		Arrays.parallelSort(nums);
+		int[] r = new int[2];
+		int count = 0;
+		if (nums[0] != nums[1]) {
+			r[count++] = nums[0];
+		}
+		if (nums[nums.length - 1] != nums[nums.length - 2]) {
+			r[count++] = nums[nums.length - 1];
+		}
+		for (int i = 1; i < nums.length - 1; i++) {
+			if (nums[i] == nums[i - 1] || nums[i] == nums[i + 1]) {
+
+			} else {
+				r[count++] = nums[i];
+			}
+			if (count > 2) {
+				break;
+			}
+
+		}
+
+		return r;
+	}
+	
+	// 数组中数字出现的次数
+	@Test
+	public void test13() {
+		System.out.println(mySqrt(4));
+	}
+	public int mySqrt(int x) {
+		int l = 0, r = x, ans  = -1;
+		while (l <= r) {
+			int mid = l + (r-1)/2;
+			if ((long)mid*mid<=x) {
+				ans = mid;
+				l = mid+1;
+			} else {
+				r = mid -1;
+			}
+		}
+		return ans;
+	}
+	
+	//最小栈
+	@Test
+	public void test14() {
+		MinStack minStack = new MinStack();
+		minStack.push(-2);
+		minStack.push(0);
+		minStack.push(-3);
+		minStack.getMin(); 
+		minStack.pop();
+		minStack.top();   
+		int min = minStack.getMin();  
+		System.out.println(min);
+	}
+	class MinStack {
+		private int min = Integer.MAX_VALUE;
+	    /** initialize your data structure here. */
+		private LinkedList<Integer> list = new LinkedList<Integer>();
+	    public MinStack() {
+
+	    }
+	    
+	    public void push(int x) {
+	    	if (min>x) {
+	    		min = x;
+	    	}
+	    	list.push(x);
+	    }
+	    
+	    public void pop() {
+	    	int v = list.pop();
+	    	if (min == v) {
+	    		min = Integer.MAX_VALUE;
+	    		for (int i=0;i<list.size();i++) {
+	    			if (min>list.get(i)) {
+	    				min = list.get(i);
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    public int top() {
+	    	return list.peek();
+	    }
+	    
+	    public int getMin() {
+	    	return min;
+	    }
+	}
+	
+	//只出现一次的数字
+	@Test
+	public void test15() {
+		int[] nums = new int[] {4,1,2,1,2};
+		System.out.println(singleNumber(nums));
+	}
+	public int singleNumber(int[] nums) {
+		//异或 如果a、b两个值不相同，则异或结果为1。如果a、b两个值相同，异或结果为0。（相同的两个数异或为0）
+		int ans = nums[0];
+		if (nums.length > 1) {
+			   for (int i = 1; i < nums.length; i++) {
+			      ans = ans ^ nums[i];
+			   }
+		}
+		return ans;
+	}
 }
