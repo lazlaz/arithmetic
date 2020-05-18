@@ -707,4 +707,44 @@ public class LeetCode3 {
 		}
 		return ans;
 	}
+	
+	//和为K的子数组
+	@Test
+	public void test16() {
+		int[] nums = new int[] {1,1,1,1,1};
+		System.out.println(subarraySum(nums, 2));
+	}
+	
+	public int subarraySum(int[] nums, int k) {
+		if (nums.length<=0) {
+			return 0;
+		}
+		if (nums.length==1) {
+			return nums[0]==k?1:0;
+		}
+		int[] dp = new int[nums.length+1];
+		
+		dp[0] = nums[0]==k?1:0;
+		dp[1] = dp[0];
+		if (nums[1]==k) {
+			dp[1] += 1;
+		}
+		if (nums[1]+nums[0]==k) {
+			dp[1] += 1;
+		}
+		for (int i=2;i<nums.length;i++) {
+			dp[i] = dp[i-1];
+			if (nums[i] == k) {
+				dp[i]+=1;
+			}
+			int res = nums[i];
+			for (int j=i-1;j>=0;j--) {
+				res+= nums[j];
+				if (res == k) {
+					dp[i]+=1;
+				}
+			}
+		}
+		return dp[nums.length-1];
+	}
 }
