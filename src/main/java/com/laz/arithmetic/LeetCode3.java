@@ -707,4 +707,102 @@ public class LeetCode3 {
 		}
 		return ans;
 	}
+	
+	//和为K的子数组
+	@Test
+	public void test16() {
+		int[] nums = new int[] {1,1,1,1,1};
+		System.out.println(subarraySum(nums, 2));
+	}
+	
+	public int subarraySum(int[] nums, int k) {
+		if (nums.length<=0) {
+			return 0;
+		}
+		if (nums.length==1) {
+			return nums[0]==k?1:0;
+		}
+		int[] dp = new int[nums.length+1];
+		
+		dp[0] = nums[0]==k?1:0;
+		dp[1] = dp[0];
+		if (nums[1]==k) {
+			dp[1] += 1;
+		}
+		if (nums[1]+nums[0]==k) {
+			dp[1] += 1;
+		}
+		for (int i=2;i<nums.length;i++) {
+			dp[i] = dp[i-1];
+			if (nums[i] == k) {
+				dp[i]+=1;
+			}
+			int res = nums[i];
+			for (int j=i-1;j>=0;j--) {
+				res+= nums[j];
+				if (res == k) {
+					dp[i]+=1;
+				}
+			}
+		}
+		return dp[nums.length-1];
+	}
+	
+	//乘积最大子数组
+	@Test
+	public void test17() {
+		int[] nums = new int[] {-2,0,-1,-1};
+		System.out.println(maxProduct(nums));
+	}
+	public int maxProduct(int[] nums) {
+		int dpMax = 1;
+		int dpMin = 1;
+		int max = Integer.MIN_VALUE;
+		for (int i=0;i<nums.length;i++) {
+			 if(nums[i] < 0){ 
+              int tmp = dpMax;
+              dpMax = dpMin;
+              dpMin = tmp;
+	        }
+			dpMax = Math.max(dpMax*nums[i], nums[i]);
+			dpMin = Math.min(dpMin*nums[i], nums[i]);
+			max = Math.max(dpMax, max);
+		}
+		return max;
+    }
+	
+	//验证回文字符串 Ⅱ
+	@Test
+	public void test18() {
+		System.out.println(validPalindrome("eedede"));
+	}
+	
+	public boolean validPalindrome(String s) {
+		int low = 0, high=s.length()-1;
+		while (low<high) {
+			char c1 = s.charAt(low),c2 = s.charAt(high);
+			if (c1 == c2) {
+				low++;
+				high--;
+			}else {
+                boolean flag1 = true, flag2 = true;
+                for (int i = low, j = high - 1; i < j; i++, j--) {
+                    char c3 = s.charAt(i), c4 = s.charAt(j);
+                    if (c3 != c4) {
+                        flag1 = false;
+                        break;
+                    }
+                }
+                for (int i = low + 1, j = high; i < j; i++, j--) {
+                    char c3 = s.charAt(i), c4 = s.charAt(j);
+                    if (c3 != c4) {
+                        flag2 = false;
+                        break;
+                    }
+                }
+                return flag1 || flag2;
+            }
+		}
+		return true;
+	}
 }
