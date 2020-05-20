@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.junit.Test;
 
@@ -432,5 +433,84 @@ public class LeetCode4 {
 	      return output;
 	    }
 
+	    //课程表 II
+	    @Test
+	    public void test12() {
+	    	int numCourses = 4;
+	    	int[][] prerequisites =  new int[][] {
+	    		{1,0},
+	    		{2,0},
+	    		{3,1},
+	    		{3,2}
+	    	};
+	    	int[] res = findOrder(numCourses, prerequisites);
+	    	for (int i : res) {
+				System.out.print(i+" ");
+			}
+	    }
+	    // 存储有向图
+	    Map<Integer,List<Integer>> edges=null;
+	    // 标记每个节点的状态：0=未搜索，1=搜索中，2=已完成
+	    int[] visited;
+	    Stack<Integer> result;
+	    // 判断有向图中是否有环
+	    boolean invalid;
+	    public int[] findOrder(int numCourses, int[][] prerequisites) {
+	    	 edges= new HashMap<Integer,List<Integer>>();
+	         visited= new int[numCourses];
+	         result = new Stack();
+	         
+	         Map<String,Object> keys = new HashMap<String,Object>();
+	         for (int[] info: prerequisites) {
+	        	 List<Integer> list = new ArrayList<Integer>();
+	        	 if (edges.get(info[1])!=null) {
+	        		 list = edges.get(info[1]);
+	        	 }
+	        	 list.add(info[0]);
+	        	 edges.put(info[1], list);
+	         }
+	         // 每次挑选一个「未搜索」的节点，开始进行深度优先搜索
+	         for (int i = 0; i < numCourses && !invalid; ++i) {
+	             if (visited[i]==0) {
+	                 dfs(i);
+	             }
+	         }
+	         if (invalid) {
+	             return new int[] {};
+	         }
+	         // 如果没有环，那么就有拓扑排序
+	         // 注意下标 0 为栈底，因此需要将数组反序输出
+	         int[]  rs = new int[result.size()];
+	         for (int i=0;i<rs.length;i++) {
+	        	 rs[i] = result.pop();
+	         }
+	         return rs;
+	    }
 
+		private void dfs(int u) {
+			 // 将节点标记为「搜索中」
+	        visited[u] = 1;
+	        // 搜索其相邻节点
+	        // 只要发现有环，立刻停止搜索
+	        if (edges.get(u)!=null) {
+	        	for (int v: edges.get(u)) {
+	        		// 如果「未搜索」那么搜索相邻节点
+	        		if (visited[v] == 0) {
+	        			dfs(v);
+	        			if (invalid) {
+	        				return;
+	        			}
+	        		}
+	        		// 如果「搜索中」说明找到了环
+	        		else if (visited[v] == 1) {
+	        			invalid = true;
+	        			return;
+	        		}
+	        	}
+	        }
+	        // 将节点标记为「已完成」
+	        visited[u] = 2;
+	        // 将节点入栈
+	        result.push(u);
+		}
 }
