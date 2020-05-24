@@ -611,6 +611,45 @@ public class LeetCode4 {
 			return ans;
 	    }
 
-	
+	    //猜数字游戏
+	    @Test
+	    public void test15() {
+	    	String secret = "1122";
+	    	String guess = "2211";
+	    	System.out.println(getHint(secret, guess));
+	    	
+	    }
+	    public String getHint(String secret, String guess) {
+	    	int A = 0;
+	    	int B = 0;
+	    	Map<String,Integer>  mapSecret  = new HashMap<String,Integer>();
+	    	Map<String,Integer>  mapGuess  = new HashMap<String,Integer>();
+	    	for (int i=0;i<secret.length();i++) {
+	    		if (secret.charAt(i) == guess.charAt(i)) {
+	    			A++;
+	    		} else {
+	    			Integer c = mapSecret.get(secret.charAt(i)+"");
+	    			if (c==null) {
+	    				mapSecret.put(secret.charAt(i)+"", 1);
+	    			} else {
+	    				mapSecret.put(secret.charAt(i)+"", ++c);
+	    			}
+	    			
+	    			Integer c1 = mapGuess.get(guess.charAt(i)+"");
+	    			if (c1==null) {
+	    				mapGuess.put(guess.charAt(i)+"", 1);
+	    			} else {
+	    				mapGuess.put(guess.charAt(i)+"", ++c1);
+	    			}
+	    		}
+	    	}
+	    	for (String key:mapSecret.keySet()) {
+	    		Integer c1 = mapGuess.get(key);
+    			if (c1!=null) {
+    				B += Math.min(c1, mapSecret.get(key));
+    			} 
+	    	}
+	    	return new StringBuffer().append(A+"A"+B+"B").toString();
+	    }
 	    
 }
