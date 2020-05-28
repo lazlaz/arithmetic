@@ -2,12 +2,12 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -772,6 +772,78 @@ public class LeetCode4 {
 	              preSumFreq.put(modulus, same + 1);
 	    	}
 	    	return count;
+	    }
+	    
+	    //字符串解码
+	    @Test
+	    public void test18() {
+	    	String s = "3[a2[c]]";
+	    	System.out.println(decodeString(s));
+	    }
+	    
+	    /**
+	     * 
+本题中可能出现括号嵌套的情况，比如 2[a2[bc]]，这种情况下我们可以先转化成 2[abcbc]，在转化成 abcbcabcbc。我们可以把字母、数字和括号看成是独立的 TOKEN，并用栈来维护这些 TOKEN。具体的做法是，遍历这个栈：
+如果当前的字符为数位，解析出一个数字（连续的多个数位）并进栈
+如果当前的字符为字母或者左括号，直接进栈
+如果当前的字符为右括号，开始出栈，一直到左括号出栈，出栈序列反转后拼接成一个字符串，此时取出栈顶的数字（此时栈顶一定是数字，想想为什么？），就是这个字符串应该出现的次数，我们根据这个次数和字符串构造出新的字符串并进栈
+	     * @param s
+	     * @return
+	     */
+	    int ptr;
+
+	    public String decodeString(String s) {
+	        LinkedList<String> stk = new LinkedList<String>();
+	        ptr = 0;
+
+	        while (ptr < s.length()) {
+	            char cur = s.charAt(ptr);
+	            if (Character.isDigit(cur)) {
+	                // 获取一个数字并进栈
+	                String digits = getDigits(s);
+	                stk.addLast(digits);
+	            } else if (Character.isLetter(cur) || cur == '[') {
+	                // 获取一个字母并进栈
+	                stk.addLast(String.valueOf(s.charAt(ptr++))); 
+	            } else {
+	                ++ptr;
+	                LinkedList<String> sub = new LinkedList<String>();
+	                while (!"[".equals(stk.peekLast())) {
+	                    sub.addLast(stk.removeLast());
+	                }
+	                Collections.reverse(sub);
+	                // 左括号出栈
+	                stk.removeLast();
+	                // 此时栈顶为当前 sub 对应的字符串应该出现的次数
+	                int repTime = Integer.parseInt(stk.removeLast());
+	                StringBuffer t = new StringBuffer();
+	                String o = getString(sub);
+	                // 构造字符串
+	                while (repTime-- > 0) {
+	                    t.append(o);
+	                }
+	                // 将构造好的字符串入栈
+	                stk.addLast(t.toString());
+	            }
+	        }
+
+	        return getString(stk);
+	    }
+
+	    public String getDigits(String s) {
+	        StringBuffer ret = new StringBuffer();
+	        while (Character.isDigit(s.charAt(ptr))) {
+	            ret.append(s.charAt(ptr++));
+	        }
+	        return ret.toString();
+	    }
+
+	    public String getString(LinkedList<String> v) {
+	        StringBuffer ret = new StringBuffer();
+	        for (String s : v) {
+	            ret.append(s);
+	        }
+	        return ret.toString();
 	    }
 
 }
