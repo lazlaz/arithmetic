@@ -748,5 +748,30 @@ public class LeetCode4 {
 	            return res;
 	        }
 	    }
+	    
+	    //和可被 K 整除的子数组
+	    @Test
+	    public void test17() {
+	    	int[] A = new int[] {4,-5,0,-2,-3,1};
+	    	System.out.println(subarraysDivByK(A, 5));
+	    }
+	    public int subarraysDivByK(int[] A, int K) {
+	    	// key：前缀和，value：key 对应的前缀和的个数
+	    	Map<Integer, Integer> preSumFreq = new HashMap<>();
+	    	// 对于下标为 0 的元素，前缀和为 0，个数为 1
+	    	preSumFreq.put(0, 1);
+	    	
+	    	int preSum = 0;
+	    	int count = 0;
+	    	for (int num : A) {
+	    		  preSum += num;
+	    		 // 注意 Java 取模的特殊性，当被除数为负数时取模结果为负数，需要纠正
+	    		  int modulus = (preSum % K + K) % K;
+	              int same = preSumFreq.getOrDefault(modulus, 0);
+	              count += same;
+	              preSumFreq.put(modulus, same + 1);
+	    	}
+	    	return count;
+	    }
 
 }
