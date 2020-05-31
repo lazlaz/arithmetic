@@ -845,5 +845,16 @@ public class LeetCode4 {
 	        }
 	        return ret.toString();
 	    }
-
+	    
+	    //4的幂
+	    @Test
+	    public void test19() {
+	    	System.out.println(isPowerOfFour(16));
+	    }
+	    //不適用递归或者循环
+	    public boolean isPowerOfFour(int num) {
+	    	 //公式：x > 0 and x & (x - 1) == 0 满足x 是否为 2 的幂
+	    	//x%3=1 (2#2kmod3)=(4#k mod3)=((3+1)#kmod3)=1
+	    	 return (num > 0) && ((num & (num - 1)) == 0) && (num % 3 == 1);
+	    }
 }

@@ -128,8 +128,6 @@ public class LetCodeTreeLearn {
 
 	}
 
-	
-
 	public List<List<Integer>> levelOrder(TreeNode root) {
 		List<List<Integer>> levels = new ArrayList<List<Integer>>();
 		if (root == null)
@@ -152,30 +150,45 @@ public class LetCodeTreeLearn {
 		}
 		return levels;
 	}
-
+	//利用迭代
 	public boolean isSymmetric(TreeNode root) {
-		List<TreeNode> list = new ArrayList<>();
-		inorderTraversal2(root, list);
-
-		if (list.size() > 0) {
-			int mid = list.size() / 2;
-			if (list.get(mid) == root) {
-				return true;
+		return check(root, root);
+	}
+	
+	public boolean check(TreeNode u, TreeNode v) {
+		Queue<TreeNode> q = new LinkedList<TreeNode>();
+		q.offer(u);
+		q.offer(v);
+		
+		while(!q.isEmpty()) {
+			u = q.poll();
+			v = q.poll();
+			if (u == null && v == null) {
+				continue;
 			}
-			return false;
+			if ((u == null || v == null) || (u.val != v.val)) {
+				return false;
+			}
+			q.offer(u.left);
+			q.offer(v.right);
+			
+			q.offer(u.right);
+	        q.offer(v.left);
 		}
-
 		return true;
 	}
+	
 
-	private void inorderTraversal2(TreeNode treeNode, List<TreeNode> list) {
-		if (treeNode == null) {
-			return;
-		}
-		inorderTraversal2(treeNode.left, list);
-		list.add(treeNode);
-		inorderTraversal2(treeNode.right, list);
+	public boolean isSymmetric2(TreeNode root) {
+		return isMirror(root, root);
+	}
 
+	public boolean isMirror(TreeNode t1, TreeNode t2) {
+		if (t1 == null && t2 == null)
+			return true;
+		if (t1 == null || t2 == null)
+			return false;
+		return (t1.val == t2.val) && isMirror(t1.right, t2.left) && isMirror(t1.left, t2.right);
 	}
 
 	public boolean isValidBST(TreeNode root) {
