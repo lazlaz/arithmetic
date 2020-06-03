@@ -857,4 +857,27 @@ public class LeetCode4 {
 	    	//x%3=1 (2#2kmod3)=(4#k mod3)=((3+1)#kmod3)=1
 	    	 return (num > 0) && ((num & (num - 1)) == 0) && (num % 3 == 1);
 	    }
+	  //新21点
+	    @Test
+	    public void test20() {
+	    	System.out.println(new21Game(21,17,10));
+	    }
+	   
+	    //动态规划，思路参考https://leetcode-cn.com/problems/new-21-game/solution/huan-you-bi-zhe-geng-jian-dan-de-ti-jie-ma-tian-ge/
+	    public double new21Game(int N, int K, int W) {
+	    	double[] dp = new double[K+W];
+	    	double s = 0;
+	    	for (int i=K; i<K+W;i++) {
+	    		dp[i] = 1;
+	    		if (i>N) {
+	    			dp[i] = 0;
+	    		} 
+	    		s+=dp[i];
+	    	}
+	    	for (int i=K-1;i>=0;i--) {
+	    		dp[i] = s/W;
+	    		s = s-dp[i+W]+dp[i];
+	    	}
+	    	return dp[0];
+	    }
 }
