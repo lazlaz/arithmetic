@@ -6,8 +6,8 @@ package com.laz.arithmetic;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+	public static void main(String[] args) {
+		int a=0,b=0,c=0;
+		System.out.printf("%d %d %n",a,b,c);
+	}
 }
