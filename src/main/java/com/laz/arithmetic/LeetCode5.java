@@ -64,4 +64,52 @@ public class LeetCode5 {
 	        }
 	        return answer; 
 	 }
+	 
+	 @Test
+	 //顺时针打印矩阵
+	 public void test3() {
+		 int[][] matrix = new int[][] {
+			 {3},
+			 {2},
+			 {1}
+		 };
+		 int[] res  = spiralOrder(matrix);
+		 for (int i : res) {
+			 System.out.print(i+" ");
+		}
+	 }
+	 public int[] spiralOrder(int[][] matrix) {
+		 if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+	            return new int[0];
+	     }
+		int rows = matrix.length, columns = matrix[0].length;
+        int[] order = new int[rows * columns];
+        int index = 0;
+        int left = 0, right = columns - 1, top = 0, bottom = rows - 1;
+        while (left <= right && top <= bottom) {
+        	//遍历上方
+            for (int column = left; column <= right; column++) {
+                order[index++] = matrix[top][column];
+            }
+            //遍历右方
+            for (int row = top + 1; row <= bottom; row++) {
+                order[index++] = matrix[row][right];
+            }
+            if (left < right && top < bottom) {
+            	//遍历下方
+                for (int column = right - 1; column > left; column--) {
+                    order[index++] = matrix[bottom][column];
+                }
+            	//遍历左方
+                for (int row = bottom; row > top; row--) {
+                    order[index++] = matrix[row][left];
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return order;
+	 }
 }
