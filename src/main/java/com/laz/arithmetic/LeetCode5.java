@@ -1,7 +1,10 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import org.junit.Test;
 
@@ -111,5 +114,91 @@ public class LeetCode5 {
             bottom--;
         }
         return order;
+	 }
+	 
+	 @Test
+	 //反转字符串中的元音字母
+	 public void test4() {
+		 System.out.println(reverseVowels("hello"));
+	 }
+	 
+	 public String reverseVowels(String s) {
+		String letter= "aeiouAEIOU";
+		char[] res=new char[s.length()];
+		LinkedList<Character> tmp=new LinkedList<Character>();
+		int i=0;
+		for (char c : s.toCharArray()) {
+			 res[i++]  = c;
+	         if (letter.indexOf(c) != -1) {
+	        	 tmp.push(c);
+	         }
+		}
+		for (int j=0;j<res.length;j++) {
+			if (letter.indexOf(res[j]) != -1) {
+				res[j]=tmp.pop();
+			}
+		}
+		return new String().valueOf(res);
+
+	 }
+	 public String reverseVowels2(String s) {
+		 String strs = "aeiouAEIOU";
+		 LinkedList<Character> stack = new LinkedList<Character>();
+		 for (char c :s.toCharArray()) {
+			 if (strs.indexOf(c)!=-1) {
+				 stack.push(c);
+			 }
+		 }
+		 StringBuffer sb = new StringBuffer();
+		 for (int i=0;i<s.toCharArray().length;i++) {
+			 char c1 = s.charAt(i);
+			 if (strs.indexOf(c1)!=-1) {
+				 sb.append(stack.poll()); 
+			 }else {
+				 sb.append(c1);
+			 }
+		 }
+		 return sb.toString();
+	  }
+	 
+	 @Test
+	 // 两个数组的交集
+	 public void test5() {
+		 int[] num1 = new int[] {1,2,2,1};
+		 int[] num2 = new int[] {2,2};
+		 int[] res = intersection(num1, num2);
+		 for (int i : res) {
+			System.out.println(i);
+		}
+	 }
+	 
+	 public int[] intersection(int[] nums1, int[] nums2) {
+		 Arrays.parallelSort(nums1);
+		 Arrays.parallelSort(nums2);
+		 int[] res = null;
+		 int[] res2 = null;
+		 if (nums1.length<nums2.length) {
+			 res  = nums1;
+			 res2 = nums2;
+		 } else {
+			 res  = nums2;
+			 res2 = nums1;
+		 }
+		 List<Integer> list = new ArrayList<Integer>();
+		 for (int i=0;i<res.length;i++) {
+			 if (list.contains(res[i])) {
+				 continue;
+			 }
+			 for (int j=0;j<res2.length;j++) {
+				 if (res2[j]==res[i]) {
+					 list.add(res[i]);
+					 break;
+				 }
+				 if (res2[j]>res[i]) {
+					 break;
+				 }
+			 }
+		 }
+		 return list.stream().mapToInt(Integer::valueOf).toArray();
 	 }
 }
