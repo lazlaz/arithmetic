@@ -2,8 +2,10 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.junit.Test;
@@ -244,5 +246,160 @@ public class LeetCode5 {
 			index = parent[index];
 		}
 		return index;
+	}
+	
+	static Map<Integer, String> numsMap = new HashMap<Integer, String>();
+	static {
+		numsMap.put(0, "零");
+		numsMap.put(1, "一");
+		numsMap.put(2, "二");
+		numsMap.put(3, "三");
+		numsMap.put(4, "四");
+		numsMap.put(5, "五");
+		numsMap.put(6, "六");
+		numsMap.put(7, "七");
+		numsMap.put(8, "八");
+		numsMap.put(9, "九");
+	}
+
+	@Test
+	//读数 将数字1111转为为中文数字
+	public void test7() {
+		// 最大支持2147483647
+		String str = "44";
+		System.out.println(convert(str));
+	}
+
+	// 本函数来自 自己做letcode 字符串转换整数 (atoi)答案，只支持32位整数内转换
+	public int strToInt(String str) {
+		char[] chars = str.toCharArray();
+		StringBuffer sb = new StringBuffer();
+		boolean falg = true;
+		boolean cut = false;
+		boolean pOrm = false;
+		int count = 0;
+		boolean zero = false;
+		boolean findChar = false;
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] != 32) {
+				falg = false;
+			}
+			if (!falg) {
+				if (!findChar && sb.length() == 0 && chars[i] == 45) {
+					count++;
+					pOrm = true;
+				} else if (!findChar && sb.length() == 0 && chars[i] == 43) {
+					count++;
+					pOrm = false;
+				} else {
+					if (count == 2) {
+						return 0;
+					}
+					findChar = true;
+					if (!zero && chars[i] == 48) {
+						continue;
+					}
+					zero = true;
+					if (48 <= chars[i] && chars[i] <= 57) {
+						sb.append(chars[i]);
+					} else {
+						cut = true;
+					}
+				}
+			}
+
+			if (cut) {
+				break;
+			}
+		}
+		if (sb.length() == 0) {
+			return 0;
+		}
+		if (sb.toString().length() > 10) {
+			return pOrm ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		}
+		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb
+				.toString());
+		if (value > Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		}
+		if (value < Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		}
+		return (int) value;
+	}
+
+	public String convert(String str) {
+		int value = strToInt(str);
+		StringBuffer sb = new StringBuffer();
+		int count = 1;
+		int lastV = 0; // 判断是否持续为0
+		boolean falg = false;
+		while (value / 10 != 0) {
+			int v = value % 10;
+			// 万到千万连续为0，不插入单位
+			if (count == 5 || count == 6 || count == 7 || count == 8) {
+				if (v != 0) {
+					falg = true;
+				}
+			}
+			if (v != 0 || count % 4 == 1) {
+				sb.insert(0, getUnit(count));
+			}
+			if (!(lastV == 0 && v == 0)) {
+				sb.insert(0, getChinese(v));
+			}
+			lastV = v;
+			count++;
+			value = value / 10;
+		}
+		// 万到千万连续为0，不插入单位
+		if (count == 5 || count == 6 || count == 7 || count == 8) {
+			if (value != 0) {
+				falg = true;
+			}
+		}
+		sb.insert(0, getUnit(count));
+		sb.insert(0, getChinese(value));
+		String res = sb.toString();
+		// 如果万到千万数字全为0，移除万
+		if (!falg) {
+			res = res.replace("万", "");
+		}
+		return res;
+	}
+
+	private String getUnit(int count) {
+		String unit = "";
+
+		if (count == 5) {
+			unit = "万";
+		}
+		if (count == 9) {
+			unit = "亿";
+		}
+		if (count == 8) {
+			unit = "千";
+		}
+		if (count == 7) {
+			unit = "百";
+		}
+		if (count == 6) {
+			unit = "十";
+		}
+		if (count == 2) {
+			unit = "十";
+		}
+		if (count == 3) {
+			unit = "百";
+		}
+		if (count == 4) {
+			unit = "千";
+		}
+		return unit;
+	}
+
+	public String getChinese(int v) {
+		return numsMap.get(v);
 	}
 }
