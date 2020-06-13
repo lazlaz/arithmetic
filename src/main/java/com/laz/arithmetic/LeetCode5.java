@@ -266,7 +266,7 @@ public class LeetCode5 {
 	//读数 将数字1111转为为中文数字
 	public void test7() {
 		// 最大支持2147483647
-		String str = "44";
+		String str = "100";
 		System.out.println(convert(str));
 	}
 
