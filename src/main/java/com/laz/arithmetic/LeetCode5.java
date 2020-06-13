@@ -217,7 +217,7 @@ public class LeetCode5 {
 		for (int i = 0; i < 26; i++) {
 			parent[i] = i;
 		}
-		//根据=构造连通分量
+		// 根据=构造连通分量
 		for (String str : equations) {
 			if (str.charAt(1) == '=') {
 				int index1 = str.charAt(0) - 'a';
@@ -249,7 +249,7 @@ public class LeetCode5 {
 		}
 		return index;
 	}
-	
+
 	static Map<Integer, String> numsMap = new HashMap<Integer, String>();
 	static {
 		numsMap.put(0, "零");
@@ -265,13 +265,13 @@ public class LeetCode5 {
 	}
 
 	@Test
-	//读数 将数字1111转为为中文数字
+	// 读数 将数字1111转为为中文数字
 	public void test7() {
 		// 最大支持2147483647
 		String str = "1001010";
-		for (Integer k:testmap.keySet()) {
-			System.out.println(k+":"+convert(k+""));
-			TestCase.assertEquals(testmap.get(k),convert(k+""));
+		for (Integer k : testmap.keySet()) {
+			System.out.println(k + ":" + convert(k + ""));
+			TestCase.assertEquals(testmap.get(k), convert(k + ""));
 		}
 	}
 
@@ -323,8 +323,7 @@ public class LeetCode5 {
 		if (sb.toString().length() > 10) {
 			return pOrm ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		}
-		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb
-				.toString());
+		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb.toString());
 		if (value > Integer.MAX_VALUE) {
 			return Integer.MAX_VALUE;
 		}
@@ -351,7 +350,7 @@ public class LeetCode5 {
 			if (v != 0 || count % 4 == 1) {
 				sb.insert(0, getUnit(count));
 			}
-			if (!(lastV == 0 && v == 0)  && !(count>=5&&count%4==1)) {
+			if (!(lastV == 0 && v == 0) && !(count >= 5 && count % 4 == 1)) {
 				sb.insert(0, getChinese(v));
 			}
 			lastV = v;
@@ -407,82 +406,106 @@ public class LeetCode5 {
 	public String getChinese(int v) {
 		return numsMap.get(v);
 	}
-	
-	static Map<Integer,String> testmap = new HashMap<Integer,String>(); 
+
+	static Map<Integer, String> testmap = new HashMap<Integer, String>();
 	{
-		testmap.put(0,"零");
-		testmap.put(1,"一");
-		testmap.put(2,"二");
-		testmap.put(3,"三" );
-		testmap.put(4,"四" );
-		testmap.put(1020,"一千零二十" );
-		testmap.put(100000000,"一亿" );
-		testmap.put(1001001,"一百万一千零一" );
-		testmap.put(20001007,"二千万一千零七");
-		testmap.put(10000000,"一千万");
-		testmap.put(1015,"一千零一十五");
+		testmap.put(0, "零");
+		testmap.put(1, "一");
+		testmap.put(2, "二");
+		testmap.put(3, "三");
+		testmap.put(4, "四");
+		testmap.put(1020, "一千零二十");
+		testmap.put(100000000, "一亿");
+		testmap.put(1001001, "一百万一千零一");
+		testmap.put(20001007, "二千万一千零七");
+		testmap.put(10000000, "一千万");
+		testmap.put(1015, "一千零一十五");
 	}
+
 	@Test
-	//读数 将数字1111转为为中文数字 参考网上解法 参考：https://blog.csdn.net/sleepingboy888/article/details/95160730
+	// 读数 将数字1111转为为中文数字 参考网上解法
+	// 参考：https://blog.csdn.net/sleepingboy888/article/details/95160730
 	public void test8() {
-		for (Integer k:testmap.keySet()) {
-			System.out.println(k+":"+numberToChinese(k));
+		for (Integer k : testmap.keySet()) {
+			System.out.println(k + ":" + numberToChinese(k));
 			TestCase.assertEquals(numberToChinese(k), testmap.get(k));
 		}
 	}
-	
-	public String numberToChinese(int num)
-	 {
-	     String result = "";
-	     if (num == 0)
-	     {
-	         return "零";
-	     }
-	     int _num = num;
-	     String[] chn_str = new String[] { "零","一", "二", "三", "四", "五", "六", "七", "八", "九" };
-	     String[] section_value = new String[] { "","万","亿","万亿"};
-	     String[] unit_value = new String[] { "", "十", "百", "千" };
-	     int section = _num % 10000;
-	     for (int i = 0; _num != 0 && i < 4; i++)
-	     {
-	         if (section == 0)
-	         {
-	             //0不需要考虑节权值，不能出现连续的“零”
-	             if (result.length() > 0 && !result.substring(0, 1).equals("零"))
-	             {
-	                 result = "零" + result;
-	             }
-	             _num = _num / 10000;
-	             section = _num % 10000;
-	             continue;
-	         }
-	         result = section_value[i]+result;
-	         int unit = section % 10;
-	         for (int j = 0; j<4 ; j++)
-	         {
-	             if (unit == 0)
-	             {
-	                 //0不需要考虑位权值，不能出现联系的“零”，每节最后的0不需要
-	                 if (result.length() > 0 && !result.substring(0, 1).equals("零") && !result.substring(0, 1).equals(section_value[i]))
-	                 {
-	                     result = "零" + result;
-	                 }
-	             }
-	             else
-	             {
-	                 result = chn_str[unit] + unit_value[j] + result;
-	             }
-	             section = section / 10;
-	             unit = section % 10;
-	         }
-	         _num = _num / 10000;
-	         section = _num % 10000;
-	     }
-	     if (result.length() > 0 && result.substring(0, 1).equals("零"))
-	     {
-	         //清理最前面的"零"
-	         result = result.substring(1);
-	     }
-	     return result;
-	 }
+
+	public String numberToChinese(int num) {
+		String result = "";
+		if (num == 0) {
+			return "零";
+		}
+		int _num = num;
+		String[] chn_str = new String[] { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+		String[] section_value = new String[] { "", "万", "亿", "万亿" };
+		String[] unit_value = new String[] { "", "十", "百", "千" };
+		int section = _num % 10000;
+		for (int i = 0; _num != 0 && i < 4; i++) {
+			if (section == 0) {
+				// 0不需要考虑节权值，不能出现连续的“零”
+				if (result.length() > 0 && !result.substring(0, 1).equals("零")) {
+					result = "零" + result;
+				}
+				_num = _num / 10000;
+				section = _num % 10000;
+				continue;
+			}
+			result = section_value[i] + result;
+			int unit = section % 10;
+			for (int j = 0; j < 4; j++) {
+				if (unit == 0) {
+					// 0不需要考虑位权值，不能出现联系的“零”，每节最后的0不需要
+					if (result.length() > 0 && !result.substring(0, 1).equals("零")
+							&& !result.substring(0, 1).equals(section_value[i])) {
+						result = "零" + result;
+					}
+				} else {
+					result = chn_str[unit] + unit_value[j] + result;
+				}
+				section = section / 10;
+				unit = section % 10;
+			}
+			_num = _num / 10000;
+			section = _num % 10000;
+		}
+		if (result.length() > 0 && result.substring(0, 1).equals("零")) {
+			// 清理最前面的"零"
+			result = result.substring(1);
+		}
+		return result;
+	}
+
+	@Test
+	// 有效的完全平方数
+	public void test9() {
+		int num = 2147395600;
+		System.out.println(isPerfectSquare(num));
+	}
+
+	public boolean isPerfectSquare2(int num) {
+		int max = (int) Math.sqrt(Integer.MAX_VALUE) + 1;
+		for (int i = 1; i < max; i++) {
+			if (i * i == num) {
+				System.out.println(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * 1 4=1+3 9=1+3+5 16=1+3+5+7以此类推，模仿它可以使用一个while循环，不断减去一个从1开始不断增大的奇数，
+	 * 若最终减成了0，说明是完全平方数，否则，不是
+	 */
+	public boolean isPerfectSquare(int num) {
+		int num1 = 1;
+		while (num > 0) {
+			num -= num1;
+			num1 += 2;
+		}
+		return num == 0;
+	}
+
 }
