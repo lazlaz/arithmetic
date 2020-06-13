@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.junit.Test;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 public class LeetCode5 {
 	// 拥有最多糖果的孩子
@@ -266,8 +268,11 @@ public class LeetCode5 {
 	//读数 将数字1111转为为中文数字
 	public void test7() {
 		// 最大支持2147483647
-		String str = "100";
-		System.out.println(convert(str));
+		String str = "1001010";
+		for (Integer k:testmap.keySet()) {
+			System.out.println(k+":"+convert(k+""));
+			TestCase.assertEquals(testmap.get(k),convert(k+""));
+		}
 	}
 
 	// 本函数来自 自己做letcode 字符串转换整数 (atoi)答案，只支持32位整数内转换
@@ -346,7 +351,7 @@ public class LeetCode5 {
 			if (v != 0 || count % 4 == 1) {
 				sb.insert(0, getUnit(count));
 			}
-			if (!(lastV == 0 && v == 0)) {
+			if (!(lastV == 0 && v == 0)  && !(count>=5&&count%4==1)) {
 				sb.insert(0, getChinese(v));
 			}
 			lastV = v;
@@ -402,4 +407,82 @@ public class LeetCode5 {
 	public String getChinese(int v) {
 		return numsMap.get(v);
 	}
+	
+	static Map<Integer,String> testmap = new HashMap<Integer,String>(); 
+	{
+		testmap.put(0,"零");
+		testmap.put(1,"一");
+		testmap.put(2,"二");
+		testmap.put(3,"三" );
+		testmap.put(4,"四" );
+		testmap.put(1020,"一千零二十" );
+		testmap.put(100000000,"一亿" );
+		testmap.put(1001001,"一百万一千零一" );
+		testmap.put(20001007,"二千万一千零七");
+		testmap.put(10000000,"一千万");
+		testmap.put(1015,"一千零一十五");
+	}
+	@Test
+	//读数 将数字1111转为为中文数字 参考网上解法 参考：https://blog.csdn.net/sleepingboy888/article/details/95160730
+	public void test8() {
+		for (Integer k:testmap.keySet()) {
+			System.out.println(k+":"+numberToChinese(k));
+			TestCase.assertEquals(numberToChinese(k), testmap.get(k));
+		}
+	}
+	
+	public String numberToChinese(int num)
+	 {
+	     String result = "";
+	     if (num == 0)
+	     {
+	         return "零";
+	     }
+	     int _num = num;
+	     String[] chn_str = new String[] { "零","一", "二", "三", "四", "五", "六", "七", "八", "九" };
+	     String[] section_value = new String[] { "","万","亿","万亿"};
+	     String[] unit_value = new String[] { "", "十", "百", "千" };
+	     int section = _num % 10000;
+	     for (int i = 0; _num != 0 && i < 4; i++)
+	     {
+	         if (section == 0)
+	         {
+	             //0不需要考虑节权值，不能出现连续的“零”
+	             if (result.length() > 0 && !result.substring(0, 1).equals("零"))
+	             {
+	                 result = "零" + result;
+	             }
+	             _num = _num / 10000;
+	             section = _num % 10000;
+	             continue;
+	         }
+	         result = section_value[i]+result;
+	         int unit = section % 10;
+	         for (int j = 0; j<4 ; j++)
+	         {
+	             if (unit == 0)
+	             {
+	                 //0不需要考虑位权值，不能出现联系的“零”，每节最后的0不需要
+	                 if (result.length() > 0 && !result.substring(0, 1).equals("零") && !result.substring(0, 1).equals(section_value[i]))
+	                 {
+	                     result = "零" + result;
+	                 }
+	             }
+	             else
+	             {
+	                 result = chn_str[unit] + unit_value[j] + result;
+	             }
+	             section = section / 10;
+	             unit = section % 10;
+	         }
+	         _num = _num / 10000;
+	         section = _num % 10000;
+	     }
+	     if (result.length() > 0 && result.substring(0, 1).equals("零"))
+	     {
+	         //清理最前面的"零"
+	         result = result.substring(1);
+	     }
+	     return result;
+	 }
 }
