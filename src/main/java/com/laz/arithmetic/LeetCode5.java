@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class LeetCode5 {
@@ -506,6 +505,50 @@ public class LeetCode5 {
 			num1 += 2;
 		}
 		return num == 0;
+	}
+	
+	@Test
+	// 两数相加
+	public void test10() {
+		ListNode l1 = Utils.createListNode(new Integer[] {5});
+		ListNode l2 = Utils.createListNode(new Integer[] {5,9});
+		ListNode l = addTwoNumbers(l1, l2);
+		Utils.printListNode(l);
+	}
+	
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+		ListNode l = new ListNode(-1);
+		ListNode head = l1;
+		l.next = head;
+		int cb= 0;//进位
+		while(l1!=null) {
+			int a = l1.val;
+			int b = l2==null?0:l2.val;
+			int v = (a+b+cb)%10;
+			cb=(a+b+cb)/10;
+			l1 = l1.next;
+			l2 = l2==null?null:l2.next;
+			ListNode node = new ListNode(v);
+			head.next = node;
+			head=node;
+		}
+		if (l2!=null) {
+			head.next = l2;
+			while(l2!=null) {
+				int a = l2.val;
+				int v = (a+cb)%10;
+				cb=(a+cb)/10;
+				l2 = l2.next;
+				ListNode node = new ListNode(v);
+				head.next = node;
+				head=node;
+			}
+		}
+		if (cb == 1) {
+			ListNode node = new ListNode(cb);
+			head.next = node;
+		}
+		return l.next.next;
 	}
 
 }

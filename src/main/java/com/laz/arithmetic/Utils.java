@@ -25,4 +25,11 @@ public class Utils {
 		}
 		return root;
 	}
+	
+	public static void printListNode(ListNode node) {
+		while(node!=null) {
+			System.out.print(node.val+"->");
+			node = node.next;
+		}
+	}
 }
