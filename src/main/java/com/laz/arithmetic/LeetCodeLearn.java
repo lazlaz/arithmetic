@@ -150,9 +150,29 @@ public class LeetCodeLearn {
 	// 最长公共前缀
 	@Test
 	public void test7() {
-		System.out.println(longestCommonPrefix(new String[] { "aca", "cba" }));
+		System.out.println(longestCommonPrefix2(new String[] { "ac", "cba" }));
 	}
 
+	public String longestCommonPrefix2(String[] strs) {
+		if (strs== null || strs.length<=0) {
+			return "";
+		}
+		String ans =strs[0];
+		for (int i=1;i<strs.length;i++) {
+			int j=0;
+			for (;j<ans.length()&&j<strs[i].length();j++) {
+				if (ans.charAt(j) != strs[i].charAt(j)) {
+					break;
+				}
+			}
+			ans = ans.substring(0,j);
+			if (ans.equals("")) {
+				return "";
+			}
+		}
+		return ans;
+	}
+	
 	// 删除链表中的节点
 	@Test
 	public void test8() {

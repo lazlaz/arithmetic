@@ -3,9 +3,11 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -550,5 +552,139 @@ public class LeetCode5 {
 		}
 		return l.next.next;
 	}
+	
+	@Test
+	// 转变数组后最接近目标值的数组和
+	public void test11() {
+		int [] arr = new int[] {1,3,5};
+		System.out.println(findBestValue(arr,55));
+	}
+	
+	 public int findBestValue(int[] arr, int target) {
+		 Arrays.sort(arr);
+		 int n = arr.length;
+		 int[]  prefix = new int[n+1];
+		 for (int i=1;i<=n;i++) {
+			 prefix[i]  = prefix[i-1]+arr[i-1];
+		 }
+		 int l = 0, r = arr[n-1], ans = -1;
+		 while(l<=r) {
+			 int mid = (l+r)/2;
+			 int index = Arrays.binarySearch(arr, mid);
+			 if (index<0) {
+				 index = -index-1;
+			 }
+			 int cur = prefix[index]+(n-index)*mid;
+			 if (cur <= target) {
+				 ans = mid;
+				 l = mid+1;
+			 } else {
+				 r = mid-1;
+			 }
+		 }
+		 int small = check(arr,ans);
+		 int big = check(arr,ans+1);
+		 return Math.abs(small-target)<=Math.abs(big-target)?ans:ans+1;
+	 }
+	 public int check(int[] arr, int x) {
+	        int ret = 0;
+	        for (int num : arr) {
+	            ret += Math.min(num, x);
+	        }
+	        return ret;
+	 }
+	 
+	 @Test
+	 //无重复字符的最长子串
+	 public void test12() {
+		 System.out.println(lengthOfLongestSubstring("dvdf"));
+	 }
+	 public int lengthOfLongestSubstring(String s) {
+		Set<Character> occ = new HashSet<Character>();
+		int n = s.length();
+		int rk = -1,ans = 0;
+		for (int i=0;i<n;i++) {
+			if (i>0) {
+				occ.remove(s.charAt(i-1));
+			}
+			while (rk+1<n && !occ.contains(s.charAt(rk+1))) {
+				occ.add(s.charAt(rk+1));
+				rk++;
+			}
+			ans = Math.max(ans, rk-i+1);
+		}
+		return ans;
+		
+	 }
 
+	 public int lengthOfLongestSubstring2(String s) {
+		 if (s==null || s.length()<=0) {
+			 return 0;
+		 }
+		 int res = 1;
+		 List<String> list = new LinkedList<String>();
+		 for (int i=0;i<s.length();i++) {
+			 if (list.contains(s.charAt(i)+"")) {
+				 res = res>list.size()?res:list.size();
+				 int index = list.indexOf(s.charAt(i)+"");
+				 list = list.subList(index+1, list.size());
+			 } 
+			 list.add(s.charAt(i)+"");
+			 
+		 }
+		 res = res>list.size()?res:list.size();
+		 return res;
+	 }
+	 
+	 @Test
+	 //寻找两个正序数组的中位数
+	 public void test13() {
+		 int[] nums1=new int[] {10000};
+		 int[] nums2 = new int[] {10001};
+		 System.out.println(findMedianSortedArrays(nums1,nums2));
+	 }
+	 public double getMedian(int length,int[] nums2) {
+		 if (length%2==0) {
+			  return (nums2[length/2-1]+nums2[length/2])/2.0d;
+		  } else {
+			  return nums2[length/2];  
+		  }
+	 }
+	  public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+		  if (nums1==null || nums1.length<=0) {
+			 return getMedian(nums2.length,nums2);
+		  }
+		  if (nums2==null || nums2.length<=0) {
+			  return getMedian(nums1.length,nums1);
+		  }
+		  int i=0,j=0;
+		  int length = nums1.length+nums2.length;
+		  int count = 0;
+		  int[] newArr = new int[length];
+		  while (i<nums1.length||j<nums2.length) {
+			  if (i<nums1.length&&j<nums2.length) {
+				  if (nums1[i]>=nums2[j]) {
+					  newArr[count]=nums2[j];
+					  j++;
+				  } else {
+					  newArr[count]=nums1[i];
+					  i++;
+				  }
+			  } else {
+				  if (i>=nums1.length && j<nums2.length) {
+					  newArr[count]=nums2[j];
+					  j++;
+				  }
+				  if (j>=nums2.length && i<nums1.length) {
+					  newArr[count]=nums1[i];
+					  i++;
+				  }
+			  }
+			  if (count==length/2) {
+				  return getMedian(newArr.length,newArr);
+			  } 
+			  count++;
+		  }
+		  return 0;
+	  }
 }
