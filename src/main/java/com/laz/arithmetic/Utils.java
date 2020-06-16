@@ -1,18 +1,43 @@
 package com.laz.arithmetic;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class Utils {
 	public  static TreeNode  createTree(Integer[] arr,int i) {
-		TreeNode root = null; // 定义根节点
-		if (i >= arr.length) // i >= arr.length 时,表示已经到达了根节点
-			return null;
-		if (arr[i]==null) {
-			return null;
-		}
-		root = new TreeNode(arr[i]); // 根节点
-		root.left = createTree(arr, 2*i+1); // 递归建立左孩子结点
-		root.right = createTree(arr, 2*i+2); // 递归建立右孩子结点
-		return root;
+		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));
+		 if (q.peek()==null) {
+			 return null;
+        }
+		return rdeserialize(q);
 	}
+	 private static TreeNode rdeserialize(Queue<Integer> q) {
+		   if (q.peek()==null) {
+			    q.poll();
+			    return null;
+	        }
+		   TreeNode root = new TreeNode(q.poll());
+		   Queue<TreeNode> qTree=new LinkedList<TreeNode>();
+		   TreeNode node = root;
+		    while (!q.isEmpty()) {
+		    	if (q.peek()!=null) {
+		    		node.left = new TreeNode(q.poll());
+		    		qTree.offer(node.left);
+		    	} else {
+		    		q.poll();
+		    	}
+		    	if (q.peek()!=null) {
+		    		node.right = new TreeNode(q.poll());
+		    		qTree.offer(node.right);
+		    	} else {
+		    		q.poll();
+		    	}
+		    	node = qTree.poll();
+		    }
+		    return root;
+	      
+	  }
 	
 	public static ListNode createListNode(Integer[] arr) {
 		ListNode root = null;
