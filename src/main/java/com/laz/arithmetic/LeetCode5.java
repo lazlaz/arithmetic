@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 import junit.framework.TestCase;
 
 public class LeetCode5 {
@@ -778,4 +780,90 @@ public class LeetCode5 {
 
 		}
 	}
+	
+	@Test
+	//最佳观光组合
+	public void test15() {
+		int[] A = new int[] {8,1,5,2,6};
+		System.out.println(maxScoreSightseeingPair(A));
+	}
+	public int maxScoreSightseeingPair(int[] A) {
+		if (A==null||A.length<=0) {
+			return 0;
+		}
+		int mx = A[0];
+		int ans = 0;
+		for (int j=1;j<A.length;j++) {
+			if (ans<mx+A[j]-j) {
+				ans = mx+A[j]-j;
+			}
+			if (mx<A[j]+j) {
+				mx = A[j]+j;
+			}
+		}
+		return ans;
+    }
+	
+	// Z 字形变换
+	@Test
+	public void test16() {
+		String s= "LEETCODEISHIRING";
+		int numRows = 4;
+		System.out.println(convert2(s,numRows));
+	}
+	public String convert2(String s,int numRows) {
+		if (numRows == 1) return s;
+
+        List<StringBuilder> rows = new ArrayList<>();
+        for (int i = 0; i < Math.min(numRows, s.length()); i++)
+            rows.add(new StringBuilder());
+
+        int curRow = 0;
+        boolean goingDown = false;
+
+        for (char c : s.toCharArray()) {
+            rows.get(curRow).append(c);
+            if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
+            curRow += goingDown ? 1 : -1;
+        }
+
+        StringBuilder ret = new StringBuilder();
+        for (StringBuilder row : rows) ret.append(row);
+        return ret.toString();
+	}
+	public String convert(String s, int numRows) {
+		if (s==null||numRows<=1) {
+			return s;
+		}
+		List<List<String>> arr = new ArrayList<List<String>>();
+		int index = 0;
+		int col = 0;
+		while (index<s.length()) {
+			List<String> cols = new ArrayList<String>();
+			for (int row=0;row<numRows;row++) {
+				if (index<s.length()) {
+					if (col%(numRows-1)==0) {
+						cols.add(s.charAt(index++)+"");
+					}else if (row==(numRows-1-col%(numRows-1))) {
+						cols.add(s.charAt(index++)+"");
+					} else {
+						cols.add("");
+					}
+				}
+			}
+			col++;
+			arr.add(cols);
+		}
+		StringBuffer sb = new StringBuffer();
+		for (int c=0;c<numRows;c++) {
+			for (List<String> l : arr) {
+				if (l.size()>c) {
+					String v = l.get(c);
+					sb.append(v);
+				}
+			}
+		}
+		
+		return sb.toString();
+    }
 }
