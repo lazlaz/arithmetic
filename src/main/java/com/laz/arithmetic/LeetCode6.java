@@ -45,4 +45,40 @@ public class LeetCode6 {
     	}
     	return ans;
     }
+    
+    //验证回文串
+    @Test
+    public void test2() {
+    	String s= ".,";
+    	System.out.println(isPalindrome(s));
+    }
+    public boolean isPalindrome(String s) {
+    	if (s==null || s.length()<=0) {
+    		return true;
+    	}
+        int i=0,j=s.length()-1;
+        while(i<j) {
+            while (i<s.length()&&!isValid(s.charAt(i))) {
+                i++;
+            }
+             while (i<s.length()&&!isValid(s.charAt(j))) {
+                j--;
+            }
+            if (i<s.length()&&j<s.length()) {
+            	if (!(s.charAt(i)+"").equalsIgnoreCase(s.charAt(j)+"")) {
+            		return false;
+            	}
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+
+    public boolean isValid(char c) {
+        if (Character.isLetter(c) || Character.isDigit(c)) {
+            return true;
+        }
+        return false;
+    }
 }
