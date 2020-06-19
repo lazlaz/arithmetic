@@ -3,13 +3,17 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
+import com.google.common.base.Joiner;
+
 import junit.framework.TestCase;
 
 public class LeetCode5 {
@@ -217,7 +221,7 @@ public class LeetCode5 {
 		for (int i = 0; i < 26; i++) {
 			parent[i] = i;
 		}
-		//根据=构造连通分量
+		// 根据=构造连通分量
 		for (String str : equations) {
 			if (str.charAt(1) == '=') {
 				int index1 = str.charAt(0) - 'a';
@@ -249,7 +253,7 @@ public class LeetCode5 {
 		}
 		return index;
 	}
-	
+
 	static Map<Integer, String> numsMap = new HashMap<Integer, String>();
 	static {
 		numsMap.put(0, "零");
@@ -265,13 +269,13 @@ public class LeetCode5 {
 	}
 
 	@Test
-	//读数 将数字1111转为为中文数字
+	// 读数 将数字1111转为为中文数字
 	public void test7() {
 		// 最大支持2147483647
 		String str = "1001010";
-		for (Integer k:testmap.keySet()) {
-			System.out.println(k+":"+convert(k+""));
-			TestCase.assertEquals(testmap.get(k),convert(k+""));
+		for (Integer k : testmap.keySet()) {
+			System.out.println(k + ":" + convert(k + ""));
+			TestCase.assertEquals(testmap.get(k), convert(k + ""));
 		}
 	}
 
@@ -323,8 +327,7 @@ public class LeetCode5 {
 		if (sb.toString().length() > 10) {
 			return pOrm ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		}
-		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb
-				.toString());
+		long value = pOrm ? -Long.valueOf(sb.toString()) : Long.valueOf(sb.toString());
 		if (value > Integer.MAX_VALUE) {
 			return Integer.MAX_VALUE;
 		}
@@ -351,7 +354,7 @@ public class LeetCode5 {
 			if (v != 0 || count % 4 == 1) {
 				sb.insert(0, getUnit(count));
 			}
-			if (!(lastV == 0 && v == 0)  && !(count>=5&&count%4==1)) {
+			if (!(lastV == 0 && v == 0) && !(count >= 5 && count % 4 == 1)) {
 				sb.insert(0, getChinese(v));
 			}
 			lastV = v;
@@ -407,82 +410,460 @@ public class LeetCode5 {
 	public String getChinese(int v) {
 		return numsMap.get(v);
 	}
-	
-	static Map<Integer,String> testmap = new HashMap<Integer,String>(); 
+
+	static Map<Integer, String> testmap = new HashMap<Integer, String>();
 	{
-		testmap.put(0,"零");
-		testmap.put(1,"一");
-		testmap.put(2,"二");
-		testmap.put(3,"三" );
-		testmap.put(4,"四" );
-		testmap.put(1020,"一千零二十" );
-		testmap.put(100000000,"一亿" );
-		testmap.put(1001001,"一百万一千零一" );
-		testmap.put(20001007,"二千万一千零七");
-		testmap.put(10000000,"一千万");
-		testmap.put(1015,"一千零一十五");
+		testmap.put(0, "零");
+		testmap.put(1, "一");
+		testmap.put(2, "二");
+		testmap.put(3, "三");
+		testmap.put(4, "四");
+		testmap.put(1020, "一千零二十");
+		testmap.put(100000000, "一亿");
+		testmap.put(1001001, "一百万一千零一");
+		testmap.put(20001007, "二千万一千零七");
+		testmap.put(10000000, "一千万");
+		testmap.put(1015, "一千零一十五");
 	}
+
 	@Test
-	//读数 将数字1111转为为中文数字 参考网上解法 参考：https://blog.csdn.net/sleepingboy888/article/details/95160730
+	// 读数 将数字1111转为为中文数字 参考网上解法
+	// 参考：https://blog.csdn.net/sleepingboy888/article/details/95160730
 	public void test8() {
-		for (Integer k:testmap.keySet()) {
-			System.out.println(k+":"+numberToChinese(k));
+		for (Integer k : testmap.keySet()) {
+			System.out.println(k + ":" + numberToChinese(k));
 			TestCase.assertEquals(numberToChinese(k), testmap.get(k));
 		}
 	}
+
+	public String numberToChinese(int num) {
+		String result = "";
+		if (num == 0) {
+			return "零";
+		}
+		int _num = num;
+		String[] chn_str = new String[] { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+		String[] section_value = new String[] { "", "万", "亿", "万亿" };
+		String[] unit_value = new String[] { "", "十", "百", "千" };
+		int section = _num % 10000;
+		for (int i = 0; _num != 0 && i < 4; i++) {
+			if (section == 0) {
+				// 0不需要考虑节权值，不能出现连续的“零”
+				if (result.length() > 0 && !result.substring(0, 1).equals("零")) {
+					result = "零" + result;
+				}
+				_num = _num / 10000;
+				section = _num % 10000;
+				continue;
+			}
+			result = section_value[i] + result;
+			int unit = section % 10;
+			for (int j = 0; j < 4; j++) {
+				if (unit == 0) {
+					// 0不需要考虑位权值，不能出现联系的“零”，每节最后的0不需要
+					if (result.length() > 0 && !result.substring(0, 1).equals("零")
+							&& !result.substring(0, 1).equals(section_value[i])) {
+						result = "零" + result;
+					}
+				} else {
+					result = chn_str[unit] + unit_value[j] + result;
+				}
+				section = section / 10;
+				unit = section % 10;
+			}
+			_num = _num / 10000;
+			section = _num % 10000;
+		}
+		if (result.length() > 0 && result.substring(0, 1).equals("零")) {
+			// 清理最前面的"零"
+			result = result.substring(1);
+		}
+		return result;
+	}
+
+	@Test
+	// 有效的完全平方数
+	public void test9() {
+		int num = 2147395600;
+		System.out.println(isPerfectSquare(num));
+	}
+
+	public boolean isPerfectSquare2(int num) {
+		int max = (int) Math.sqrt(Integer.MAX_VALUE) + 1;
+		for (int i = 1; i < max; i++) {
+			if (i * i == num) {
+				System.out.println(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * 1 4=1+3 9=1+3+5 16=1+3+5+7以此类推，模仿它可以使用一个while循环，不断减去一个从1开始不断增大的奇数，
+	 * 若最终减成了0，说明是完全平方数，否则，不是
+	 */
+	public boolean isPerfectSquare(int num) {
+		int num1 = 1;
+		while (num > 0) {
+			num -= num1;
+			num1 += 2;
+		}
+		return num == 0;
+	}
+
+	@Test
+	// 两数相加
+	public void test10() {
+		ListNode l1 = Utils.createListNode(new Integer[] { 5 });
+		ListNode l2 = Utils.createListNode(new Integer[] { 5, 9 });
+		ListNode l = addTwoNumbers(l1, l2);
+		Utils.printListNode(l);
+	}
+
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+		ListNode l = new ListNode(-1);
+		ListNode head = l1;
+		l.next = head;
+		int cb = 0;// 进位
+		while (l1 != null) {
+			int a = l1.val;
+			int b = l2 == null ? 0 : l2.val;
+			int v = (a + b + cb) % 10;
+			cb = (a + b + cb) / 10;
+			l1 = l1.next;
+			l2 = l2 == null ? null : l2.next;
+			ListNode node = new ListNode(v);
+			head.next = node;
+			head = node;
+		}
+		if (l2 != null) {
+			head.next = l2;
+			while (l2 != null) {
+				int a = l2.val;
+				int v = (a + cb) % 10;
+				cb = (a + cb) / 10;
+				l2 = l2.next;
+				ListNode node = new ListNode(v);
+				head.next = node;
+				head = node;
+			}
+		}
+		if (cb == 1) {
+			ListNode node = new ListNode(cb);
+			head.next = node;
+		}
+		return l.next.next;
+	}
+
+	@Test
+	// 转变数组后最接近目标值的数组和
+	public void test11() {
+		int[] arr = new int[] { 1, 3, 5 };
+		System.out.println(findBestValue(arr, 55));
+	}
+
+	public int findBestValue(int[] arr, int target) {
+		Arrays.sort(arr);
+		int n = arr.length;
+		int[] prefix = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			prefix[i] = prefix[i - 1] + arr[i - 1];
+		}
+		int l = 0, r = arr[n - 1], ans = -1;
+		while (l <= r) {
+			int mid = (l + r) / 2;
+			int index = Arrays.binarySearch(arr, mid);
+			if (index < 0) {
+				index = -index - 1;
+			}
+			int cur = prefix[index] + (n - index) * mid;
+			if (cur <= target) {
+				ans = mid;
+				l = mid + 1;
+			} else {
+				r = mid - 1;
+			}
+		}
+		int small = check(arr, ans);
+		int big = check(arr, ans + 1);
+		return Math.abs(small - target) <= Math.abs(big - target) ? ans : ans + 1;
+	}
+
+	public int check(int[] arr, int x) {
+		int ret = 0;
+		for (int num : arr) {
+			ret += Math.min(num, x);
+		}
+		return ret;
+	}
+
+	@Test
+	// 无重复字符的最长子串
+	public void test12() {
+		System.out.println(lengthOfLongestSubstring("dvdf"));
+	}
+
+	public int lengthOfLongestSubstring(String s) {
+		Set<Character> occ = new HashSet<Character>();
+		int n = s.length();
+		int rk = -1, ans = 0;
+		for (int i = 0; i < n; i++) {
+			if (i > 0) {
+				occ.remove(s.charAt(i - 1));
+			}
+			while (rk + 1 < n && !occ.contains(s.charAt(rk + 1))) {
+				occ.add(s.charAt(rk + 1));
+				rk++;
+			}
+			ans = Math.max(ans, rk - i + 1);
+		}
+		return ans;
+
+	}
+
+	public int lengthOfLongestSubstring2(String s) {
+		if (s == null || s.length() <= 0) {
+			return 0;
+		}
+		int res = 1;
+		List<String> list = new LinkedList<String>();
+		for (int i = 0; i < s.length(); i++) {
+			if (list.contains(s.charAt(i) + "")) {
+				res = res > list.size() ? res : list.size();
+				int index = list.indexOf(s.charAt(i) + "");
+				list = list.subList(index + 1, list.size());
+			}
+			list.add(s.charAt(i) + "");
+
+		}
+		res = res > list.size() ? res : list.size();
+		return res;
+	}
+
+	@Test
+	// 寻找两个正序数组的中位数
+	public void test13() {
+		int[] nums1 = new int[] { 10000 };
+		int[] nums2 = new int[] { 10001 };
+		System.out.println(findMedianSortedArrays(nums1, nums2));
+	}
+
+	public double getMedian(int length, int[] nums2) {
+		if (length % 2 == 0) {
+			return (nums2[length / 2 - 1] + nums2[length / 2]) / 2.0d;
+		} else {
+			return nums2[length / 2];
+		}
+	}
+
+	public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+		if (nums1 == null || nums1.length <= 0) {
+			return getMedian(nums2.length, nums2);
+		}
+		if (nums2 == null || nums2.length <= 0) {
+			return getMedian(nums1.length, nums1);
+		}
+		int i = 0, j = 0;
+		int length = nums1.length + nums2.length;
+		int count = 0;
+		int[] newArr = new int[length];
+		while (i < nums1.length || j < nums2.length) {
+			if (i < nums1.length && j < nums2.length) {
+				if (nums1[i] >= nums2[j]) {
+					newArr[count] = nums2[j];
+					j++;
+				} else {
+					newArr[count] = nums1[i];
+					i++;
+				}
+			} else {
+				if (i >= nums1.length && j < nums2.length) {
+					newArr[count] = nums2[j];
+					j++;
+				}
+				if (j >= nums2.length && i < nums1.length) {
+					newArr[count] = nums1[i];
+					i++;
+				}
+			}
+			if (count == length / 2) {
+				return getMedian(newArr.length, newArr);
+			}
+			count++;
+		}
+		return 0;
+	}
+
+	@Test
+	// 二叉树的序列化与反序列化
+	public void test14() {
+		Integer[] arr = new Integer[] {  };
+		TreeNode root = Utils.createTree(arr, 0);
+		Codec c = new Codec();
+		String str = c.serialize(root);
+		System.out.println(str);
+		TreeNode n = c.deserialize(str);
+		System.out.println(c.serialize(n));
+	}
+
+	class Codec {
+		// Encodes a tree to a single string.
+		public String serialize(TreeNode root) {
+			if (root == null) {
+				return "";
+			}
+			StringBuffer sb = new StringBuffer();
+			Queue<TreeNode> q = new LinkedList();
+			q.add(root);
+			while (!q.isEmpty()) {
+				TreeNode temp = q.poll();
+				if (temp == null) {
+					sb.append("null,");
+					continue;
+				} else {
+					sb.append(temp.val + ",");
+				}
+				if (temp.left != null) {
+					q.offer(temp.left); // 迭代操作，向左探索
+				} else {
+					q.offer(null);
+				}
+				if (temp.right != null) {
+					q.offer(temp.right);
+				} else {
+					q.offer(null);
+				}
+			}
+			return sb.toString();
+		}
+
+		// Decodes your encoded data to tree.
+		public TreeNode deserialize(String data) {
+			String str = data;
+			String[] arr = str.split(",");
+			return createTree(arr, 0);
+		}
+
+		private TreeNode createTree(String[] arr, int index) {
+			Queue<String> q = new LinkedList<String>(Arrays.asList(arr));
+			if (q.peek() == null) {
+				return null;
+			}
+			return rdeserialize(q);
+		}
+
+		private TreeNode rdeserialize(Queue<String> q) {
+			if (q.peek() == null || q.peek().equals("")) {
+				q.poll();
+				return null;
+			}
+			TreeNode root = new TreeNode(Integer.valueOf(q.poll()));
+			Queue<TreeNode> qTree = new LinkedList<TreeNode>();
+			TreeNode node = root;
+			while (!q.isEmpty()) {
+				if (q.peek() != null && !q.peek().equals("null")) {
+					node.left = new TreeNode(Integer.valueOf(q.poll()));
+					qTree.offer(node.left);
+				} else {
+					q.poll();
+				}
+				if (q.peek() != null && !q.peek().equals("null")) {
+					node.right = new TreeNode(Integer.valueOf(q.poll()));
+					qTree.offer(node.right);
+				} else {
+					q.poll();
+				}
+				node = qTree.poll();
+			}
+			return root;
+
+		}
+	}
 	
-	public String numberToChinese(int num)
-	 {
-	     String result = "";
-	     if (num == 0)
-	     {
-	         return "零";
-	     }
-	     int _num = num;
-	     String[] chn_str = new String[] { "零","一", "二", "三", "四", "五", "六", "七", "八", "九" };
-	     String[] section_value = new String[] { "","万","亿","万亿"};
-	     String[] unit_value = new String[] { "", "十", "百", "千" };
-	     int section = _num % 10000;
-	     for (int i = 0; _num != 0 && i < 4; i++)
-	     {
-	         if (section == 0)
-	         {
-	             //0不需要考虑节权值，不能出现连续的“零”
-	             if (result.length() > 0 && !result.substring(0, 1).equals("零"))
-	             {
-	                 result = "零" + result;
-	             }
-	             _num = _num / 10000;
-	             section = _num % 10000;
-	             continue;
-	         }
-	         result = section_value[i]+result;
-	         int unit = section % 10;
-	         for (int j = 0; j<4 ; j++)
-	         {
-	             if (unit == 0)
-	             {
-	                 //0不需要考虑位权值，不能出现联系的“零”，每节最后的0不需要
-	                 if (result.length() > 0 && !result.substring(0, 1).equals("零") && !result.substring(0, 1).equals(section_value[i]))
-	                 {
-	                     result = "零" + result;
-	                 }
-	             }
-	             else
-	             {
-	                 result = chn_str[unit] + unit_value[j] + result;
-	             }
-	             section = section / 10;
-	             unit = section % 10;
-	         }
-	         _num = _num / 10000;
-	         section = _num % 10000;
-	     }
-	     if (result.length() > 0 && result.substring(0, 1).equals("零"))
-	     {
-	         //清理最前面的"零"
-	         result = result.substring(1);
-	     }
-	     return result;
-	 }
+	@Test
+	//最佳观光组合
+	public void test15() {
+		int[] A = new int[] {8,1,5,2,6};
+		System.out.println(maxScoreSightseeingPair(A));
+	}
+	public int maxScoreSightseeingPair(int[] A) {
+		if (A==null||A.length<=0) {
+			return 0;
+		}
+		int mx = A[0];
+		int ans = 0;
+		for (int j=1;j<A.length;j++) {
+			if (ans<mx+A[j]-j) {
+				ans = mx+A[j]-j;
+			}
+			if (mx<A[j]+j) {
+				mx = A[j]+j;
+			}
+		}
+		return ans;
+    }
+	
+	// Z 字形变换
+	@Test
+	public void test16() {
+		String s= "LEETCODEISHIRING";
+		int numRows = 4;
+		System.out.println(convert2(s,numRows));
+	}
+	public String convert2(String s,int numRows) {
+		if (numRows == 1) return s;
+
+        List<StringBuilder> rows = new ArrayList<>();
+        for (int i = 0; i < Math.min(numRows, s.length()); i++)
+            rows.add(new StringBuilder());
+
+        int curRow = 0;
+        boolean goingDown = false;
+
+        for (char c : s.toCharArray()) {
+            rows.get(curRow).append(c);
+            if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
+            curRow += goingDown ? 1 : -1;
+        }
+
+        StringBuilder ret = new StringBuilder();
+        for (StringBuilder row : rows) ret.append(row);
+        return ret.toString();
+	}
+	public String convert(String s, int numRows) {
+		if (s==null||numRows<=1) {
+			return s;
+		}
+		List<List<String>> arr = new ArrayList<List<String>>();
+		int index = 0;
+		int col = 0;
+		while (index<s.length()) {
+			List<String> cols = new ArrayList<String>();
+			for (int row=0;row<numRows;row++) {
+				if (index<s.length()) {
+					if (col%(numRows-1)==0) {
+						cols.add(s.charAt(index++)+"");
+					}else if (row==(numRows-1-col%(numRows-1))) {
+						cols.add(s.charAt(index++)+"");
+					} else {
+						cols.add("");
+					}
+				}
+			}
+			col++;
+			arr.add(cols);
+		}
+		StringBuffer sb = new StringBuffer();
+		for (int c=0;c<numRows;c++) {
+			for (List<String> l : arr) {
+				if (l.size()>c) {
+					String v = l.get(c);
+					sb.append(v);
+				}
+			}
+		}
+		
+		return sb.toString();
+    }
 }
