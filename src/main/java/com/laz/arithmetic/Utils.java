@@ -5,6 +5,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Utils {
+	public  static TreeNode  createTree(Integer[] arr) {
+		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));
+		 if (q.peek()==null) {
+			 return null;
+        }
+		return rdeserialize(q);
+	}
+	@Deprecated
 	public  static TreeNode  createTree(Integer[] arr,int i) {
 		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));
 		 if (q.peek()==null) {

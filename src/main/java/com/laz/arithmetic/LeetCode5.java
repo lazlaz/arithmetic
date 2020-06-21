@@ -892,60 +892,61 @@ public class LeetCode5 {
 				index++;
 			}
 			int value = 0;
-			while (index<S.length() && Character.isDigit(S.charAt(index))) {
+			while (index < S.length() && Character.isDigit(S.charAt(index))) {
 				value = value * 10 + (S.charAt(index) - '0');
 				++index;
 			}
 			TreeNode node = new TreeNode(value);
 			if (level == stack.size()) {
 				if (!stack.isEmpty()) {
-					stack.peek().left= node;
+					stack.peek().left = node;
 				}
 			} else {
-				while (level!=stack.size()) {
+				while (level != stack.size()) {
 					stack.pop();
 				}
 				stack.peek().right = node;
 			}
 			stack.push(node);
 		}
-		while (stack.size()>1) {
+		while (stack.size() > 1) {
 			stack.pop();
 		}
 		return stack.peek();
 	}
-	
-	//盛最多水的容器
+
+	// 盛最多水的容器
 	@Test
 	public void test18() {
-		int[] height = new int[] {1,8,6,2,5,4,8,3,7};
+		int[] height = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
 		System.out.println(maxArea(height));
 	}
-	
+
 	public int maxArea(int[] height) {
-		int left=0,right=height.length-1;
-		int maxArea =0;
-		while(left<right) {
-			int v = Math.min(height[left], height[right])*(right-left);
-			if (maxArea<v) {
+		int left = 0, right = height.length - 1;
+		int maxArea = 0;
+		while (left < right) {
+			int v = Math.min(height[left], height[right]) * (right - left);
+			if (maxArea < v) {
 				maxArea = v;
 			}
-			if (height[left]<height[right]) {
+			if (height[left] < height[right]) {
 				left++;
 			} else {
 				right--;
 			}
 		}
 		return maxArea;
-    }
-	
-	//正则表达式匹配
+	}
+
+	// 正则表达式匹配
 	@Test
 	public void test19() {
 		String s = "aab";
 		String p = "c*a*b";
 		System.out.println(isMatch(s, p));
 	}
+
 	public boolean isMatch(String s, String p) {
 		if (s == null || p == null) {
 			return false;
@@ -955,24 +956,54 @@ public class LeetCode5 {
 		boolean[][] dp = new boolean[m + 1][n + 1];
 		dp[0][0] = true;
 		for (int i = 0; i < p.length(); i++) { // here's the p's length, not s's
-		     if (p.charAt(i) == '*' && dp[0][i - 1]) {
-		         dp[0][i + 1] = true; // here's y axis should be i+1
-		     }
+			if (p.charAt(i) == '*' && dp[0][i - 1]) {
+				dp[0][i + 1] = true; // here's y axis should be i+1
+			}
 		}
-		for (int i=1;i<=m;i++) {
-			for (int j=1;j<=n;j++) {
-				 if(s.charAt(i-1)==p.charAt(j-1) || p.charAt(j-1)=='.'){
-	                    dp[i][j]=dp[i-1][j-1];
-	             }
-				 if(p.charAt(j-1)=='*'){
-	                    if(s.charAt(i-1)!=p.charAt(j-2) && p.charAt(j-2)!='.') {
-	                    	dp[i][j]=dp[i][j-2];
-	                    }else{
-	                        dp[i][j]=dp[i][j-1] || dp[i][j-2] || dp[i-1][j];
-	                    }
-	            }
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= n; j++) {
+				if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.') {
+					dp[i][j] = dp[i - 1][j - 1];
+				}
+				if (p.charAt(j - 1) == '*') {
+					if (s.charAt(i - 1) != p.charAt(j - 2) && p.charAt(j - 2) != '.') {
+						dp[i][j] = dp[i][j - 2];
+					} else {
+						dp[i][j] = dp[i][j - 1] || dp[i][j - 2] || dp[i - 1][j];
+					}
+				}
 			}
 		}
 		return dp[m][n];
+	}
+
+	// 二叉树中的最大路径和
+	@Test
+	public void test20() {
+		Integer[] arr = new Integer[] { 5,4,8,11,null,13,4,7,2,null,null,null,1};
+		TreeNode root = Utils.createTree(arr);
+		System.out.println(maxPathSum(root));
+		System.out.println(new Codec().serialize(root));
+	}
+
+	private int maxPath = Integer.MIN_VALUE;
+
+	public int maxPathSum(TreeNode root) {
+		dfs(root);
+		return maxPath ;
+	}
+	
+	public int dfs(TreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		 //计算左边分支最大值，左边分支如果为负数还不如不选择
+        int leftMax = Math.max(0, dfs(root.left));
+        //计算右边分支最大值，右边分支如果为负数还不如不选择
+        int rightMax = Math.max(0, dfs(root.right));
+        //left->root->right 作为路径与历史最大值做比较
+        maxPath = Math.max(maxPath, root.val + leftMax + rightMax);
+        // 返回经过root的单边最大分支给上游
+        return root.val + Math.max(leftMax, rightMax);
 	}
 }
