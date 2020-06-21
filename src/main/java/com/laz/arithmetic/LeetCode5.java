@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,8 +12,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.junit.Test;
-
-import com.google.common.base.Joiner;
 
 import junit.framework.TestCase;
 
@@ -698,7 +697,7 @@ public class LeetCode5 {
 	@Test
 	// 二叉树的序列化与反序列化
 	public void test14() {
-		Integer[] arr = new Integer[] {  };
+		Integer[] arr = new Integer[] {};
 		TreeNode root = Utils.createTree(arr, 0);
 		Codec c = new Codec();
 		String str = c.serialize(root);
@@ -780,72 +779,78 @@ public class LeetCode5 {
 
 		}
 	}
-	
+
 	@Test
-	//最佳观光组合
+	// 最佳观光组合
 	public void test15() {
-		int[] A = new int[] {8,1,5,2,6};
+		int[] A = new int[] { 8, 1, 5, 2, 6 };
 		System.out.println(maxScoreSightseeingPair(A));
 	}
+
 	public int maxScoreSightseeingPair(int[] A) {
-		if (A==null||A.length<=0) {
+		if (A == null || A.length <= 0) {
 			return 0;
 		}
 		int mx = A[0];
 		int ans = 0;
-		for (int j=1;j<A.length;j++) {
-			if (ans<mx+A[j]-j) {
-				ans = mx+A[j]-j;
+		for (int j = 1; j < A.length; j++) {
+			if (ans < mx + A[j] - j) {
+				ans = mx + A[j] - j;
 			}
-			if (mx<A[j]+j) {
-				mx = A[j]+j;
+			if (mx < A[j] + j) {
+				mx = A[j] + j;
 			}
 		}
 		return ans;
-    }
-	
+	}
+
 	// Z 字形变换
 	@Test
 	public void test16() {
-		String s= "LEETCODEISHIRING";
+		String s = "LEETCODEISHIRING";
 		int numRows = 4;
-		System.out.println(convert2(s,numRows));
+		System.out.println(convert2(s, numRows));
 	}
-	public String convert2(String s,int numRows) {
-		if (numRows == 1) return s;
 
-        List<StringBuilder> rows = new ArrayList<>();
-        for (int i = 0; i < Math.min(numRows, s.length()); i++)
-            rows.add(new StringBuilder());
+	public String convert2(String s, int numRows) {
+		if (numRows == 1)
+			return s;
 
-        int curRow = 0;
-        boolean goingDown = false;
+		List<StringBuilder> rows = new ArrayList<>();
+		for (int i = 0; i < Math.min(numRows, s.length()); i++)
+			rows.add(new StringBuilder());
 
-        for (char c : s.toCharArray()) {
-            rows.get(curRow).append(c);
-            if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
-            curRow += goingDown ? 1 : -1;
-        }
+		int curRow = 0;
+		boolean goingDown = false;
 
-        StringBuilder ret = new StringBuilder();
-        for (StringBuilder row : rows) ret.append(row);
-        return ret.toString();
+		for (char c : s.toCharArray()) {
+			rows.get(curRow).append(c);
+			if (curRow == 0 || curRow == numRows - 1)
+				goingDown = !goingDown;
+			curRow += goingDown ? 1 : -1;
+		}
+
+		StringBuilder ret = new StringBuilder();
+		for (StringBuilder row : rows)
+			ret.append(row);
+		return ret.toString();
 	}
+
 	public String convert(String s, int numRows) {
-		if (s==null||numRows<=1) {
+		if (s == null || numRows <= 1) {
 			return s;
 		}
 		List<List<String>> arr = new ArrayList<List<String>>();
 		int index = 0;
 		int col = 0;
-		while (index<s.length()) {
+		while (index < s.length()) {
 			List<String> cols = new ArrayList<String>();
-			for (int row=0;row<numRows;row++) {
-				if (index<s.length()) {
-					if (col%(numRows-1)==0) {
-						cols.add(s.charAt(index++)+"");
-					}else if (row==(numRows-1-col%(numRows-1))) {
-						cols.add(s.charAt(index++)+"");
+			for (int row = 0; row < numRows; row++) {
+				if (index < s.length()) {
+					if (col % (numRows - 1) == 0) {
+						cols.add(s.charAt(index++) + "");
+					} else if (row == (numRows - 1 - col % (numRows - 1))) {
+						cols.add(s.charAt(index++) + "");
 					} else {
 						cols.add("");
 					}
@@ -855,15 +860,119 @@ public class LeetCode5 {
 			arr.add(cols);
 		}
 		StringBuffer sb = new StringBuffer();
-		for (int c=0;c<numRows;c++) {
+		for (int c = 0; c < numRows; c++) {
 			for (List<String> l : arr) {
-				if (l.size()>c) {
+				if (l.size() > c) {
 					String v = l.get(c);
 					sb.append(v);
 				}
 			}
 		}
-		
+
 		return sb.toString();
+	}
+
+	// 从先序遍历还原二叉树
+	@Test
+	public void test17() {
+		String s = "1-2--3--4-5--6--7";
+		TreeNode root = recoverFromPreorder(s);
+	}
+
+	public TreeNode recoverFromPreorder(String S) {
+		if (S == null || S.length() <= 0) {
+			return null;
+		}
+		int index = 0;
+		Deque<TreeNode> stack = new LinkedList<TreeNode>();
+		while (index < S.length()) {
+			int level = 0;
+			while (S.charAt(index) == '-') {
+				level++;
+				index++;
+			}
+			int value = 0;
+			while (index<S.length() && Character.isDigit(S.charAt(index))) {
+				value = value * 10 + (S.charAt(index) - '0');
+				++index;
+			}
+			TreeNode node = new TreeNode(value);
+			if (level == stack.size()) {
+				if (!stack.isEmpty()) {
+					stack.peek().left= node;
+				}
+			} else {
+				while (level!=stack.size()) {
+					stack.pop();
+				}
+				stack.peek().right = node;
+			}
+			stack.push(node);
+		}
+		while (stack.size()>1) {
+			stack.pop();
+		}
+		return stack.peek();
+	}
+	
+	//盛最多水的容器
+	@Test
+	public void test18() {
+		int[] height = new int[] {1,8,6,2,5,4,8,3,7};
+		System.out.println(maxArea(height));
+	}
+	
+	public int maxArea(int[] height) {
+		int left=0,right=height.length-1;
+		int maxArea =0;
+		while(left<right) {
+			int v = Math.min(height[left], height[right])*(right-left);
+			if (maxArea<v) {
+				maxArea = v;
+			}
+			if (height[left]<height[right]) {
+				left++;
+			} else {
+				right--;
+			}
+		}
+		return maxArea;
     }
+	
+	//正则表达式匹配
+	@Test
+	public void test19() {
+		String s = "aab";
+		String p = "c*a*b";
+		System.out.println(isMatch(s, p));
+	}
+	public boolean isMatch(String s, String p) {
+		if (s == null || p == null) {
+			return false;
+		}
+		int m = s.length();
+		int n = p.length();
+		boolean[][] dp = new boolean[m + 1][n + 1];
+		dp[0][0] = true;
+		for (int i = 0; i < p.length(); i++) { // here's the p's length, not s's
+		     if (p.charAt(i) == '*' && dp[0][i - 1]) {
+		         dp[0][i + 1] = true; // here's y axis should be i+1
+		     }
+		}
+		for (int i=1;i<=m;i++) {
+			for (int j=1;j<=n;j++) {
+				 if(s.charAt(i-1)==p.charAt(j-1) || p.charAt(j-1)=='.'){
+	                    dp[i][j]=dp[i-1][j-1];
+	             }
+				 if(p.charAt(j-1)=='*'){
+	                    if(s.charAt(i-1)!=p.charAt(j-2) && p.charAt(j-2)!='.') {
+	                    	dp[i][j]=dp[i][j-2];
+	                    }else{
+	                        dp[i][j]=dp[i][j-1] || dp[i][j-2] || dp[i-1][j];
+	                    }
+	            }
+			}
+		}
+		return dp[m][n];
+	}
 }
