@@ -2,8 +2,11 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
@@ -81,4 +84,101 @@ public class LeetCode6 {
         }
         return false;
     }
+    //模式匹配
+    @Test
+    public void test3() {
+    	Assert.assertEquals(true,patternMatching("a", ""));
+    	Assert.assertEquals(true,patternMatching("abb", "jwwwwjttwwwwjtt"));
+    	Assert.assertEquals(true,patternMatching("", ""));
+    	Assert.assertEquals(false,patternMatching("bbbbbbbbbbbbabbbbbbbbbbbbbbbbbbbbbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbabbbbbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbabbbbbbbbbbbbbbbbbbbbb", 
+    			"wzwzwzzwzwzwzwzwzwzwzwzmaczcazplafmwanjpnmjpjnjwnzemzolmwelllazyjmnnpomnizpzlywzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzmaczcazplafmwanjpnmjpjnjwnzemzolmwelllazyjmnnpomnizpzlywzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzmaczcazplafmwanjpnmjpjnjwnzemzolmwelllazyjmnnpomnizpzlywzwzwzwzwzwzwzmaczcazplafmwanjpnmjpjnjwnzemzolmwelllazyjmnnpomnizpzlywzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzmaczcazplafmwanjpnmjpjnjwnzemzolmwelllazyjmnnpomnizpzlywzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwzwz"));
+    	Assert.assertEquals(true,patternMatching("abb", 
+    			"dryqxzysggjljxdxag"));
+    	Assert.assertEquals(true,patternMatching("abba", 
+    			"dogdogdogdog"));
+    	Assert.assertEquals(true,patternMatching("baabab", 
+    			"eimmieimmieeimmiee"));
+    }
+    public boolean patternMatching(String pattern, String value) {
+		if (pattern == null || value == null) {
+			return false;
+		}
+		if (pattern.equals("") && value.equals("")) {
+			return true;
+		}
+		if (pattern.equals("")) {
+			return false;
+		}
+		int aCount=0,bCount=0;
+		int count = 0;
+		int pLen = pattern.length();
+		for (int i=0;i<pattern.length();i++) {
+			if (pattern.charAt(i) == 'a') {
+				aCount++;
+			} else {
+				bCount++;
+			}
+		}
+		if (pattern.charAt(0) == 'a') {
+			count = aCount;
+		}
+		if (pattern.charAt(0) == 'b') {
+			count = bCount;
+		}
+		int len = value.length();
+		if (aCount==0||bCount==0) {
+			String v = value.substring(0,value.length()/count);
+			if (match(value,pattern,v,"")) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		for (int i=0;i<=len;i++) {
+			String v1 = value.substring(0,i);
+			int l = len-v1.length()*count;
+			if (l%(pLen-count) != 0) {
+				continue;
+			}
+			for (int j=i;j<=len;j++) {
+				for (int z=j;z<=len;z++) {
+					String newValue = value.substring(j,z);
+					if (newValue.length()+v1.length()*count != value.length()) {
+						continue;
+					}
+					int v2Count = pLen-count;
+					String v2 = newValue.substring(0,newValue.length()/v2Count);
+					if (v1.equals(v2)) {
+						continue;
+					}
+					if (match(value,pattern,v1,v2)) {
+						return true;
+					}
+				}
+			}
+			
+		}
+		return false;
+	}
+	public boolean match(String value,String pattern,String v1,String v2) {
+		Map<String,String> map = new HashMap<String,String>();
+		boolean flag = false;//首字符是否找到
+		StringBuffer sb = new StringBuffer();
+		for (int i=0;i<pattern.length();i++) {
+			String k = pattern.charAt(i)+"";
+			if (map.get(k) == null) {
+				if (flag) {
+					map.put(k, v2);
+				} else {
+					flag = true;
+					map.put(k, v1);
+				}
+			}
+			sb.append(map.get(k));
+		}
+		if (sb.toString().equals(value)) {
+			return true;
+		}
+		return false;
+	}
 }
