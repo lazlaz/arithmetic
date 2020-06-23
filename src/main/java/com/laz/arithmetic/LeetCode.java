@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import javafx.util.Pair;
@@ -234,7 +235,62 @@ public class LeetCode {
 	// 二进制求和
 	@Test
 	public void test9() {
-		System.out.println(addBinary("1010", "1011"));
+		Assert.assertEquals("100",addBinary2("11", "1"));
+		Assert.assertEquals("1010",addBinary2("11", "111"));
+		Assert.assertEquals("11",addBinary2("10", "1"));
+		Assert.assertEquals("10101",addBinary2("1010", "1011"));
+	}
+
+	public String addBinary2(String a, String b) {
+		StringBuffer sb = new StringBuffer();
+		a = new StringBuffer().append(a).reverse().toString();
+		b = new StringBuffer().append(b).reverse().toString();
+		int len = a.length() > b.length() ? a.length() : b.length();
+		char last = '0';
+		for (int i = 0; i < len; i++) {
+			String str = "";
+			if (a.length() <= i) {
+				str = sum(last, '0', b.charAt(i));
+			} else if (b.length() <= i) {
+				str = sum(last, a.charAt(i), '0');
+			} else {
+				str = sum(last, a.charAt(i), b.charAt(i));
+			}
+			last = str.charAt(0);
+			sb.append(str.charAt(1));
+		}
+		if (last == '1') {
+			sb.append(last);
+		}
+		return sb.reverse().toString();
+	}
+
+	public String sum(char last, char a, char b) {
+		if (last == '1' && a == '1' && b == '1') {
+			return "11";
+		}
+		if (last == '1' && a == '1' && b == '0') {
+			return "10";
+		}
+		if (last == '1' && a == '0' && b == '1') {
+			return "10";
+		}
+		if (last == '1' && a == '0' && b == '0') {
+			return "01";
+		}
+		if (last == '0' && a == '1' && b == '1') {
+			return "10";
+		}
+		if (last == '0' && a == '1' && b == '0') {
+			return "01";
+		}
+		if (last == '0' && a == '0' && b == '1') {
+			return "01";
+		}
+		if (last == '0' && a == '0' && b == '0') {
+			return "00";
+		}
+		return "";
 	}
 
 	// Line 3: java.lang.NumberFormatException: For input string:
@@ -400,23 +456,23 @@ public class LeetCode {
 		TreeNode node2 = new TreeNode(3);
 		node.left = node1;
 		node.right = node2;
-		
+
 		TreeNode node11 = new TreeNode(1);
 		TreeNode node111 = new TreeNode(2);
 		TreeNode node211 = new TreeNode(3);
 		node11.left = node111;
 		node11.right = node211;
-		System.out.println(isSameTree(node,node11));
+		System.out.println(isSameTree(node, node11));
 	}
 
 	public boolean isSameTree(TreeNode p, TreeNode q) {
 		List<String> listP = new ArrayList<String>();
 		List<String> listQ = new ArrayList<String>();
-	    deep(p,listP);
-	    deep(q,listQ);
+		deep(p, listP);
+		deep(q, listQ);
 		if (listP.size() == listQ.size()) {
 			boolean same = true;
-			for (int i=0; i<listP.size(); i++) {
+			for (int i = 0; i < listP.size(); i++) {
 				if (!listP.get(i).equals(listQ.get(i))) {
 					same = false;
 				}
@@ -427,16 +483,16 @@ public class LeetCode {
 	}
 
 	private void deep(TreeNode p, List list) {
-		if (p==null) {
+		if (p == null) {
 			list.add("null");
 			return;
 		}
-		list.add(p.val+"");
-		deep(p.left,list);
-		deep(p.right,list);
+		list.add(p.val + "");
+		deep(p.left, list);
+		deep(p.right, list);
 	}
-	
-	//二叉树的层次遍历 II
+
+	// 二叉树的层次遍历 II
 	@Test
 	public void test13() {
 		TreeNode root = new TreeNode(3);
@@ -444,217 +500,221 @@ public class LeetCode {
 		TreeNode node2 = new TreeNode(20);
 		root.left = node1;
 		root.right = node2;
-		
+
 		TreeNode node3 = new TreeNode(15);
 		TreeNode node4 = new TreeNode(7);
 		node2.left = node3;
 		node2.right = node4;
-		
+
 		List<List<Integer>> result = levelOrderBottom(root);
-		if (result!=null) {
+		if (result != null) {
 			for (List<Integer> list : result) {
 				for (Integer l : list) {
-					System.out.print(l+" ");
+					System.out.print(l + " ");
 				}
 				System.out.println();
 			}
 		}
-		
+
 	}
-    public List<List<Integer>> levelOrderBottom(TreeNode root) {
-    	List<List<Integer>> result = new ArrayList<List<Integer>>();
-    	Map<Integer,List<Integer>> map = new LinkedHashMap<Integer,List<Integer>>();
-    	levelTraverse(root,map,0);
-    	
-    	if (root!=null) {
-    		
-    		int maxLevel = 0;
-    		for (Integer i : map.keySet()) {
-    			if (maxLevel<i) {
-    				maxLevel =i;
-    			}
-    		}
-    		for (int i=maxLevel;i>0;i--) {
-    			result.add(map.get(i));
-    		}
-    		List rootLevel = new ArrayList();
-    		rootLevel.add(root.val);
-    		result.add(rootLevel);
-    	}
-    	return result;
-    }
-    
-    private void levelTraverse(TreeNode p, Map<Integer,List<Integer>> map, int level) {
-    	++level;
-		if (p==null) {
+
+	public List<List<Integer>> levelOrderBottom(TreeNode root) {
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		Map<Integer, List<Integer>> map = new LinkedHashMap<Integer, List<Integer>>();
+		levelTraverse(root, map, 0);
+
+		if (root != null) {
+
+			int maxLevel = 0;
+			for (Integer i : map.keySet()) {
+				if (maxLevel < i) {
+					maxLevel = i;
+				}
+			}
+			for (int i = maxLevel; i > 0; i--) {
+				result.add(map.get(i));
+			}
+			List rootLevel = new ArrayList();
+			rootLevel.add(root.val);
+			result.add(rootLevel);
+		}
+		return result;
+	}
+
+	private void levelTraverse(TreeNode p, Map<Integer, List<Integer>> map, int level) {
+		++level;
+		if (p == null) {
 			return;
 		}
 		List list = map.get(level);
-		if (list ==null) {
+		if (list == null) {
 			list = new ArrayList<Integer>();
-			
+
 		}
-		if (p.left!=null ) {
+		if (p.left != null) {
 			list.add(p.left.val);
-			levelTraverse(p.left,map,level);
+			levelTraverse(p.left, map, level);
 		}
-		if (p.right!=null) {
+		if (p.right != null) {
 			list.add(p.right.val);
-			levelTraverse(p.right,map,level);
+			levelTraverse(p.right, map, level);
 		}
-		if (list.size()>0) {
-			map.put(level,list);
+		if (list.size() > 0) {
+			map.put(level, list);
 		}
 	}
-    
-    //二叉树的最小深度
-    public void test14() {
-    	TreeNode root = new TreeNode(3);
+
+	// 二叉树的最小深度
+	public void test14() {
+		TreeNode root = new TreeNode(3);
 		TreeNode node1 = new TreeNode(9);
 		TreeNode node2 = new TreeNode(20);
 		root.left = node1;
 		root.right = node2;
-		
+
 		TreeNode node3 = new TreeNode(15);
 		TreeNode node4 = new TreeNode(7);
 		node2.left = node3;
 		node2.right = node4;
 		System.out.println(minDepth(root));
-    }
-    public int minDepth(TreeNode root) {
-    	LinkedList<Pair<TreeNode, Integer>> stack = new LinkedList<>();
-        if (root == null) {
-          return 0;
-        }
-        else {
-          stack.add(new Pair(root, 1));
-        }
+	}
 
-        int min_depth = Integer.MAX_VALUE;
-        while (!stack.isEmpty()) {
-          Pair<TreeNode, Integer> current = stack.pollLast();
-          root = current.getKey();
-          int current_depth = current.getValue();
-          if ((root.left == null) && (root.right == null)) {
-            min_depth = Math.min(min_depth, current_depth);
-          }
-          if (root.left != null) {
-            stack.add(new Pair(root.left, current_depth + 1));
-          }
-          if (root.right != null) {
-            stack.add(new Pair(root.right, current_depth + 1));
-          }
-        }
-        return min_depth;
-    }
-    
-    //字符串压缩
-    @Test
-    public void test15() {
-    	System.out.println(compressString("aabcccccaaa"));
-    }
-    public String compressString(String S) {
-    	char[] chars = S.toCharArray();
-    	StringBuffer sb = new StringBuffer();
+	public int minDepth(TreeNode root) {
+		LinkedList<Pair<TreeNode, Integer>> stack = new LinkedList<>();
+		if (root == null) {
+			return 0;
+		} else {
+			stack.add(new Pair(root, 1));
+		}
 
-    	if (S==null ||chars.length == 0) {
-    		return S;
-    	}
-    	int count = 1;
-    	char preChar = chars[0];
-    	sb.append(chars[0]);
-    	for (int i=1; i<chars.length; i++) {
-    		if (preChar==chars[i]) {
-    			count++;
-    		} else {
-    			sb.append(count);
-    			count=1;
-    			preChar=chars[i];
-    			sb.append(preChar);
-    		}
-    	}
-    	sb.append(count);
-    	if(sb.toString().length()>=S.length()) {
-    		return S;
-    	}
-    	return sb.toString();
-    }
-    
-    //拼写单词
-    @Test
-    public void test16() {
-    	String[] words = new String[] {"boygirdlggnh"};
-    	String chars ="usdruypficfbpfbivlrhutcgvyjenlxzeovdyjtgvvfdjzcmikjraspdfp";
-    	System.out.println(countCharacters(words,chars));
-    }
-    public int countCharacters(String[] words, String chars) {
-    	int count =0;
-    	for (int i=0; i<words.length; i++) {
-    		char[] word = words[i].toCharArray();
-    		String newChars = chars;
-    		boolean flag = true;
-    		for (int j=0; j<word.length; j++) {
-    			String w = String.valueOf(word[j]);
-    			if (!newChars.contains(w)) {
-    				flag = false;
-    			} else {
-    				newChars=newChars.replaceFirst(w, "");
-    			}
-    		}
-    		if (flag) {
-    			System.out.println(word);
-    			count+= word.length;
-    		}
-    	}
-    	return count;
-    }
-    
-    //矩阵重叠
-    @Test
-    public void test17() {
-    	int[] rec1 = new int[] {0,0,2,2};
-    	int[] rec2 = new int[] {1,1,3,3};
-    	
-    	System.out.println(isRectangleOverlap(rec1, rec2));
-    }
-    public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
-    	  return (Math.min(rec1[2], rec2[2]) > Math.max(rec1[0], rec2[0]) &&
-                  Math.min(rec1[3], rec2[3]) > Math.max(rec1[1], rec2[1]));
-    }
-    
-    // 平衡二叉树
-    @Test
-    public void test18() {
-    	TreeNode root = new TreeNode(3);
+		int min_depth = Integer.MAX_VALUE;
+		while (!stack.isEmpty()) {
+			Pair<TreeNode, Integer> current = stack.pollLast();
+			root = current.getKey();
+			int current_depth = current.getValue();
+			if ((root.left == null) && (root.right == null)) {
+				min_depth = Math.min(min_depth, current_depth);
+			}
+			if (root.left != null) {
+				stack.add(new Pair(root.left, current_depth + 1));
+			}
+			if (root.right != null) {
+				stack.add(new Pair(root.right, current_depth + 1));
+			}
+		}
+		return min_depth;
+	}
+
+	// 字符串压缩
+	@Test
+	public void test15() {
+		System.out.println(compressString("aabcccccaaa"));
+	}
+
+	public String compressString(String S) {
+		char[] chars = S.toCharArray();
+		StringBuffer sb = new StringBuffer();
+
+		if (S == null || chars.length == 0) {
+			return S;
+		}
+		int count = 1;
+		char preChar = chars[0];
+		sb.append(chars[0]);
+		for (int i = 1; i < chars.length; i++) {
+			if (preChar == chars[i]) {
+				count++;
+			} else {
+				sb.append(count);
+				count = 1;
+				preChar = chars[i];
+				sb.append(preChar);
+			}
+		}
+		sb.append(count);
+		if (sb.toString().length() >= S.length()) {
+			return S;
+		}
+		return sb.toString();
+	}
+
+	// 拼写单词
+	@Test
+	public void test16() {
+		String[] words = new String[] { "boygirdlggnh" };
+		String chars = "usdruypficfbpfbivlrhutcgvyjenlxzeovdyjtgvvfdjzcmikjraspdfp";
+		System.out.println(countCharacters(words, chars));
+	}
+
+	public int countCharacters(String[] words, String chars) {
+		int count = 0;
+		for (int i = 0; i < words.length; i++) {
+			char[] word = words[i].toCharArray();
+			String newChars = chars;
+			boolean flag = true;
+			for (int j = 0; j < word.length; j++) {
+				String w = String.valueOf(word[j]);
+				if (!newChars.contains(w)) {
+					flag = false;
+				} else {
+					newChars = newChars.replaceFirst(w, "");
+				}
+			}
+			if (flag) {
+				System.out.println(word);
+				count += word.length;
+			}
+		}
+		return count;
+	}
+
+	// 矩阵重叠
+	@Test
+	public void test17() {
+		int[] rec1 = new int[] { 0, 0, 2, 2 };
+		int[] rec2 = new int[] { 1, 1, 3, 3 };
+
+		System.out.println(isRectangleOverlap(rec1, rec2));
+	}
+
+	public boolean isRectangleOverlap(int[] rec1, int[] rec2) {
+		return (Math.min(rec1[2], rec2[2]) > Math.max(rec1[0], rec2[0])
+				&& Math.min(rec1[3], rec2[3]) > Math.max(rec1[1], rec2[1]));
+	}
+
+	// 平衡二叉树
+	@Test
+	public void test18() {
+		TreeNode root = new TreeNode(3);
 		TreeNode node1 = new TreeNode(9);
 		TreeNode node2 = new TreeNode(20);
 		root.left = node1;
 		root.right = node2;
-		
+
 		TreeNode node3 = new TreeNode(15);
 		TreeNode node4 = new TreeNode(7);
 		node2.left = node3;
 		node2.right = node4;
 		System.out.println(isBalanced(root));
-    }
-    
-    public boolean isBalanced(TreeNode root) {
-    	if (root==null) {
-    		return true;
-    	}
-    	int leftHeight = treeHeight(root.left);
-    	int rightHeight = treeHeight(root.right);
-    	return Math.abs(leftHeight-rightHeight)<=1 && isBalanced(root.left) && isBalanced(root.right);
-    }
+	}
+
+	public boolean isBalanced(TreeNode root) {
+		if (root == null) {
+			return true;
+		}
+		int leftHeight = treeHeight(root.left);
+		int rightHeight = treeHeight(root.right);
+		return Math.abs(leftHeight - rightHeight) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+	}
 
 	private int treeHeight(TreeNode node) {
-		if (node==null) {
+		if (node == null) {
 			return 0;
 		}
-		return Math.max(treeHeight(node.left), treeHeight(node.right))+1;
+		return Math.max(treeHeight(node.left), treeHeight(node.right)) + 1;
 	}
-    
-	//路径总和
+
+	// 路径总和
 	@Test
 	public void test19() {
 //		TreeNode root = new TreeNode(5);
@@ -679,37 +739,38 @@ public class LeetCode {
 //		TreeNode node8 = new TreeNode(1);
 //		node7.right = node8;
 		TreeNode root = new TreeNode(1);
-		System.out.println(hasPathSum(root,1));
+		System.out.println(hasPathSum(root, 1));
 	}
-	 public boolean hasPathSum(TreeNode root, int sum) {
-		 if (root==null) {
-			 return false;
-		 }
-		 if (root.val == sum && root.left ==null && root.right == null) {
-			 return true;
-		 }
-		 return value(root,root.val,sum);
-	 }
+
+	public boolean hasPathSum(TreeNode root, int sum) {
+		if (root == null) {
+			return false;
+		}
+		if (root.val == sum && root.left == null && root.right == null) {
+			return true;
+		}
+		return value(root, root.val, sum);
+	}
 
 	private boolean value(TreeNode root, int count, int sum) {
 		boolean leftValue = false;
 		boolean rightValue = false;
-		if (root.left!=null) {
-			if (root.left.val+count == sum && root.left.left==null && root.left.right==null) {
+		if (root.left != null) {
+			if (root.left.val + count == sum && root.left.left == null && root.left.right == null) {
 				return true;
 			}
-			leftValue= value(root.left,root.left.val+count,sum);
+			leftValue = value(root.left, root.left.val + count, sum);
 		}
-		if (root.right!=null) {
-			if (root.right.val+count == sum && root.right.left==null && root.right.right==null) {
+		if (root.right != null) {
+			if (root.right.val + count == sum && root.right.left == null && root.right.right == null) {
 				return true;
 			}
-			rightValue= value(root.right,root.right.val+count,sum);
+			rightValue = value(root.right, root.right.val + count, sum);
 		}
-		return leftValue||rightValue;
+		return leftValue || rightValue;
 	}
-	
-	//相交链表
+
+	// 相交链表
 	@Test
 	public void test20() {
 		ListNode headA = new ListNode(0);
@@ -721,16 +782,17 @@ public class LeetCode {
 		headA1.next = headA2;
 		headA2.next = headA3;
 		headA3.next = headA4;
-		
+
 		ListNode headB = new ListNode(3);
 		ListNode headB1 = new ListNode(2);
 		ListNode headB2 = new ListNode(4);
 		headB.next = headA3;
-		//headB1.next = headA4;
-		ListNode node = getIntersectionNode(headA,headB);
-		System.out.println(node==null?null:node.val);
+		// headB1.next = headA4;
+		ListNode node = getIntersectionNode(headA, headB);
+		System.out.println(node == null ? null : node.val);
 	}
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+
+	public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 //        ListNode result = null;
 //        ListNode headA2 = headA;
 //        ListNode headB2 = headB;
@@ -751,12 +813,13 @@ public class LeetCode {
 //        	headA2 = headA2.next;
 //        }
 //        return result;	
-    	if (headA == null || headB == null) return null;
-        ListNode pA = headA, pB = headB;
-        while (pA != pB) {
-            pA = pA == null ? headB : pA.next;
-            pB = pB == null ? headA : pB.next;
-        }
-        return pA;
-    }
- }
+		if (headA == null || headB == null)
+			return null;
+		ListNode pA = headA, pB = headB;
+		while (pA != pB) {
+			pA = pA == null ? headB : pA.next;
+			pB = pB == null ? headA : pB.next;
+		}
+		return pA;
+	}
+}
