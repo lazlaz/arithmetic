@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
+import org.junit.Assert;
 
 public class LeetCode7 {
 	// 整数转罗马数字
@@ -165,5 +166,33 @@ public class LeetCode7 {
 		}
 		return res;
     }
+	
+	
+	//缺失的第一个正数
+	@Test
+	public void test5() {
+		//Assert.assertEquals(3, firstMissingPositive(new int[] {1,2,0}));
+		Assert.assertEquals(1, firstMissingPositive(new int[] {3,2,3}));
+	}
+	
+	public int firstMissingPositive(int[] nums) {
+		int len = nums.length;
+		for (int i=0;i<len;i++) {
+			while (nums[i]>0&&nums[i]<=len&&nums[nums[i]-1]!=nums[i]) {
+				swap(nums,nums[i]-1,i);
+			}
+		}
+		for (int i=0;i<len;i++) {
+			if (nums[i] != i+1) {
+				return i+1;
+			}
+		}
+		return len+1;
+    }
+	public void swap(int[] nums,int index1,int index2) {
+		int temp = nums[index1];
+		nums[index1] = nums[index2];
+		nums[index2] = temp;
+	}
 }
  
