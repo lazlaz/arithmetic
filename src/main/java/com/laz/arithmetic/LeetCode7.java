@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,5 +107,63 @@ public class LeetCode7 {
 			}
 		}
 	}
-
+	
+	// 四数之和
+	@Test
+	public void test4() {
+		int[] nums = new int[] {0,0,0,0};
+		int target = 0;
+		List<List<Integer>> list = fourSum(nums,target);
+		for (List<Integer> l : list) {
+			System.out.println(Joiner.on(",").join(l));
+		}
+	}
+	public List<List<Integer>> fourSum(int[] nums, int target) {
+		List<List<Integer>> res = new ArrayList<List<Integer>>();
+		Arrays.sort(nums);
+		if (nums==null || nums.length<4) {
+			return res;
+		}
+		int left1=0,left2=1;
+		int right1=nums.length-1,right2=nums.length-2;
+		Map<String,Boolean> falg = new HashMap<String,Boolean>();
+		while (left1<=nums.length-4 && left1<left2 && right2<right1 && left2<right2) {
+			List<Integer> list = new ArrayList<Integer>();
+			int r = nums[left1]+nums[left2]+nums[right2]+nums[right1];
+			if (r == target) {
+				list.add(nums[left1]);
+				list.add(nums[left2]);
+				list.add(nums[right2]);
+				list.add(nums[right1]);
+				String key = new StringBuffer().append(nums[left1]).append(nums[left2]).append(nums[right2]).append(nums[right1]).toString();
+				if (falg.get(key)==null || !falg.get(key)) {
+					falg.put(key, true);
+					res.add(list);
+				}
+				right2--;
+				left2++;
+			}
+			if (r>target) {
+				right2--;
+			}
+			if (r<target) {
+				left2++;
+			}
+			if (left2>=right2) {
+				if (right1-left1<4) {
+					right1=nums.length-1;
+					right2=right1-1;
+					left1++;
+					left2=left1+1;
+				} else {
+					right1--;
+					right2=right1-1;
+					left2=left1+1;
+				}
+				
+			}
+		}
+		return res;
+    }
 }
+ 
