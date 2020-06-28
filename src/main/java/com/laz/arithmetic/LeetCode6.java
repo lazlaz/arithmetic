@@ -181,4 +181,27 @@ public class LeetCode6 {
 		}
 		return false;
 	}
+	
+	//长度最小的子数组
+    @Test
+    public void test4() {
+    	//Assert.assertEquals(2, minSubArrayLen(7, new int[] {2,3,1,2,4,3}));
+    	Assert.assertEquals(3, minSubArrayLen(11, new int[] {1,2,3,4,5}));
+    }
+    public int minSubArrayLen(int s, int[] nums) {
+    	int start=0,end=0;
+    	int len = nums.length;
+    	int ans = Integer.MAX_VALUE;
+    	int sum = 0;
+    	while (end<len) {
+    		sum += nums[end];
+    		while (sum >= s) {
+    			ans = Math.min(ans, end-start+1);
+    			sum -= nums[start];
+    			start++;
+    		}
+    		end++;
+    	}
+    	return ans==Integer.MAX_VALUE?0:ans;
+    }
 }
