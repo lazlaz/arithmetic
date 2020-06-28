@@ -194,5 +194,49 @@ public class LeetCode7 {
 		nums[index1] = nums[index2];
 		nums[index2] = temp;
 	}
+	
+	//K 个一组翻转链表
+	@Test
+	public void test6() {
+		ListNode head = Utils.createListNode(new Integer[] {1,2,3,4,5});
+		ListNode newHead = reverseKGroup(head, 2);
+		Utils.printListNode(newHead);
+	}
+	
+	public ListNode reverseKGroup(ListNode head, int k) {
+		ListNode hair = new ListNode(0);
+		hair.next = head;
+		ListNode pre = hair;
+		while (head != null) {
+			ListNode tail = pre;
+			for (int i=0;i<k;i++) {
+				tail = tail.next;
+				if (tail == null) {
+					return hair.next;
+				}
+			}
+			ListNode next = tail.next;
+			Map<String,ListNode> map = reverse(head,tail);
+			pre.next = map.get("head");
+			map.get("tail").next = next;
+			pre = map.get("tail");
+			head = pre.next;
+		}
+		return hair.next;
+    }
+	public Map<String,ListNode> reverse(ListNode head, ListNode tail) {
+		 Map<String,ListNode> map = new HashMap<String,ListNode>();
+		ListNode prev = tail.next;
+		ListNode p = head;
+		while (prev != tail) {
+			ListNode next = p.next;
+			p.next = prev;
+			prev  = p;
+			p = next;
+		}
+		map.put("head", tail);
+		map.put("tail", head);
+		return map;
+	}
 }
  
