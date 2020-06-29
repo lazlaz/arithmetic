@@ -189,11 +189,7 @@ public class LeetCode7 {
 		}
 		return len+1;
     }
-	public void swap(int[] nums,int index1,int index2) {
-		int temp = nums[index1];
-		nums[index1] = nums[index2];
-		nums[index2] = temp;
-	}
+	
 	
 	//K 个一组翻转链表
 	@Test
@@ -237,6 +233,68 @@ public class LeetCode7 {
 		map.put("head", tail);
 		map.put("tail", head);
 		return map;
+	}
+	
+	//数组中的第K个最大元素
+	@Test
+	public void test7() {
+		Assert.assertEquals(5,findKthLargest(new int[] {3,2,1,5,6,4}, 2));
+	}
+	
+	public int findKthLargest(int[] nums, int k) {
+		if (nums==null || nums.length<k) {
+			return 0;
+		}
+		Arrays.sort(nums);
+		int count=0;
+		for (int i=nums.length-1;i>=0;i--) {
+			count++;
+			if (count==k) {
+				return nums[i];
+			}
+		}
+		return 0;
+    }
+	
+	//下一个排列
+	@Test
+	public void test8() {
+		int [] nums = new int[] {1,5,1};
+		nextPermutation(nums);
+		for (int i : nums) {
+			System.out.print(i+" ");
+		}
+	}
+	public void nextPermutation(int[] nums) {
+		if (nums == null || nums.length<0) {
+			return ;
+		}
+		int i = nums.length-2;
+		while (i>=0 && nums[i]>=nums[i+1]) {
+			i--;
+		}
+		if (i>=0) {
+			int j = nums.length-1;
+			while (j>i && nums[j]<=nums[i]) {
+				j--;
+			}
+			swap(nums,i,j);
+		}
+		reverse(nums,i+1);
+		
+	}
+	public void reverse(int[] nums, int start) {
+		int i = start, j = nums.length - 1;
+		while (i<j) {
+			swap(nums,i,j);
+			i++;
+			j--;
+		}
+	}
+	public void swap(int[] nums,int index1,int index2) {
+		int temp = nums[index1];
+		nums[index1] = nums[index2];
+		nums[index2] = temp;
 	}
 }
  
