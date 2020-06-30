@@ -2,7 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -204,4 +206,100 @@ public class LeetCode6 {
     	}
     	return ans==Integer.MAX_VALUE?0:ans;
     }
+    
+    //用两个栈实现队列
+    @Test
+    public void test5() {
+    	 CQueue obj = new CQueue();
+    	 obj.appendTail(3);
+    	 System.out.println(obj.deleteHead());
+    	 System.out.println(obj.deleteHead());
+    }
+    class CQueue {
+    	private Deque<Integer> stackIn;
+    	private Deque<Integer> stackOut;
+        public CQueue() {
+        	stackIn =new LinkedList<Integer>();
+        	stackOut =new LinkedList<Integer>();
+        }
+        
+        public void appendTail(int value) {
+        	if (!stackOut.isEmpty()) {
+        		s2s(stackOut,stackIn);
+        	}
+        	stackIn.push(value);
+        }
+        /*
+         * 一个栈的数据迁移到另一个栈
+         */
+        private void s2s(Deque<Integer> s1,Deque<Integer> s2) {
+        	while (s1.peek()!=null) {
+        		s2.push(s1.pop());
+        	}
+        }
+        
+        public int deleteHead() {
+        	if (!stackIn.isEmpty()) {
+        		s2s(stackIn,stackOut);
+        	}
+        	if (stackOut.isEmpty()) {
+        		return -1;
+        	}
+        	return stackOut.pop();
+        }
+    }
+    
+    //两数相除
+    @Test
+    public void test6() {
+    	//Assert.assertEquals(3, divide(10, 3));
+    	//Assert.assertEquals(2147483647, divide(-2147483648,-1));
+    	Assert.assertEquals(1073741823, divide(2147483647,2));
+    }
+    
+    public int divide(int dividend, int divisor) {
+    	//特殊值情况考虑
+    	if (dividend==0) {
+    		return 0;
+    	}
+    	if (divisor==1) {
+    		return dividend;
+    	}
+    	if (divisor==-1) {
+    		if(dividend>Integer.MIN_VALUE) {
+    			return -dividend;// 只要不是最小的那个整数，都是直接返回相反数就好啦
+    		}
+            return Integer.MAX_VALUE;// 是最小的那个，那就返回最大的整数啦
+    	}
+    	int sign = 1; 
+    	//判断最终结果是正数还是负数
+    	if((dividend>0&&divisor<0) || (dividend<0&&divisor>0)){
+    		sign = -1;
+    	}
+    	//都改为负号是因为int 的范围是[2^32, 2^32-1]，如果a是-2^32，转为正数时将会溢出
+    	int a = dividend>0?-dividend:dividend;
+    	int b = divisor>0?-divisor:divisor;
+    	if (a>b) {
+    		return 0;
+    	}
+    	int res = div(a,b);
+    	if (sign==-1) {
+    		return -res;
+    	}
+    	return res;
+    	
+    }
+	private int div(int dividend, int divisor) {
+		if (dividend>divisor) {
+			return 0;
+		}
+		int count = 1;
+		int tb = divisor;
+		while ((tb+tb)>=dividend && tb + tb < 0) {
+			count = count+count; //最小解加倍
+			tb = tb+tb; //值加倍
+		}
+		return count+div((dividend-tb),divisor);
+	}
+    
 }
