@@ -338,4 +338,79 @@ public class LeetCode7 {
 		}
 		return res;
 	}
+	
+	//最长重复子数组
+	@Test
+	public void test10() {
+		Assert.assertEquals(3,findLength(new int[] {1,2,3,2,1}, new int[] {3,2,1,4,7}));
+		Assert.assertEquals(1,findLength(new int[] {1,2,3,4,5}, new int[] {3,2,1,4,7}));
+		Assert.assertEquals(0,findLength(new int[] {}, new int[] {3,2,1,4,7}));
+		Assert.assertEquals(5,findLength(new int[] {0,0,0,0,0}, new int[] {0,0,0,0,0}));
+	}
+	
+	public int findLength(int[] A, int[] B) {
+		int n = A.length,m = B.length;
+		int ret = 0;
+		for (int i=0; i<n;i++) {
+			int len = Math.min(m, n-i);
+			int maxLen = maxLength(A,B,i,0,len);
+			ret = Math.max(maxLen, ret);
+		}
+		for (int i=0; i<n;i++) {
+			int len = Math.min(n, m-i);
+			int maxLen = maxLength(A,B,0,i,len);
+			ret = Math.max(maxLen, ret);
+		}
+		return ret;
+    }
+	private int maxLength(int[] A, int[] B, int addA,int addB,int len) {
+		int ret = 0,k=0;
+		for (int i=0;i<len;i++) {
+			if (A[addA+i]==B[addB+i]) {
+				k++;
+			}else {
+				k=0;
+			}
+			ret = Math.max(ret, k);
+		}
+		return ret;
+	}
+	
+	//搜索旋转排序数组
+	@Test
+	public void test11() {
+		Assert.assertEquals(4, search(new int[] {4,5,6,7,0,1,2}, 0));
+	}
+	public int search(int[] nums, int target) {
+		if (nums == null || nums.length<=0) {
+			return -1;
+		}
+		int l=0,r=nums.length-1;
+		while (l<=r) {
+			int mid = (l+r)/2;
+			if (nums[mid] ==  target) {
+				return mid;
+			}
+			//l至mid有序
+			if (nums[0] <= nums[mid]) {
+				if (nums[0]<=target && target<nums[mid]) {
+					//在 l至mid-1查找
+					r = mid-1;
+				} else {
+					//在mid+1至r查找
+					l = mid+1;
+				}
+			} else {
+				if (nums[mid]<target && target<=nums[nums.length-1]) {
+					//在 l至mid-1查找
+					l = mid+1;
+				} else {
+					//在mid+1至r查找
+					r = mid-1;
+				}
+			}
+			
+		}
+		return -1;
+	}
 }
