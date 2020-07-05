@@ -1,12 +1,13 @@
 package com.laz.arithmetic;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -447,47 +448,121 @@ public class LeetCode7 {
 	// 在排序数组中查找元素的第一个和最后一个位置
 	@Test
 	public void test13() {
-		int[] res = searchRange(new int[] {5,7,7,8,8,10},6);
+		int[] res = searchRange(new int[] { 5, 7, 7, 8, 8, 10 }, 6);
 		for (int i : res) {
-			System.out.print(i+" ");
+			System.out.print(i + " ");
 		}
 	}
 
 	public int[] searchRange(int[] nums, int target) {
-		int[] res = new int[] {-1,-1};
-		if (nums==null || nums.length<=0) {
+		int[] res = new int[] { -1, -1 };
+		if (nums == null || nums.length <= 0) {
 			return res;
 		}
-		int l=0,r=nums.length-1;
-		while (l<=r) {
-			int mid  = (l+r)/2;
+		int l = 0, r = nums.length - 1;
+		while (l <= r) {
+			int mid = (l + r) / 2;
 			if (nums[mid] == target) {
 				int index = mid;
-				while (index>=0) {
+				while (index >= 0) {
 					if (nums[index] != target) {
 						break;
 					}
 					index--;
 				}
-				res[0] = index+1;
+				res[0] = index + 1;
 				index = mid;
-				while (index<nums.length) {
+				while (index < nums.length) {
 					if (nums[index] != target) {
 						break;
 					}
 					index++;
 				}
-				res[1] = index-1;
+				res[1] = index - 1;
 				break;
 			}
-			if (nums[mid]<target) {
-				l=mid+1;
+			if (nums[mid] < target) {
+				l = mid + 1;
 			}
-			if (nums[mid]>target) {
-				r=mid-1;
+			if (nums[mid] > target) {
+				r = mid - 1;
 			}
 		}
 		return res;
 	}
+
+	// 最长有效括号
+	@Test
+	public void test14() {
+		Assert.assertEquals(4, longestValidParentheses(")()())"));
+//		Assert.assertEquals(10, longestValidParentheses("((((()))))("));
+//		Assert.assertEquals(6, longestValidParentheses("(()()))"));
+//		Assert.assertEquals(2, longestValidParentheses("()((()"));
+	}
+
+	public int longestValidParentheses(String s) {
+		if (s == null || s.length() <= 0) {
+			return 0;
+		}
+		Deque<Integer> stack = new LinkedList<Integer>();
+		stack.push(-1);
+		int max = 0;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c == '(') {
+				stack.push(i);
+			}
+			if (c == ')') {
+				stack.pop();
+				if (stack.size() == 0) {
+					stack.push(i);
+				} else {
+					max = Math.max(max, i - stack.peek());
+				}
+			}
+		}
+		return max;
+	}
+
+	// 组合总和
+	@Test
+	public void test15() {
+		int[] candidates = new int[] { 2, 3, 6, 7 };
+		int target = 7;
+		List<List<Integer>> list = combinationSum(candidates, target);
+		for (List<Integer> l : list) {
+			System.out.println(Joiner.on(",").join(l));
+		}
+	}
+
+	public List<List<Integer>> combinationSum(int[] candidates, int target) {
+		List<List<Integer>> res = new ArrayList<>();
+		int len = candidates.length;
+		// 排序是为了提前终止搜索
+		Arrays.sort(candidates);
+
+		dfs(candidates, len, target, 0, new ArrayDeque<>(), res);
+		return res;
+	}
+
+	private void dfs(int[] candidates, int len, int residue, int begin, Deque<Integer> path, List<List<Integer>> res) {
+		//减到0
+		if (residue == 0) {
+			// 由于 path 全局只使用一份，到叶子结点的时候需要做一个拷贝
+			res.add(new ArrayList<>(path));
+			return;
+		}
+		for (int i = begin; i < len; i++) {
+			int aim = residue - candidates[i];
+			// 在数组有序的前提下，剪枝
+			if (aim < 0) {
+				break;
+			}
+			path.addLast(candidates[i]);
+			dfs(candidates, len, aim, i, path, res);
+			path.removeLast();
+
+		}
+	}
+
 }
- 
