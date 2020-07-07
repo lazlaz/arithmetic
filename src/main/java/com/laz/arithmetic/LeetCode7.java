@@ -546,7 +546,7 @@ public class LeetCode7 {
 	}
 
 	private void dfs(int[] candidates, int len, int residue, int begin, Deque<Integer> path, List<List<Integer>> res) {
-		//减到0
+		// 减到0
 		if (residue == 0) {
 			// 由于 path 全局只使用一份，到叶子结点的时候需要做一个拷贝
 			res.add(new ArrayList<>(path));
@@ -564,39 +564,112 @@ public class LeetCode7 {
 
 		}
 	}
-	
-	//不同路径 II
+
+	// 不同路径 II
 	@Test
 	public void test16() {
-		Assert.assertEquals(2, uniquePathsWithObstacles(new int[][] {{
-			0,0,0
-		},{
-			0,1,0
-		},{
-			0,0,0
-		}}));
+		Assert.assertEquals(2, uniquePathsWithObstacles(new int[][] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } }));
 	}
-	 public int uniquePathsWithObstacles(int[][] obstacleGrid) {
-		 if (obstacleGrid[0][0] == 1) {
-			 return 0;
-		 }
-		 int m = obstacleGrid.length;
-		 int n = obstacleGrid[0].length;
-		 int[][] dp = new int[m][n];
-		 dp[0][0] = 1;
-		 for (int i=1;i<m;i++) {
-			 //第一列，有1后为0
-			 dp[i][0] = obstacleGrid[i][0] == 1 || dp[i - 1][0] == 0 ? 0 : 1;
-		 }
-		 for (int i=1;i<n;i++) {
-			 //第一行，有1后为0
-			 dp[0][i] = obstacleGrid[0][i] == 1 || dp[0][i - 1] == 0 ? 0 : 1;;
-		 }
-		 for (int i=1;i<m;i++) {
-			 for (int j=1;j<n;j++) {
-				 dp[i][j] = obstacleGrid[i][j] == 1 ?0: dp[i - 1][j] + dp[i][j - 1];
-			 }
-		 }
-		 return dp[m-1][n-1];
-	 }
+
+	public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+		if (obstacleGrid[0][0] == 1) {
+			return 0;
+		}
+		int m = obstacleGrid.length;
+		int n = obstacleGrid[0].length;
+		int[][] dp = new int[m][n];
+		dp[0][0] = 1;
+		for (int i = 1; i < m; i++) {
+			// 第一列，有1后为0
+			dp[i][0] = obstacleGrid[i][0] == 1 || dp[i - 1][0] == 0 ? 0 : 1;
+		}
+		for (int i = 1; i < n; i++) {
+			// 第一行，有1后为0
+			dp[0][i] = obstacleGrid[0][i] == 1 || dp[0][i - 1] == 0 ? 0 : 1;
+			;
+		}
+		for (int i = 1; i < m; i++) {
+			for (int j = 1; j < n; j++) {
+				dp[i][j] = obstacleGrid[i][j] == 1 ? 0 : dp[i - 1][j] + dp[i][j - 1];
+			}
+		}
+		return dp[m - 1][n - 1];
+	}
+
+	// 路径总和
+	@Test
+	public void test17() {
+		TreeNode root = Utils.createTree(new Integer[] { 5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1 });
+		System.out.println(hasPathSum(root, 22));
+	}
+
+	public boolean hasPathSum(TreeNode root, int sum) {
+		if (root == null) {
+			return false;
+		}
+		if (root.left == null && root.right == null) {
+			return sum == root.val;
+		}
+		return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+	}
+
+	// 解数独
+	@Test
+	public void test18() {
+		char[][] board = new char[][] { { '5', '3', '.', '.', '7', '.', '.', '.', '.' },
+				{ '6', '.', '.', '1', '9', '5', '.', '.', '.' }, { '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+				{ '8', '.', '.', '.', '6', '.', '.', '.', '3' }, { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+				{ '7', '.', '.', '.', '2', '.', '.', '.', '6' }, { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+				{ '.', '.', '.', '4', '1', '9', '.', '.', '5' }, { '.', '.', '.', '.', '8', '.', '.', '7', '9' } };
+		solveSudoku(board);
+		System.out.println(board);
+	}
+
+	public void solveSudoku(char[][] board) {
+		if (board == null || board[0] == null) {
+			return;
+		}
+		backTrace(board, 0, 0);
+	}
+
+	private boolean backTrace(char[][] board, int row, int col) {
+		int n = board.length;
+		//// 当前行已全部试探过，换到下一行第一个位置
+		if (col == 9) {
+			return backTrace(board, row + 1, 0);
+		}
+		// 满足结束条件，全部行全部位置都已试探过
+		if (row == n) {
+			// 最后一行最后一个位置[8][8]试探过后会试探[8][9]，会执行[9][0]，返回
+			return true;
+		}
+		 // 这个位置数字已给出，不需要试探，直接试探下一个位置
+		if (board[row][col] != '.') {
+			return backTrace(board, row, col+1);
+		}
+		for (char c = '1'; c<='9';c++) {
+			if (!isValid(board,row,col,c)) {
+				continue;
+			}
+			board[row][col]  = c;
+			if (backTrace(board, row, col+1)) {
+				return true;
+			}
+			//如果不能放，取消赋值
+			board[row][col] = '.';
+		}
+		return false;
+	}
+	private boolean isValid(char[][] board, int row, int col, char ch) {
+        // 三个方向，任一方向重复，ch就不能放在这个位置
+        for (int k = 0; k < 9; k++) {
+            // 同一行九个位置已出现 ch
+            if (board[row][k] == ch) return false;
+            // 同一列九个位置中已出现 ch
+            if (board[k][col] == ch) return false;
+            // 同一个子数独九个位置中已出现 ch
+            if (board[(row / 3) * 3 + k / 3][(col / 3) * 3 + k % 3] == ch) return false;
+        }
+        return true;
+    }
 }
