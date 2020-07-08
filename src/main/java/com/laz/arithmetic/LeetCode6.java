@@ -301,5 +301,35 @@ public class LeetCode6 {
 		}
 		return count+div((dividend-tb),divisor);
 	}
+	
+	//将有序数组转换为二叉搜索树
+    @Test
+    public void test7() {
+    	int[] nums = new int[] {-10,-3,0,5,9};
+    	TreeNode node = sortedArrayToBST(nums);
+    	System.out.println(node);
+    }
     
+    public TreeNode sortedArrayToBST(int[] nums) {
+    	if (nums == null || nums.length<=0) {
+    		return null;
+    	}
+    	int l=0,r=nums.length-1;
+    	TreeNode root = createTree(nums,l,r);
+    	return root;
+    	
+    }
+	private TreeNode createTree(int[] nums,int l,int r) {
+		if (l<0 || r<=l) {
+			return null;
+		}
+		if (r>=nums.length || l>=r) {
+			return null;
+		}
+		int mid = (l+r)/2;
+    	TreeNode root = new TreeNode(nums[mid]);
+    	root.left=createTree(nums, l, mid);
+    	root.right=createTree(nums, mid+1, r);
+		return root;
+	}
 }
