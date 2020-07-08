@@ -527,8 +527,8 @@ public class LeetCode7 {
 	// 组合总和
 	@Test
 	public void test15() {
-		int[] candidates = new int[] { 2, 3, 6, 7 };
-		int target = 7;
+		int[] candidates = new int[] {10,1,2,7,6,1,5 };
+		int target = 8;
 		List<List<Integer>> list = combinationSum(candidates, target);
 		for (List<Integer> l : list) {
 			System.out.println(Joiner.on(",").join(l));
@@ -672,4 +672,60 @@ public class LeetCode7 {
         }
         return true;
     }
+	
+	//组合总和 II
+	@Test
+	public void test19() {
+		int[] candidates = new int[] {10,1,2,7,6,1,5};
+		int target = 8;
+		List<List<Integer>> res = combinationSum2(candidates, target);
+		for (List<Integer> list : res) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+	
+	public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+		List<List<Integer>> res = new ArrayList<>();
+		int len = candidates.length;
+		Arrays.sort(candidates);
+		dfs2(candidates, len, target, 0, new ArrayDeque<>(), res);
+		return res;
+	}
+	private boolean contain(List<List<Integer>> res,ArrayList<Integer> path) {
+		for (List<Integer> list : res) {
+			if (list.size()==path.size()) {
+				boolean flag = true;
+				for (int i=0;i<list.size();i++) {
+					if (!path.get(i).equals(list.get(i))) {
+						flag = false;
+					}
+				}
+				if (flag) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private void dfs2(int[] candidates, int len, int residue, int begin, Deque<Integer> path, List<List<Integer>> res) {
+		if (residue == 0) {
+			if (!contain(res,new ArrayList<>(path))) {
+				//如果重复就不在添加
+				res.add(new ArrayList<>(path));
+			}
+			return ;
+		}
+		for (int i = begin; i < len; i++) {
+			int aim = residue - candidates[i];
+			// 在数组有序的前提下，剪枝
+			if (aim < 0) {
+				break;
+			}
+			int index = i+1;
+			path.addLast(candidates[i]);
+			dfs2(candidates, len, aim, index, path, res);
+			path.removeLast();
+		}
+	}
+	
 }
