@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -332,4 +335,32 @@ public class LeetCode6 {
     	root.right=createTree(nums, mid+1, r);
 		return root;
 	}
+	
+	//跳水板
+	@Test
+	public void test8() {
+//		Assert.assertArrayEquals(new int[] {3,4,5,6},divingBoard(1, 2, 3));
+//		Assert.assertArrayEquals(new int[] {},divingBoard(1, 2, 0));
+//		Assert.assertArrayEquals(new int[] {10000},divingBoard(1, 1, 10000));
+	}
+	public int[] divingBoard(int shorter, int longer, int k) {
+		if (k==0) {
+			return new int[] {};
+		}
+		//去除重复的长度
+		Set<Integer> set  = new LinkedHashSet<Integer>();
+		int sCount = k;
+		//开始短的数量为k,长的数量为0，然后短的慢慢减少，长的慢慢增加
+		while (sCount>=0) {
+			int sum = sCount*shorter+(k-sCount)*longer;
+			set.add(sum);
+			sCount--;
+		}
+		int[] res = new int[set.size()];
+		int i=0;
+		for (Integer integer : set) {
+			res[i++]=integer;
+		}
+		return res;
+    }
 }
