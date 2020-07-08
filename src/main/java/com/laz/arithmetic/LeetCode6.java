@@ -343,6 +343,25 @@ public class LeetCode6 {
 //		Assert.assertArrayEquals(new int[] {},divingBoard(1, 2, 0));
 //		Assert.assertArrayEquals(new int[] {10000},divingBoard(1, 1, 10000));
 	}
+	//去除解法1不必要的set,减少时间消耗
+	 public int[] divingBoard2(int shorter, int longer, int k) {
+	        if (k==0) {
+				return new int[] {};
+			}
+	        if (shorter==longer) {
+	            return new int[]{shorter*k};
+	        }
+			//去除重复的长度
+	        int[] lengths = new int[k + 1];
+			int sCount = k;
+			//开始短的数量为k,长的数量为0，然后短的慢慢减少，长的慢慢增加
+			while (sCount>=0) {
+				int sum = sCount*shorter+(k-sCount)*longer;
+				lengths[k-sCount] = sum;
+				sCount--;
+			}
+			return lengths;
+	}
 	public int[] divingBoard(int shorter, int longer, int k) {
 		if (k==0) {
 			return new int[] {};
