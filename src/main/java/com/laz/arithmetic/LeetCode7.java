@@ -713,4 +713,62 @@ public class LeetCode7 {
 		}
 	}
 	
+	//恢复空格
+	@Test
+	public void test20() {
+		Assert.assertEquals(7,respace(new String[] {"looked","just","like","her","brother"}, "jesslookedjustliketimherbrother"));
+	}
+	public int respace(String[] dictionary, String sentence) {
+		int n = sentence.length();
+		Trie root = new Trie();
+		for (String word:dictionary) {
+			root.insert(word);
+		}
+		int[] dp = new int[n+1];
+		Arrays.fill(dp, Integer.MAX_VALUE);
+		dp[0] = 0;
+		for (int i=1;i<=n;i++) {
+			dp[i] = dp[i-1]+1;
+			
+			Trie curPos = root;
+			for (int j=i;j>=1;j--) {
+				int t = sentence.charAt(j-1)-'a';
+				//没有找到前缀，说明该单词不在字典中
+				if (curPos.next[t] == null) {
+					break;
+				} else if(curPos.next[t].isEnd) {
+					dp[i] = Math.min(dp[i], dp[j-1]);
+				}
+				if (dp[i] == 0) {
+					break;
+				}
+				curPos = curPos.next[t];
+			}
+		}
+		return dp[n];
+	}
+	//字典树
+	class Trie {
+		public Trie[] next; // 子 节点
+		public boolean isEnd;  //是否到了单词卫
+		
+		public Trie() {
+			next = new Trie[26];//不区分大小写，26个字母
+			isEnd = false;
+		}
+		
+		public void insert(String s) {
+			Trie curPos = this;
+			//倒着插入字母
+			for (int i=s.length()-1;i>=0;--i) {
+				int t = s.charAt(i)-'a';
+				if (curPos.next[t]==null) {
+					curPos.next[t] = new Trie();
+				}
+				curPos = curPos.next[t];
+			}
+			//标记该位置为单词结束
+			curPos.isEnd = true;
+		}
+	}
 }
