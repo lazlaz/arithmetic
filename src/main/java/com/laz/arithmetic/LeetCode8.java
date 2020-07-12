@@ -161,4 +161,65 @@ public class LeetCode8 {
 		}
 		return builder.reverse().toString();
 	}
+
+	// 地下城游戏
+	@Test
+	public void test3() {
+		int[][] dungeon = new int[][] { { -2, -3, 3 }, { -5, -10, 1 }, { 10, 30, -5 } };
+		System.out.println(calculateMinimumHP(dungeon));
+	}
+
+	public int calculateMinimumHP(int[][] dungeon) {
+		int n = dungeon.length, m = dungeon[0].length;
+		int[][] dp = new int[n + 1][m + 1];
+		for (int i = 0; i <= n; ++i) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
+		}
+		// 令dp[i][j] 表示从坐标 (i,j) 到终点所需的最小初始值
+		/**
+		 * 边界条件为，当 i=n-1i=n−1 或者 j=m-1j=m−1 时， dp[i][j]dp[i][j] 转移需要用到的
+		 * dp[i][j+1]dp[i][j+1] 和 dp[i+1][j]dp[i+1][j] 中有无效值，因此代码实现中给无效值赋值为极大值。
+		 * 特别地，dp[n-1][m-1]dp[n−1][m−1] 转移需要用到的 dp[n-1][m]dp[n−1][m]
+		 */
+		// 必须有1点血
+		dp[n][m - 1] = 1;
+		dp[n - 1][m] = 1;
+		for (int i = n - 1; i >= 0; --i) {
+			for (int j = m - 1; j >= 0; --j) {
+				int minn = Math.min(dp[i + 1][j], dp[i][j + 1]);
+				dp[i][j] = Math.max(minn - dungeon[i][j], 1);
+			}
+		}
+		return dp[0][0];
+	}
+
+	// 接雨水
+	@Test
+	public void test4() {
+		Assert.assertEquals(6, trap(new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 }));
+	}
+
+	public int trap(int[] height) {
+		int left = 0,right = height.length-1;
+		int ans = 0;
+		int leftMax=0,rightMax=0;
+		while (left<right) {
+			if (height[left]<height[right]) {
+				 if (height[left]>=leftMax) {
+					 leftMax = height[left];
+				 } else {
+					 ans+=(leftMax - height[left]);
+				 }
+		         ++left;
+			} else {
+				 if (height[right]>=rightMax) {
+					 rightMax = height[right];
+				 } else {
+					 ans+=(rightMax - height[right]);
+				 }
+		         --right;
+			}
+		}
+		return ans;
+	}
 }
