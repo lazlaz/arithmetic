@@ -200,26 +200,97 @@ public class LeetCode8 {
 	}
 
 	public int trap(int[] height) {
-		int left = 0,right = height.length-1;
+		int left = 0, right = height.length - 1;
 		int ans = 0;
-		int leftMax=0,rightMax=0;
-		while (left<right) {
-			if (height[left]<height[right]) {
-				 if (height[left]>=leftMax) {
-					 leftMax = height[left];
-				 } else {
-					 ans+=(leftMax - height[left]);
-				 }
-		         ++left;
+		int leftMax = 0, rightMax = 0;
+		while (left < right) {
+			if (height[left] < height[right]) {
+				if (height[left] >= leftMax) {
+					leftMax = height[left];
+				} else {
+					ans += (leftMax - height[left]);
+				}
+				++left;
 			} else {
-				 if (height[right]>=rightMax) {
-					 rightMax = height[right];
-				 } else {
-					 ans+=(rightMax - height[right]);
-				 }
-		         --right;
+				if (height[right] >= rightMax) {
+					rightMax = height[right];
+				} else {
+					ans += (rightMax - height[right]);
+				}
+				--right;
 			}
 		}
 		return ans;
+	}
+
+	// 两个数组的交集 II
+	@Test
+	public void test5() {
+		Assert.assertArrayEquals(new int[] { 2, 2 }, intersect(new int[] { 1, 2, 2, 1 }, new int[] { 2, 2 }));
+		Assert.assertArrayEquals(new int[] { 4, 9 }, intersect(new int[] { 4, 9, 5 }, new int[] { 9, 4, 9, 8, 4 }));
+	}
+
+	public int[] intersect(int[] nums1, int[] nums2) {
+		int[] res = new int[] {};
+		if (nums1 == null || nums2 == null) {
+			return res;
+		}
+		if (nums1.length == 0 || nums2.length == 0) {
+			return res;
+		}
+		Arrays.sort(nums1);
+		Arrays.sort(nums2);
+		int i = 0;
+		int j = 0;
+		List<Integer> list = new ArrayList<Integer>();
+		while (i < nums1.length && j < nums2.length) {
+			if (nums1[i] == nums2[j]) {
+				list.add(nums1[i]);
+				j++;
+				i++;
+			} else if (nums1[i] > nums2[j]) {
+				j++;
+			} else if (nums1[i] < nums2[j]) {
+				i++;
+			}
+		}
+		res = new int[list.size()];
+		int count = 0;
+		for (Integer integer : list) {
+			res[count++] = integer;
+		}
+		return res;
+	}
+
+	// 通配符匹配
+	@Test
+	public void test6() {
+		//Assert.assertEquals(false, isMatch("aa","a"));
+		Assert.assertEquals(true, isMatch("aa","a*"));
+	}
+
+	public boolean isMatch(String s, String p) {
+		int m = s.length();
+		int n = p.length();
+		boolean[][] dp = new boolean[m + 1][n + 1];
+		dp[0][0] = true;
+		// dp[i][j] 表示字符串 s的前 i个字符和模式 p的前 j个字符是否能匹配
+		for (int i = 1; i <= n; ++i) {
+			if (p.charAt(i - 1) == '*') {
+				dp[0][i] = true;
+			} else {
+				break;
+			}
+		}
+		for (int i = 1; i <= m; ++i) {
+			for (int j = 1; j <= n; ++j) {
+				if (p.charAt(j - 1) == '*') {
+					dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+				} else if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
+					dp[i][j] = dp[i - 1][j - 1];
+				}
+			}
+		}
+		return dp[m][n];
 	}
 }
