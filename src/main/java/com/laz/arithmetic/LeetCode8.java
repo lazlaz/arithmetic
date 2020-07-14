@@ -293,4 +293,97 @@ public class LeetCode8 {
 		}
 		return dp[m][n];
 	}
+	
+	//三角形最小路径和
+	@Test
+	public void test7() {
+		List<List<Integer>> triangle = new ArrayList<List<Integer>>();
+		{
+			List<Integer> l = new ArrayList<Integer>();
+			l.add(2);
+			triangle.add(l);
+		}
+		{
+			List<Integer> l = new ArrayList<Integer>();
+			l.add(3);
+			l.add(4);
+			triangle.add(l);
+		}
+		{
+			List<Integer> l = new ArrayList<Integer>();
+			l.add(6);
+			l.add(5);
+			l.add(7);
+			triangle.add(l);
+		}
+		{
+			List<Integer> l = new ArrayList<Integer>();
+			l.add(4);
+			l.add(1);
+			l.add(8);
+			l.add(3);
+			triangle.add(l);
+		}
+		System.out.println(minimumTotal(triangle));
+	}
+	public int minimumTotal(List<List<Integer>> triangle) {
+		int n = triangle.size();
+
+		int[][] dp = new int[2][n];
+		dp[0][0] = triangle.get(0).get(0);
+		for (int i=1;i<n;i++) {
+			int curr = i%2;
+			int prev = 1-curr;
+			dp[curr][0] = dp[prev][0]+triangle.get(i).get(0);
+			for (int j=1;j<i;j++) {
+				dp[curr][j] = Math.min(dp[prev][j-1], dp[prev][j])+triangle.get(i).get(j);
+			}
+			dp[curr][i] = dp[prev][i - 1] + triangle.get(i).get(i);
+		}
+		int min = dp[(n-1)%2][0];
+		for (int i=1;i<n;i++) {
+			min = Math.min(min, dp[(n-1)%2][i]);
+		}
+		return min;
+	}
+	
+	//跳跃游戏 II
+	@Test
+	public void test8() {
+		Assert.assertEquals(2, jump(new int[] {2,3,1,1,4}));
+	}
+	public int jump(int[] nums) {
+		int end = 0;
+	    int maxPosition = 0; 
+	    int steps = 0;
+	    for(int i = 0; i < nums.length - 1; i++){
+	        //找能跳的最远的
+	        maxPosition = Math.max(maxPosition, nums[i] + i); 
+	        if( i == end){ //遇到边界，就更新边界，并且步数加一
+	            end = maxPosition;
+	            steps++;
+	        }
+	    }
+	    return steps;
+	}
+	//超时
+	public int jump2(int[] nums) {
+		int n  = nums.length;
+		int[] dp = new int[n];
+		dp[0] = 0;
+		for (int i=1;i<n;i++) {
+			//默认等于前一步加一
+			dp[i] = dp[i-1]+1;
+			int count = 1;
+			for (int j=i-1;j>=0;j--) {
+				if (nums[j]>=count) {
+					//能够达到
+					dp[i] = Math.min(dp[i], dp[j]+1);
+				}
+				count++;
+			}
+		}
+		return dp[n-1];
+		
+	}
 }
