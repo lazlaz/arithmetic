@@ -1,8 +1,10 @@
 package com.laz.arithmetic;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -415,6 +417,49 @@ public class LeetCode8 {
 		List<List<Integer>> list = permute(nums);
 		for (List<Integer> l : list) {
 			System.out.println(Joiner.on(",").join(l));
+		}
+	}
+
+	public List<List<Integer>> permute2(int[] nums) {
+		int len = nums.length;
+
+		List<List<Integer>> res = new ArrayList<>(factorial(len));
+		if (len == 0) {
+			return res;
+		}
+
+		// 使用哈希表检测一个数字是否使用过
+		Set<Integer> used = new HashSet<>(len);
+		Deque<Integer> path = new ArrayDeque<>(len);
+
+		dfs(nums, len, 0, path, used, res);
+		return res;
+	}
+
+	private int factorial(int n) {
+		int res = 1;
+		for (int i = 2; i <= n; i++) {
+			res *= i;
+		}
+		return res;
+	}
+
+	private void dfs(int[] nums, int len, int depth, Deque<Integer> path, Set<Integer> used, List<List<Integer>> res) {
+		if (depth == len) {
+			res.add(new ArrayList<>(path));
+			return;
+		}
+
+		for (int i = 0; i < len; i++) {
+			if (!used.contains(i)) {
+				used.add(i);
+				path.addLast(nums[i]);
+
+				dfs(nums, len, depth + 1, path, used, res);
+
+				path.removeLast();
+				used.remove(i);
+			}
 		}
 	}
 
