@@ -494,12 +494,6 @@ public class LeetCode8 {
 	@Test
 	public void test11() {
 		int[][] graph = new int[][] { { 1, 3 }, { 0, 2 }, { 1, 3 }, { 0, 2 } };
-		int[][] graph = new int[][] {
-			{1,3},
-			{0,2},
-			{1,3},
-			{0,2}
-		};
 		Assert.assertEquals(true, new Solution().isBipartite(graph));
 	}
 
