@@ -1,3 +1,3 @@
 # arithmetic
 
-###leetcode练习试题整理
+### leetcode练习试题整理
