@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -609,4 +611,70 @@ public class LeetCode8 {
 			path.removeLast();
 		}
 	}
+
+	// 交错字符串
+	@Test
+	public void test13() {
+		// Assert.assertEquals(true, isInterleave("aabcc","dbbca","aadbbcbcac"));
+		Assert.assertEquals(true, isInterleave("ab", "bc", "babc"));
+	}
+
+	public boolean isInterleave(String s1, String s2, String s3) {
+		int n = s1.length(), m = s2.length(), z = s3.length();
+		if (n + m != z) {
+			return false;
+		}
+		// 我们定义 f(i, j) 表示 s_1的前 i 个元素和 s_2的前 j个元素是否能交错组成 s_3的前 i + j 个元素
+		boolean[][] dp = new boolean[n + 1][m + 1];
+		dp[0][0] = true;
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) {
+				int p = i + j - 1;
+				if (i > 0 && s1.charAt(i - 1) == s3.charAt(p)) {
+					dp[i][j] = dp[i][j] || dp[i - 1][j];
+				}
+				if (j > 0 && s2.charAt(j - 1) == s3.charAt(p)) {
+					dp[i][j] = dp[i][j] || dp[i][j - 1];
+				}
+			}
+		}
+		return dp[n][m];
+
+	}
+
+	// 字母异位词分组
+	@Test
+	public void test14() {
+		String[] strs = new String[] { "eat", "tea", "tan", "ate", "nat", "bat" };
+		List<List<String>> res = groupAnagrams(strs);
+		for (List<String> list : res) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+
+	public List<List<String>> groupAnagrams(String[] strs) {
+		if (strs.length == 0) {
+			return new ArrayList();
+		}
+		Map<String, List> ans = new HashMap<String, List>();
+		int[] count = new int[26];
+		for (String s : strs) {
+			Arrays.fill(count, 0);
+			for (char c : s.toCharArray()) {
+				count[c - 'a']++;
+			}
+			StringBuilder sb = new StringBuilder("");
+			for (int i = 0; i < 26; i++) {
+				sb.append('#');
+				sb.append(count[i]);
+			}
+			String key = sb.toString();
+			if (!ans.containsKey(key)) {
+				ans.put(key, new ArrayList());
+			}
+			ans.get(key).add(s);
+		}
+		return new ArrayList(ans.values());
+	}
+
 }
