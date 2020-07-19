@@ -677,4 +677,148 @@ public class LeetCode8 {
 		return new ArrayList(ans.values());
 	}
 
+	// 戳气球
+	@Test
+	public void test15() {
+		Assert.assertEquals(167, maxCoins(new int[] { 3, 1, 5, 8 }));
+	}
+
+	public int maxCoins(int[] nums) {
+		int n = nums.length;
+		// 令solve(i,j) 表示将开区间 (i,j)内的位置全部填满气球能够得到的最多硬币数
+		int[][] rec = new int[n + 2][n + 2];
+		int[] val = new int[n + 2];
+		val[0] = val[n + 1] = 1;
+		for (int i = 1; i <= n; i++) {
+			val[i] = nums[i - 1];
+		}
+		for (int i = n - 1; i >= 0; i--) {
+			for (int j = i + 2; j <= n + 1; j++) {
+				for (int k = i + 1; k < j; k++) {
+					int sum = val[i] * val[k] * val[j];
+					sum += rec[i][k] + rec[k][j];
+					rec[i][j] = Math.max(rec[i][j], sum);
+				}
+			}
+		}
+		return rec[0][n + 1];
+	}
+
+	// N皇后
+	@Test
+	public void test16() {
+		List<List<String>> res = new QueenSolution().solveNQueens(8);
+		System.out.println(res.size());
+		for (List<String> list : res) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+
+	class QueenSolution {
+		private List<List<String>> output = new ArrayList<>();
+
+		// 用于标记是否被列方向的皇后被攻击
+		int[] rows;
+		// 用于标记是否被主对角线方向的皇后攻击
+		int[] mains;
+		// 用于标记是否被次对角线方向的皇后攻击
+		int[] secondary;
+		// 用于存储皇后放置的位置
+		int[] queens;
+
+		int n;
+
+		public List<List<String>> solveNQueens(int n) {
+			// 初始化
+			rows = new int[n];
+			mains = new int[2 * n - 1];
+			secondary = new int[2 * n - 1];
+			queens = new int[n];
+			this.n = n;
+
+			// 从第一行开始回溯求解 N 皇后
+			backtrack(0);
+
+			return output;
+		}
+
+		// 在一行中放置一个皇后
+		private void backtrack(int row) {
+			if (row >= n)
+				return;
+			// 分别尝试在 row 行中的每一列中放置皇后
+			for (int col = 0; col < n; col++) {
+				// 判断当前放置的皇后是否不被其他皇后的攻击
+				if (isNotUnderAttack(row, col)) {
+					// 选择，在当前的位置上放置皇后
+					placeQueen(row, col);
+					// 当当前行是最后一行，则找到了一个解决方案
+					if (row == n - 1) {
+						addSolution();
+					}else {
+						// 在下一行中放置皇后
+						backtrack(row + 1);
+					}
+					// 撤销，回溯，即将当前位置的皇后去掉
+					removeQueen(row, col);
+				}
+			}
+		}
+
+		// 判断 row 行，col 列这个位置有没有被其他方向的皇后攻击
+		private boolean isNotUnderAttack(int row, int col) {
+			// 判断的逻辑是：
+			// 1. 当前位置的这一列方向没有皇后攻击
+			// 2. 当前位置的主对角线方向没有皇后攻击
+			// 3. 当前位置的次对角线方向没有皇后攻击
+			//row-col已经可以代表主对角线，但是为了防止数组越界加了n-1
+			int res = rows[col] + mains[row - col + n - 1] + secondary[row + col];
+			// 如果三个方向都没有攻击的话，则 res = 0，即当前位置不被任何的皇后攻击
+			return res == 0;
+		}
+
+		// 在指定的位置上放置皇后
+		private void placeQueen(int row, int col) {
+			// 在 row 行，col 列 放置皇后
+			queens[row] = col;
+			// 当前位置的列方向已经有皇后了
+			rows[col] = 1;
+			// 当前位置的主对角线方向已经有皇后了
+			mains[row - col + n - 1] = 1;
+			// 当前位置的次对角线方向已经有皇后了
+			secondary[row + col] = 1;
+		}
+
+		// 移除指定位置上的皇后
+		private void removeQueen(int row, int col) {
+			// 移除 row 行上的皇后
+			queens[row] = 0;
+			// 当前位置的列方向没有皇后了
+			rows[col] = 0;
+			// 当前位置的主对角线方向没有皇后了
+			mains[row - col + n - 1] = 0;
+			// 当前位置的次对角线方向没有皇后了
+			secondary[row + col] = 0;
+		}
+
+		/**
+		 * 将满足条件的皇后位置放入output中
+		 */
+		public void addSolution() {
+			List<String> solution = new ArrayList<String>();
+			for (int i = 0; i < n; ++i) {
+				int col = queens[i];
+				StringBuilder sb = new StringBuilder();
+				for (int j = 0; j < col; ++j)
+					sb.append(".");
+				sb.append("Q");
+				for (int j = 0; j < n - col - 1; ++j)
+					sb.append(".");
+				solution.add(sb.toString());
+			}
+			output.add(solution);
+		}
+
+	}
+
 }
