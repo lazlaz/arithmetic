@@ -62,7 +62,26 @@ public class LeetCode2 {
 			System.out.print(i + " ");
 		}
 	}
+	//双指针解法
+	public int[] twoSum2(int[] numbers, int target) {
+        int[] res = new int[2];
+        int l=0,r=numbers.length-1;
+        while (l<r) {
 
+            if (numbers[l]+numbers[r] == target) {
+                res[0] = l+1;
+                res[1] = r+1;
+                return res;
+            }
+            if (numbers[l]+numbers[r] > target) {
+                r--;
+            }
+            if (numbers[l]+numbers[r] < target) {
+                l++;
+            }
+        }
+        return res;
+    }
 	public int[] twoSum(int[] numbers, int target) {
 		int[] values = new int[2];
 		for (int i = 0; i < numbers.length; i++) {
