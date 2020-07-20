@@ -755,7 +755,7 @@ public class LeetCode8 {
 					// 当当前行是最后一行，则找到了一个解决方案
 					if (row == n - 1) {
 						addSolution();
-					}else {
+					} else {
 						// 在下一行中放置皇后
 						backtrack(row + 1);
 					}
@@ -771,7 +771,7 @@ public class LeetCode8 {
 			// 1. 当前位置的这一列方向没有皇后攻击
 			// 2. 当前位置的主对角线方向没有皇后攻击
 			// 3. 当前位置的次对角线方向没有皇后攻击
-			//row-col已经可以代表主对角线，但是为了防止数组越界加了n-1
+			// row-col已经可以代表主对角线，但是为了防止数组越界加了n-1
 			int res = rows[col] + mains[row - col + n - 1] + secondary[row + col];
 			// 如果三个方向都没有攻击的话，则 res = 0，即当前位置不被任何的皇后攻击
 			return res == 0;
@@ -821,4 +821,70 @@ public class LeetCode8 {
 
 	}
 
+	// 螺旋矩阵
+	@Test
+	public void test17() {
+		//int[][] matrix = new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+		//int[][] matrix = new int[][] { { 1, 2, 3 } };
+		int[][] matrix = new int[][] { { 1},{2},{3} ,{4}};
+		//int[][] matrix = new int[][] { { 1, 2, 3 ,4}, { 5, 6 ,7, 8}, {9,10,11,12 } };
+		List<Integer> res = spiralOrder(matrix);
+		System.out.println(Joiner.on(",").join(res));
+	}
+
+	public List<Integer> spiralOrder(int[][] matrix) {
+		List<Integer> res = new ArrayList<Integer>();
+		if (matrix == null || matrix.length == 0 || matrix[0] == null) {
+			return res;
+		}
+		int m = matrix.length;
+		int n = matrix[0].length;
+		int len = Math.min(m%2==1?m/2:m/2-1, n%2==1?n/2:n/2-1);
+		for (int i = 0; i <= len; i++) {
+			printArray(matrix, i, i, m, n, res);
+			m = m - 1;
+			n = n - 1;
+		}
+		return res;
+	}
+
+	private void printArray(int[][] matrix, int row, int col, int m, int n, List<Integer> res) {
+		int initR = row;
+		int initCol = col;
+		//判断是否是只有一列或者一行的情况
+		if (matrix.length%2==1 && matrix.length/2==row) {
+			//只有一行的情况
+			while (initCol < n) {
+				res.add(matrix[initR][initCol]);
+				initCol++;
+			}
+		} else if (matrix[0].length%2==1 && matrix[0].length/2==col){
+			while (initR < m) {
+				res.add(matrix[initR][initCol]);
+				initR++;
+			}
+		} else {
+			// 遍历上方,列+
+			while (initCol < n - 1) {
+				res.add(matrix[initR][initCol]);
+				initCol++;
+			}
+			// 遍历右方，行+
+			while (initR < m - 1) {
+				res.add(matrix[initR][initCol]);
+				initR++;
+			}
+			// 遍历下方，列-
+			while (initCol > col) {
+				res.add(matrix[initR][initCol]);
+				initCol--;
+			}
+			// 遍历左方，行-
+			while (initR > row) {
+				res.add(matrix[initR][initCol]);
+				initR--;
+			}
+		}
+		
+	}
 }
