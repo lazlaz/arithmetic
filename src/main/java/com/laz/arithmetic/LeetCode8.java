@@ -824,10 +824,10 @@ public class LeetCode8 {
 	// 螺旋矩阵
 	@Test
 	public void test17() {
-		//int[][] matrix = new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-		//int[][] matrix = new int[][] { { 1, 2, 3 } };
-		int[][] matrix = new int[][] { { 1},{2},{3} ,{4}};
-		//int[][] matrix = new int[][] { { 1, 2, 3 ,4}, { 5, 6 ,7, 8}, {9,10,11,12 } };
+		// int[][] matrix = new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+		// int[][] matrix = new int[][] { { 1, 2, 3 } };
+		int[][] matrix = new int[][] { { 1 }, { 2 }, { 3 }, { 4 } };
+		// int[][] matrix = new int[][] { { 1, 2, 3 ,4}, { 5, 6 ,7, 8}, {9,10,11,12 } };
 		List<Integer> res = spiralOrder(matrix);
 		System.out.println(Joiner.on(",").join(res));
 	}
@@ -839,7 +839,7 @@ public class LeetCode8 {
 		}
 		int m = matrix.length;
 		int n = matrix[0].length;
-		int len = Math.min(m%2==1?m/2:m/2-1, n%2==1?n/2:n/2-1);
+		int len = Math.min(m % 2 == 1 ? m / 2 : m / 2 - 1, n % 2 == 1 ? n / 2 : n / 2 - 1);
 		for (int i = 0; i <= len; i++) {
 			printArray(matrix, i, i, m, n, res);
 			m = m - 1;
@@ -851,14 +851,14 @@ public class LeetCode8 {
 	private void printArray(int[][] matrix, int row, int col, int m, int n, List<Integer> res) {
 		int initR = row;
 		int initCol = col;
-		//判断是否是只有一列或者一行的情况
-		if (matrix.length%2==1 && matrix.length/2==row) {
-			//只有一行的情况
+		// 判断是否是只有一列或者一行的情况
+		if (matrix.length % 2 == 1 && matrix.length / 2 == row) {
+			// 只有一行的情况
 			while (initCol < n) {
 				res.add(matrix[initR][initCol]);
 				initCol++;
 			}
-		} else if (matrix[0].length%2==1 && matrix[0].length/2==col){
+		} else if (matrix[0].length % 2 == 1 && matrix[0].length / 2 == col) {
 			while (initR < m) {
 				res.add(matrix[initR][initCol]);
 				initR++;
@@ -885,6 +885,27 @@ public class LeetCode8 {
 				initR--;
 			}
 		}
-		
+
+	}
+
+	// 跳跃游戏
+	@Test
+	public void test18() {
+		Assert.assertEquals(true, canJump(new int[] { 2, 3, 1, 1, 4 }));
+		Assert.assertEquals(false, canJump(new int[] { 3,2,1,0,4 }));
+	}
+	//贪心算法，每一次走最大步，更新最大长度标记，如果遍历到当前index>最长标记，说明无法达到
+	public boolean canJump(int[] nums) {
+		if (nums==null || nums.length==0) {
+			return false;
+		}
+		int maxPos = 0;
+		for (int i=0;i<nums.length;i++) {
+			if (i > maxPos) {
+				return false;
+			}
+			maxPos = Math.max(maxPos, i+nums[i]);
+		}
+		return true;
 	}
 }
