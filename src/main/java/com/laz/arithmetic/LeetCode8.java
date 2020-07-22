@@ -892,20 +892,111 @@ public class LeetCode8 {
 	@Test
 	public void test18() {
 		Assert.assertEquals(true, canJump(new int[] { 2, 3, 1, 1, 4 }));
-		Assert.assertEquals(false, canJump(new int[] { 3,2,1,0,4 }));
+		Assert.assertEquals(false, canJump(new int[] { 3, 2, 1, 0, 4 }));
 	}
-	//贪心算法，每一次走最大步，更新最大长度标记，如果遍历到当前index>最长标记，说明无法达到
+
+	// 贪心算法，每一次走最大步，更新最大长度标记，如果遍历到当前index>最长标记，说明无法达到
 	public boolean canJump(int[] nums) {
-		if (nums==null || nums.length==0) {
+		if (nums == null || nums.length == 0) {
 			return false;
 		}
 		int maxPos = 0;
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			if (i > maxPos) {
 				return false;
 			}
-			maxPos = Math.max(maxPos, i+nums[i]);
+			maxPos = Math.max(maxPos, i + nums[i]);
 		}
 		return true;
+	}
+
+	// 剑指 Offer 11. 旋转数组的最小数字
+	@Test
+	public void test19() {
+		// Assert.assertEquals(1, minArray(new int[] {3,4,5,1,2}));
+		// Assert.assertEquals(0, minArray(new int[] {2,2,2,0,1}));
+		Assert.assertEquals(1, minArray(new int[] { 1, 3, 5 }));
+	}
+
+	public int minArray(int[] numbers) {
+		int low = 0;
+		int high = numbers.length - 1;
+		while (low < high) {
+			int pivot = low + (high - low) / 2; // 这种二分写法，防止(high + low)直接溢出了
+			if (numbers[pivot] < numbers[high]) {
+				high = pivot;
+			} else if (numbers[pivot] > numbers[high]) {
+				low = pivot + 1;
+			} else {
+				high -= 1;
+			}
+		}
+		return numbers[low];
+	}
+
+	// 螺旋矩阵 II
+	@Test
+	public void test20() {
+		int[][] matrix = generateMatrix(3);
+		for (int[] is : matrix) {
+			for (int v : is) {
+				System.out.print(v);
+			}
+			System.out.println();
+		}
+	}
+
+	public int[][] generateMatrix(int n) {
+		int[][] matrix = new int[n][n];
+		int m = n;
+		int len = Math.min(m % 2 == 1 ? m / 2 : m / 2 - 1, n % 2 == 1 ? n / 2 : n / 2 - 1);
+		int value = 1;
+		for (int i = 0; i <= len; i++) {
+			value = printArray2(matrix, i, i, m, n,value);
+			m = m - 1;
+			n = n - 1;
+		}
+		return matrix;
+	}
+	
+	private int printArray2(int[][] matrix, int row, int col, int m, int n,int value) {
+		int initR = row;
+		int initCol = col;
+		// 判断是否是只有一列或者一行的情况
+		if (matrix.length % 2 == 1 && matrix.length / 2 == row) {
+			// 只有一行的情况
+			while (initCol < n) {
+				matrix[initR][initCol]=value++;
+				initCol++;
+			}
+		} else if (matrix[0].length % 2 == 1 && matrix[0].length / 2 == col) {
+			while (initR < m) {
+				matrix[initR][initCol]=value++;
+				initR++;
+			}
+		} else {
+			// 遍历上方,列+
+			while (initCol < n - 1) {
+				matrix[initR][initCol]=value++;
+				initCol++;
+			}
+			// 遍历右方，行+
+			while (initR < m - 1) {
+				matrix[initR][initCol]=value++;
+				initR++;
+			}
+			// 遍历下方，列-
+			while (initCol > col) {
+				matrix[initR][initCol]=value++;
+				initCol--;
+			}
+			// 遍历左方，行-
+			while (initR > row) {
+				matrix[initR][initCol]=value++;
+				initR--;
+			}
+		}
+		return value;
+
 	}
 }
