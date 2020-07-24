@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import javafx.util.Pair;
 
-public class LeetCode {
+public class LeetCode1 {
 
 	// 多数元素
 	@Test
