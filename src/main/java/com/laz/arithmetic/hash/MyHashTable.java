@@ -3,16 +3,16 @@ package com.laz.arithmetic.hash;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HashTable<T> {
+public class MyHashTable<T> {
 	private static final int DEFAULT_TABLE_SIZE = 100;
 
-	public HashTable() {
+	public MyHashTable() {
 		this(DEFAULT_TABLE_SIZE);
 	}
 
 	private List[] theLists;
 
-	public HashTable(int size) {
+	public MyHashTable(int size) {
 		theLists = new LinkedList[nextPrime(size)];
 		for (int i = 0; i < theLists.length; i++) {
 			theLists[i] = new LinkedList<>();// 初始化链表数组
