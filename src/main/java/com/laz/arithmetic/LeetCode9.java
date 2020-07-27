@@ -142,7 +142,7 @@ public class LeetCode9 {
 		Assert.assertEquals("213", getPermutation(3, 3));
 	}
 
-	//思路：https://leetcode-cn.com/problems/permutation-sequence/solution/pai-lie-zu-he-zhi-di-kge-pai-lie-golden-monkey-by-/
+	// 思路：https://leetcode-cn.com/problems/permutation-sequence/solution/pai-lie-zu-he-zhi-di-kge-pai-lie-golden-monkey-by-/
 	public String getPermutation(int n, int k) {
 		int[] nums = new int[n];// 生成nums数组
 		for (int i = 0; i < n; i++) {
@@ -191,5 +191,77 @@ public class LeetCode9 {
 			res *= n--;
 		}
 		return res;
+	}
+
+	// 判断子序列
+	@Test
+	public void test5() {
+		Assert.assertEquals(true, isSubsequence("abc", "ahbgdc"));
+		Assert.assertEquals(false, isSubsequence("axc", "ahbgdc"));
+		Assert.assertEquals(false, isSubsequence("dd", ""));
+	}
+
+	public boolean isSubsequence(String s, String t) {
+		int j = 0;
+		int i = 0;
+		while (j < t.length() && i < s.length()) {
+			if (s.charAt(i) == t.charAt(j)) {
+				i++;
+				if (i == s.length()) {
+					return true;
+				}
+			}
+			j++;
+		}
+		if (i == s.length()) {
+			return true;
+		}
+		return false;
+	}
+
+	// 旋转链表
+	@Test
+	public void test6() {
+		ListNode list = Utils.createListNode(new Integer[] {0,1,2 });
+		ListNode newList = rotateRight(list, 3);
+		Utils.printListNode(newList);
+	}
+
+	public ListNode rotateRight(ListNode head, int k) {
+		// 获取list长度
+		ListNode temp = head;
+		int count = 0;
+		while (temp != null) {
+			temp = temp.next;
+			count++;
+		}
+		if (count == 0) {
+			return head;
+		}
+		//能够反转的数
+		int v = k%count;
+		temp = head;
+		int len = 0;
+		ListNode reveseList = null;
+		while (temp != null) {
+			len++;
+			if (count-len==v && temp !=null) {
+				//反转此后的数据
+				reveseList = temp.next;
+				temp.next = null;
+				break;
+			}
+			temp = temp.next;
+		}
+		//另后面的数据作为头部，链接前面的数据
+		if (reveseList !=null) {
+			ListNode newHead = reveseList;
+			while (reveseList.next != null) {
+				reveseList = reveseList.next;
+			}
+			reveseList.next = head;
+			return newHead;
+		}
+		return head;
 	}
 }
