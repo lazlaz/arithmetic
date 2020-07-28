@@ -222,7 +222,7 @@ public class LeetCode9 {
 	// 旋转链表
 	@Test
 	public void test6() {
-		ListNode list = Utils.createListNode(new Integer[] {0,1,2 });
+		ListNode list = Utils.createListNode(new Integer[] { 0, 1, 2 });
 		ListNode newList = rotateRight(list, 3);
 		Utils.printListNode(newList);
 	}
@@ -238,23 +238,23 @@ public class LeetCode9 {
 		if (count == 0) {
 			return head;
 		}
-		//能够反转的数
-		int v = k%count;
+		// 能够反转的数
+		int v = k % count;
 		temp = head;
 		int len = 0;
 		ListNode reveseList = null;
 		while (temp != null) {
 			len++;
-			if (count-len==v && temp !=null) {
-				//反转此后的数据
+			if (count - len == v && temp != null) {
+				// 反转此后的数据
 				reveseList = temp.next;
 				temp.next = null;
 				break;
 			}
 			temp = temp.next;
 		}
-		//另后面的数据作为头部，链接前面的数据
-		if (reveseList !=null) {
+		// 另后面的数据作为头部，链接前面的数据
+		if (reveseList != null) {
 			ListNode newHead = reveseList;
 			while (reveseList.next != null) {
 				reveseList = reveseList.next;
@@ -263,5 +263,78 @@ public class LeetCode9 {
 			return newHead;
 		}
 		return head;
+	}
+
+	// 不同路径
+	@Test
+	public void test7() {
+		Assert.assertEquals(3, uniquePaths(3, 2));
+	}
+
+	public int uniquePaths(int m, int n) {
+		// 动态规划dp[i][j]是到达 i, j 最多路径
+		int[][] dp = new int[m][n];
+		for (int i = 0; i < m; i++) {
+			dp[i][0] = 1;
+		}
+		for (int i = 0; i < n; i++) {
+			dp[0][i] = 1;
+		}
+		for (int i = 1; i < m; i++) {
+			for (int j = 1; j < n; j++) {
+				dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+			}
+		}
+		return dp[m - 1][n - 1];
+	}
+
+	// 有效数字
+	@Test
+	public void test8() {
+		Assert.assertEquals(true, isNumber("-90e3"));
+	}
+
+	/**
+	 * 
+先设定numSeen，dotSeen和eSeen三种boolean变量，分别代表是否出现数字、点和E
+然后遍历目标字符串
+1.判断是否属于数字的0~9区间
+2.遇到点的时候，判断前面是否有点或者E，都需要return false
+3.遇到E的时候，判断前面数字是否合理，是否有E，并把numSeen置为false，防止E后无数字
+4.遇到-+的时候，判断是否是第一个，如果不是第一个判断是否在E后面，都不满足则return false
+5.其他情况都为false
+	 * @param s
+	 * @return
+	 */
+	public boolean isNumber(String s) {
+		if (s == null || s.length() == 0)
+			return false;
+		boolean numSeen = false;
+		boolean dotSeen = false;
+		boolean eSeen = false;
+		char arr[] = s.trim().toCharArray();
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] >= '0' && arr[i] <= '9') {
+				numSeen = true;
+			} else if (arr[i] == '.') {
+				if (dotSeen || eSeen) {
+					return false;
+				}
+				dotSeen = true;
+			} else if (arr[i] == 'E' || arr[i] == 'e') {
+				if (eSeen || !numSeen) {
+					return false;
+				}
+				eSeen = true;
+				numSeen = false;
+			} else if (arr[i] == '+' || arr[i] == '-') {
+				if (i != 0 && arr[i - 1] != 'e' && arr[i - 1] != 'E') {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		return numSeen;
 	}
 }
