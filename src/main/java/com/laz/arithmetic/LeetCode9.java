@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LeetCode9 {
-	// 最小路径和
+	// 最小路径和 
 	@Test
 	public void test1() {
 		Assert.assertEquals(7, minPathSum(new int[][] { { 1, 3, 1 }, { 1, 5, 1 }, { 4, 2, 1 } }));
