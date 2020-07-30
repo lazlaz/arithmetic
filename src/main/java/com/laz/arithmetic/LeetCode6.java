@@ -461,8 +461,8 @@ public class LeetCode6 {
 		}
 		return false;
 	}
-	
-	//递推解法
+
+	// 递推解法
 	public boolean divisorGame2(int N) {
 		boolean[] f = new boolean[N + 5];
 
@@ -470,7 +470,7 @@ public class LeetCode6 {
 		f[2] = true;
 		for (int i = 3; i <= N; ++i) {
 			for (int j = 1; j < i; ++j) {
-				//如果存在一种解法胜，则胜
+				// 如果存在一种解法胜，则胜
 				if ((i % j) == 0 && !f[i - j]) {
 					f[i] = true;
 					break;
@@ -479,5 +479,26 @@ public class LeetCode6 {
 		}
 
 		return f[N];
+	}
+
+	// 整数拆分
+	@Test
+	public void test11() {
+		Assert.assertEquals(36, integerBreak(10));
+	}
+
+	public int integerBreak(int n) {
+		//dp表示数值i，最大整数拆分乘积
+		int[] dp = new int[n+1];
+		dp[0] = 1;
+		dp[1] = 1;
+		for (int i=2;i<=n;i++) {
+			int currMax = 0;
+			for (int j=1;j<i;j++) {
+				currMax = Math.max(currMax, Math.max(j*(i-j), j*dp[i-j]));
+			}
+			dp[i] = currMax;
+		}
+		return dp[n];
 	}
 }
