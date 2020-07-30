@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LeetCode9 {
-	// 最小路径和 
+	// 最小路径和
 	@Test
 	public void test1() {
 		Assert.assertEquals(7, minPathSum(new int[][] { { 1, 3, 1 }, { 1, 5, 1 }, { 4, 2, 1 } }));
@@ -506,40 +506,40 @@ public class LeetCode9 {
 	}
 
 	public String simplifyPath(String path) {
-		if (path ==null || path.length()==0) {
+		if (path == null || path.length() == 0) {
 			return path;
 		}
 		List<String> list = new ArrayList<String>();
 		StringBuffer sb = new StringBuffer();
-		//先将字符串拆成/xx /. /..模式
-		for (int i=0;i<path.length();i++) {
+		// 先将字符串拆成/xx /. /..模式
+		for (int i = 0; i < path.length(); i++) {
 			if (path.charAt(i) == '/') {
-				if (sb.length()>0) {
+				if (sb.length() > 0) {
 					list.add(sb.toString());
 				}
 				sb = new StringBuffer();
 			}
 			sb.append(path.charAt(i));
 		}
-		if (sb.length()>0) {
+		if (sb.length() > 0) {
 			list.add(sb.toString());
 		}
 		Deque<String> stack = new LinkedList<String>();
 		for (String p : list) {
 			stack.push(p);
 			if (p.equals("/..")) {
-				//移除两位
+				// 移除两位
 				stack.pop();
-				if (stack.peek()!=null) {
+				if (stack.peek() != null) {
 					stack.pop();
 				}
 			}
 			if (p.equals("/.")) {
-				//移除一位
+				// 移除一位
 				stack.pop();
 			}
 			if (p.equals("/")) {
-				//移除一位
+				// 移除一位
 				stack.pop();
 			}
 		}
@@ -547,9 +547,86 @@ public class LeetCode9 {
 			return "/";
 		}
 		String str = "";
-		while (stack.peek()!=null) {
-			str=stack.pop()+str;
+		while (stack.peek() != null) {
+			str = stack.pop() + str;
 		}
 		return str.toString();
+	}
+
+	// 文本左右对齐
+	@Test
+	public void test11() {
+		String[] words = new String[] { "Science","is","what","we","understand","well","enough","to","explain", "to","a","computer.","Art","is","everything","else","we","do" };
+		List<String> rows = fullJustify(words, 20);
+		for (String str : rows) {
+			System.out.println(str);
+		}
+	}
+
+	public List<String> fullJustify(String[] words, int maxWidth) {
+		List<String> res = new ArrayList<String>();
+		int count = 0;
+		Deque<String> queue = new LinkedList<String>();
+		for (int i = 0; i < words.length; i++) {
+			//每行每个单词书写有固定空格,除最后一个
+			queue.offer(words[i]);
+			count += words[i].length()+1;
+			if (count > maxWidth+1) {
+				// 先移除最后加入的
+				queue.removeLast();
+				// 加入一行，计算额外空格数
+				int spaceNum = maxWidth - count + words[i].length()+2;
+				//间隙数
+				int spaceCount = queue.size()-1;
+				StringBuilder sb = new StringBuilder();
+				//本行只有一个单词
+				if (spaceCount==0) {
+					sb.append(queue.poll()+getSpace(spaceNum));
+					res.add(sb.toString());
+				} else {
+					// 获取余数和除后结果
+					int remainder = spaceNum % (spaceCount);
+					int r = spaceNum / spaceCount;
+					
+					while (queue.peek() != null && queue.size()>1) {
+						sb.append(queue.poll()+" ");
+						int spaceN = r;
+						if (remainder > 0) {
+							spaceN = spaceN + 1;
+							remainder--;
+						}
+						sb.append(getSpace(spaceN));
+					}
+					sb.append(queue.poll());
+					res.add(sb.toString());
+				}
+				queue.offer(words[i]);
+				count = words[i].length()+1;
+			}
+		}
+		//最后一行
+		if (queue.peek()!=null) {
+			StringBuilder sb = new StringBuilder();
+			int c = 0;
+			while (queue.peek()!=null && queue.size()>1) {
+				String str = queue.poll();
+				c = c+str.length()+1;
+				sb.append(str+" ");
+			}
+			String str = queue.poll();
+			sb.append(str);
+			c += str.length();
+			sb.append(getSpace(maxWidth-c));
+			res.add(sb.toString());
+		}
+		return res;
+	}
+
+	private String getSpace(int spaceN) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i <= spaceN; i++) {
+			sb.append(" ");
+		}
+		return sb.toString();
 	}
 }
