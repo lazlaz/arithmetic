@@ -2,9 +2,14 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import org.junit.Assert;
@@ -556,7 +561,8 @@ public class LeetCode9 {
 	// 文本左右对齐
 	@Test
 	public void test11() {
-		String[] words = new String[] { "Science","is","what","we","understand","well","enough","to","explain", "to","a","computer.","Art","is","everything","else","we","do" };
+		String[] words = new String[] { "Science", "is", "what", "we", "understand", "well", "enough", "to", "explain",
+				"to", "a", "computer.", "Art", "is", "everything", "else", "we", "do" };
 		List<String> rows = fullJustify(words, 20);
 		for (String str : rows) {
 			System.out.println(str);
@@ -568,28 +574,28 @@ public class LeetCode9 {
 		int count = 0;
 		Deque<String> queue = new LinkedList<String>();
 		for (int i = 0; i < words.length; i++) {
-			//每行每个单词书写有固定空格,除最后一个
+			// 每行每个单词书写有固定空格,除最后一个
 			queue.offer(words[i]);
-			count += words[i].length()+1;
-			if (count > maxWidth+1) {
+			count += words[i].length() + 1;
+			if (count > maxWidth + 1) {
 				// 先移除最后加入的
 				queue.removeLast();
 				// 加入一行，计算额外空格数
-				int spaceNum = maxWidth - count + words[i].length()+2;
-				//间隙数
-				int spaceCount = queue.size()-1;
+				int spaceNum = maxWidth - count + words[i].length() + 2;
+				// 间隙数
+				int spaceCount = queue.size() - 1;
 				StringBuilder sb = new StringBuilder();
-				//本行只有一个单词
-				if (spaceCount==0) {
-					sb.append(queue.poll()+getSpace(spaceNum));
+				// 本行只有一个单词
+				if (spaceCount == 0) {
+					sb.append(queue.poll() + getSpace(spaceNum));
 					res.add(sb.toString());
 				} else {
 					// 获取余数和除后结果
 					int remainder = spaceNum % (spaceCount);
 					int r = spaceNum / spaceCount;
-					
-					while (queue.peek() != null && queue.size()>1) {
-						sb.append(queue.poll()+" ");
+
+					while (queue.peek() != null && queue.size() > 1) {
+						sb.append(queue.poll() + " ");
 						int spaceN = r;
 						if (remainder > 0) {
 							spaceN = spaceN + 1;
@@ -601,22 +607,22 @@ public class LeetCode9 {
 					res.add(sb.toString());
 				}
 				queue.offer(words[i]);
-				count = words[i].length()+1;
+				count = words[i].length() + 1;
 			}
 		}
-		//最后一行
-		if (queue.peek()!=null) {
+		// 最后一行
+		if (queue.peek() != null) {
 			StringBuilder sb = new StringBuilder();
 			int c = 0;
-			while (queue.peek()!=null && queue.size()>1) {
+			while (queue.peek() != null && queue.size() > 1) {
 				String str = queue.poll();
-				c = c+str.length()+1;
-				sb.append(str+" ");
+				c = c + str.length() + 1;
+				sb.append(str + " ");
 			}
 			String str = queue.poll();
 			sb.append(str);
 			c += str.length();
-			sb.append(getSpace(maxWidth-c));
+			sb.append(getSpace(maxWidth - c));
 			res.add(sb.toString());
 		}
 		return res;
@@ -629,4 +635,245 @@ public class LeetCode9 {
 		}
 		return sb.toString();
 	}
+
+	// N皇后 II
+	@Test
+	public void test12() {
+		Assert.assertEquals(2, new QueenSolution().totalNQueens(4));
+	}
+
+	class QueenSolution {
+		private List<List<String>> output = new ArrayList<>();
+
+		// 用于标记是否被列方向的皇后被攻击
+		int[] rows;
+		// 用于标记是否被主对角线方向的皇后攻击
+		int[] mains;
+		// 用于标记是否被次对角线方向的皇后攻击
+		int[] secondary;
+		// 用于存储皇后放置的位置
+		int[] queens;
+
+		int n;
+
+		public int totalNQueens(int n) {
+			// 初始化
+			rows = new int[n];
+			mains = new int[2 * n - 1];
+			secondary = new int[2 * n - 1];
+			queens = new int[n];
+			this.n = n;
+			// 从第一行开始回溯求解 N 皇后
+			backtrack(0);
+			return output.size();
+		}
+
+		// 在一行中放置一个皇后
+		private void backtrack(int row) {
+			if (row >= n)
+				return;
+			// 分别尝试在 row 行中的每一列中放置皇后
+			for (int col = 0; col < n; col++) {
+				// 判断当前放置的皇后是否不被其他皇后的攻击
+				if (isNotUnderAttack(row, col)) {
+					// 选择，在当前的位置上放置皇后
+					placeQueen(row, col);
+					// 当当前行是最后一行，则找到了一个解决方案
+					if (row == n - 1) {
+						addSolution();
+					} else {
+						// 在下一行中放置皇后
+						backtrack(row + 1);
+					}
+					// 撤销，回溯，即将当前位置的皇后去掉
+					removeQueen(row, col);
+				}
+			}
+		}
+
+		// 判断 row 行，col 列这个位置有没有被其他方向的皇后攻击
+		private boolean isNotUnderAttack(int row, int col) {
+			// 判断的逻辑是：
+			// 1. 当前位置的这一列方向没有皇后攻击
+			// 2. 当前位置的主对角线方向没有皇后攻击
+			// 3. 当前位置的次对角线方向没有皇后攻击
+			// row-col已经可以代表主对角线，但是为了防止数组越界加了n-1
+			int res = rows[col] + mains[row - col + n - 1] + secondary[row + col];
+			// 如果三个方向都没有攻击的话，则 res = 0，即当前位置不被任何的皇后攻击
+			return res == 0;
+		}
+
+		// 在指定的位置上放置皇后
+		private void placeQueen(int row, int col) {
+			// 在 row 行，col 列 放置皇后
+			queens[row] = col;
+			// 当前位置的列方向已经有皇后了
+			rows[col] = 1;
+			// 当前位置的主对角线方向已经有皇后了
+			mains[row - col + n - 1] = 1;
+			// 当前位置的次对角线方向已经有皇后了
+			secondary[row + col] = 1;
+		}
+
+		// 移除指定位置上的皇后
+		private void removeQueen(int row, int col) {
+			// 移除 row 行上的皇后
+			queens[row] = 0;
+			// 当前位置的列方向没有皇后了
+			rows[col] = 0;
+			// 当前位置的主对角线方向没有皇后了
+			mains[row - col + n - 1] = 0;
+			// 当前位置的次对角线方向没有皇后了
+			secondary[row + col] = 0;
+		}
+
+		/**
+		 * 将满足条件的皇后位置放入output中
+		 */
+		public void addSolution() {
+			List<String> solution = new ArrayList<String>();
+			for (int i = 0; i < n; ++i) {
+				int col = queens[i];
+				StringBuilder sb = new StringBuilder();
+				for (int j = 0; j < col; ++j)
+					sb.append(".");
+				sb.append("Q");
+				for (int j = 0; j < n - col - 1; ++j)
+					sb.append(".");
+				solution.add(sb.toString());
+			}
+			output.add(solution);
+		}
+
+	}
+
+	// 最小区间
+	@Test
+	public void test13() {
+		List<List<Integer>> nums = new ArrayList<List<Integer>>();
+		{
+			List<Integer> num = new ArrayList<Integer>();
+			num.add(4);
+			num.add(10);
+			num.add(15);
+			num.add(24);
+			num.add(26);
+			nums.add(num);
+		}
+		{
+			List<Integer> num = new ArrayList<Integer>();
+			num.add(0);
+			num.add(9);
+			num.add(12);
+			num.add(20);
+			nums.add(num);
+		}
+		{
+			List<Integer> num = new ArrayList<Integer>();
+			num.add(5);
+			num.add(18);
+			num.add(22);
+			num.add(30);
+			nums.add(num);
+		}
+		int[] res = smallestRange(nums);
+		for (int i : res) {
+			System.out.print(i + " ");
+		}
+		System.out.println();
+	}
+
+	public int[] smallestRange(List<List<Integer>> nums) {
+		int rangeLeft = 0, rangeRight = Integer.MAX_VALUE;
+		int minRange = rangeRight - rangeLeft;
+		int max = Integer.MIN_VALUE;
+		int size = nums.size();
+		int[] next = new int[size];
+		PriorityQueue<Integer> priorityQueue = new PriorityQueue<Integer>(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return nums.get(o1).get(next[o1]) - nums.get(o2).get(next[o2]);
+			}
+		});
+		for (int i = 0; i < size; i++) {
+			priorityQueue.offer(i);
+			max = Math.max(max, nums.get(i).get(0));
+		}
+		while (true) {
+			int minIndex = priorityQueue.poll();
+			int curRange = max - nums.get(minIndex).get(next[minIndex]);
+			if (curRange < minRange) {
+				minRange = curRange;
+				rangeLeft = nums.get(minIndex).get(next[minIndex]);
+				rangeRight = max;
+			}
+			next[minIndex]++;
+			if (next[minIndex] == nums.get(minIndex).size()) {
+				break;
+			}
+			priorityQueue.offer(minIndex);
+			max = Math.max(max, nums.get(minIndex).get(next[minIndex]));
+		}
+		return new int[] { rangeLeft, rangeRight };
+	}
+
+	// 最小覆盖子串
+	@Test
+	public void test14() {
+		Assert.assertEquals("BANC", minWindow("ADOBECODEBANC", "ABC"));
+	}
+
+	Map<Character, Integer> ori = new HashMap<Character, Integer>();
+	Map<Character, Integer> cnt = new HashMap<Character, Integer>();
+
+	public String minWindow(String s, String t) {
+		int tLen = t.length();
+		for (int i = 0; i < tLen; i++) {
+			char c = t.charAt(i);
+			ori.put(c, ori.getOrDefault(c, 0) + 1);
+		}
+		int l = 0, r = -1;
+		int len = Integer.MAX_VALUE, ansL = -1, ansR = -1;
+		int sLen = s.length();
+		while (r < sLen) {
+			++r;
+			if (r < sLen && ori.containsKey(s.charAt(r))) {
+				cnt.put(s.charAt(r), cnt.getOrDefault(s.charAt(r), 0) + 1);
+			}
+			while (check() && l <= r) {
+				//是否小于上次的长度
+				if (r - l + 1 < len) {
+					len = r - l + 1;
+					ansL = l;
+					ansR = l + len;
+				}
+				if (ori.containsKey(s.charAt(l))) {
+					cnt.put(s.charAt(l), cnt.getOrDefault(s.charAt(l), 0) - 1);
+				}
+				++l;
+			}
+			if (len == t.length()) {
+				break;
+			}
+		}
+		return ansL == -1 ? "" : s.substring(ansL, ansR);
+	}
+	
+	/**
+	 * 检查是否包含了所有字符
+	 * @return
+	 */
+	public boolean check() {
+		Iterator iter = ori.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			Character key = (Character) entry.getKey();
+			Integer val = (Integer) entry.getValue();
+			if (cnt.getOrDefault(key, 0) < val) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }
