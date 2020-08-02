@@ -909,36 +909,87 @@ public class LeetCode9 {
 	// 编辑距离
 	@Test
 	public void test16() {
-		Assert.assertEquals(3,minDistance("horse","ros"));
-		Assert.assertEquals(5,minDistance("intention","execution"));
+		Assert.assertEquals(3, minDistance("horse", "ros"));
+		Assert.assertEquals(5, minDistance("intention", "execution"));
 	}
-	
-	//题解：https://leetcode-cn.com/problems/edit-distance/solution/zi-di-xiang-shang-he-zi-ding-xiang-xia-by-powcai-3/
+
+	// 题解：https://leetcode-cn.com/problems/edit-distance/solution/zi-di-xiang-shang-he-zi-ding-xiang-xia-by-powcai-3/
 	public int minDistance(String word1, String word2) {
 		int n1 = word1.length();
 		int n2 = word2.length();
-		int[][] dp = new int[n1+1][n2+1];
-		//第一行
-		for (int j=1;j<=n2;j++) {
-			//做插入操作
-			dp[0][j] = dp[0][j-1]+1;
+		int[][] dp = new int[n1 + 1][n2 + 1];
+		// 第一行
+		for (int j = 1; j <= n2; j++) {
+			// 做插入操作
+			dp[0][j] = dp[0][j - 1] + 1;
 		}
-		//第一列
-		for (int i=1;i<=n1;i++) {
-			//做删除操作
-			dp[i][0] = dp[i-1][0]+1;
+		// 第一列
+		for (int i = 1; i <= n1; i++) {
+			// 做删除操作
+			dp[i][0] = dp[i - 1][0] + 1;
 		}
-		for (int i=1;i<=n1;i++) {
-			for (int j=1;j<=n2;j++) {
-				if (word1.charAt(i-1) == word2.charAt(j-1)) {
-					dp[i][j] = dp[i-1][j-1];
+		for (int i = 1; i <= n1; i++) {
+			for (int j = 1; j <= n2; j++) {
+				if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+					dp[i][j] = dp[i - 1][j - 1];
 				} else {
-					//dp[i-1][j-1] 表示替换操作，dp[i-1][j] 表示删除操作，dp[i][j-1] 表示插入操作
-					dp[i][j] = Math.min(Math.min(dp[i-1][j-1], dp[i][j-1]), dp[i-1][j])+1;
+					// dp[i-1][j-1] 表示替换操作，dp[i-1][j] 表示删除操作，dp[i][j-1] 表示插入操作
+					dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i][j - 1]), dp[i - 1][j]) + 1;
 				}
 			}
 		}
 		return dp[n1][n2];
-		
+
+	}
+
+	// 矩阵置零
+	@Test
+	public void test17() {
+		int[][] matrix = new int[][] {
+			{1,1,1},
+			{1,0,1},
+			{1,1,1}
+		};
+		setZeroes(matrix);
+		for (int[] is : matrix) {
+			for (int i : is) {
+				System.out.print(i);
+			}
+			System.out.println();
+		}
+	}
+
+	public void setZeroes(int[][] matrix) {
+		if (matrix == null || matrix[0]==null) {
+			return ;
+		}
+		int m = matrix.length;
+		int n = matrix[0].length;
+		boolean[][] flag= new boolean[m][n];
+		for (int i=0;i<m;i++) {
+			for (int j=0;j<n;j++) {
+				if (matrix[i][j] == 0) {
+					//记录未0的下标
+					flag[i][j] = true;
+				}
+			}
+		}
+		for (int i=0;i<m;i++) {
+			for (int j=0;j<n;j++) {
+				if (flag[i][j]) {
+					replaceRowCol(matrix,i,j);
+				}
+			}
+		}
+	}
+	private void replaceRowCol(int[][] matrix,int row,int col) {
+		int m = matrix.length;
+		int n = matrix[0].length;
+		for (int i=0;i<n;i++) {
+			matrix[row][i] = 0;
+		}
+		for (int i=0;i<m;i++) {
+			matrix[i][col] = 0;
+		}
 	}
 }
