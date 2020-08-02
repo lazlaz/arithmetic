@@ -841,7 +841,7 @@ public class LeetCode9 {
 				cnt.put(s.charAt(r), cnt.getOrDefault(s.charAt(r), 0) + 1);
 			}
 			while (check() && l <= r) {
-				//是否小于上次的长度
+				// 是否小于上次的长度
 				if (r - l + 1 < len) {
 					len = r - l + 1;
 					ansL = l;
@@ -858,9 +858,10 @@ public class LeetCode9 {
 		}
 		return ansL == -1 ? "" : s.substring(ansL, ansR);
 	}
-	
+
 	/**
 	 * 检查是否包含了所有字符
+	 * 
 	 * @return
 	 */
 	public boolean check() {
@@ -876,4 +877,68 @@ public class LeetCode9 {
 		return true;
 	}
 
+	// 二叉树展开为链表
+	@Test
+	public void test15() {
+		TreeNode root = Utils.createTree(new Integer[] { 1, 2, 5, 3, 4, null, 6 });
+		flatten(root);
+		System.out.print(root.val + "->");
+		while (root.right != null) {
+			System.out.print(root.right.val + "->");
+			root = root.right;
+		}
+	}
+
+	public void flatten(TreeNode root) {
+		TreeNode curr = root;
+		while (curr != null) {
+			if (curr.left != null) {
+				TreeNode next = curr.left;
+				TreeNode predecessor = next;
+				while (predecessor.right != null) {
+					predecessor = predecessor.right;
+				}
+				predecessor.right = curr.right;
+				curr.left = null;
+				curr.right = next;
+			}
+			curr = curr.right;
+		}
+	}
+
+	// 编辑距离
+	@Test
+	public void test16() {
+		Assert.assertEquals(3,minDistance("horse","ros"));
+		Assert.assertEquals(5,minDistance("intention","execution"));
+	}
+	
+	//题解：https://leetcode-cn.com/problems/edit-distance/solution/zi-di-xiang-shang-he-zi-ding-xiang-xia-by-powcai-3/
+	public int minDistance(String word1, String word2) {
+		int n1 = word1.length();
+		int n2 = word2.length();
+		int[][] dp = new int[n1+1][n2+1];
+		//第一行
+		for (int j=1;j<=n2;j++) {
+			//做插入操作
+			dp[0][j] = dp[0][j-1]+1;
+		}
+		//第一列
+		for (int i=1;i<=n1;i++) {
+			//做删除操作
+			dp[i][0] = dp[i-1][0]+1;
+		}
+		for (int i=1;i<=n1;i++) {
+			for (int j=1;j<=n2;j++) {
+				if (word1.charAt(i-1) == word2.charAt(j-1)) {
+					dp[i][j] = dp[i-1][j-1];
+				} else {
+					//dp[i-1][j-1] 表示替换操作，dp[i-1][j] 表示删除操作，dp[i][j-1] 表示插入操作
+					dp[i][j] = Math.min(Math.min(dp[i-1][j-1], dp[i][j-1]), dp[i-1][j])+1;
+				}
+			}
+		}
+		return dp[n1][n2];
+		
+	}
 }
