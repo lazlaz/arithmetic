@@ -945,11 +945,7 @@ public class LeetCode9 {
 	// 矩阵置零
 	@Test
 	public void test17() {
-		int[][] matrix = new int[][] {
-			{1,1,1},
-			{1,0,1},
-			{1,1,1}
-		};
+		int[][] matrix = new int[][] { { 1, 1, 1 }, { 1, 0, 1 }, { 1, 1, 1 } };
 		setZeroes(matrix);
 		for (int[] is : matrix) {
 			for (int i : is) {
@@ -960,36 +956,123 @@ public class LeetCode9 {
 	}
 
 	public void setZeroes(int[][] matrix) {
-		if (matrix == null || matrix[0]==null) {
-			return ;
+		if (matrix == null || matrix[0] == null) {
+			return;
 		}
 		int m = matrix.length;
 		int n = matrix[0].length;
-		boolean[][] flag= new boolean[m][n];
-		for (int i=0;i<m;i++) {
-			for (int j=0;j<n;j++) {
+		boolean[][] flag = new boolean[m][n];
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
 				if (matrix[i][j] == 0) {
-					//记录未0的下标
+					// 记录未0的下标
 					flag[i][j] = true;
 				}
 			}
 		}
-		for (int i=0;i<m;i++) {
-			for (int j=0;j<n;j++) {
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
 				if (flag[i][j]) {
-					replaceRowCol(matrix,i,j);
+					replaceRowCol(matrix, i, j);
 				}
 			}
 		}
 	}
-	private void replaceRowCol(int[][] matrix,int row,int col) {
+
+	private void replaceRowCol(int[][] matrix, int row, int col) {
 		int m = matrix.length;
 		int n = matrix[0].length;
-		for (int i=0;i<n;i++) {
+		for (int i = 0; i < n; i++) {
 			matrix[row][i] = 0;
 		}
-		for (int i=0;i<m;i++) {
+		for (int i = 0; i < m; i++) {
 			matrix[i][col] = 0;
 		}
+	}
+
+	// 字符串相加
+	@Test
+	public void test18() {
+//		Assert.assertEquals("13", addStrings("11", "2"));
+//		Assert.assertEquals("107", addStrings("98", "9"));
+		Assert.assertEquals("413", addStrings("408", "5"));
+	}
+
+	public String addStrings(String num1, String num2) {
+		if (num1.length() < num2.length()) {
+			return addStrings(num2, num1);
+		}
+		int carry = 0;
+		StringBuilder sb = new StringBuilder();
+		int num1Len = num1.length() - 1;
+		int num2Len = num2.length() - 1;
+		while (num2Len >= 0) {
+			String value = addChar(carry, num1.charAt(num1Len--), num2.charAt(num2Len--));
+			if (value.length() == 2) {
+				carry = Integer.valueOf(value.substring(0, 1));
+				sb.append(value.substring(1, 2));
+			} else {
+				carry = 0;
+				sb.append(value.substring(0, 1));
+			}
+		}
+		while (num1Len >= 0) {
+			String value = addChar(carry, num1.charAt(num1Len--), '0');
+			if (value.length() == 2) {
+				carry = Integer.valueOf(value.substring(0, 1));
+				sb.append(value.substring(1, 2));
+			} else {
+				carry = 0;
+				sb.append(value.substring(0, 1));
+			}
+		}
+		if (carry != 0) {
+			sb.append(carry);
+		}
+		return sb.reverse().toString();
+	}
+
+	private String addChar(int carry, char charAt, char charAt2) {
+		int v = carry + (charAt - '0') + (charAt2 - '0');
+		return String.valueOf(v);
+	}
+
+	// 搜索二维矩阵
+	@Test
+	public void test19() {
+		Assert.assertEquals(true, searchMatrix(new int[][] {
+			{1,3,5,7},
+			{10,11,16,20},
+			{23,30,34,50}
+		},3));
+		Assert.assertEquals(true, searchMatrix(new int[][] {
+			{1,3}
+		},3));
+	}
+
+	public boolean searchMatrix(int[][] matrix, int target) {
+		if (matrix == null ||  matrix.length==0 || matrix[0]==null || matrix[0].length==0) {
+			return false;
+		}
+		int m = matrix.length;
+		int n = matrix[0].length;
+		int len = m*n;
+		int l = 0;
+		int r = len-1;
+		while (l<=r) {
+			int mid = (l+r)/2;
+			int indexR = mid/n;
+			int indexC = mid%n;
+			if (matrix[indexR][indexC]==target) {
+				return true;
+			}
+			if (matrix[indexR][indexC]>target) {
+				r = mid-1;
+			}
+			if (matrix[indexR][indexC]<target) {
+				l = mid+1;
+			}
+		}
+		return false;
 	}
 }
