@@ -1040,39 +1040,66 @@ public class LeetCode9 {
 	// 搜索二维矩阵
 	@Test
 	public void test19() {
-		Assert.assertEquals(true, searchMatrix(new int[][] {
-			{1,3,5,7},
-			{10,11,16,20},
-			{23,30,34,50}
-		},3));
-		Assert.assertEquals(true, searchMatrix(new int[][] {
-			{1,3}
-		},3));
+		Assert.assertEquals(true,
+				searchMatrix(new int[][] { { 1, 3, 5, 7 }, { 10, 11, 16, 20 }, { 23, 30, 34, 50 } }, 3));
+		Assert.assertEquals(true, searchMatrix(new int[][] { { 1, 3 } }, 3));
 	}
 
 	public boolean searchMatrix(int[][] matrix, int target) {
-		if (matrix == null ||  matrix.length==0 || matrix[0]==null || matrix[0].length==0) {
+		if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
 			return false;
 		}
 		int m = matrix.length;
 		int n = matrix[0].length;
-		int len = m*n;
+		int len = m * n;
 		int l = 0;
-		int r = len-1;
-		while (l<=r) {
-			int mid = (l+r)/2;
-			int indexR = mid/n;
-			int indexC = mid%n;
-			if (matrix[indexR][indexC]==target) {
+		int r = len - 1;
+		while (l <= r) {
+			int mid = (l + r) / 2;
+			int indexR = mid / n;
+			int indexC = mid % n;
+			if (matrix[indexR][indexC] == target) {
 				return true;
 			}
-			if (matrix[indexR][indexC]>target) {
-				r = mid-1;
+			if (matrix[indexR][indexC] > target) {
+				r = mid - 1;
 			}
-			if (matrix[indexR][indexC]<target) {
-				l = mid+1;
+			if (matrix[indexR][indexC] < target) {
+				l = mid + 1;
 			}
 		}
 		return false;
+	}
+
+	// 课程表
+	@Test
+	public void test20() {
+		Assert.assertEquals(false, canFinish(2, new int[][] { { 1, 0 }, { 0, 1 } }));
+	}
+	//https://leetcode-cn.com/problems/course-schedule/solution/course-schedule-tuo-bu-pai-xu-bfsdfsliang-chong-fa/
+	public boolean canFinish(int numCourses, int[][] prerequisites) {
+		List<List<Integer>> adjacency = new ArrayList<>();
+		for (int i = 0; i < numCourses; i++)
+			adjacency.add(new ArrayList<>());
+		int[] flags = new int[numCourses];
+		for (int[] cp : prerequisites)
+			adjacency.get(cp[1]).add(cp[0]);
+		for (int i = 0; i < numCourses; i++)
+			if (!dfs(adjacency, flags, i))
+				return false;
+		return true;
+	}
+
+	private boolean dfs(List<List<Integer>> adjacency, int[] flags, int i) {
+		if (flags[i] == 1)
+			return false;
+		if (flags[i] == -1)
+			return true;
+		flags[i] = 1;
+		for (Integer j : adjacency.get(i))
+			if (!dfs(adjacency, flags, j))
+				return false;
+		flags[i] = -1;
+		return true;
 	}
 }
