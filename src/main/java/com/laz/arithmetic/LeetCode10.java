@@ -107,7 +107,7 @@ public class LeetCode10 {
 		return output;
 	}
 
-	// 回文对
+	// 回文对 
 	@Test
 	public void test4() {
 		String[] words = new String[] { "a", "" };
