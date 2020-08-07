@@ -235,10 +235,10 @@ public class LeetCode1 {
 	// 二进制求和
 	@Test
 	public void test9() {
-		Assert.assertEquals("100",addBinary2("11", "1"));
-		Assert.assertEquals("1010",addBinary2("11", "111"));
-		Assert.assertEquals("11",addBinary2("10", "1"));
-		Assert.assertEquals("10101",addBinary2("1010", "1011"));
+		Assert.assertEquals("100", addBinary2("11", "1"));
+		Assert.assertEquals("1010", addBinary2("11", "111"));
+		Assert.assertEquals("11", addBinary2("10", "1"));
+		Assert.assertEquals("10101", addBinary2("1010", "1011"));
 	}
 
 	public String addBinary2(String a, String b) {
@@ -463,6 +463,22 @@ public class LeetCode1 {
 		node11.left = node111;
 		node11.right = node211;
 		System.out.println(isSameTree(node, node11));
+	}
+	//递归同时判断解法
+	public boolean isSameTree2(TreeNode p, TreeNode q) {
+		if (p == null && q == null) {
+			return true;
+		}
+		if (p != null && q == null) {
+			return false;
+		}
+		if (p == null && q != null) {
+			return false;
+		}
+		if (p.val != q.val) {
+			return false;
+		}
+		return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
 	}
 
 	public boolean isSameTree(TreeNode p, TreeNode q) {
