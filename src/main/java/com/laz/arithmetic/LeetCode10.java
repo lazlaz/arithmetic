@@ -1,6 +1,5 @@
 package com.laz.arithmetic;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -107,7 +106,7 @@ public class LeetCode10 {
 		return output;
 	}
 
-	// 回文对 
+	// 回文对
 	@Test
 	public void test4() {
 		String[] words = new String[] { "a", "" };
@@ -183,8 +182,7 @@ public class LeetCode10 {
 				new char[][] { { 'A', 'B', 'C', 'E' }, { 'S', 'F', 'C', 'S' }, { 'A', 'D', 'E', 'E' } }, "ABCCED"));
 		Assert.assertEquals(false, new Solution5().exist(
 				new char[][] { { 'A', 'B', 'C', 'E' }, { 'S', 'F', 'C', 'S' }, { 'A', 'D', 'E', 'E' } }, "ACCED"));
-		
-		
+
 	}
 
 	class Solution5 {
@@ -241,10 +239,101 @@ public class LeetCode10 {
 			}
 			return false;
 		}
-		//是否在矩阵范围内
+
+		// 是否在矩阵范围内
 		private boolean inArea(int x, int y) {
 			return x >= 0 && x < m && y >= 0 && y < n;
 		}
+	}
+
+	// 删除排序数组中的重复项 II
+	@Test
+	public void test6() {
+		Assert.assertEquals(6, removeDuplicates(new int[] { 1, 1, 2, 2, 3, 3, 3 }));
+	}
+
+	public int removeDuplicates(int[] nums) {
+		int pos = 0;
+		int index = 0;
+		int len = nums.length;
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		while (pos < len && index < len) {
+			int v = nums[index];
+			// 利用双指针进行赋值
+			nums[pos] = nums[index];
+			int count = map.getOrDefault(v, 0);
+			if (count == 2) {
+				// 改位置不需要了,交换
+
+			} else {
+				map.put(v, count + 1);
+				pos++;
+			}
+			index++;
+		}
+		int ret = pos;
+		while (pos < len) {
+			nums[pos] = 0;
+			pos++;
+		}
+
+		return ret;
+	}
+
+	// 恢复二叉搜索树
+	@Test
+	public void test7() {
+		TreeNode root = Utils.createTree(new Integer[] { 1, 3, null, null, 2 });
+		recoverTree(root);
+		Utils.printTreeNode(root);
+	}
+
+	public void recoverTree(TreeNode root) {
+		TreeNode x = null, y = null, pred = null, predecessor = null;
+		while (root != null) {
+			if (root.left != null) {
+				// predecessor 节点就是当前 root 节点向左走一步，然后一直向右走至无法走为止
+				predecessor = root.left;
+				while (predecessor.right != null && predecessor.right != root) {
+					predecessor = predecessor.right;
+				}
+				// 让 predecessor 的右指针指向 root，继续遍历左子树
+				if (predecessor.right == null) {
+					predecessor.right = root;
+					root = root.left;
+				}
+				// 说明左子树已经访问完了，我们需要断开链接
+				else {
+					if (pred != null && root.val < pred.val) {
+						y = root;
+						if (x == null) {
+							x = pred;
+						}
+					}
+					pred = root;
+					predecessor.right = null;
+					root = root.right;
+				}
+			}
+			// 如果没有左孩子，则直接访问右孩子
+			else {
+				if (pred != null && root.val < pred.val) {
+					y = root;
+					if (x == null) {
+						x = pred;
+					}
+				}
+				pred = root;
+				root = root.right;
+			}
+		}
+		swap(x, y);
+	}
+
+	public void swap(TreeNode x, TreeNode y) {
+		int tmp = x.val;
+		x.val = y.val;
+		y.val = tmp;
 	}
 
 }

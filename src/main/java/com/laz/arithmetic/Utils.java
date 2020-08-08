@@ -65,7 +65,9 @@ public class Utils {
 			node = node.next;
 		}
 	}
-	
+	public static void printTreeNode(TreeNode node) {
+		System.out.println(new Utils().new Codec().serialize(node));
+	}
 	class Codec {
 		// Encodes a tree to a single string.
 		public String serialize(TreeNode root) {
