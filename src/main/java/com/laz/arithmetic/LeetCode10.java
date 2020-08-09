@@ -367,7 +367,7 @@ public class LeetCode10 {
 					}
 					ans.add(ipAddr.toString());
 				}
-				//如果有4个IP了，但是字符串还有剩，则提前回溯，改ip不符合
+				// 如果有4个IP了，但是字符串还有剩，则提前回溯，改ip不符合
 				return;
 			}
 			// 如果还没有找到 4 段 IP 地址就已经遍历完了字符串，那么提前回溯
@@ -392,6 +392,56 @@ public class LeetCode10 {
 				}
 			}
 		}
+	}
+
+	// 搜索旋转排序数组 II
+	@Test
+	public void test9() {
+		Assert.assertEquals(true, search(new int[] {2,5,6,0,0,1,2},0));
+		Assert.assertEquals(false, search(new int[] {2,5,6,0,0,1,2},3));
+		Assert.assertEquals(false, search(new int[] {2,5,6},3));
+		Assert.assertEquals(true, search(new int[] {2,5,6},5));
+		Assert.assertEquals(true, search(new int[] {2,2,2,5,6,2,2,2,2,2},2));
+		Assert.assertEquals(true, search(new int[] {3,1,1},3));
+	}
+
+	public boolean search(int[] nums, int target) {
+		if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int start = 0;
+        int end = nums.length - 1;
+        int mid;
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[start] == nums[mid]) {
+                start++;
+                continue;
+            }
+            //前半部分有序
+            if (nums[start] < nums[mid]) {
+                //target在前半部分
+                if (nums[mid] > target && nums[start] <= target) {
+                    end = mid - 1;
+                } else {  //否则，去后半部分找
+                    start = mid + 1;
+                }
+            } else {
+                //后半部分有序
+                //target在后半部分
+                if (nums[mid] < target && nums[end] >= target) {
+                    start = mid + 1;
+                } else {  //否则，去后半部分找
+                    end = mid - 1;
+
+                }
+            }
+        }
+        //一直没找到，返回false
+        return false;
 	}
 
 }
