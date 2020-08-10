@@ -397,51 +397,76 @@ public class LeetCode10 {
 	// 搜索旋转排序数组 II
 	@Test
 	public void test9() {
-		Assert.assertEquals(true, search(new int[] {2,5,6,0,0,1,2},0));
-		Assert.assertEquals(false, search(new int[] {2,5,6,0,0,1,2},3));
-		Assert.assertEquals(false, search(new int[] {2,5,6},3));
-		Assert.assertEquals(true, search(new int[] {2,5,6},5));
-		Assert.assertEquals(true, search(new int[] {2,2,2,5,6,2,2,2,2,2},2));
-		Assert.assertEquals(true, search(new int[] {3,1,1},3));
+		Assert.assertEquals(true, search(new int[] { 2, 5, 6, 0, 0, 1, 2 }, 0));
+		Assert.assertEquals(false, search(new int[] { 2, 5, 6, 0, 0, 1, 2 }, 3));
+		Assert.assertEquals(false, search(new int[] { 2, 5, 6 }, 3));
+		Assert.assertEquals(true, search(new int[] { 2, 5, 6 }, 5));
+		Assert.assertEquals(true, search(new int[] { 2, 2, 2, 5, 6, 2, 2, 2, 2, 2 }, 2));
+		Assert.assertEquals(true, search(new int[] { 3, 1, 1 }, 3));
 	}
 
 	public boolean search(int[] nums, int target) {
 		if (nums == null || nums.length == 0) {
-            return false;
-        }
-        int start = 0;
-        int end = nums.length - 1;
-        int mid;
-        while (start <= end) {
-            mid = start + (end - start) / 2;
-            if (nums[mid] == target) {
-                return true;
-            }
-            if (nums[start] == nums[mid]) {
-                start++;
-                continue;
-            }
-            //前半部分有序
-            if (nums[start] < nums[mid]) {
-                //target在前半部分
-                if (nums[mid] > target && nums[start] <= target) {
-                    end = mid - 1;
-                } else {  //否则，去后半部分找
-                    start = mid + 1;
-                }
-            } else {
-                //后半部分有序
-                //target在后半部分
-                if (nums[mid] < target && nums[end] >= target) {
-                    start = mid + 1;
-                } else {  //否则，去后半部分找
-                    end = mid - 1;
+			return false;
+		}
+		int start = 0;
+		int end = nums.length - 1;
+		int mid;
+		while (start <= end) {
+			mid = start + (end - start) / 2;
+			if (nums[mid] == target) {
+				return true;
+			}
+			if (nums[start] == nums[mid]) {
+				start++;
+				continue;
+			}
+			// 前半部分有序
+			if (nums[start] < nums[mid]) {
+				// target在前半部分
+				if (nums[mid] > target && nums[start] <= target) {
+					end = mid - 1;
+				} else { // 否则，去后半部分找
+					start = mid + 1;
+				}
+			} else {
+				// 后半部分有序
+				// target在后半部分
+				if (nums[mid] < target && nums[end] >= target) {
+					start = mid + 1;
+				} else { // 否则，去后半部分找
+					end = mid - 1;
 
-                }
-            }
-        }
-        //一直没找到，返回false
-        return false;
+				}
+			}
+		}
+		// 一直没找到，返回false
+		return false;
 	}
 
+	// 计数二进制子串
+	@Test
+	public void test10() {
+		Assert.assertEquals(6, countBinarySubstrings("00110011"));
+		Assert.assertEquals(4, countBinarySubstrings("10101"));
+	}
+
+	public int countBinarySubstrings(String s) {
+		List<Integer> counts = new ArrayList<Integer>();
+		int ptr = 0, n = s.length();
+		while (ptr < n) {
+			char c = s.charAt(ptr);
+			int count = 0;
+			while (ptr < n && s.charAt(ptr) == c) {
+				++ptr;
+				++count;
+			}
+			counts.add(count);
+		}
+		int ans = 0;
+		for (int i = 1; i < counts.size(); ++i) {
+			ans += Math.min(counts.get(i), counts.get(i - 1));
+		}
+		return ans;
+	}
 }
