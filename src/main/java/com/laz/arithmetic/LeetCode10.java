@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -495,4 +496,87 @@ public class LeetCode10 {
 		}
 		return dummy.next;
 	}
+
+	// 被围绕的区域
+	@Test
+	public void test12() {
+		char[][] board = new char[][] { { 'X', 'X', 'X', 'X' }, { 'X', 'O', 'O', 'O' }, { 'X', 'X', 'O', 'X' },
+				{ 'X', 'O', 'X', 'X' }, };
+		solve(board);
+		for (char[] cs : board) {
+			for (char c : cs) {
+				System.out.print(c);
+			}
+			System.out.println();
+		}
+		Assert.assertArrayEquals(new char[][] { { 'X', 'X', 'X', 'X' }, { 'X', 'O', 'O', 'O' }, { 'X', 'X', 'O', 'X' },
+				{ 'X', 'O', 'X', 'X' }, }, board);
+	}
+
+	public void solve(char[][] board) {
+		if (board == null || board.length == 0)
+			return;
+		int m = board.length;
+		int n = board[0].length;
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				// 从边缘o开始搜索,找出联通的标记为#
+				boolean isEdge = i == 0 || j == 0 || i == m - 1 || j == n - 1;
+				if (isEdge && board[i][j] == 'O') {
+					dfs(board, i, j);
+				}
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (board[i][j] == 'O') {
+					board[i][j] = 'X';
+				}
+				if (board[i][j] == '#') {
+					board[i][j] = 'O';
+				}
+			}
+		}
+	}
+
+	public void dfs(char[][] board, int i, int j) {
+		if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || board[i][j] == 'X' || board[i][j] == '#') {
+			// board[i][j] == '#' 说明已经搜索过了.
+			return;
+		}
+		board[i][j] = '#';
+		dfs(board, i - 1, j); // 上
+		dfs(board, i + 1, j); // 下
+		dfs(board, i, j - 1); // 左
+		dfs(board, i, j + 1); // 右
+	}
+	
+	//柱状图中最大的矩形
+	@Test
+	public void test13() {
+		Assert.assertEquals(10,largestRectangleArea( new int[] {2,1,5,6,2,3}));
+	}
+	public int largestRectangleArea(int[] heights) {
+		int n = heights.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Arrays.fill(right, n);
+        
+        Deque<Integer> mono_stack = new LinkedList<Integer>();
+        for (int i = 0; i < n; ++i) {
+            while (!mono_stack.isEmpty() && heights[mono_stack.peek()] >= heights[i]) {
+                right[mono_stack.peek()] = i;
+                mono_stack.pop();
+            }
+            left[i] = (mono_stack.isEmpty() ? -1 : mono_stack.peek());
+            mono_stack.push(i);
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
+        }
+        return ans;
+    }
 }
