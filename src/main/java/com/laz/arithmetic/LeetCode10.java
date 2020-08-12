@@ -551,32 +551,123 @@ public class LeetCode10 {
 		dfs(board, i, j - 1); // 左
 		dfs(board, i, j + 1); // 右
 	}
-	
-	//柱状图中最大的矩形
+
+	// 柱状图中最大的矩形
 	@Test
 	public void test13() {
-		Assert.assertEquals(10,largestRectangleArea( new int[] {2,1,5,6,2,3}));
+		Assert.assertEquals(10, largestRectangleArea(new int[] { 2, 1, 5, 6, 2, 3 }));
 	}
+
 	public int largestRectangleArea(int[] heights) {
 		int n = heights.length;
-        int[] left = new int[n];
-        int[] right = new int[n];
-        Arrays.fill(right, n);
-        
-        Deque<Integer> mono_stack = new LinkedList<Integer>();
-        for (int i = 0; i < n; ++i) {
-            while (!mono_stack.isEmpty() && heights[mono_stack.peek()] >= heights[i]) {
-                right[mono_stack.peek()] = i;
-                mono_stack.pop();
-            }
-            left[i] = (mono_stack.isEmpty() ? -1 : mono_stack.peek());
-            mono_stack.push(i);
-        }
-        
-        int ans = 0;
-        for (int i = 0; i < n; ++i) {
-            ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
-        }
-        return ans;
-    }
+		int[] left = new int[n];
+		int[] right = new int[n];
+		Arrays.fill(right, n);
+
+		Deque<Integer> mono_stack = new LinkedList<Integer>();
+		for (int i = 0; i < n; ++i) {
+			while (!mono_stack.isEmpty() && heights[mono_stack.peek()] >= heights[i]) {
+				right[mono_stack.peek()] = i;
+				mono_stack.pop();
+			}
+			left[i] = (mono_stack.isEmpty() ? -1 : mono_stack.peek());
+			mono_stack.push(i);
+		}
+
+		int ans = 0;
+		for (int i = 0; i < n; ++i) {
+			ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
+		}
+		return ans;
+	}
+
+	// 克隆图
+	@Test
+	public void test14() {
+		Node node1 = new Node(1);
+		Node node2 = new Node(2);
+		Node node3 = new Node(3);
+		Node node4 = new Node(4);
+		node1.neighbors = new ArrayList<Node>();
+		node1.neighbors.add(node2);
+		node1.neighbors.add(node4);
+
+		node2.neighbors = new ArrayList<Node>();
+		node2.neighbors.add(node1);
+		node2.neighbors.add(node3);
+
+		node3.neighbors = new ArrayList<Node>();
+		node3.neighbors.add(node2);
+		node3.neighbors.add(node4);
+
+		node4.neighbors = new ArrayList<Node>();
+		node4.neighbors.add(node1);
+		node4.neighbors.add(node3);
+
+		Node clone = cloneGraph(node1);
+
+	}
+
+	public Node cloneGraph(Node node) {
+		if (node == null) {
+			return node;
+		}
+
+		HashMap<Node, Node> visited = new HashMap<Node, Node>();
+
+		// 将题目给定的节点添加到队列
+		LinkedList<Node> queue = new LinkedList<Node>();
+		queue.add(node);
+		// 克隆第一个节点并存储到哈希表中
+		visited.put(node, new Node(node.val, new ArrayList()));
+
+		// 广度优先搜索
+		while (!queue.isEmpty()) {
+			// 取出队列的头节点
+			Node n = queue.poll();
+			// 遍历该节点的邻居
+			for (Node neighbor : n.neighbors) {
+				if (!visited.containsKey(neighbor)) {
+					// 如果没有被访问过，就克隆并存储在哈希表中
+					visited.put(neighbor, new Node(neighbor.val, new ArrayList()));
+					// 将邻居节点加入队列中
+					queue.add(neighbor);
+				}
+				// 更新当前节点的邻居列表
+				visited.get(n).neighbors.add(visited.get(neighbor));
+			}
+		}
+
+		return visited.get(node);
+	}
+
+	// 最大矩形
+	@Test
+	public void test15() {
+		Assert.assertEquals(6, maximalRectangle(new char[][] {
+			{'1','0','1','0','0'},
+			{'1','0','1','1','1'},
+			{'1','1','1','1','1'},
+			{'1','0','0','1','0'}
+		}));
+	}
+
+	public int maximalRectangle(char[][] matrix) {
+
+		if (matrix.length == 0)
+			return 0;
+		int maxarea = 0;
+		int[] dp = new int[matrix[0].length];
+
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[0].length; j++) {
+
+				//计算每列的连续高度，如果存在0就重置为0
+				dp[j] = matrix[i][j] == '1' ? dp[j] + 1 : 0;
+			}
+			// 根据高度算出最大矩形区域
+			maxarea = Math.max(maxarea, largestRectangleArea(dp));
+		}
+		return maxarea;
+	}
 }
