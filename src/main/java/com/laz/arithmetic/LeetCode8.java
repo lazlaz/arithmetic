@@ -114,7 +114,7 @@ public class LeetCode8 {
 	// 字符串相乘
 	@Test
 	public void test2() {
-		Assert.assertEquals("56088", multiply("123", "456"));
+		Assert.assertEquals("56088", multiply2("123", "456"));
 	}
 
 	/**
@@ -166,7 +166,31 @@ public class LeetCode8 {
 		}
 		return builder.reverse().toString();
 	}
+	
+	//优化竖式解法https://leetcode-cn.com/problems/multiply-strings/solution/you-hua-ban-shu-shi-da-bai-994-by-breezean/
+	public String multiply2(String num1, String num2) {
+		if (num1.equals("0") || num2.equals("0")) {
+            return "0";
+        }
+        int[] res = new int[num1.length() + num2.length()];
+        for (int i = num1.length() - 1; i >= 0; i--) {
+            int n1 = num1.charAt(i) - '0';
+            for (int j = num2.length() - 1; j >= 0; j--) {
+                int n2 = num2.charAt(j) - '0';
+                int sum = (res[i + j + 1] + n1 * n2);
+                res[i + j + 1] = sum % 10;
+                res[i + j] += sum / 10;
+            }
+        }
 
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < res.length; i++) {
+            if (i == 0 && res[i] == 0) continue;
+            result.append(res[i]);
+        }
+        return result.toString();
+	}
+	
 	// 地下城游戏
 	@Test
 	public void test3() {
