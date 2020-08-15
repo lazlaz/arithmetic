@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -488,17 +487,49 @@ public class LeetCode6 {
 	}
 
 	public int integerBreak(int n) {
-		//dp表示数值i，最大整数拆分乘积
-		int[] dp = new int[n+1];
+		// dp表示数值i，最大整数拆分乘积
+		int[] dp = new int[n + 1];
 		dp[0] = 1;
 		dp[1] = 1;
-		for (int i=2;i<=n;i++) {
+		for (int i = 2; i <= n; i++) {
 			int currMax = 0;
-			for (int j=1;j<i;j++) {
-				currMax = Math.max(currMax, Math.max(j*(i-j), j*dp[i-j]));
+			for (int j = 1; j < i; j++) {
+				currMax = Math.max(currMax, Math.max(j * (i - j), j * dp[i - j]));
 			}
 			dp[i] = currMax;
 		}
 		return dp[n];
+	}
+
+	// 移除盒子
+	@Test
+	public void test12() {
+		Assert.assertEquals(23, removeBoxes(new int[] { 1, 3, 2, 2, 2, 3, 4, 3, 1 }));
+	}
+
+	public int removeBoxes(int[] boxes) {
+		int[][][] dp = new int[100][100][100];
+		return calculatePoints(boxes, dp, 0, boxes.length - 1, 0);
+	}
+
+	// https://leetcode-cn.com/problems/remove-boxes/solution/guan-fang-fang-fa-2ji-yi-hua-sou-suo-dong-hua-tu-j/
+	public int calculatePoints(int[] boxes, int[][][] dp, int l, int r, int k) {
+		if (l > r)
+			return 0;
+		if (dp[l][r][k] != 0)
+			return dp[l][r][k];
+		//找到连续的k个数，从右往左
+		while (r > l && boxes[r] == boxes[r - 1]) {
+			r--;
+			k++;
+		}
+		dp[l][r][k] = calculatePoints(boxes, dp, l, r - 1, 0) + (k + 1) * (k + 1);
+		for (int i = l; i < r; i++) {
+			if (boxes[i] == boxes[r]) {
+				dp[l][r][k] = Math.max(dp[l][r][k],
+						calculatePoints(boxes, dp, l, i, k + 1) + calculatePoints(boxes, dp, i + 1, r - 1, 0));
+			}
+		}
+		return dp[l][r][k];
 	}
 }
