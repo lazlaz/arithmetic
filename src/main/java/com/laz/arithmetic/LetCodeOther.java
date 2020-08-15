@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class LetCodeOther {
@@ -109,11 +110,10 @@ public class LetCodeOther {
 	// 有效的括号
 	@Test
 	public void test5() {
-		System.out.println(isValid("{[]}"));
+		Assert.assertEquals(true, isValid("{[]}"));
 	}
 
 	public boolean isValid(String s) {
-		// add()和remove()方法在失败的时候会抛出异常(不推荐)
 		Stack<Character> stack = new Stack<Character>();
 		char[] chars = s.toCharArray();
 		for (int i = 0; i < chars.length; i++) {

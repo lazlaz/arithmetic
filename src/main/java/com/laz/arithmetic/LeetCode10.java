@@ -644,12 +644,8 @@ public class LeetCode10 {
 	// 最大矩形
 	@Test
 	public void test15() {
-		Assert.assertEquals(6, maximalRectangle(new char[][] {
-			{'1','0','1','0','0'},
-			{'1','0','1','1','1'},
-			{'1','1','1','1','1'},
-			{'1','0','0','1','0'}
-		}));
+		Assert.assertEquals(6, maximalRectangle(new char[][] { { '1', '0', '1', '0', '0' }, { '1', '0', '1', '1', '1' },
+				{ '1', '1', '1', '1', '1' }, { '1', '0', '0', '1', '0' } }));
 	}
 
 	public int maximalRectangle(char[][] matrix) {
@@ -662,12 +658,67 @@ public class LeetCode10 {
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[0].length; j++) {
 
-				//计算每列的连续高度，如果存在0就重置为0
+				// 计算每列的连续高度，如果存在0就重置为0
 				dp[j] = matrix[i][j] == '1' ? dp[j] + 1 : 0;
 			}
 			// 根据高度算出最大矩形区域
 			maxarea = Math.max(maxarea, largestRectangleArea(dp));
 		}
 		return maxarea;
+	}
+
+	// 分隔链表
+	@Test
+	public void test16() {
+		ListNode node = Utils.createListNode(new Integer[] { 1, 4, 3, 2, 5, 2 });
+		node = partition(node, 3);
+		Utils.printListNode(node);
+	}
+
+	public ListNode partition(ListNode head, int x) {
+		// <x的值在beforeHead链表中
+		ListNode beforeHead = new ListNode(-1);
+		ListNode before = beforeHead;
+		// >=x的值在afterHead链表中
+		ListNode afterHead = new ListNode(-1);
+		ListNode after = afterHead;
+
+		while (head != null) {
+			if (head.val < x) {
+				before.next = head;
+				before = before.next;
+			} else {
+				after.next = head;
+				after = after.next;
+			}
+			head = head.next;
+		}
+		after.next = null;
+		// 合并链表after before
+		before.next = afterHead.next;
+		return beforeHead.next;
+	}
+
+	// 格雷编码
+	@Test
+	public void test17() {
+		List<Integer> list = grayCode(3);
+		System.out.println(Joiner.on(",").join(list));
+	}
+
+	public List<Integer> grayCode(int n) {
+		List<Integer> res = new ArrayList<Integer>() {
+			{
+				add(0);
+			}
+		};
+		int head = 1;
+		for (int i = 0; i < n; i++) {
+			for (int j = res.size() - 1; j >= 0; j--) {
+				res.add(head + res.get(j));
+			}
+			head <<= 1;
+		}
+		return res;
 	}
 }
