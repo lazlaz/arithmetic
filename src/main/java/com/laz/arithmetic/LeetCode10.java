@@ -725,24 +725,21 @@ public class LeetCode10 {
 	// 图像渲染
 	@Test
 	public void test18() {
-		int[][] image = new int[][] {
-			{1,1,1},
-			{1,1,0},
-			{1,0,1}
-		};
+		int[][] image = new int[][] { { 1, 1, 1 }, { 1, 1, 0 }, { 1, 0, 1 } };
 		int[][] ret = floodFill(image, 1, 1, 2);
 		for (int[] is : ret) {
 			for (int i : is) {
-				System.out.print(i+",");
+				System.out.print(i + ",");
 			}
 			System.out.println();
 		}
 	}
-	
-	private boolean[][] visited=null;
+
+	private boolean[][] visited = null;
 	private int value = -1;
+
 	public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
-		if (image == null || image.length == 0 || image[0] == null || image[0].length==0) {
+		if (image == null || image.length == 0 || image[0] == null || image[0].length == 0) {
 			return image;
 		}
 		int m = image.length;
@@ -750,34 +747,85 @@ public class LeetCode10 {
 		if (visited == null) {
 			visited = new boolean[m][n];
 		}
-		
-		if (sr>=m || sr<0) {
+
+		if (sr >= m || sr < 0) {
 			return image;
 		}
-		if (sc>=n||sc<0) {
+		if (sc >= n || sc < 0) {
 			return image;
 		}
 		if (visited[sr][sc]) {
 			return image;
 		}
-		if (value<0) {
+		if (value < 0) {
 			value = image[sr][sc];
 		}
-		if (image[sr][sc]==value) {
+		if (image[sr][sc] == value) {
 			image[sr][sc] = newColor;
 		} else {
 			return image;
 		}
 		visited[sr][sc] = true;
-		//更改上方
-		floodFill(image, sr-1, sc, newColor);
-		//更改下方
-		floodFill(image, sr+1, sc, newColor);
-		//更改左方
-		floodFill(image, sr, sc-1, newColor);
-		//更改右方
-		floodFill(image, sr, sc+1, newColor);
+		// 更改上方
+		floodFill(image, sr - 1, sc, newColor);
+		// 更改下方
+		floodFill(image, sr + 1, sc, newColor);
+		// 更改左方
+		floodFill(image, sr, sc - 1, newColor);
+		// 更改右方
+		floodFill(image, sr, sc + 1, newColor);
 		return image;
-		
+
+	}
+
+	// 扰乱字符串
+	@Test
+	public void test() {
+		Assert.assertEquals(true, isScramble("great", "rgeat"));
+		Assert.assertEquals(false, isScramble("abcde", "caebd"));
+	}
+
+	// https://leetcode-cn.com/problems/scramble-string/solution/miao-dong-de-qu-jian-xing-dpsi-lu-by-sha-yu-la-jia/
+	public boolean isScramble(String s1, String s2) {
+		char[] chs1 = s1.toCharArray();
+		char[] chs2 = s2.toCharArray();
+		int n = s1.length();
+		int m = s2.length();
+		if (n != m) {
+			return false;
+		}
+		//dp[i][j][len] 表示从字符串 S 中 i 开始长度为 len 的字符串是否能变换为从字符串 T 中 j 开始长度为 len的字符串
+		boolean[][][] dp = new boolean[n][n][n + 1];
+		// 初始化单个字符的情况
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				dp[i][j][1] = chs1[i] == chs2[j];
+			}
+		}
+
+		// 枚举区间长度 2～n
+		for (int len = 2; len <= n; len++) {
+			// 枚举 S 中的起点位置
+			for (int i = 0; i <= n - len; i++) {
+				// 枚举 T 中的起点位置
+				for (int j = 0; j <= n - len; j++) {
+					// 枚举划分位置
+					for (int k = 1; k <= len - 1; k++) {
+						// 第一种情况：S1 -> T1, S2 -> T2
+						if (dp[i][j][k] && dp[i + k][j + k][len - k]) {
+							dp[i][j][len] = true;
+							break;
+						}
+						// 第二种情况：S1 -> T2, S2 -> T1
+						// S1 起点 i，T2 起点 j + 前面那段长度 len-k ，S2 起点 i + 前面长度k
+						if (dp[i][j + len - k][k] && dp[i + k][j][len - k]) {
+							dp[i][j][len] = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return dp[0][0][n];
 	}
 }
