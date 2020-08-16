@@ -51,6 +51,63 @@ public class SortedBinTree<T extends Comparable> {
 		root = new Node(data, null, null, null);
 	}
 
+	public void remove(T data) {
+		Node target = getNode(data);
+		if (target == null) {
+			return;
+		}
+		
+		if (target.left == null && target.right == null) {//如果该节点无左右节点
+			if (target == root) {
+				root = null;
+			} else {
+				if (target == target.parent.left) {
+					target.parent.left = null;
+				} else {
+					target.parent.right = null;
+				}
+			}
+		} else if (target.left != null && target.right == null) { //有左节点无右节点，左节点变为父的节点
+			if (target == root) {
+				root = target.left;
+			} else {
+				if (target == target.parent.left) {
+					target.parent.left = target.left;
+				} else {
+					target.parent.right = target.left;
+				}
+				target.left.parent = target.parent;
+			}
+		} else if (target.left == null && target.right != null) { //有右节点无左节点，右节点变为父的节点
+			if (target == root) {
+				root = target.right;
+			} else {
+				if (target == target.parent.left) {
+					target.parent.left = target.right;
+				} else {
+					target.parent.right = target.right;
+				}
+				target.right.parent = target.parent;
+			}
+		} else {// 左右子树都不为空，用小于删除节点的最大子节点代替它
+			Node leftMaxNode = target.left;
+			while (leftMaxNode.right != null) {
+				leftMaxNode = leftMaxNode.right;
+			}
+			leftMaxNode.parent.right = null;
+			leftMaxNode.parent = target.parent;
+			if (target == target.parent.left) {
+				target.parent.left = leftMaxNode;
+			} else {
+				target.parent.right = leftMaxNode;
+			}
+			leftMaxNode.left = target.left;
+			leftMaxNode.right = target.right;
+			target.parent = target.left = target.right = null;
+		}
+		target = null;
+	}
+
 	public void insert(T data) {
 		if (root == null) {
 			root = new Node(data, null, null, null);
@@ -115,7 +172,7 @@ public class SortedBinTree<T extends Comparable> {
 	// 中序遍历
 	public ArrayList<Node> inOrder() {
 		ArrayList<Node> list = new ArrayList<>();
-		inOrder(root,list);
+		inOrder(root, list);
 		return list;
 	}
 
@@ -123,15 +180,14 @@ public class SortedBinTree<T extends Comparable> {
 		if (r == null) {
 			return;
 		}
-		if (r.left!=null) {
-			inOrder(r.left,list);
+		if (r.left != null) {
+			inOrder(r.left, list);
 		}
 		list.add(r);
-		if (r.right!=null) {
-			inOrder(r.right,list);
+		if (r.right != null) {
+			inOrder(r.right, list);
 		}
-		
-		
+
 	}
 
 }
