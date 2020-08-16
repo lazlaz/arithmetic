@@ -721,4 +721,63 @@ public class LeetCode10 {
 		}
 		return res;
 	}
+
+	// 图像渲染
+	@Test
+	public void test18() {
+		int[][] image = new int[][] {
+			{1,1,1},
+			{1,1,0},
+			{1,0,1}
+		};
+		int[][] ret = floodFill(image, 1, 1, 2);
+		for (int[] is : ret) {
+			for (int i : is) {
+				System.out.print(i+",");
+			}
+			System.out.println();
+		}
+	}
+	
+	private boolean[][] visited=null;
+	private int value = -1;
+	public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+		if (image == null || image.length == 0 || image[0] == null || image[0].length==0) {
+			return image;
+		}
+		int m = image.length;
+		int n = image[0].length;
+		if (visited == null) {
+			visited = new boolean[m][n];
+		}
+		
+		if (sr>=m || sr<0) {
+			return image;
+		}
+		if (sc>=n||sc<0) {
+			return image;
+		}
+		if (visited[sr][sc]) {
+			return image;
+		}
+		if (value<0) {
+			value = image[sr][sc];
+		}
+		if (image[sr][sc]==value) {
+			image[sr][sc] = newColor;
+		} else {
+			return image;
+		}
+		visited[sr][sc] = true;
+		//更改上方
+		floodFill(image, sr-1, sc, newColor);
+		//更改下方
+		floodFill(image, sr+1, sc, newColor);
+		//更改左方
+		floodFill(image, sr, sc-1, newColor);
+		//更改右方
+		floodFill(image, sr, sc+1, newColor);
+		return image;
+		
+	}
 }
