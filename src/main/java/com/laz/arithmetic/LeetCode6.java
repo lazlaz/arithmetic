@@ -518,7 +518,7 @@ public class LeetCode6 {
 			return 0;
 		if (dp[l][r][k] != 0)
 			return dp[l][r][k];
-		//找到连续的k个数，从右往左
+		// 找到连续的k个数，从右往左
 		while (r > l && boxes[r] == boxes[r - 1]) {
 			r--;
 			k++;
@@ -532,4 +532,39 @@ public class LeetCode6 {
 		}
 		return dp[l][r][k];
 	}
+
+	// 子集II
+	@Test
+	public void test13() {
+		List<List<Integer>> ret = subsetsWithDup(new int[] { 1, 2, 2 });
+		for (List<Integer> list : ret) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+	public List<List<Integer>> subsetsWithDup(int[] nums) {
+			List<List<Integer>> ret = new ArrayList<List<Integer>>();
+			ret.add(new ArrayList<Integer>());
+			if (nums == null || nums.length==0) {
+				return ret;
+			}
+			Arrays.sort(nums);
+			backtrack(0,nums,new ArrayList<Integer>(),ret);
+			return ret;
+	}
+
+	private void backtrack(int start, int[] nums, ArrayList<Integer> curr, List<List<Integer>> ret) {
+		int len =nums.length;
+		if (curr.size()>0) {
+			ret.add(new ArrayList<Integer>(curr));
+		}
+		for (int i=start;i<len;i++) {
+			if (i>start && nums[i] == nums[i-1]) {
+				continue;
+			}
+			curr.add(nums[i]);
+			backtrack(i+1,nums,curr,ret);
+			curr.remove(curr.size() - 1);
+		}
+	}
+
 }
