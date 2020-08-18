@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
+import com.laz.arithmetic.Utils.Codec;
 
 public class LeetCode10 {
 	// 颜色分类
@@ -780,7 +781,7 @@ public class LeetCode10 {
 
 	// 扰乱字符串
 	@Test
-	public void test() {
+	public void test19() {
 		Assert.assertEquals(true, isScramble("great", "rgeat"));
 		Assert.assertEquals(false, isScramble("abcde", "caebd"));
 	}
@@ -794,7 +795,7 @@ public class LeetCode10 {
 		if (n != m) {
 			return false;
 		}
-		//dp[i][j][len] 表示从字符串 S 中 i 开始长度为 len 的字符串是否能变换为从字符串 T 中 j 开始长度为 len的字符串
+		// dp[i][j][len] 表示从字符串 S 中 i 开始长度为 len 的字符串是否能变换为从字符串 T 中 j 开始长度为 len的字符串
 		boolean[][][] dp = new boolean[n][n][n + 1];
 		// 初始化单个字符的情况
 		for (int i = 0; i < n; i++) {
@@ -827,5 +828,43 @@ public class LeetCode10 {
 			}
 		}
 		return dp[0][0][n];
+	}
+
+	// 有序链表转换二叉搜索树
+	@Test
+	public void test20() {
+		ListNode head = Utils.createListNode(new Integer[] {-10,-3,0,5,9});
+		TreeNode root = sortedListToBST(head);
+		System.out.println(new Utils().new Codec().serialize(root));
+	}
+
+	public TreeNode sortedListToBST(ListNode head) {
+		List<Integer> list = new ArrayList<Integer>();
+		while (head!=null) {
+			list.add(head.val);
+			head = head.next;
+		}
+		Integer[] nums = list.toArray(new Integer[] {});
+		TreeNode root = sortedArrayToBST(nums);
+		return root;
+	}
+	public TreeNode sortedArrayToBST(Integer[] nums) {
+		if (nums == null || nums.length <= 0) {
+			return null;
+		}
+		int l = 0, r = nums.length - 1;
+		TreeNode root = createTree(nums, l, r);
+		return root;
+	}
+
+	public TreeNode createTree(Integer[] nums, int l, int r) {
+		if (l < 0 || l > r || r >= nums.length) {
+			return null;
+		}
+		int mid = (l + r) / 2;
+		TreeNode root = new TreeNode(nums[mid]);
+		root.left = createTree(nums, l, mid - 1);
+		root.right = createTree(nums, mid + 1, r);
+		return root;
 	}
 }
