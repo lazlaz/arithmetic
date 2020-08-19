@@ -100,4 +100,52 @@ public class LeetCode11 {
 			return ans;
 		}
 	}
+
+	// 反转链表 II
+	@Test
+	public void test3() {
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4, 5 });
+		ListNode node = reverseBetween(head, 2, 4);
+		Utils.printListNode(node);
+	}
+
+	public ListNode reverseBetween(ListNode head, int m, int n) {
+		// Empty list
+		if (head == null) {
+			return null;
+		}
+
+		// Move the two pointers until they reach the proper starting point
+		// in the list.
+		ListNode cur = head, prev = null;
+		while (m > 1) {
+			prev = cur;
+			cur = cur.next;
+			m--;
+			n--;
+		}
+
+		// The two pointers that will fix the final connections.
+		ListNode con = prev, tail = cur;
+
+		// Iteratively reverse the nodes until n becomes 0.
+		ListNode third = null;
+		while (n > 0) {
+			third = cur.next;
+			cur.next = prev;
+			prev = cur;
+			cur = third;
+			n--;
+		}
+
+		// Adjust the final connections as explained in the algorithm
+		if (con != null) {
+			con.next = prev;
+		} else {
+			head = prev;
+		}
+
+		tail.next = cur;
+		return head;
+	}
 }
