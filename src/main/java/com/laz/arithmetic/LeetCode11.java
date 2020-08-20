@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 public class LeetCode11 {
 	// 解码方法
 	@Test
@@ -147,5 +149,84 @@ public class LeetCode11 {
 
 		tail.next = cur;
 		return head;
+	}
+
+	// 扫雷游戏
+	@Test
+	public void test4() {
+//		char[][] board = new char[][] { { 'E', 'E', 'E', 'E', 'E' }, { 'E', 'E', 'M', 'E', 'E' },
+//				{ 'E', 'E', 'E', 'E', 'E' }, { 'E', 'E', 'E', 'E', 'E' } };
+//		int[] click = new int[] { 3, 0 };
+
+		char[][] board = new char[][] { { 'B', '1', 'E', '1', 'B' }, { 'B', '1', 'M', '1', 'B' },
+				{ 'B', '1', '1', '1', 'B' }, { 'B', 'B', 'B', 'B', 'B' } };
+		int[] click = new int[] { 1,2 };
+		char[][] ret = updateBoard(board, click);
+		for (char[] cs : ret) {
+			for (char c : cs) {
+				System.out.print(c + "");
+			}
+			System.out.println();
+		}
+	}
+
+	public char[][] updateBoard(char[][] board, int[] click) {
+		int m = board.length;
+		int n = board[0].length;
+		char c = board[click[0]][click[1]];
+		boolean[][] visited = new boolean[m][n];
+		if (c == 'M') {
+			board[click[0]][click[1]] = 'X';
+			return board;
+		}
+		dfs(board, visited, click[0], click[1]);
+		return board;
+	}
+
+	private void dfs(char[][] board, boolean[][] visited, int i, int j) {
+		int m = board.length;
+		int n = board[0].length;
+		if (i < 0 || i >= m) {
+			return;
+		}
+		if (j < 0 || j >= n) {
+			return;
+		}
+		if (visited[i][j]) {
+			return;
+		}
+		char c = board[i][j];
+		if (c == 'M') {
+			board[i][i] = 'X';
+			return;
+		}
+		if (c == 'E') {
+			// 判断周围是否度没有雷
+			int[][] v = new int[][] { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 1, 1 }, { -1, -1 }, { -1, 1 },
+					{ 1, -1 } };
+			int count = 0;
+			for (int k = 0; k < v.length; k++) {
+				int row = i + v[k][0];
+				int col = j + v[k][1];
+				if ((row >= 0 && row < m) && (col >= 0 && col < n)) {
+					if (board[row][col] == 'M') {
+						count++;
+					}
+				}
+			}
+			if (count == 0) {
+				board[i][j] = 'B';
+				visited[i][j] = true;
+				// 递归点击四个方向的方块
+				for (int k = 0; k < v.length; k++) {
+					int row = i + v[k][0];
+					int col = j + v[k][1];
+					dfs(board, visited, row, col);
+				}
+			} else {
+				board[i][j] = Character.forDigit(count, 10);
+			}
+		}
+
 	}
 }
