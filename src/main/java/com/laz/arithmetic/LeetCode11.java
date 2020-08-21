@@ -160,7 +160,7 @@ public class LeetCode11 {
 
 		char[][] board = new char[][] { { 'B', '1', 'E', '1', 'B' }, { 'B', '1', 'M', '1', 'B' },
 				{ 'B', '1', '1', '1', 'B' }, { 'B', 'B', 'B', 'B', 'B' } };
-		int[] click = new int[] { 1,2 };
+		int[] click = new int[] { 1, 2 };
 		char[][] ret = updateBoard(board, click);
 		for (char[] cs : ret) {
 			for (char c : cs) {
@@ -228,5 +228,36 @@ public class LeetCode11 {
 			}
 		}
 
+	}
+
+	// 二叉树的最小深度
+	@Test
+	public void test5() {
+//		TreeNode root = Utils.createTree(new Integer[] {3,9,20,null,null,15,7});
+//		Assert.assertEquals(2, minDepth(root));
+
+//		TreeNode root2 = Utils.createTree(new Integer[] {1,2});
+//		Assert.assertEquals(2, minDepth(root2));
+
+		TreeNode root3 = Utils.createTree(new Integer[] { 1, 2, 3, 4, null, null, 5 });
+		Assert.assertEquals(3, minDepth(root3));
+	}
+
+	public int minDepth(TreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		if (root.left == null && root.right == null) {
+			return 1;
+		}
+		int min_depth = Integer.MAX_VALUE;
+		if (root.left != null) {
+			min_depth = Math.min(minDepth(root.left), min_depth);
+		}
+		if (root.right != null) {
+			min_depth = Math.min(minDepth(root.right), min_depth);
+		}
+
+		return min_depth + 1;
 	}
 }
