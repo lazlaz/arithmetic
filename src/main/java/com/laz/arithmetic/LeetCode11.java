@@ -260,4 +260,106 @@ public class LeetCode11 {
 
 		return min_depth + 1;
 	}
+
+	// 24 点游戏
+	@Test
+	public void test6() {
+		Assert.assertEquals(true, new Solution6().judgePoint24(new int[] { 4, 1, 8, 7 }));
+	}
+
+	class Solution6 {
+		static final int TARGET = 24;
+		static final double EPSILON = 1e-6;
+		static final int ADD = 0, MULTIPLY = 1, SUBTRACT = 2, DIVIDE = 3;
+
+		public boolean judgePoint24(int[] nums) {
+			List<Double> list = new ArrayList<Double>();
+			for (int num : nums) {
+				list.add((double) num);
+			}
+			return solve(list);
+		}
+
+		public boolean solve(List<Double> list) {
+			if (list.size() == 0) {
+				return false;
+			}
+			if (list.size() == 1) {
+				return Math.abs(list.get(0) - TARGET) < EPSILON;
+			}
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				for (int j = 0; j < size; j++) {
+					if (i != j) {
+						List<Double> list2 = new ArrayList<Double>();
+						for (int k = 0; k < size; k++) {
+							if (k != i && k != j) {
+								list2.add(list.get(k));
+							}
+						}
+						for (int k = 0; k < 4; k++) {
+							if (k < 2 && i > j) {
+								continue;
+							}
+							if (k == ADD) {
+								list2.add(list.get(i) + list.get(j));
+							} else if (k == MULTIPLY) {
+								list2.add(list.get(i) * list.get(j));
+							} else if (k == SUBTRACT) {
+								list2.add(list.get(i) - list.get(j));
+							} else if (k == DIVIDE) {
+								if (Math.abs(list.get(j)) < EPSILON) {
+									continue;
+								} else {
+									list2.add(list.get(i) / list.get(j));
+								}
+							}
+							if (solve(list2)) {
+								return true;
+							}
+							list2.remove(list2.size() - 1);
+						}
+					}
+				}
+			}
+			return false;
+		}
+	}
+
+	// 在 D 天内送达包裹的能力
+	@Test
+	public void test7() {
+		Assert.assertEquals(15, shipWithinDays(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 5));
+	}
+
+	// https://leetcode-cn.com/problems/capacity-to-ship-packages-within-d-days/solution/zai-dtian-nei-song-da-bao-guo-de-neng-li-by-lenn12/
+	public int shipWithinDays(int[] weights, int D) {
+		int lo = 0,hi = 0;
+		for (int i=0;i<weights.length;i++) {
+			hi+=weights[i];
+		}
+		while (lo < hi) {
+			int mid = lo + (hi-lo)/2;
+        	if (canShip(weights, D, mid)) {
+        		hi = mid;
+        	} else {
+        		lo = mid+1;
+        	}
+		}
+		return lo;
+	}
+
+	private boolean canShip(int[] weights, int D, int K) {
+		int cur = K; // cur 表示当前船的可用承载量
+		for (int weight : weights) {
+			if (weight > K)
+				return false;
+			if (cur < weight) {
+				cur = K;
+				D--;
+			}
+			cur -= weight;
+		}
+		return D > 0; // 能否在D天内运完
+	}
 }
