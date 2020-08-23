@@ -334,17 +334,17 @@ public class LeetCode11 {
 
 	// https://leetcode-cn.com/problems/capacity-to-ship-packages-within-d-days/solution/zai-dtian-nei-song-da-bao-guo-de-neng-li-by-lenn12/
 	public int shipWithinDays(int[] weights, int D) {
-		int lo = 0,hi = 0;
-		for (int i=0;i<weights.length;i++) {
-			hi+=weights[i];
+		int lo = 0, hi = 0;
+		for (int i = 0; i < weights.length; i++) {
+			hi += weights[i];
 		}
 		while (lo < hi) {
-			int mid = lo + (hi-lo)/2;
-        	if (canShip(weights, D, mid)) {
-        		hi = mid;
-        	} else {
-        		lo = mid+1;
-        	}
+			int mid = lo + (hi - lo) / 2;
+			if (canShip(weights, D, mid)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
 		}
 		return lo;
 	}
@@ -361,5 +361,49 @@ public class LeetCode11 {
 			cur -= weight;
 		}
 		return D > 0; // 能否在D天内运完
+	}
+
+	// 数字范围按位与
+	@Test
+	public void test8() {
+		Assert.assertEquals(4, rangeBitwiseAnd(5, 7));
+	}
+
+	public int rangeBitwiseAnd(int m, int n) {
+		int shift = 0;
+		// 找到公共前缀
+		while (m < n) {
+			m >>= 1;
+			n >>= 1;
+			++shift;
+		}
+		return m << shift;
+	}
+
+	// 最长公共子序列
+	@Test
+	public void test9() {
+		Assert.assertEquals(3, longestCommonSubsequence("abcde","ace"));
+	}
+
+	public int longestCommonSubsequence(String text1, String text2) {
+		char[] t1 = text1.toCharArray();
+		char[] t2 = text2.toCharArray();
+		int length1 = t1.length;
+		int length2 = t2.length;
+		//dp表示s1[1..]和s2[1..]最长子序列 ,默认为0，所以dp[0]情况不用初始化
+		int[][] dp = new int[length1+1][length2+1];
+		for (int i=1;i<length1+1;i++) {
+			for (int j=1;j<length2+1;j++) {
+				if (t1[i-1] == t2[j-1]) {
+					 // 这边找到一个 lcs 的元素，继续往前找
+					dp[i][j] =  1+dp[i-1][j-1];
+				} else {
+					//谁能让 lcs 最长，就听谁的
+                    dp[i][j] = Math.max(dp[i-1][j],dp[i][j-1]);
+				}
+			}
+		}
+		return dp[length1][length2];
 	}
 }
