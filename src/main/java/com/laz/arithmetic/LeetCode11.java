@@ -406,4 +406,17 @@ public class LeetCode11 {
 		}
 		return dp[length1][length2];
 	}
+	
+	// 重复的子字符串
+	@Test
+	public void test10() {
+		Assert.assertEquals(true, repeatedSubstringPattern("abab"));
+		Assert.assertEquals(false, repeatedSubstringPattern("aba"));
+	}
+	//https://leetcode-cn.com/problems/repeated-substring-pattern/solution/tu-jie-yi-xia-shuang-bei-zi-fu-chuan-de-jie-fa-by-/
+	 public boolean repeatedSubstringPattern(String s) {
+		 int index = (s+s).indexOf(s,1);
+		 //如果存在子串，找到的就不可能等于s的长度
+		 return index != s.length();
+	 }
 }
