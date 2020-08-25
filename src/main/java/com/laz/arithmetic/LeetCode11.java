@@ -1,11 +1,15 @@
 package com.laz.arithmetic;
 
-import java.util.ArrayDeque;
+import static org.hamcrest.CoreMatchers.containsString;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode11 {
 	// 解码方法
@@ -406,90 +410,37 @@ public class LeetCode11 {
 		return dp[length1][length2];
 	}
 
-	// 重复的子字符串
+	// 递增子序列
 	@Test
 	public void test10() {
-		Assert.assertEquals(true, repeatedSubstringPattern("abab"));
-		Assert.assertEquals(false, repeatedSubstringPattern("aba"));
+		List<List<Integer>> ret = findSubsequences(new int[] { 4, 6, 7, 7, 3 });
+		for (List<Integer> list : ret) {
+			System.out.println(Joiner.on(",").join(list));
+		}
 	}
 
-	// https://leetcode-cn.com/problems/repeated-substring-pattern/solution/tu-jie-yi-xia-shuang-bei-zi-fu-chuan-de-jie-fa-by-/
-	public boolean repeatedSubstringPattern(String s) {
-		int index = (s + s).indexOf(s, 1);
-		// 如果存在子串，找到的就不可能等于s的长度
-		return index != s.length();
+	List<Integer> temp = new ArrayList<Integer>();
+	List<List<Integer>> ans = new ArrayList<List<Integer>>();
+
+	public List<List<Integer>> findSubsequences(int[] nums) {
+		dfs(0, Integer.MIN_VALUE, nums);
+		return ans;
 	}
 
-	// 滑动窗口最大值
-	@Test
-	public void test11() {
-		Assert.assertArrayEquals(new int[] { 3, 3, 5, 5, 6, 7 },
-				new Solution11().maxSlidingWindow(new int[] { 1, 3, -1, -3, 5, 3, 6, 7 }, 3));
-	}
-	//暴力解法
-	public int[] maxSlidingWindow(int[] nums, int k) {
-		List<Integer> ret = new ArrayList<Integer>();
-		for (int i = 0; i <= (nums.length - k); i++) {
-			int max = Integer.MIN_VALUE;
-			for (int j = i; j < i + k; j++) {
-				if (max < nums[j]) {
-					max = nums[j];
-				}
+	public void dfs(int cur, int last, int[] nums) {
+		if (cur == nums.length) {
+			if (temp.size() >= 2) {
+				ans.add(new ArrayList<Integer>(temp));
 			}
-			ret.add(max);
+			return;
 		}
-
-		int[] retArr = new int[ret.size()];
-		for (int i = 0; i < ret.size(); i++) {
-			retArr[i] = ret.get(i);
+		if (nums[cur] >= last) {
+			temp.add(nums[cur]);
+			dfs(cur + 1, nums[cur], nums);
+			temp.remove(temp.size() - 1);
 		}
-		return retArr;
-	}
-
-	//双向队列解法
-	class Solution11 {
-		ArrayDeque<Integer> deq = new ArrayDeque<Integer>();
-		int[] nums;
-
-		public void clean_deque(int i, int k) {
-			// remove indexes of elements not from sliding window
-			if (!deq.isEmpty() && deq.getFirst() == i - k)
-				deq.removeFirst();
-
-			// remove from deq indexes of all elements
-			// which are smaller than current element nums[i]
-			while (!deq.isEmpty() && nums[i] > nums[deq.getLast()])
-				deq.removeLast();
+		if (nums[cur] != last) {
+			dfs(cur + 1, last, nums);
 		}
-
-		public int[] maxSlidingWindow(int[] nums, int k) {
-			int n = nums.length;
-			if (n * k == 0)
-				return new int[0];
-			if (k == 1)
-				return nums;
-
-			// init deque and output
-			this.nums = nums;
-			int max_idx = 0;
-			for (int i = 0; i < k; i++) {
-				clean_deque(i, k);
-				deq.addLast(i);
-				// compute max in nums[:k]
-				if (nums[i] > nums[max_idx])
-					max_idx = i;
-			}
-			int[] output = new int[n - k + 1];
-			output[0] = nums[max_idx];
-
-			// build output
-			for (int i = k; i < n; i++) {
-				clean_deque(i, k);
-				deq.addLast(i);
-				output[i - k + 1] = nums[deq.getFirst()];
-			}
-			return output;
-		}
-
 	}
 }
