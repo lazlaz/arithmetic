@@ -1,10 +1,12 @@
 package com.laz.arithmetic;
 
-import static org.hamcrest.CoreMatchers.containsString;
-
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -475,4 +477,50 @@ public class LeetCode11 {
 
 	}
 
+	// 重新安排行程
+	@Test
+	public void test12() {
+		List<List<String>> tickets = new ArrayList<List<String>>();
+		tickets.add(Arrays.asList("JFK","NRT"));
+		tickets.add(Arrays.asList("JFK","KUL"));
+		tickets.add(Arrays.asList("KUL","JFK"));
+		List<String> ret = findItinerary(tickets);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	// https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+	public List<String> findItinerary(List<List<String>> tickets) {
+		// 因为逆序插入，所以用链表
+		List<String> ans = new LinkedList<>();
+		if (tickets == null || tickets.size() == 0)
+			return ans;
+
+		Map<String, PriorityQueue<String>> graph = new HashMap<>();
+
+		for (List<String> pair : tickets) {
+			// 因为涉及删除操作，我们用链表
+			PriorityQueue<String> nbr = graph.computeIfAbsent(pair.get(0), k -> new PriorityQueue<>());
+			nbr.add(pair.get(1));
+		}
+
+		// 按目的顶点排序
+
+		visit(graph, "JFK", ans);
+
+		return ans;
+	}
+
+	// DFS方式遍历图，当走到不能走为止，再将节点加入到答案
+	private void visit(Map<String, PriorityQueue<String>> graph, String src, List<String> ans) {
+		LinkedList<String> stack = new LinkedList<>();
+		stack.push(src);
+		while (!stack.isEmpty()) {
+			PriorityQueue<String> nbr;
+
+			while ((nbr = graph.get(stack.peek())) != null && nbr.size() > 0) {
+				stack.push(nbr.poll());
+			}
+			ans.add(0, stack.pop());
+		}
+	}
 }
