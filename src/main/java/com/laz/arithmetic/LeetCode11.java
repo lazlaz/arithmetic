@@ -481,9 +481,9 @@ public class LeetCode11 {
 	@Test
 	public void test12() {
 		List<List<String>> tickets = new ArrayList<List<String>>();
-		tickets.add(Arrays.asList("JFK","NRT"));
-		tickets.add(Arrays.asList("JFK","KUL"));
-		tickets.add(Arrays.asList("KUL","JFK"));
+		tickets.add(Arrays.asList("JFK", "NRT"));
+		tickets.add(Arrays.asList("JFK", "KUL"));
+		tickets.add(Arrays.asList("KUL", "JFK"));
 		List<String> ret = findItinerary(tickets);
 		System.out.println(Joiner.on(",").join(ret));
 	}
@@ -522,5 +522,35 @@ public class LeetCode11 {
 			}
 			ans.add(0, stack.pop());
 		}
+	}
+
+	// 机器人能否返回原点
+	@Test
+	public void test13() {
+		Assert.assertEquals(true, judgeCircle("UD"));
+		Assert.assertEquals(false, judgeCircle("LL"));
+	}
+
+	public boolean judgeCircle(String moves) {
+		if (moves==null || moves.length() == 0 ) {
+			return true;
+		}
+		int[] start = new int[] {0,0};
+		for (int i=0;i<moves.length();i++) {
+			char c = moves.charAt(i);
+			if (c == 'U') {
+				start[0]=start[0]-1;
+			}
+			if (c == 'D') {
+				start[0]=start[0]+1;
+			}
+			if (c == 'L') {
+				start[1]=start[1]-1;
+			}
+			if (c == 'R') {
+				start[1]=start[1]+1;
+			}
+		}
+		return start[0] == 0  && start[1] == 0;
 	}
 }
