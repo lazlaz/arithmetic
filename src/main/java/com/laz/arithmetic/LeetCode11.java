@@ -532,25 +532,90 @@ public class LeetCode11 {
 	}
 
 	public boolean judgeCircle(String moves) {
-		if (moves==null || moves.length() == 0 ) {
+		if (moves == null || moves.length() == 0) {
 			return true;
 		}
-		int[] start = new int[] {0,0};
-		for (int i=0;i<moves.length();i++) {
+		int[] start = new int[] { 0, 0 };
+		for (int i = 0; i < moves.length(); i++) {
 			char c = moves.charAt(i);
 			if (c == 'U') {
-				start[0]=start[0]-1;
+				start[0] = start[0] - 1;
 			}
 			if (c == 'D') {
-				start[0]=start[0]+1;
+				start[0] = start[0] + 1;
 			}
 			if (c == 'L') {
-				start[1]=start[1]-1;
+				start[1] = start[1] - 1;
 			}
 			if (c == 'R') {
-				start[1]=start[1]+1;
+				start[1] = start[1] + 1;
 			}
 		}
-		return start[0] == 0  && start[1] == 0;
+		return start[0] == 0 && start[1] == 0;
+	}
+
+	// 最短回文串
+	@Test
+	public void test14() {
+		Assert.assertEquals("aaacecaaa", shortestPalindrome("aacecaaa"));
+	}
+
+	public String shortestPalindrome(String s) {
+		int n = s.length();
+		int[] fail = new int[n];
+		Arrays.fill(fail, -1);
+		for (int i = 1; i < n; ++i) {
+			int j = fail[i - 1];
+			while (j != -1 && s.charAt(j + 1) != s.charAt(i)) {
+				j = fail[j];
+			}
+			if (s.charAt(j + 1) == s.charAt(i)) {
+				fail[i] = j + 1;
+			}
+		}
+		int best = -1;
+		for (int i = n - 1; i >= 0; --i) {
+			while (best != -1 && s.charAt(best + 1) != s.charAt(i)) {
+				best = fail[best];
+			}
+			if (s.charAt(best + 1) == s.charAt(i)) {
+				++best;
+			}
+		}
+		String add = (best == n - 1 ? "" : s.substring(best + 1));
+		StringBuffer ans = new StringBuffer(add).reverse();
+		ans.append(s);
+		return ans.toString();
+	}
+
+	// 灯泡开关
+	@Test
+	public void test15() {
+//		Assert.assertEquals(1, bulbSwitch(3));
+//		Assert.assertEquals(2, bulbSwitch(4));
+		Assert.assertEquals(2, bulbSwitch(6));
+		Assert.assertEquals(999, bulbSwitch(999999));
+	}
+	//https://leetcode-cn.com/problems/bulb-switcher/solution/bu-jiu-shi-qiu-ping-fang-gen-ma-by-ivan1/
+	public int bulbSwitch(int n) {
+		return (int) Math.sqrt(n);
+	}
+	
+	public int bulbSwitch2(int n) {
+		int[] arr = new int[n];
+		int t = 1;
+		for (int i = 1; i <= n; i++) {
+			for (int j = t-1; j < n; j = j + t) {
+				arr[j] = arr[j] == 0?1:0;
+			}
+			t++;
+		}
+		int count = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == 1) {
+				count++;
+			}
+		}
+		return count;
 	}
 }
