@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -596,17 +597,18 @@ public class LeetCode11 {
 		Assert.assertEquals(2, bulbSwitch(6));
 		Assert.assertEquals(999, bulbSwitch(999999));
 	}
-	//https://leetcode-cn.com/problems/bulb-switcher/solution/bu-jiu-shi-qiu-ping-fang-gen-ma-by-ivan1/
+
+	// https://leetcode-cn.com/problems/bulb-switcher/solution/bu-jiu-shi-qiu-ping-fang-gen-ma-by-ivan1/
 	public int bulbSwitch(int n) {
 		return (int) Math.sqrt(n);
 	}
-	
+
 	public int bulbSwitch2(int n) {
 		int[] arr = new int[n];
 		int t = 1;
 		for (int i = 1; i <= n; i++) {
-			for (int j = t-1; j < n; j = j + t) {
-				arr[j] = arr[j] == 0?1:0;
+			for (int j = t - 1; j < n; j = j + t) {
+				arr[j] = arr[j] == 0 ? 1 : 0;
 			}
 			t++;
 		}
@@ -617,5 +619,36 @@ public class LeetCode11 {
 			}
 		}
 		return count;
+	}
+
+	// 反转字符串中的单词 III
+	@Test
+	public void test16() {
+		Assert.assertEquals("s'teL ekat edoCteeL tsetnoc", reverseWords("Let's take LeetCode contest"));
+	}
+
+	public String reverseWords(String s) {
+		if (s == null || s.length()==0) {
+			return s;
+		}
+		Deque<Character> stack = new LinkedList<Character>();
+		int count = 0;
+		StringBuilder sb = new StringBuilder();
+		while (count<s.length()) {
+			char c = s.charAt(count);
+			if (c==' ') {
+				while (!stack.isEmpty()) {
+					sb.append(stack.pop());
+				}
+				sb.append(c);
+			} else {
+				stack.push(c);
+			}
+			count++;
+		}
+		while (!stack.isEmpty()) {
+			sb.append(stack.pop());
+		}
+		return sb.toString();
 	}
 }
