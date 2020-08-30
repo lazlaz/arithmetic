@@ -628,15 +628,15 @@ public class LeetCode11 {
 	}
 
 	public String reverseWords(String s) {
-		if (s == null || s.length()==0) {
+		if (s == null || s.length() == 0) {
 			return s;
 		}
 		Deque<Character> stack = new LinkedList<Character>();
 		int count = 0;
 		StringBuilder sb = new StringBuilder();
-		while (count<s.length()) {
+		while (count < s.length()) {
 			char c = s.charAt(count);
-			if (c==' ') {
+			if (c == ' ') {
 				while (!stack.isEmpty()) {
 					sb.append(stack.pop());
 				}
@@ -651,4 +651,28 @@ public class LeetCode11 {
 		}
 		return sb.toString();
 	}
+
+	// 零钱兑换
+	@Test
+	public void test17() {
+		Assert.assertEquals(3, coinChange(new int[] { 1, 2, 5 }, 11));
+		Assert.assertEquals(3, coinChange(new int[] { 2 }, 3));
+	}
+
+	public int coinChange(int[] coins, int amount) {
+		int max = amount + 1;
+		//dp为组成金额 i所需最少的硬币数量
+		int[] dp = new int[amount + 1];
+		Arrays.fill(dp, max);
+		dp[0] = 0;
+		for (int i = 1; i <= amount; i++) {
+			for (int j = 0; j < coins.length; j++) {
+				if (coins[j] <= i) {
+					dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+				}
+			}
+		}
+		return dp[amount] > amount ? -1 : dp[amount];
+	}
+
 }
