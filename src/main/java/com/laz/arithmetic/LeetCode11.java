@@ -661,7 +661,7 @@ public class LeetCode11 {
 
 	public int coinChange(int[] coins, int amount) {
 		int max = amount + 1;
-		//dp为组成金额 i所需最少的硬币数量
+		// dp为组成金额 i所需最少的硬币数量
 		int[] dp = new int[amount + 1];
 		Arrays.fill(dp, max);
 		dp[0] = 0;
@@ -675,4 +675,46 @@ public class LeetCode11 {
 		return dp[amount] > amount ? -1 : dp[amount];
 	}
 
+	// 钥匙和房间
+	@Test
+	public void test18() {
+//		{
+//			List<List<Integer>> rooms = new ArrayList<List<Integer>>();
+//			rooms.add(Arrays.asList(1,3));
+//			rooms.add(Arrays.asList(3,0,1));
+//			rooms.add(Arrays.asList(2));
+//			rooms.add(Arrays.asList(0));
+//			Assert.assertEquals(false, canVisitAllRooms(rooms));
+//		}
+		{
+			List<List<Integer>> rooms = new ArrayList<List<Integer>>();
+			rooms.add(Arrays.asList(1));
+			rooms.add(Arrays.asList(2));
+			rooms.add(Arrays.asList(3));
+			rooms.add(Arrays.asList());
+			Assert.assertEquals(true, canVisitAllRooms(rooms));
+		}
+	}
+
+	public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+		boolean[] visited = new boolean[rooms.size()];
+		dfs(rooms,visited,0);
+		for (int i=1;i<rooms.size();i++) {
+			if (!visited[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void dfs(List<List<Integer>> rooms, boolean[] visited, int i) {
+		for (Integer list : rooms.get(i)) {
+			int key = list;
+			if (visited[key]) {
+				continue;
+			}
+			visited[key] = true;
+			dfs(rooms, visited, key);
+		}
+	}
 }
