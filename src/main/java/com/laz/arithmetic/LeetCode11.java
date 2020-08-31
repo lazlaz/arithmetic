@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -698,8 +699,8 @@ public class LeetCode11 {
 
 	public boolean canVisitAllRooms(List<List<Integer>> rooms) {
 		boolean[] visited = new boolean[rooms.size()];
-		dfs(rooms,visited,0);
-		for (int i=1;i<rooms.size();i++) {
+		dfs(rooms, visited, 0);
+		for (int i = 1; i < rooms.size(); i++) {
 			if (!visited[i]) {
 				return false;
 			}
@@ -716,5 +717,71 @@ public class LeetCode11 {
 			visited[key] = true;
 			dfs(rooms, visited, key);
 		}
+	}
+
+	// 俄罗斯套娃信封问题
+	@Test
+	public void test19() {
+		Assert.assertEquals(3, maxEnvelopes(new int[][] { { 5, 4 }, { 6, 4 }, { 6, 7 }, { 2, 3 } }));
+	}
+
+	public int maxEnvelopes(int[][] envelopes) {
+		// sort on increasing in first dimension and decreasing in second
+		Arrays.sort(envelopes, new Comparator<int[]>() {
+			public int compare(int[] arr1, int[] arr2) {
+				if (arr1[0] == arr2[0]) {
+					return arr2[1] - arr1[1];
+				} else {
+					return arr1[0] - arr2[0];
+				}
+			}
+		});
+		// extract the second dimension and run LIS
+		int[] secondDim = new int[envelopes.length];
+		for (int i = 0; i < envelopes.length; ++i)
+			secondDim[i] = envelopes[i][1];
+		return lengthOfLIS(secondDim);
+	}
+
+	//https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
+	public int lengthOfLIS(int[] nums) {
+		int len = nums.length;
+		if (len <= 1) {
+			return len;
+		}
+		// tail 数组的定义：长度为 i + 1 的上升子序列的末尾最小是几
+		int[] tail = new int[len];
+		// 遍历第 1 个数，直接放在有序数组 tail 的开头
+		tail[0] = nums[0];
+		// end 表示有序数组 tail 的最后一个已经赋值元素的索引
+		int end = 0;
+		for (int i = 1; i < len; i++) {
+			int left = 0;
+			// 这里，因为当前遍历的数，有可能比有序数组 tail 数组实际有效的末尾的那个元素还大
+			// 【逻辑 1】因此 end + 1 应该落在候选区间里
+			int right = end + 1;
+			while (left < right) {
+				// 选左中位数不是偶然，而是有原因的，原因请见 LeetCode 第 35 题题解
+				// int mid = left + (right - left) / 2;
+				int mid = (left + right) >>> 1;
+
+				if (tail[mid] < nums[i]) {
+					// 中位数肯定不是要找的数，把它写在分支的前面
+					left = mid + 1;
+				} else {
+					right = mid;
+				}
+			}
+			// 因为 【逻辑 1】，因此一定能找到第 1 个大于等于 nums[i] 的元素
+			// 因此，无需再单独判断，直接更新即可
+			tail[left] = nums[i];
+
+			// 但是 end 的值，需要更新，当前仅当更新位置在当前 end 的下一位
+			if (left == end + 1) {
+				end++;
+			}
+		}
+		end++;
+		return end;
 	}
 }
