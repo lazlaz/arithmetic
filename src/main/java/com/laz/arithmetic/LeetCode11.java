@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -481,9 +482,9 @@ public class LeetCode11 {
 	@Test
 	public void test12() {
 		List<List<String>> tickets = new ArrayList<List<String>>();
-		tickets.add(Arrays.asList("JFK","NRT"));
-		tickets.add(Arrays.asList("JFK","KUL"));
-		tickets.add(Arrays.asList("KUL","JFK"));
+		tickets.add(Arrays.asList("JFK", "NRT"));
+		tickets.add(Arrays.asList("JFK", "KUL"));
+		tickets.add(Arrays.asList("KUL", "JFK"));
 		List<String> ret = findItinerary(tickets);
 		System.out.println(Joiner.on(",").join(ret));
 	}
@@ -523,4 +524,155 @@ public class LeetCode11 {
 			ans.add(0, stack.pop());
 		}
 	}
+
+	// 机器人能否返回原点
+	@Test
+	public void test13() {
+		Assert.assertEquals(true, judgeCircle("UD"));
+		Assert.assertEquals(false, judgeCircle("LL"));
+	}
+
+	public boolean judgeCircle(String moves) {
+		if (moves == null || moves.length() == 0) {
+			return true;
+		}
+		int[] start = new int[] { 0, 0 };
+		for (int i = 0; i < moves.length(); i++) {
+			char c = moves.charAt(i);
+			if (c == 'U') {
+				start[0] = start[0] - 1;
+			}
+			if (c == 'D') {
+				start[0] = start[0] + 1;
+			}
+			if (c == 'L') {
+				start[1] = start[1] - 1;
+			}
+			if (c == 'R') {
+				start[1] = start[1] + 1;
+			}
+		}
+		return start[0] == 0 && start[1] == 0;
+	}
+
+	// 最短回文串
+	@Test
+	public void test14() {
+		Assert.assertEquals("aaacecaaa", shortestPalindrome("aacecaaa"));
+	}
+
+	public String shortestPalindrome(String s) {
+		int n = s.length();
+		int[] fail = new int[n];
+		Arrays.fill(fail, -1);
+		for (int i = 1; i < n; ++i) {
+			int j = fail[i - 1];
+			while (j != -1 && s.charAt(j + 1) != s.charAt(i)) {
+				j = fail[j];
+			}
+			if (s.charAt(j + 1) == s.charAt(i)) {
+				fail[i] = j + 1;
+			}
+		}
+		int best = -1;
+		for (int i = n - 1; i >= 0; --i) {
+			while (best != -1 && s.charAt(best + 1) != s.charAt(i)) {
+				best = fail[best];
+			}
+			if (s.charAt(best + 1) == s.charAt(i)) {
+				++best;
+			}
+		}
+		String add = (best == n - 1 ? "" : s.substring(best + 1));
+		StringBuffer ans = new StringBuffer(add).reverse();
+		ans.append(s);
+		return ans.toString();
+	}
+
+	// 灯泡开关
+	@Test
+	public void test15() {
+//		Assert.assertEquals(1, bulbSwitch(3));
+//		Assert.assertEquals(2, bulbSwitch(4));
+		Assert.assertEquals(2, bulbSwitch(6));
+		Assert.assertEquals(999, bulbSwitch(999999));
+	}
+
+	// https://leetcode-cn.com/problems/bulb-switcher/solution/bu-jiu-shi-qiu-ping-fang-gen-ma-by-ivan1/
+	public int bulbSwitch(int n) {
+		return (int) Math.sqrt(n);
+	}
+
+	public int bulbSwitch2(int n) {
+		int[] arr = new int[n];
+		int t = 1;
+		for (int i = 1; i <= n; i++) {
+			for (int j = t - 1; j < n; j = j + t) {
+				arr[j] = arr[j] == 0 ? 1 : 0;
+			}
+			t++;
+		}
+		int count = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == 1) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	// 反转字符串中的单词 III
+	@Test
+	public void test16() {
+		Assert.assertEquals("s'teL ekat edoCteeL tsetnoc", reverseWords("Let's take LeetCode contest"));
+	}
+
+	public String reverseWords(String s) {
+		if (s == null || s.length() == 0) {
+			return s;
+		}
+		Deque<Character> stack = new LinkedList<Character>();
+		int count = 0;
+		StringBuilder sb = new StringBuilder();
+		while (count < s.length()) {
+			char c = s.charAt(count);
+			if (c == ' ') {
+				while (!stack.isEmpty()) {
+					sb.append(stack.pop());
+				}
+				sb.append(c);
+			} else {
+				stack.push(c);
+			}
+			count++;
+		}
+		while (!stack.isEmpty()) {
+			sb.append(stack.pop());
+		}
+		return sb.toString();
+	}
+
+	// 零钱兑换
+	@Test
+	public void test17() {
+		Assert.assertEquals(3, coinChange(new int[] { 1, 2, 5 }, 11));
+		Assert.assertEquals(3, coinChange(new int[] { 2 }, 3));
+	}
+
+	public int coinChange(int[] coins, int amount) {
+		int max = amount + 1;
+		//dp为组成金额 i所需最少的硬币数量
+		int[] dp = new int[amount + 1];
+		Arrays.fill(dp, max);
+		dp[0] = 0;
+		for (int i = 1; i <= amount; i++) {
+			for (int j = 0; j < coins.length; j++) {
+				if (coins[j] <= i) {
+					dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+				}
+			}
+		}
+		return dp[amount] > amount ? -1 : dp[amount];
+	}
+
 }
