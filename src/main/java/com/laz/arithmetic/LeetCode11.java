@@ -743,7 +743,7 @@ public class LeetCode11 {
 		return lengthOfLIS(secondDim);
 	}
 
-	//https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
+	// https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
 	public int lengthOfLIS(int[] nums) {
 		int len = nums.length;
 		if (len <= 1) {
@@ -783,5 +783,27 @@ public class LeetCode11 {
 		}
 		end++;
 		return end;
+	}
+
+	// 预测赢家
+	@Test
+	public void test20() {
+		Assert.assertEquals(true, PredictTheWinner(new int[] { 1, 5, 233, 7 }));
+	}
+
+	public boolean PredictTheWinner(int[] nums) {
+		int length = nums.length;
+		//dp[i][j] 表示当数组剩下的部分为下标 i 到下标 j 时
+		int[][] dp = new int[length][length];
+		for (int i = 0; i < length; i++) {
+			dp[i][i] = nums[i];
+		}
+		for (int i = length - 2; i >= 0; i--) {
+			for (int j = i + 1; j < length; j++) {
+				//dp[i][j] 等于取i的值减去对方i+1到j与我方差值 或 取j的值减去对方i到j-1与我方差值中较大的值
+				dp[i][j] = Math.max(nums[i] - dp[i + 1][j], nums[j] - dp[i][j - 1]);
+			}
+		}
+		return dp[0][length - 1] >= 0;
 	}
 }
