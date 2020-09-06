@@ -2,13 +2,16 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -522,7 +525,7 @@ public class LeetCode1 {
 		node2.left = node3;
 		node2.right = node4;
 
-		List<List<Integer>> result = levelOrderBottom(root);
+		List<List<Integer>> result = levelOrderBottom2(root);
 		if (result != null) {
 			for (List<Integer> list : result) {
 				for (Integer l : list) {
@@ -533,7 +536,33 @@ public class LeetCode1 {
 		}
 
 	}
-
+	
+    public List<List<Integer>> levelOrderBottom2(TreeNode root) {
+    	List<List<Integer>> ret = new ArrayList<List<Integer>>();
+    	if (root == null) {
+    		return ret;
+    	}
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+        	List<Integer> level = new ArrayList<Integer>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                level.add(node.val);
+                TreeNode left = node.left, right = node.right;
+                if (left != null) {
+                    queue.offer(left);
+                }
+                if (right != null) {
+                    queue.offer(right);
+                }
+            }
+            ret.add(0, level);
+        }
+        return ret;
+    }
+    
 	public List<List<Integer>> levelOrderBottom(TreeNode root) {
 		List<List<Integer>> result = new ArrayList<List<Integer>>();
 		Map<Integer, List<Integer>> map = new LinkedHashMap<Integer, List<Integer>>();

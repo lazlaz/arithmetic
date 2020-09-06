@@ -505,4 +505,86 @@ public class LeetCode12 {
 		}
 	}
 
+	// 随机数索引
+	@Test
+	public void test5() {
+		int[] nums = new int[] { 1, 2, 3, 3, 3 };
+		Solution5 solution = new Solution5(nums);
+
+		// pick(3) 应该返回索引 2,3 或者 4。每个索引的返回概率应该相等。
+		solution.pick(3);
+
+		// pick(1) 应该返回 0。因为只有nums[0]等于1。
+		solution.pick(1);
+	}
+
+	class Solution5 {
+
+		int[] arr;
+		Random rnd;
+		int len;
+
+		public Solution5(int[] nums) {
+			arr = nums;
+			rnd = new Random();
+			len = arr.length;
+		}
+
+		public int pick(int target) {
+			int cnt = 0, res = -1;
+			for (int i = 0; i < len; i++) {
+				if (arr[i] == target && rnd.nextInt(++cnt) == 0) {
+					res = i;
+				}
+			}
+			return res;
+		}
+	}
+
+	// 分割等和子集
+	@Test
+	public void test6() {
+		//Assert.assertEquals(true, canPartition(new int[] {1, 5, 11, 5}));
+		Assert.assertEquals(false, canPartition(new int[] {100}));
+	}
+	//https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/0-1-bei-bao-wen-ti-xiang-jie-zhen-dui-ben-ti-de-yo/
+	public boolean canPartition(int[] nums) {
+		int len = nums.length;
+		if (len == 0) {
+			return false;
+		}
+		int sum = 0;
+		for (int num : nums) {
+			sum += num;
+		}
+		// 特判：如果是奇数，就不符合要求
+		if ((sum & 1) == 1) {
+			return false;
+		}
+		int target = sum / 2;
+		// 创建二维状态数组，行：物品索引，列：容量（包括 0）
+		//表示从数组的 [0, i] 这个子区间内挑选一些正整数，每个数只能用一次，使得这些数的和恰好等于 j
+		boolean[][] dp = new boolean[len][target + 1];
+
+		// 先填表格第 0 行，第 1 个数只能让容积为它自己的背包恰好装满
+		if (nums[0] <= target) {
+			dp[0][nums[0]] = true;
+		}
+		// 再填表格后面几行
+		for (int i = 1; i < len; i++) {
+			for (int j = 0; j <= target; j++) {
+				// 直接从上一行先把结果抄下来，然后再修正
+				dp[i][j] = dp[i - 1][j];
+
+				if (nums[i] == j) {
+					dp[i][j] = true;
+					continue;
+				}
+				if (nums[i] < j) {
+					dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i]];
+				}
+			}
+		}
+		return dp[len - 1][target];
+	}
 }
