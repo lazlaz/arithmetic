@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -544,10 +545,11 @@ public class LeetCode12 {
 	// 分割等和子集
 	@Test
 	public void test6() {
-		//Assert.assertEquals(true, canPartition(new int[] {1, 5, 11, 5}));
-		Assert.assertEquals(false, canPartition(new int[] {100}));
+		// Assert.assertEquals(true, canPartition(new int[] {1, 5, 11, 5}));
+		Assert.assertEquals(false, canPartition(new int[] { 100 }));
 	}
-	//https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/0-1-bei-bao-wen-ti-xiang-jie-zhen-dui-ben-ti-de-yo/
+
+	// https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/0-1-bei-bao-wen-ti-xiang-jie-zhen-dui-ben-ti-de-yo/
 	public boolean canPartition(int[] nums) {
 		int len = nums.length;
 		if (len == 0) {
@@ -563,7 +565,7 @@ public class LeetCode12 {
 		}
 		int target = sum / 2;
 		// 创建二维状态数组，行：物品索引，列：容量（包括 0）
-		//表示从数组的 [0, i] 这个子区间内挑选一些正整数，每个数只能用一次，使得这些数的和恰好等于 j
+		// 表示从数组的 [0, i] 这个子区间内挑选一些正整数，每个数只能用一次，使得这些数的和恰好等于 j
 		boolean[][] dp = new boolean[len][target + 1];
 
 		// 先填表格第 0 行，第 1 个数只能让容积为它自己的背包恰好装满
@@ -587,4 +589,85 @@ public class LeetCode12 {
 		}
 		return dp[len - 1][target];
 	}
+
+	// 前 K 个高频元素
+	@Test
+	public void test7() {
+		Assert.assertArrayEquals(new int[] { 1, 2 }, topKFrequent(new int[] { 1, 1, 1, 2, 2 }, 2));
+	}
+
+	// https://leetcode-cn.com/problems/top-k-frequent-elements/solution/leetcode-di-347-hao-wen-ti-qian-k-ge-gao-pin-yuan-/
+	public int[] topKFrequent(int[] nums, int k) {
+		// 使用字典，统计每个元素出现的次数，元素为键，元素出现的次数为值
+		HashMap<Integer, Integer> map = new HashMap();
+		for (int num : nums) {
+			if (map.containsKey(num)) {
+				map.put(num, map.get(num) + 1);
+			} else {
+				map.put(num, 1);
+			}
+		}
+		// 遍历map，用最小堆保存频率最大的k个元素
+		PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+			@Override
+			public int compare(Integer a, Integer b) {
+				return map.get(a) - map.get(b);
+			}
+		});
+		for (Integer key : map.keySet()) {
+			if (pq.size() < k) {
+				pq.add(key);
+			} else if (map.get(key) > map.get(pq.peek())) {
+				pq.remove();
+				pq.add(key);
+			}
+		}
+		// 取出最小堆中的元素
+		int[] res = new int[pq.size()];
+		int i = 0;
+		while (!pq.isEmpty()) {
+			i++;
+			res[res.length - i] = pq.remove();
+		}
+		return res;
+	}
+
+	// 无重叠区间
+	@Test
+	public void test8() {
+		Assert.assertEquals(1, eraseOverlapIntervals(new int[][] {
+			{1,2},
+			{2,3},
+			{3,4},
+			{1,3}
+		}));
+	}
+
+	public int eraseOverlapIntervals(int[][] intervals) {
+		    int n = intervals.length;
+		    return n - intervalSchedule(intervals);
+	}
+	public int intervalSchedule(int[][] intvs) {
+	    if (intvs.length == 0) return 0;
+	    // 按 end 升序排序
+	    Arrays.sort(intvs, new Comparator<int[]>() {
+	        public int compare(int[] a, int[] b) {
+	            return a[1] - b[1];
+	        }
+	    });
+	    // 至少有一个区间不相交
+	    int count = 1;
+	    // 排序后，第一个区间就是 x
+	    int x_end = intvs[0][1];
+	    for (int[] interval : intvs) {
+	        int start = interval[0];
+	        if (start >= x_end) {
+	            // 找到下一个选择的区间了
+	            count++;
+	            x_end = interval[1];
+	        }
+	    }
+	    return count;
+	}
+
 }
