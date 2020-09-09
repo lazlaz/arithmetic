@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -635,39 +634,81 @@ public class LeetCode12 {
 	// 无重叠区间
 	@Test
 	public void test8() {
-		Assert.assertEquals(1, eraseOverlapIntervals(new int[][] {
-			{1,2},
-			{2,3},
-			{3,4},
-			{1,3}
-		}));
+		Assert.assertEquals(1, eraseOverlapIntervals(new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 1, 3 } }));
 	}
 
 	public int eraseOverlapIntervals(int[][] intervals) {
-		    int n = intervals.length;
-		    return n - intervalSchedule(intervals);
+		int n = intervals.length;
+		return n - intervalSchedule(intervals);
 	}
+
 	public int intervalSchedule(int[][] intvs) {
-	    if (intvs.length == 0) return 0;
-	    // 按 end 升序排序
-	    Arrays.sort(intvs, new Comparator<int[]>() {
-	        public int compare(int[] a, int[] b) {
-	            return a[1] - b[1];
-	        }
-	    });
-	    // 至少有一个区间不相交
-	    int count = 1;
-	    // 排序后，第一个区间就是 x
-	    int x_end = intvs[0][1];
-	    for (int[] interval : intvs) {
-	        int start = interval[0];
-	        if (start >= x_end) {
-	            // 找到下一个选择的区间了
-	            count++;
-	            x_end = interval[1];
-	        }
-	    }
-	    return count;
+		if (intvs.length == 0)
+			return 0;
+		// 按 end 升序排序
+		Arrays.sort(intvs, new Comparator<int[]>() {
+			public int compare(int[] a, int[] b) {
+				return a[1] - b[1];
+			}
+		});
+		// 至少有一个区间不相交
+		int count = 1;
+		// 排序后，第一个区间就是 x
+		int x_end = intvs[0][1];
+		for (int[] interval : intvs) {
+			int start = interval[0];
+			if (start >= x_end) {
+				// 找到下一个选择的区间了
+				count++;
+				x_end = interval[1];
+			}
+		}
+		return count;
+	}
+
+	// 找到字符串中所有字母异位词
+	@Test
+	public void test9() {
+		List<Integer> ret = findAnagrams("abab", 
+				"ab");
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> findAnagrams(String s, String p) {
+		List<Integer> ret = new ArrayList<Integer>();
+		if (s==null || p == null) {
+			return ret;
+		}
+		Map<Character,Integer> map = new HashMap<Character,Integer>();
+		for (int i=0;i<p.length();i++) {
+			map.put(p.charAt(i),map.getOrDefault(p.charAt(i), 0)+1);
+		}
+		Map<Character,Integer> map2 = new HashMap<Character,Integer>();
+		for (int i=0;i<s.length();i++) {
+			map2.put(s.charAt(i),map2.getOrDefault(s.charAt(i), 0)+1);
+			if (i>=p.length()-1) {
+				if (isEctopicWord(map,map2)) {
+					ret.add(i-p.length()+1);
+				}
+				//移除最前面的
+				map2.put(s.charAt(i-p.length()+1), map2.getOrDefault(s.charAt(i-p.length()+1), 0)-1);
+			}
+		}
+		return ret;
+	}
+
+	private boolean isEctopicWord(Map<Character, Integer> map, Map<Character, Integer> map2) {
+		Set<Character> set1  = map.keySet();
+		for (Character c: set1) {
+			if (map2.get(c)==null) {
+				return false;
+			}
+			if (map.get(c).intValue() != map2.get(c).intValue()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
+ 
