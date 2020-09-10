@@ -669,38 +669,37 @@ public class LeetCode12 {
 	// 找到字符串中所有字母异位词
 	@Test
 	public void test9() {
-		List<Integer> ret = findAnagrams("abab", 
-				"ab");
+		List<Integer> ret = findAnagrams("abab", "ab");
 		System.out.println(Joiner.on(",").join(ret));
 	}
 
 	public List<Integer> findAnagrams(String s, String p) {
 		List<Integer> ret = new ArrayList<Integer>();
-		if (s==null || p == null) {
+		if (s == null || p == null) {
 			return ret;
 		}
-		Map<Character,Integer> map = new HashMap<Character,Integer>();
-		for (int i=0;i<p.length();i++) {
-			map.put(p.charAt(i),map.getOrDefault(p.charAt(i), 0)+1);
+		Map<Character, Integer> map = new HashMap<Character, Integer>();
+		for (int i = 0; i < p.length(); i++) {
+			map.put(p.charAt(i), map.getOrDefault(p.charAt(i), 0) + 1);
 		}
-		Map<Character,Integer> map2 = new HashMap<Character,Integer>();
-		for (int i=0;i<s.length();i++) {
-			map2.put(s.charAt(i),map2.getOrDefault(s.charAt(i), 0)+1);
-			if (i>=p.length()-1) {
-				if (isEctopicWord(map,map2)) {
-					ret.add(i-p.length()+1);
+		Map<Character, Integer> map2 = new HashMap<Character, Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			map2.put(s.charAt(i), map2.getOrDefault(s.charAt(i), 0) + 1);
+			if (i >= p.length() - 1) {
+				if (isEctopicWord(map, map2)) {
+					ret.add(i - p.length() + 1);
 				}
-				//移除最前面的
-				map2.put(s.charAt(i-p.length()+1), map2.getOrDefault(s.charAt(i-p.length()+1), 0)-1);
+				// 移除最前面的
+				map2.put(s.charAt(i - p.length() + 1), map2.getOrDefault(s.charAt(i - p.length() + 1), 0) - 1);
 			}
 		}
 		return ret;
 	}
 
 	private boolean isEctopicWord(Map<Character, Integer> map, Map<Character, Integer> map2) {
-		Set<Character> set1  = map.keySet();
-		for (Character c: set1) {
-			if (map2.get(c)==null) {
+		Set<Character> set1 = map.keySet();
+		for (Character c : set1) {
+			if (map2.get(c) == null) {
 				return false;
 			}
 			if (map.get(c).intValue() != map2.get(c).intValue()) {
@@ -710,5 +709,85 @@ public class LeetCode12 {
 		return true;
 	}
 
+	// 找到所有数组中消失的数字
+	@Test
+	public void test10() {
+		List<Integer> ret = findDisappearedNumbers(new int[] { 4, 3, 2, 7, 8, 2, 3, 1 });
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	// 原地数组修改，空间复杂度为O(1)
+	public List<Integer> findDisappearedNumbers(int[] nums) {
+		for (int i = 0; i < nums.length; i++) {
+			int newIndex = Math.abs(nums[i]) - 1;
+			nums[newIndex] = nums[newIndex] > 0 ? -nums[newIndex] : nums[newIndex];
+		}
+		List<Integer> result = new LinkedList<Integer>();
+		for (int i = 1; i <= nums.length; i++) {
+			if (nums[i - 1] > 0) {
+				result.add(i);
+			}
+		}
+		return result;
+	}
+
+	// 删除二叉搜索树中的节点
+	@Test
+	public void test11() {
+		TreeNode node = Utils.createTree(new Integer[] { 5, 3, 6, 2, 4, null, 7 });
+		new Solution11().deleteNode(node, 3);
+		Utils.printTreeNode(node);
+	}
+
+	class Solution11 {
+		/*
+		 * One step right and then always left
+		 */
+		public int successor(TreeNode root) {
+			root = root.right;
+			while (root.left != null)
+				root = root.left;
+			return root.val;
+		}
+
+		/*
+		 * One step left and then always right
+		 */
+		public int predecessor(TreeNode root) {
+			root = root.left;
+			while (root.right != null)
+				root = root.right;
+			return root.val;
+		}
+
+		public TreeNode deleteNode(TreeNode root, int key) {
+			if (root == null)
+				return null;
+
+			// delete from the right subtree
+			if (key > root.val)
+				root.right = deleteNode(root.right, key);
+			// delete from the left subtree
+			else if (key < root.val)
+				root.left = deleteNode(root.left, key);
+			// delete the current node
+			else {
+				// the node is a leaf
+				if (root.left == null && root.right == null)
+					root = null;
+				// the node is not a leaf and has a right child
+				else if (root.right != null) {
+					root.val = successor(root);
+					root.right = deleteNode(root.right, root.val);
+				}
+				// the node is not a leaf, has no right child, and has a left child
+				else {
+					root.val = predecessor(root);
+					root.left = deleteNode(root.left, root.val);
+				}
+			}
+			return root;
+		}
+	}
+
 }
- 
