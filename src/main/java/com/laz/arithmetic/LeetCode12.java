@@ -1,9 +1,11 @@
 package com.laz.arithmetic;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -790,4 +792,48 @@ public class LeetCode12 {
 		}
 	}
 
+	// 组合总和 III
+	@Test
+	public void test12() {
+		List<List<Integer>> ret = combinationSum3(3, 9);
+		for (List<Integer> list : ret) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+	public List<List<Integer>> combinationSum3(int k, int n) {
+		int[] candidates = new int[] {1,2,3,4,5,6,7,8,9};
+		List<List<Integer>> res = new ArrayList<>();
+		int len = candidates.length;
+		Arrays.sort(candidates);
+		dfs(candidates, len, n, 0, k,new ArrayDeque<>(), res);
+		return res;
+	}
+
+	private void dfs(int[] candidates, int len, int residue, int begin, int k,Deque<Integer> path, List<List<Integer>> res) {
+		if (path.size()>k) {
+			return ;
+		}
+		if (residue == 0 && path.size()==k) {
+			res.add(new ArrayList<>(path));
+			return ;
+		}
+		for (int i = begin; i < len; i++) {
+			int aim = residue - candidates[i];
+			// 在数组有序的前提下，剪枝
+			if (aim < 0) {
+				break;
+			}
+			//当前值，等于了开始的值，剪枝
+			if (i>begin && candidates[i]==candidates[i-1]) {
+				continue;
+			}
+			int index = i+1;
+			path.addLast(candidates[i]);
+			dfs(candidates, len, aim, index, k,path, res);
+			path.removeLast();
+		}
+		
+	}
+
+	
 }
