@@ -800,22 +800,24 @@ public class LeetCode12 {
 			System.out.println(Joiner.on(",").join(list));
 		}
 	}
+
 	public List<List<Integer>> combinationSum3(int k, int n) {
-		int[] candidates = new int[] {1,2,3,4,5,6,7,8,9};
+		int[] candidates = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		List<List<Integer>> res = new ArrayList<>();
 		int len = candidates.length;
 		Arrays.sort(candidates);
-		dfs(candidates, len, n, 0, k,new ArrayDeque<>(), res);
+		dfs(candidates, len, n, 0, k, new ArrayDeque<>(), res);
 		return res;
 	}
 
-	private void dfs(int[] candidates, int len, int residue, int begin, int k,Deque<Integer> path, List<List<Integer>> res) {
-		if (path.size()>k) {
-			return ;
+	private void dfs(int[] candidates, int len, int residue, int begin, int k, Deque<Integer> path,
+			List<List<Integer>> res) {
+		if (path.size() > k) {
+			return;
 		}
-		if (residue == 0 && path.size()==k) {
+		if (residue == 0 && path.size() == k) {
 			res.add(new ArrayList<>(path));
-			return ;
+			return;
 		}
 		for (int i = begin; i < len; i++) {
 			int aim = residue - candidates[i];
@@ -823,17 +825,83 @@ public class LeetCode12 {
 			if (aim < 0) {
 				break;
 			}
-			//当前值，等于了开始的值，剪枝
-			if (i>begin && candidates[i]==candidates[i-1]) {
+			// 当前值，等于了开始的值，剪枝
+			if (i > begin && candidates[i] == candidates[i - 1]) {
 				continue;
 			}
-			int index = i+1;
+			int index = i + 1;
 			path.addLast(candidates[i]);
-			dfs(candidates, len, aim, index, k,path, res);
+			dfs(candidates, len, aim, index, k, path, res);
 			path.removeLast();
 		}
-		
+
 	}
 
+	// 二叉树的层平均值
+	@Test
+	public void test13() {
+		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 20, null, null, 15, 7 });
+		List<Double> ret = averageOfLevels(root);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Double> averageOfLevels(TreeNode root) {
+		List<Double> ret = new ArrayList<Double>();
+		Deque<TreeNode> queue = new LinkedList<TreeNode>();
+		if (root != null) {
+			queue.add(root);
+		}
+		while (!queue.isEmpty()) {
+            int size = queue.size();
+            double sum = 0;
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sum+=node.val;
+                TreeNode left = node.left, right = node.right;
+                if (left != null) {
+                    queue.offer(left);
+                }
+                if (right != null) {
+                    queue.offer(right);
+                }
+            }
+            ret.add(sum/size);
+		}
+		return ret;
+	}
 	
+	//用最少数量的箭引爆气球
+	@Test
+	public void test14() {
+		Assert.assertEquals(2, findMinArrowShots(new int[][] {
+			{10,16},
+			{2,8},
+			{1,6},
+			{7,12}
+		}));
+	}
+	public int findMinArrowShots(int[][] points) {
+		if (points.length==0) {
+			return 0;
+		}
+		Arrays.sort(points,new Comparator<int[]>() {
+
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				return o1[1]-o2[1];
+			}
+			
+		});
+		int arrows = 1;
+		int xStart,xEnd,firstEnd = points[0][1];
+		for (int[] p:points) {
+			xStart = p[0];
+			xEnd = p[1];
+			if (firstEnd<xStart) {
+				arrows++;
+				firstEnd=xEnd;
+			}
+		}
+		return arrows;
+    }
 }
