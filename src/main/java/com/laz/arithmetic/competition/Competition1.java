@@ -2,7 +2,12 @@ package com.laz.arithmetic.competition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -123,4 +128,108 @@ public class Competition1 {
 		}
 		return sum;
 	}
+
+	// 检查字符串是否可以通过排序子字符串得到另一个字符串
+	@Test
+	public void test3() {
+		Assert.assertEquals(true, isTransformable("84532", "34852"));
+		Assert.assertEquals(false, isTransformable("12345", "12435"));
+	}
+
+	public boolean isTransformable(String s, String t) {
+		Queue<Integer>[] queue = new Queue[10];
+		for (int i = 0; i < 10; i++)
+			queue[i] = new LinkedList<>();
+		for (int i = 0; i < s.length(); i++)
+			queue[s.charAt(i) - '0'].offer(i);
+		for (int i = 0; i < t.length(); i++) {
+			int digit = t.charAt(i) - '0';
+			if (queue[digit].isEmpty())
+				return false;
+			for (int j = 0; j < digit; j++) {
+				if (!queue[j].isEmpty() && queue[j].peek() < queue[digit].peek())
+					return false;
+			}
+			queue[digit].poll();
+		}
+		return true;
+	}
+
+	// 统计不开心的朋友
+	@Test
+	public void test4() {
+		Assert.assertEquals(2, unhappyFriends(4, new int[][] { { 1, 2, 3 }, { 3, 2, 0 }, { 3, 1, 0 }, { 1, 2, 0 } },
+				new int[][] { { 0, 1 }, { 2, 3 } }));
+	}
+
+	public int unhappyFriends(int n, int[][] preferences, int[][] pairs) {
+		Map<Integer, Integer> map = new HashMap<>();
+		int ans = 0;
+		for (int[] pair : pairs) {
+			map.put(pair[0], pair[1]);
+		}
+
+		for (int i = 0; i < n; i++) {
+			// i配对的人
+			int friend = getFriend(i, map);
+			// i配对到的是最好的人 直接快乐
+			if (friend == preferences[i][0]) {
+				System.out.println(i + "是快乐的");
+				continue;
+			}
+
+			// 查找friend在i这里的亲密度排行
+			int x = -1;
+			for (int j = 1; j < preferences[i].length; j++) {
+				if (preferences[i][j] == friend) {
+					x = j;
+					break;
+				}
+			}
+			// 再查找比friend亲密度高
+			for (int z = 0; z < x; z++) {
+				// i的第一位朋友
+				int friend1 = preferences[i][z];
+				// 与i的第一位朋友配对的人
+				int friend2 = getFriend(friend1, map);
+
+				// 判断 这位朋友与i的亲密度是否 比 这位朋友配对到的人亲密度高
+				int a = -1, b = -1;
+				for (int i1 = 0; i1 < preferences[friend1].length; i1++) {
+					if (a != -1 && b != -1) {
+						break;
+					}
+					if (preferences[friend1][i1] == i) {
+						a = i1;
+					}
+					if (preferences[friend1][i1] == friend2) {
+						b = i1;
+					}
+				}
+
+				// 是的话就不开心，并跳出循环，否则开心
+				if (a < b) {
+					System.out.println(i + "是不开心的");
+					ans++;
+					break;
+				}
+			}
+		}
+		return ans;
+	}
+
+	public int getFriend(int i, Map<Integer, Integer> map) {
+		int friend = -1;
+		if (map.containsKey(i)) {
+			friend = map.get(i);
+		} else {
+			for (Integer key : map.keySet()) {
+				if (map.get(key) == i) {
+					friend = key;
+				}
+			}
+		}
+		return friend;
+	}
+
 }
