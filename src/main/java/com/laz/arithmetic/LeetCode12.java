@@ -852,56 +852,75 @@ public class LeetCode12 {
 			queue.add(root);
 		}
 		while (!queue.isEmpty()) {
-            int size = queue.size();
-            double sum = 0;
-            for (int i = 0; i < size; i++) {
-                TreeNode node = queue.poll();
-                sum+=node.val;
-                TreeNode left = node.left, right = node.right;
-                if (left != null) {
-                    queue.offer(left);
-                }
-                if (right != null) {
-                    queue.offer(right);
-                }
-            }
-            ret.add(sum/size);
+			int size = queue.size();
+			double sum = 0;
+			for (int i = 0; i < size; i++) {
+				TreeNode node = queue.poll();
+				sum += node.val;
+				TreeNode left = node.left, right = node.right;
+				if (left != null) {
+					queue.offer(left);
+				}
+				if (right != null) {
+					queue.offer(right);
+				}
+			}
+			ret.add(sum / size);
 		}
 		return ret;
 	}
-	
-	//用最少数量的箭引爆气球
+
+	// 用最少数量的箭引爆气球
 	@Test
 	public void test14() {
-		Assert.assertEquals(2, findMinArrowShots(new int[][] {
-			{10,16},
-			{2,8},
-			{1,6},
-			{7,12}
-		}));
+		Assert.assertEquals(2, findMinArrowShots(new int[][] { { 10, 16 }, { 2, 8 }, { 1, 6 }, { 7, 12 } }));
 	}
+
 	public int findMinArrowShots(int[][] points) {
-		if (points.length==0) {
+		if (points.length == 0) {
 			return 0;
 		}
-		Arrays.sort(points,new Comparator<int[]>() {
+		Arrays.sort(points, new Comparator<int[]>() {
 
 			@Override
 			public int compare(int[] o1, int[] o2) {
-				return o1[1]-o2[1];
+				return o1[1] - o2[1];
 			}
-			
+
 		});
 		int arrows = 1;
-		int xStart,xEnd,firstEnd = points[0][1];
-		for (int[] p:points) {
+		int xStart, xEnd, firstEnd = points[0][1];
+		for (int[] p : points) {
 			xStart = p[0];
 			xEnd = p[1];
-			if (firstEnd<xStart) {
+			if (firstEnd < xStart) {
 				arrows++;
-				firstEnd=xEnd;
+				firstEnd = xEnd;
 			}
 		}
 		return arrows;
-    }
+	}
+
+	// 二叉树的中序遍历
+	@Test
+	public void test15() {
+		TreeNode root = Utils.createTree(new Integer[] { 1, null, 2, 3 });
+		List<Integer> ret = inorderTraversal(root);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> inorderTraversal(TreeNode root) {
+		List<Integer> ret = new ArrayList<Integer>();
+		Deque<TreeNode> stk = new LinkedList<TreeNode>();
+		while (root != null || !stk.isEmpty()) {
+			while (root != null) {
+				stk.push(root);
+				root = root.left;
+			}
+			root = stk.pop();
+			ret.add(root.val);
+			root = root.right;
+		}
+		return ret;
+	}
 }
