@@ -909,6 +909,7 @@ public class LeetCode12 {
 		System.out.println(Joiner.on(",").join(ret));
 	}
 
+	//迭代遍历
 	public List<Integer> inorderTraversal(TreeNode root) {
 		List<Integer> ret = new ArrayList<Integer>();
 		Deque<TreeNode> stk = new LinkedList<TreeNode>();
@@ -923,4 +924,31 @@ public class LeetCode12 {
 		}
 		return ret;
 	}
+	
+	//下一个更大元素 I
+	@Test
+	public void test16() {
+		int[] ret = nextGreaterElement(new int[] {4,1,2},new int[] {1,3,4,2});
+		Assert.assertArrayEquals(new int[] {-1,3,-1}, ret);
+	}
+	public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+		int[] ret = new int[nums1.length];
+		Arrays.fill(ret, -1);
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		for (int i=0;i<nums2.length;i++) {
+			map.put(nums2[i], i);
+		}
+		int count = 0;
+		for (int i=0;i<nums1.length;i++) {
+			int index = map.get(nums1[i]);
+			for (int j=index+1;j<nums2.length;j++) {
+				if (nums2[j]>nums1[i]) {
+					ret[count] = nums2[j];
+					break;
+				}
+			}
+			count++;
+		}
+		return ret;
+    }
 }
