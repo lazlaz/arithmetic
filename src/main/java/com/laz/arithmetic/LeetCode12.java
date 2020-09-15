@@ -909,7 +909,7 @@ public class LeetCode12 {
 		System.out.println(Joiner.on(",").join(ret));
 	}
 
-	//迭代遍历
+	// 迭代遍历
 	public List<Integer> inorderTraversal(TreeNode root) {
 		List<Integer> ret = new ArrayList<Integer>();
 		Deque<TreeNode> stk = new LinkedList<TreeNode>();
@@ -924,25 +924,26 @@ public class LeetCode12 {
 		}
 		return ret;
 	}
-	
-	//下一个更大元素 I
+
+	// 下一个更大元素 I
 	@Test
 	public void test16() {
-		int[] ret = nextGreaterElement(new int[] {4,1,2},new int[] {1,3,4,2});
-		Assert.assertArrayEquals(new int[] {-1,3,-1}, ret);
+		int[] ret = nextGreaterElement(new int[] { 4, 1, 2 }, new int[] { 1, 3, 4, 2 });
+		Assert.assertArrayEquals(new int[] { -1, 3, -1 }, ret);
 	}
+
 	public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 		int[] ret = new int[nums1.length];
 		Arrays.fill(ret, -1);
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-		for (int i=0;i<nums2.length;i++) {
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums2.length; i++) {
 			map.put(nums2[i], i);
 		}
 		int count = 0;
-		for (int i=0;i<nums1.length;i++) {
+		for (int i = 0; i < nums1.length; i++) {
 			int index = map.get(nums1[i]);
-			for (int j=index+1;j<nums2.length;j++) {
-				if (nums2[j]>nums1[i]) {
+			for (int j = index + 1; j < nums2.length; j++) {
+				if (nums2[j] > nums1[i]) {
 					ret[count] = nums2[j];
 					break;
 				}
@@ -950,5 +951,57 @@ public class LeetCode12 {
 			count++;
 		}
 		return ret;
+	}
+
+	// 下一个更大元素 II
+	@Test
+	public void test17() {
+		Assert.assertArrayEquals(new int[] { 2, -1, 2 }, nextGreaterElements(new int[] { 1, 2, 1 }));
+//		
+		Assert.assertArrayEquals(new int[] {-1,5,5,5,5 }, nextGreaterElements(new int[] { 5,4,3,2,1 }));
+		
+		Assert.assertArrayEquals(new int[] {-1,-1,-1,-1,-1 }, nextGreaterElements(new int[] { 1,1,1,1,1 }));
+	}
+	public int[] nextGreaterElements(int[] nums) {
+        int[] res = new int[nums.length];
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 2 * nums.length - 1; i >= 0; --i) {
+            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i % nums.length]) {
+                stack.pop();
+            }
+            res[i % nums.length] = stack.isEmpty() ? -1 : nums[stack.peek()];
+            stack.push(i % nums.length);
+        }
+        return res;
     }
+	//超时
+	public int[] nextGreaterElements2(int[] nums) {
+		int[] ret = new int[nums.length];
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		//单调栈
+		Deque<Integer> stack = new LinkedList<Integer>();
+		for (int i=0;i<nums.length;i++) {
+			while (!stack.isEmpty() && nums[i]>nums[stack.peek()]) {
+				Integer value = stack.pop();
+				map.put(value, nums[i]);
+			}
+			stack.push(i);
+			//找不到
+			if (stack.size()==nums.length) {
+				map.put(stack.getLast(),-1);
+				stack.removeLast();
+			}
+			//循环搜索
+			if (i==nums.length-1) {
+				i=-1;
+			}
+			if (map.size()==nums.length) {
+				break;
+			}
+		}
+		for (int i=0;i<nums.length;i++) {
+			ret[i] = map.get(i);
+		}
+		return ret;
+	}
 }
