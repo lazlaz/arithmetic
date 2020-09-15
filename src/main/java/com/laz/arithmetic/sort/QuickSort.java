@@ -2,6 +2,7 @@ package com.laz.arithmetic.sort;
 
 import java.util.Random;
 
+//快速排序
 public class QuickSort {
 	public static void main(String[] args) {
 		int[] arr = new int[] {2,2,2,5,7,43,3};
