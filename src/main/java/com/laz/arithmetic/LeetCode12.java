@@ -958,50 +958,176 @@ public class LeetCode12 {
 	public void test17() {
 		Assert.assertArrayEquals(new int[] { 2, -1, 2 }, nextGreaterElements(new int[] { 1, 2, 1 }));
 //		
-		Assert.assertArrayEquals(new int[] {-1,5,5,5,5 }, nextGreaterElements(new int[] { 5,4,3,2,1 }));
-		
-		Assert.assertArrayEquals(new int[] {-1,-1,-1,-1,-1 }, nextGreaterElements(new int[] { 1,1,1,1,1 }));
+		Assert.assertArrayEquals(new int[] { -1, 5, 5, 5, 5 }, nextGreaterElements(new int[] { 5, 4, 3, 2, 1 }));
+
+		Assert.assertArrayEquals(new int[] { -1, -1, -1, -1, -1 }, nextGreaterElements(new int[] { 1, 1, 1, 1, 1 }));
 	}
+
 	public int[] nextGreaterElements(int[] nums) {
-        int[] res = new int[nums.length];
-        Deque<Integer> stack = new LinkedList<>();
-        for (int i = 2 * nums.length - 1; i >= 0; --i) {
-            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i % nums.length]) {
-                stack.pop();
-            }
-            res[i % nums.length] = stack.isEmpty() ? -1 : nums[stack.peek()];
-            stack.push(i % nums.length);
-        }
-        return res;
-    }
-	//超时
+		int[] res = new int[nums.length];
+		Deque<Integer> stack = new LinkedList<>();
+		for (int i = 2 * nums.length - 1; i >= 0; --i) {
+			while (!stack.isEmpty() && nums[stack.peek()] <= nums[i % nums.length]) {
+				stack.pop();
+			}
+			res[i % nums.length] = stack.isEmpty() ? -1 : nums[stack.peek()];
+			stack.push(i % nums.length);
+		}
+		return res;
+	}
+
+	// 超时
 	public int[] nextGreaterElements2(int[] nums) {
 		int[] ret = new int[nums.length];
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-		//单调栈
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		// 单调栈
 		Deque<Integer> stack = new LinkedList<Integer>();
-		for (int i=0;i<nums.length;i++) {
-			while (!stack.isEmpty() && nums[i]>nums[stack.peek()]) {
+		for (int i = 0; i < nums.length; i++) {
+			while (!stack.isEmpty() && nums[i] > nums[stack.peek()]) {
 				Integer value = stack.pop();
 				map.put(value, nums[i]);
 			}
 			stack.push(i);
-			//找不到
-			if (stack.size()==nums.length) {
-				map.put(stack.getLast(),-1);
+			// 找不到
+			if (stack.size() == nums.length) {
+				map.put(stack.getLast(), -1);
 				stack.removeLast();
 			}
-			//循环搜索
-			if (i==nums.length-1) {
-				i=-1;
+			// 循环搜索
+			if (i == nums.length - 1) {
+				i = -1;
 			}
-			if (map.size()==nums.length) {
+			if (map.size() == nums.length) {
 				break;
 			}
 		}
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			ret[i] = map.get(i);
 		}
 		return ret;
+	}
+
+	// 冗余连接 II
+	@Test
+	public void test18() {
+		Assert.assertArrayEquals(new int[] { 4, 1 }, new Solution18()
+				.findRedundantDirectedConnection(new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 1 }, { 1, 5 } }));
+	}
+
+	class Solution18 {
+		// https://leetcode-cn.com/problems/redundant-connection-ii/solution/bing-cha-ji-java-by-liweiwei1419/
+		public int[] findRedundantDirectedConnection(int[][] edges) {
+			// 边的条数（在这个问题里等于结点个数）
+			int len = edges.length;
+			// 步骤 1：预处理入度数组（记录指向某个结点的边的条数）
+			int[] inDegree = new int[len + 1];
+			for (int[] edge : edges) {
+				inDegree[edge[1]]++;
+			}
+
+			// 步骤 2：先尝试删除构成入度为 2 的边，看看是否形成环
+			for (int i = len - 1; i >= 0; i--) {
+				if (inDegree[edges[i][1]] == 2) {
+					// 如果不构成环，这条边就是要去掉的那条边
+					if (!judgeCircle(edges, len, i)) {
+
+						return edges[i];
+					}
+				}
+			}
+
+			// 步骤 3：再尝试删除构成入度为 1 的边，看看是否形成环
+			for (int i = len - 1; i >= 0; i--) {
+				if (inDegree[edges[i][1]] == 1) {
+					// 如果不构成环，这条边就是要去掉的那条边
+					if (!judgeCircle(edges, len, i)) {
+						return edges[i];
+					}
+				}
+			}
+			throw new IllegalArgumentException("输入不符合要求。");
+		}
+
+		/**
+		 * 将 removeEdgeIndex 去掉以后，剩下的有向边是否构成环
+		 *
+		 * @param edges
+		 * @param len             结点总数（从 1 开始，因此初始化的时候 + 1）
+		 * @param removeEdgeIndex 删除的边的下标
+		 * @return 构成环，返回 true
+		 */
+		private boolean judgeCircle(int[][] edges, int len, int removeEdgeIndex) {
+			UnionFind unionFind = new UnionFind(len + 1);
+			for (int i = 0; i < len; i++) {
+				if (i == removeEdgeIndex) {
+					continue;
+				}
+				if (!unionFind.union(edges[i][0], edges[i][1])) {
+					// 合并失败，表示 edges[i][0] 和 edges[i][1] 在一个连通分量里，即构成了环
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private class UnionFind {
+			// 代表元法
+			private int[] parent;
+
+			public UnionFind(int n) {
+				parent = new int[n];
+				for (int i = 0; i < n; i++) {
+					parent[i] = i;
+				}
+			}
+
+			public int find(int x) {
+				while (x != parent[x]) {
+					// 路径压缩（隔代压缩）
+					parent[x] = parent[parent[x]];
+					x = parent[x];
+				}
+				return x;
+			}
+
+			/**
+			 * @param x
+			 * @param y
+			 * @return 如果合并成功返回 true
+			 */
+			public boolean union(int x, int y) {
+				int rootX = find(x);
+				int rootY = find(y);
+
+				if (rootX == rootY) {
+					return false;
+				}
+				parent[rootX] = rootY;
+				return true;
+			}
+		}
+	}
+
+	// 最长回文子序列
+	@Test
+	public void test19() {
+		Assert.assertEquals(4, longestPalindromeSubseq("bbbab"));
+	}
+
+	public int longestPalindromeSubseq(String s) {
+		int n = s.length();
+		//dp[i][j] 表示 s 的第 i 个字符到第 j 个字符组成的子串中，最长的回文序列长度是多少
+		int[][] dp = new int[n][n];
+		for (int i=n-1;i>=0;i--) {
+			dp[i][i] = 1;
+			for (int j=i+1;j<n;j++) {
+				if (s.charAt(i) == s.charAt(j)) {
+					dp[i][j] = dp[i+1][j-1]+2;
+				} else {
+					dp[i][j] = Math.max(dp[i][j-1], dp[i+1][j]);
+				}
+			}
+		}
+		return dp[0][n-1];
 	}
 }
