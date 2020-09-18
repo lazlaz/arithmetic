@@ -28,3 +28,5 @@
 #### 22 [快速排序](src\main\java\com\laz\arithmetic\sort\QuickSort.java)
 #### 23 [基数排序](src\main\java\com\laz\arithmetic\sort\RadixSort.java)
 #### 24 [选择排序](src\main\java\com\laz\arithmetic\sort\SelectSort.java)
+#### 25 [A*搜索](src\main\java\com\laz\arithmetic\search\AStarSearch.java)
+#### 26 [双向广度搜索](src\main\java\com\laz\arithmetic\search\DBFS.java)
