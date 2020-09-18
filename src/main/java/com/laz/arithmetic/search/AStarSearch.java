@@ -135,6 +135,10 @@ public class AStarSearch {
 		sort(open);
 		// 重复步骤
 		do {
+			if (open.size()==0) {
+				throw new RuntimeException("没有路径");
+				return ;
+			}
 			inOpen(open.get(0), map);
 			inClose(open.get(0), open);
 			sort(open);
