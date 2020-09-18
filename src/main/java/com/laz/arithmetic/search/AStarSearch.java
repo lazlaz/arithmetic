@@ -137,7 +137,6 @@ public class AStarSearch {
 		do {
 			if (open.size()==0) {
 				throw new RuntimeException("没有路径");
-				return ;
 			}
 			inOpen(open.get(0), map);
 			inClose(open.get(0), open);
