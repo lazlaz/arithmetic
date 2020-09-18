@@ -1116,18 +1116,89 @@ public class LeetCode12 {
 
 	public int longestPalindromeSubseq(String s) {
 		int n = s.length();
-		//dp[i][j] 表示 s 的第 i 个字符到第 j 个字符组成的子串中，最长的回文序列长度是多少
+		// dp[i][j] 表示 s 的第 i 个字符到第 j 个字符组成的子串中，最长的回文序列长度是多少
 		int[][] dp = new int[n][n];
-		for (int i=n-1;i>=0;i--) {
+		for (int i = n - 1; i >= 0; i--) {
 			dp[i][i] = 1;
-			for (int j=i+1;j<n;j++) {
+			for (int j = i + 1; j < n; j++) {
 				if (s.charAt(i) == s.charAt(j)) {
-					dp[i][j] = dp[i+1][j-1]+2;
+					dp[i][j] = dp[i + 1][j - 1] + 2;
 				} else {
-					dp[i][j] = Math.max(dp[i][j-1], dp[i+1][j]);
+					dp[i][j] = Math.max(dp[i][j - 1], dp[i + 1][j]);
 				}
 			}
 		}
-		return dp[0][n-1];
+		return dp[0][n - 1];
 	}
+
+	// 世界冰球锦标赛
+	/**
+	 * Bobek有M元钱，共有N场比赛，每场比赛的门票都有一个价格 [公式] 。 问在总票价不超过M元钱的情况下，Bobek共有多少种不同的观赛方案。
+	 * 注1：若方案1中观看了某场比赛，方案2中未观看该场，则认为两种方案不同。 注2： [公式] 。
+	 */
+	//TODO 待测试验证
+	@Test
+	public void test20() {
+		System.out.println(new Solution20().sj(100, new int[] { 10, 20, 30, 40, 50 }));
+	}
+
+	class Solution20 {
+		LinkedList<Long> a = new LinkedList<Long>();
+		LinkedList<Long> b = new LinkedList<Long>();
+		long m;
+		int[] moy;
+		public int sj(long m, int[] moy) {
+			this.m = m;
+			this.moy = moy;
+			int nLen = moy.length;
+			dfs(1, nLen / 2, 0, a);// 搜索第一部分
+			dfs(nLen / 2 + 1, nLen, 0, b);// 搜索第二部分
+			a.sort(new Comparator<Long>() {
+				@Override
+				public int compare(Long o1, Long o2) {
+					return (int) (o1-o2);
+				}
+			});//将第一部分排序，使其有序
+		    int ans=0;
+		    int lenb=b.size();
+		    for(int i=0;i<lenb;i++)//遍历第二部分
+		        ans+=upperBound(a,m-b.get(i)-a.get(0));
+		    //每次寻找花费比剩下的钱还要少的方案数，注意这里要使用upper_bound
+		    //若使用lower_bound，则出现等于的情况时，方案数会有错误
+			return ans;
+		}
+		public int upperBound(Long[] arr, long target) {
+			int low = 0;
+			int high = arr.length - 1;
+
+			while (low <= high) { // 必须为 '<=' 否则无法匹配到指定的key；
+				int mid = (low + high) / 2;
+				if (arr[mid] == target) {
+					return mid+1;
+				} else if (arr[mid] > target) {
+					high = mid - 1;
+				} else {
+					low = mid + 1;
+				}
+			}
+			return arr.length;
+		}
+		private int upperBound(LinkedList<Long> a2, long l) {
+			Long[] arr = a2.toArray(new Long[] {});
+			return upperBound(arr,l);
+		}
+
+		private void dfs(int st, int en, long sum, LinkedList<Long> now) {
+			if (sum > m)
+				return;// 如果当前花费超过拥有的钱数，则返回
+			if (st > en)// 起点超过终点说明该部分已经全部搜索完毕
+			{
+				now.push(sum);// 则将可行的花费塞入vector中
+				return;
+			}
+			dfs(st + 1, en, sum + moy[st], now);// 选择买这场比赛的门票
+			dfs(st + 1, en, sum, now);// 选择不买这场比赛的门票
+		}
+	}
+
 }
