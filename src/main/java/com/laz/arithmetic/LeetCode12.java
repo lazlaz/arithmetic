@@ -1191,7 +1191,7 @@ public class LeetCode12 {
 		private void dfs(int st, int en, long sum, LinkedList<Long> now) {
 			if (sum > m)
 				return;// 如果当前花费超过拥有的钱数，则返回
-			if (st > en)// 起点超过终点说明该部分已经全部搜索完毕
+			if (st >= en)// 起点超过终点说明该部分已经全部搜索完毕
 			{
 				now.push(sum);// 则将可行的花费塞入vector中
 				return;
