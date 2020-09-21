@@ -1139,7 +1139,7 @@ public class LeetCode12 {
 	//TODO 待测试验证
 	@Test
 	public void test20() {
-		System.out.println(new Solution20().sj(100, new int[] { 10, 20, 30, 40, 50 }));
+		System.out.println(new Solution20().sj(100, new int[] { 10, 20, 30}));
 	}
 
 	class Solution20 {
