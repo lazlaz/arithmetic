@@ -30,3 +30,6 @@
 #### 24 [选择排序](src\main\java\com\laz\arithmetic\sort\SelectSort.java)
 #### 25 [A*搜索](src\main\java\com\laz\arithmetic\search\AStarSearch.java)
 #### 26 [双向广度搜索](src\main\java\com\laz\arithmetic\search\DBFS.java)
+#### 27 [三分搜索](src\main\java\com\laz\arithmetic\search\TrisectionSearch.java)
+#### 28 [线段树](src\main\java\com\laz\arithmetic\datastructure\SegmentTree.java)
+#### 29 [树状数组](src\main\java\com\laz\arithmetic\datastructure\TreeArray.java)
