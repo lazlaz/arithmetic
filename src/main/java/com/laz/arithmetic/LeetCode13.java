@@ -1,8 +1,7 @@
 package com.laz.arithmetic;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,5 +37,49 @@ public class LeetCode13 {
             if (ch_count1[i] != ch_count2[i])
                 return false;
         return true;
+    }
+    
+    //把二叉搜索树转换为累加树
+    @Test
+    public void test2() {
+    	TreeNode root = Utils.createTree(new Integer[] {2,0,3,-4,1});
+    	TreeNode n = convertBST(root);
+    	Utils.printTreeNode(n);
+    }
+    
+    int sum = 0;
+    public TreeNode convertBST(TreeNode root) {
+    	 if (root != null) {
+             convertBST(root.right);
+             sum += root.val;
+             root.val = sum;
+             convertBST(root.left);
+         }
+         return root;
+    }
+    
+    //错误的集合
+    @Test
+    public void test3() {
+    	Assert.assertArrayEquals(new int[] {2,3},findErrorNums(new int[] {1,2,2,4}));
+    	Assert.assertArrayEquals(new int[] {3,1},findErrorNums(new int[] {3,2,3,4,6,5}));
+    }
+    public int[] findErrorNums(int[] nums) {
+    	Set<Integer> set = new HashSet<Integer>();
+    	int[] ret = new int[2];
+    	boolean[] visted = new boolean[nums.length+1];
+    	for (int i=0;i<nums.length;i++) {
+    		if (set.contains(nums[i])) {
+    			ret[0] = nums[i];
+    		}
+    		set.add(nums[i]);
+    		visted[nums[i]] = true;
+    	}
+    	for (int i=1;i<=nums.length;i++) {
+    		if (!visted[i]) {
+    			ret[1] = i;
+    		}
+    	}
+    	return ret;
     }
 }
