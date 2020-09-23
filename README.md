@@ -33,3 +33,4 @@
 #### 27 [三分搜索](src\main\java\com\laz\arithmetic\search\TrisectionSearch.java)
 #### 28 [线段树](src\main\java\com\laz\arithmetic\datastructure\SegmentTree.java)
 #### 29 [树状数组](src\main\java\com\laz\arithmetic\datastructure\TreeArray.java)
+#### 30 [并查集](src\main\java\com\laz\arithmetic\datastructure\UnionFind.java)
