@@ -1,6 +1,8 @@
 package com.laz.arithmetic;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -169,5 +171,78 @@ public class LeetCode13 {
 			}
 		}
 		return new TreeNode(val);
+	}
+
+	// 合并二叉树
+	@Test
+	public void test7() {
+		TreeNode t1 = Utils.createTree(new Integer[] { 1, 3, 2, 5 });
+		TreeNode t2 = Utils.createTree(new Integer[] { 2, 1, 3, null, 4, null, 7 });
+		TreeNode t = mergeTrees(t1, t2);
+		Utils.printTreeNode(t);
+	}
+
+	public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+		if (t1 == null && t2 == null) {
+			return t1;
+		}
+		if (t1 != null && t2 != null) {
+			t1.val = t1.val + t2.val;
+		}
+		if (t1 == null && t2 != null) {
+			t1 = new TreeNode(t2.val);
+		}
+		if (t2 == null) {
+			t1.left = mergeTrees(t1.left, null);
+			t1.right = mergeTrees(t1.right, null);
+		} else {
+			t1.left = mergeTrees(t1.left, t2.left);
+			t1.right = mergeTrees(t1.right, t2.right);
+		}
+
+		return t1;
+	}
+
+	// 打开转盘锁
+	@Test
+	public void test8() {
+		Assert.assertEquals(6, openLock(new String[] { "0201", "0101", "0102", "1212", "2002" }, "0202"));
+	}
+
+	public int openLock(String[] deadends, String target) {
+		Set<String> dead = new HashSet();
+		for (String d : deadends)
+			dead.add(d);
+
+		Queue<String> queue = new LinkedList();
+		queue.offer("0000");
+		queue.offer(null);
+
+		Set<String> seen = new HashSet();
+		seen.add("0000");
+
+		int depth = 0;
+		while (!queue.isEmpty()) {
+			String node = queue.poll();
+			if (node == null) {
+				depth++;
+				if (queue.peek() != null)
+					queue.offer(null);
+			} else if (node.equals(target)) {
+				return depth;
+			} else if (!dead.contains(node)) {
+				for (int i = 0; i < 4; ++i) {
+					for (int d = -1; d <= 1; d += 2) {
+						int y = ((node.charAt(i) - '0') + d + 10) % 10;
+						String nei = node.substring(0, i) + ("" + y) + node.substring(i + 1);
+						if (!seen.contains(nei)) {
+							seen.add(nei);
+							queue.offer(nei);
+						}
+					}
+				}
+			}
+		}
+		return -1;
 	}
 }
