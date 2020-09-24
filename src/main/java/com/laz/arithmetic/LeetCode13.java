@@ -1,6 +1,7 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -249,43 +250,274 @@ public class LeetCode13 {
 		}
 		return -1;
 	}
-	
-	//二叉搜索树中的众数
+
+	// 二叉搜索树中的众数
 	@Test
 	public void test9() {
-		TreeNode root = Utils.createTree(new Integer[] {1,null,2,2});
-		Assert.assertArrayEquals(new int[] {2}, findMode(root));
+		TreeNode root = Utils.createTree(new Integer[] { 1, null, 2, 2 });
+		Assert.assertArrayEquals(new int[] { 2 }, findMode(root));
 	}
-	Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+
+	Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+
 	public int[] findMode(TreeNode root) {
 		bst(root);
 		int max = 0;
-		for (Integer key:map.keySet()) {
+		for (Integer key : map.keySet()) {
 			if (map.get(key) > max) {
 				max = map.get(key);
 			}
 		}
 		List<Integer> list = new ArrayList<Integer>();
-		for (Integer key:map.keySet()) {
+		for (Integer key : map.keySet()) {
 			if (map.get(key) == max) {
 				list.add(key);
 			}
 		}
 		int[] ret = new int[list.size()];
-		int index=0;
-		for (Integer it:list) {
+		int index = 0;
+		for (Integer it : list) {
 			ret[index++] = it;
 		}
 		return ret;
-    }
+	}
 
 	private void bst(TreeNode root) {
-		if (root!=null) {
+		if (root != null) {
 			int count = map.getOrDefault(root.val, 0);
 			map.put(root.val, ++count);
 			bst(root.left);
 			bst(root.right);
 		}
-	
+
+	}
+
+	// 滑动谜题
+	@Test
+	public void test10() {
+		//Assert.assertEquals(5, new Solution10().slidingPuzzle(new int[][] { { 4, 1, 2 }, { 5, 0, 3 } }));
+		Assert.assertEquals(0, new Solution10().slidingPuzzle(new int[][] { { 1,2,3 }, { 4,5,0 } }));
+	}
+
+	class Solution10 {
+		private HashMap<String, Integer> hm1 = null, hm2 = null;
+		
+		//双向广搜
+		public int slidingPuzzle(int[][] board) {
+			Queue<Node> q1 = new LinkedList<Node>();
+			Queue<Node> q2 = new LinkedList<Node>();
+			hm1 = new HashMap<String, Integer>();
+			hm2 = new HashMap<String, Integer>();
+			int[][] endArr = new int[][] { { 1, 2, 3 }, { 4, 5, 0 } };
+		
+			int x1 = 0, y1 = 0, x2 = 1, y2 = 2;
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 3; j++) {
+					if (board[i][j] == 0) {
+						x1 = i;
+						y1 = j;
+					}
+				}
+			}
+			Node node1 = new Node(board, 0, x1, y1);
+			Node node2 = new Node(endArr, 0, x2, y2);
+			hm1.put(node1.getTuString(), 0);
+			hm2.put(node2.getTuString(), 0);
+			q1.add(node1);
+			q2.add(node2);
+			return bfs(q1, q2);
+		}
+		private int bfs(Queue<Node> q1, Queue<Node> q2) {
+			while (!q1.isEmpty() || !q2.isEmpty()) {
+				if (!q1.isEmpty()) {
+					Node node1 = q1.poll();
+					// System.out.println(node1.getTuString()+"----1");
+					if (hm2.containsKey(node1.getTuString())) {
+						return node1.getSum() + hm2.get(node1.getTuString());
+					}
+					int x = node1.getX();
+					int y = node1.getY();
+					if (x > 0) {
+						int a[][] = node1.getTuCopy();
+						a[x][y] = a[x - 1][y];
+						a[x - 1][y] = 0;
+						Node n = new Node(a, node1.getSum() + 1, x - 1, y);
+						String s = n.getTuString();
+						if (hm2.containsKey(s)) {
+							return n.getSum() + hm2.get(s);
+						}
+						if (!hm1.containsKey(s)) {
+							hm1.put(s, n.getSum());
+							q1.add(n);
+						}
+					}
+					if (x < 1) {
+						int a[][] = node1.getTuCopy();
+						a[x][y] = a[x + 1][y];
+						a[x + 1][y] = 0;
+						Node n = new Node(a, node1.getSum() + 1, x + 1, y);
+						String s = n.getTuString();
+						if (hm2.containsKey(s)) {
+							return n.getSum() + hm2.get(s);
+						}
+						if (!hm1.containsKey(s)) {
+							hm1.put(s, n.getSum());
+							q1.add(n);
+						}
+					}
+					if (y > 0) {
+						int a[][] = node1.getTuCopy();
+						a[x][y] = a[x][y - 1];
+						a[x][y - 1] = 0;
+						Node n = new Node(a, node1.getSum() + 1, x, y - 1);
+						String s = n.getTuString();
+						if (hm2.containsKey(s)) {
+							return n.getSum() + hm2.get(s);
+						}
+						if (!hm1.containsKey(s)) {
+							hm1.put(s, n.getSum());
+							q1.add(n);
+						}
+					}
+					if (y < 2) {
+						int a[][] = node1.getTuCopy();
+						a[x][y] = a[x][y + 1];
+						a[x][y + 1] = 0;
+						Node n = new Node(a, node1.getSum() + 1, x, y + 1);
+						String s = n.getTuString();
+						if (hm2.containsKey(s)) {
+							return n.getSum() + hm2.get(s);
+						}
+						if (!hm1.containsKey(s)) {
+							hm1.put(s, n.getSum());
+							q1.add(n);
+						}
+					}
+				}
+
+				if (!q2.isEmpty()) {
+					Node node2 = q2.poll();
+					if (hm1.containsKey(node2.getTuString())) {
+						return node2.getSum() + hm1.get(node2.getTuString());
+					}
+					int x = node2.getX();
+					int y = node2.getY();
+					if (x > 0) {
+						int a[][] = node2.getTuCopy();
+						a[x][y] = a[x - 1][y];
+						a[x - 1][y] = 0;
+						Node n = new Node(a, node2.getSum() + 1, x - 1, y);
+						String s = n.getTuString();
+						if (hm1.containsKey(s)) {
+							return n.getSum() + hm1.get(s);
+						}
+						if (!hm2.containsKey(s)) {
+							hm2.put(s, n.getSum());
+							q2.add(n);
+						}
+					}
+					if (x < 1) {
+						int a[][] = node2.getTuCopy();
+						a[x][y] = a[x + 1][y];
+						a[x + 1][y] = 0;
+						Node n = new Node(a, node2.getSum() + 1, x + 1, y);
+						String s = n.getTuString();
+						if (hm1.containsKey(s)) {
+							return n.getSum() + hm1.get(s);
+						}
+						if (!hm2.containsKey(s)) {
+							hm2.put(s, n.getSum());
+							q2.add(n);
+						}
+					}
+					if (y > 0) {
+						int a[][] = node2.getTuCopy();
+						a[x][y] = a[x][y - 1];
+						a[x][y - 1] = 0;
+						Node n = new Node(a, node2.getSum() + 1, x, y - 1);
+						String s = n.getTuString();
+						if (hm1.containsKey(s)) {
+							return n.getSum() + hm1.get(s);
+						}
+						if (!hm2.containsKey(s)) {
+							hm2.put(s, n.getSum());
+							q2.add(n);
+						}
+					}
+					if (y < 2) {
+						int a[][] = node2.getTuCopy();
+						a[x][y] = a[x][y + 1];
+						a[x][y + 1] = 0;
+						Node n = new Node(a, node2.getSum() + 1, x, y + 1);
+						String s = n.getTuString();
+						if (hm1.containsKey(s)) {
+							return n.getSum() + hm1.get(s);
+						}
+						if (!hm2.containsKey(s)) {
+							hm2.put(s, n.getSum());
+							q2.add(n);
+						}
+					}
+				}
+			}
+			return -1;
+		}
+		class Node {
+			int tu[][] = new int[2][3];
+			int sum = 0;
+			int x = 0, y = 0;
+
+			public Node(int[][] tu, int sum, int x, int y) {
+				super();
+				this.tu = tu;
+				this.sum = sum;
+				this.x = x;
+				this.y = y;
+			}
+
+			public int[][] getTuCopy() {
+				int a[][] = new int[2][3];
+				for (int i = 0; i < 2; i++)
+					for (int j = 0; j < 3; j++)
+						a[i][j] = tu[i][j];
+				return a;
+			}
+
+			public String getTuString() {
+				StringBuffer sb = new StringBuffer("");
+				for (int i = 0; i < 2; i++)
+					for (int j = 0; j < 3; j++)
+						sb.append(tu[i][j]);
+				return sb.toString();
+			}
+
+			public void setTu(int[][] tu) {
+				this.tu = tu;
+			}
+
+			public int getSum() {
+				return sum;
+			}
+
+			public void setSum(int sum) {
+				this.sum = sum;
+			}
+
+			public int getX() {
+				return x;
+			}
+
+			public void setX(int x) {
+				this.x = x;
+			}
+
+			public int getY() {
+				return y;
+			}
+
+			public void setY(int y) {
+				this.y = y;
+			}
+		}
 	}
 }
