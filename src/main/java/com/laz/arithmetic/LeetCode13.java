@@ -1,7 +1,11 @@
 package com.laz.arithmetic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -244,5 +248,44 @@ public class LeetCode13 {
 			}
 		}
 		return -1;
+	}
+	
+	//二叉搜索树中的众数
+	@Test
+	public void test9() {
+		TreeNode root = Utils.createTree(new Integer[] {1,null,2,2});
+		Assert.assertArrayEquals(new int[] {2}, findMode(root));
+	}
+	Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+	public int[] findMode(TreeNode root) {
+		bst(root);
+		int max = 0;
+		for (Integer key:map.keySet()) {
+			if (map.get(key) > max) {
+				max = map.get(key);
+			}
+		}
+		List<Integer> list = new ArrayList<Integer>();
+		for (Integer key:map.keySet()) {
+			if (map.get(key) == max) {
+				list.add(key);
+			}
+		}
+		int[] ret = new int[list.size()];
+		int index=0;
+		for (Integer it:list) {
+			ret[index++] = it;
+		}
+		return ret;
+    }
+
+	private void bst(TreeNode root) {
+		if (root!=null) {
+			int count = map.getOrDefault(root.val, 0);
+			map.put(root.val, ++count);
+			bst(root.left);
+			bst(root.right);
+		}
+	
 	}
 }
