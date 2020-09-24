@@ -35,3 +35,6 @@
 #### 29 [树状数组](src\main\java\com\laz\arithmetic\datastructure\TreeArray.java)
 #### 30 [并查集](src\main\java\com\laz\arithmetic\datastructure\UnionFind.java)
 #### 31 [带虚拟节点的一致性Hash算法](src\main\java\com\laz\arithmetic\datastructure\ConsistentHash.java)
+#### 32 [邻接表](src\main\java\com\laz\arithmetic\datastructure\GraphAdjList.java)
+#### 33 [邻接矩阵](src\main\java\com\laz\arithmetic\datastructure\GraphAdjMatrix.java)
+#### 34 [Morris中序遍历](src\main\java\com\laz\arithmetic\datastructure\tree\MorrisTraversal.java)
