@@ -295,21 +295,22 @@ public class LeetCode13 {
 	// 滑动谜题
 	@Test
 	public void test10() {
-		//Assert.assertEquals(5, new Solution10().slidingPuzzle(new int[][] { { 4, 1, 2 }, { 5, 0, 3 } }));
-		Assert.assertEquals(0, new Solution10().slidingPuzzle(new int[][] { { 1,2,3 }, { 4,5,0 } }));
+		// Assert.assertEquals(5, new Solution10().slidingPuzzle(new int[][] { { 4, 1, 2
+		// }, { 5, 0, 3 } }));
+		Assert.assertEquals(0, new Solution10().slidingPuzzle(new int[][] { { 1, 2, 3 }, { 4, 5, 0 } }));
 	}
 
 	class Solution10 {
 		private HashMap<String, Integer> hm1 = null, hm2 = null;
-		
-		//双向广搜
+
+		// 双向广搜
 		public int slidingPuzzle(int[][] board) {
 			Queue<Node> q1 = new LinkedList<Node>();
 			Queue<Node> q2 = new LinkedList<Node>();
 			hm1 = new HashMap<String, Integer>();
 			hm2 = new HashMap<String, Integer>();
 			int[][] endArr = new int[][] { { 1, 2, 3 }, { 4, 5, 0 } };
-		
+
 			int x1 = 0, y1 = 0, x2 = 1, y2 = 2;
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 3; j++) {
@@ -327,6 +328,7 @@ public class LeetCode13 {
 			q2.add(node2);
 			return bfs(q1, q2);
 		}
+
 		private int bfs(Queue<Node> q1, Queue<Node> q2) {
 			while (!q1.isEmpty() || !q2.isEmpty()) {
 				if (!q1.isEmpty()) {
@@ -462,6 +464,7 @@ public class LeetCode13 {
 			}
 			return -1;
 		}
+
 		class Node {
 			int tu[][] = new int[2][3];
 			int sum = 0;
@@ -518,6 +521,59 @@ public class LeetCode13 {
 			public void setY(int y) {
 				this.y = y;
 			}
+		}
+	}
+
+	// 从中序与后序遍历序列构造二叉树
+	@Test
+	public void test11() {
+		int[] inorder = new int[] { 9, 3, 15, 20, 7 };
+		int[] postorder = new int[] { 9, 15, 7, 20, 3 };
+		TreeNode root = new Solution11().buildTree(inorder, postorder);
+		Utils.printTreeNode(root);
+	}
+
+	class Solution11 {
+		int post_idx;
+		int[] postorder;
+		int[] inorder;
+		Map<Integer, Integer> idx_map = new HashMap<Integer, Integer>();
+
+		public TreeNode helper(int in_left, int in_right) {
+			// 如果这里没有节点构造二叉树了，就结束
+			if (in_left > in_right) {
+				return null;
+			}
+
+			// 选择 post_idx 位置的元素作为当前子树根节点
+			int root_val = postorder[post_idx];
+			TreeNode root = new TreeNode(root_val);
+
+			// 根据 root 所在位置分成左右两棵子树
+			int index = idx_map.get(root_val);
+
+			// 下标减一
+			post_idx--;
+			// 构造右子树
+			root.right = helper(index + 1, in_right);
+			// 构造左子树
+			root.left = helper(in_left, index - 1);
+			return root;
+		}
+
+		public TreeNode buildTree(int[] inorder, int[] postorder) {
+			this.postorder = postorder;
+			this.inorder = inorder;
+			// 从后序遍历的最后一个元素开始
+			post_idx = postorder.length - 1;
+
+			// 建立（元素，下标）键值对的哈希表
+			int idx = 0;
+			for (Integer val : inorder) {
+				idx_map.put(val, idx++);
+			}
+
+			return helper(0, inorder.length - 1);
 		}
 	}
 }
