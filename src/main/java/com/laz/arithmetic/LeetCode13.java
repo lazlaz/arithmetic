@@ -1,7 +1,6 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -12,6 +11,8 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode13 {
 	// 字符串的排列
@@ -574,6 +575,46 @@ public class LeetCode13 {
 			}
 
 			return helper(0, inorder.length - 1);
+		}
+	}
+
+	// 路径总和 II
+	@Test
+	public void test12() {
+		TreeNode root = Utils.createTree(new Integer[] { 5, 4, 8, 11, null, 13, 4, 7, 2, null, null, 5, 1 });
+		List<List<Integer>> ret = pathSum(root, 22);
+		for (List<Integer> list : ret) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+
+	public List<List<Integer>> pathSum(TreeNode root, int sum) {
+		List<List<Integer>> ret = new ArrayList<List<Integer>>();
+		if (root == null) {
+			return ret;
+		}
+		pathSum(root, sum, ret, new LinkedList<Integer>());
+		return ret;
+	}
+
+	private void pathSum(TreeNode root, int sum, List<List<Integer>> ret, LinkedList<Integer> arrayList) {
+		if (root == null) {
+			return;
+		}
+		arrayList.add(root.val);
+		if (root != null && root.left == null && root.right == null) {
+			if (sum == root.val) {
+				ret.add(new ArrayList(arrayList));
+			}
+			return;
+		}
+		if (root.left != null) {
+			pathSum(root.left, (sum - root.val), ret, arrayList);
+			arrayList.removeLast();
+		}
+		if (root.right != null) {
+			pathSum(root.right, (sum - root.val), ret, arrayList);
+			arrayList.removeLast();
 		}
 	}
 }
