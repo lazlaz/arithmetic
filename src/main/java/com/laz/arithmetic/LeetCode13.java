@@ -706,16 +706,16 @@ public class LeetCode13 {
 	public void test14() {
 		Node root = new Node();
 		root.val = 1;
-		
+
 		Node left = new Node();
 		left.val = 2;
-		
+
 		Node right = new Node();
 		right.val = 3;
-		
+
 		root.left = left;
 		root.right = right;
-		
+
 		Node n = connect(root);
 		System.out.println(n);
 	}
@@ -746,4 +746,33 @@ public class LeetCode13 {
 		return root;
 
 	}
+
+	// 爱吃香蕉的珂珂
+	@Test
+	public void test15() {
+		Assert.assertEquals(23, minEatingSpeed(new int[] {30,11,23,4,20},6));
+	}
+
+	public int minEatingSpeed(int[] piles, int H) {
+        int lo = 1;
+        int hi = 1_000_000_000;
+        while (lo < hi) {
+            int mi = (lo + hi) / 2;
+            if (!possible(piles, H, mi))
+                lo = mi + 1;
+            else
+                hi = mi;
+        }
+
+        return lo;
+    }
+
+    // Can Koko eat all bananas in H hours with eating speed K?
+    public boolean possible(int[] piles, int H, int K) {
+        int time = 0;
+        for (int p: piles)
+            time += (p-1) / K + 1;
+        return time <= H;
+    }
+
 }
