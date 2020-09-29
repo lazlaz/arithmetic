@@ -1,6 +1,7 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -750,29 +751,62 @@ public class LeetCode13 {
 	// 爱吃香蕉的珂珂
 	@Test
 	public void test15() {
-		Assert.assertEquals(23, minEatingSpeed(new int[] {30,11,23,4,20},6));
+		Assert.assertEquals(23, minEatingSpeed(new int[] { 30, 11, 23, 4, 20 }, 6));
 	}
 
 	public int minEatingSpeed(int[] piles, int H) {
-        int lo = 1;
-        int hi = 1_000_000_000;
-        while (lo < hi) {
-            int mi = (lo + hi) / 2;
-            if (!possible(piles, H, mi))
-                lo = mi + 1;
-            else
-                hi = mi;
-        }
+		int lo = 1;
+		int hi = 1_000_000_000;
+		while (lo < hi) {
+			int mi = (lo + hi) / 2;
+			if (!possible(piles, H, mi))
+				lo = mi + 1;
+			else
+				hi = mi;
+		}
 
-        return lo;
-    }
+		return lo;
+	}
 
-    // Can Koko eat all bananas in H hours with eating speed K?
-    public boolean possible(int[] piles, int H, int K) {
-        int time = 0;
-        for (int p: piles)
-            time += (p-1) / K + 1;
-        return time <= H;
-    }
+	// Can Koko eat all bananas in H hours with eating speed K?
+	public boolean possible(int[] piles, int H, int K) {
+		int time = 0;
+		for (int p : piles)
+			time += (p - 1) / K + 1;
+		return time <= H;
+	}
+
+	// 二叉树的后序遍历 （迭代遍历）
+	@Test
+	public void test16() {
+		TreeNode root = Utils.createTree(new Integer[] { 3,9,4,null,null,5,7 });
+		List<Integer> ret = postorderTraversal(root);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> postorderTraversal(TreeNode root) {
+		List<Integer> res = new ArrayList<Integer>();
+		if (root == null) {
+			return res;
+		}
+		Deque<TreeNode> stack = new LinkedList<TreeNode>();
+		TreeNode prev = null;
+		while (root != null || !stack.isEmpty()) {
+			while (root != null) {
+				stack.push(root);
+				root = root.left;
+			}
+			root = stack.pop();
+			if (root.right == null || root.right == prev) {
+				res.add(root.val);
+				prev = root;
+				root = null;
+			} else {
+				stack.push(root);
+				root = root.right;
+			}
+		}
+		return res;
+	}
 
 }
