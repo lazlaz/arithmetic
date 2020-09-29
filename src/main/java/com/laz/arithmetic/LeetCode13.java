@@ -1,6 +1,7 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -779,7 +780,7 @@ public class LeetCode13 {
 	// 二叉树的后序遍历 （迭代遍历）
 	@Test
 	public void test16() {
-		TreeNode root = Utils.createTree(new Integer[] { 3,9,4,null,null,5,7 });
+		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 4, null, null, 5, 7 });
 		List<Integer> ret = postorderTraversal(root);
 		System.out.println(Joiner.on(",").join(ret));
 	}
@@ -806,6 +807,47 @@ public class LeetCode13 {
 				root = root.right;
 			}
 		}
+		return res;
+	}
+
+	// 石子游戏
+	@Test
+	public void test17() {
+		Assert.assertEquals(true, stoneGame(new int[] { 5, 3, 4, 5 }));
+	}
+
+	// https://leetcode-cn.com/problems/stone-game/solution/ji-yi-hua-di-gui-dong-tai-gui-hua-shu-xue-jie-java/
+	public boolean stoneGame(int[] piles) {
+		int len = piles.length;
+		int[][] memo = new int[len][len];
+		for (int i = 0; i < len; i++) {
+			// 由于是相对分数，有可能是在负值里面选较大者，因此初始化的时候不能为 0
+			Arrays.fill(memo[i], Integer.MIN_VALUE);
+			memo[i][i] = piles[i];
+		}
+		return stoneGame(piles, 0, len - 1, memo) > 0;
+	}
+
+	/**
+	 * 计算子区间 [left, right] 里先手能够得到的分数
+	 *
+	 * @param piles
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	private int stoneGame(int[] piles, int left, int right, int[][] memo) {
+		if (left == right) {
+			return piles[left];
+		}
+		if (memo[left][right] != Integer.MIN_VALUE) {
+			return memo[left][right];
+		}
+
+		int chooseLeft = piles[left] - stoneGame(piles, left + 1, right, memo);
+		int chooseRight = piles[right] - stoneGame(piles, left, right - 1, memo);
+		int res = Math.max(chooseLeft, chooseRight);
+		memo[left][right] = res;
 		return res;
 	}
 
