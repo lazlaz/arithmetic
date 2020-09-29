@@ -44,3 +44,4 @@
 #### 38 [Spfa算法](src\main\java\com\laz\arithmetic\datastructure\graph\Spfa.java)
 #### 39 [Floyd算法](src\main\java\com\laz\arithmetic\datastructure\graph\Floyd.java)
 #### 40 [欧拉路径和欧拉回路](src\main\java\com\laz\arithmetic\datastructure\graph\EulerCircuit.java)
+#### 41 [匈牙利算法](src\main\java\com\laz\arithmetic\datastructure\graph\EulerCircuit.java)
