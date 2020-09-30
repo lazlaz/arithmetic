@@ -851,4 +851,29 @@ public class LeetCode13 {
 		return res;
 	}
 
+	// 煎饼排序
+	@Test
+	public void test18() {
+		int[] arr = new int[] { 3, 2, 4, 1 };
+		List<Integer> ret = pancakeSort(arr);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> pancakeSort(int[] A) {
+		List<Integer> ans = new ArrayList<Integer>();
+		int N = A.length;
+		Integer[] B = new Integer[N];
+		for (int i = 0; i < N; ++i)
+			B[i] = i + 1;
+		Arrays.sort(B, (i, j) -> A[j - 1] - A[i - 1]);
+
+		for (int i : B) {
+			for (int f : ans)
+				if (i <= f)
+					i = f + 1 - i; //执行一次煎饼翻转操作 f，会将位置在 i, i <= f 的元素翻转到位置 f+1 - i 上
+			ans.add(i);
+			ans.add(N--);
+		}
+		return ans;
+	}
 }
