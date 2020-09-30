@@ -48,3 +48,4 @@
 #### 42 [KM算法](src\main\java\com\laz\arithmetic\datastructure\graph\KM.java)
 #### 43 [AC自动机](src\main\java\com\laz\arithmetic\search\AhoCorasickAutomation.java)
 #### 44 [Manacher](src\main\java\com\laz\arithmetic\search\Manacher.java)
+#### 45 [后缀数组](src\main\java\com\laz\arithmetic\datastructure\SuffixArray.java)
