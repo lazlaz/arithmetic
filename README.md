@@ -47,3 +47,4 @@
 #### 41 [匈牙利算法](src\main\java\com\laz\arithmetic\datastructure\graph\Hungary.java)
 #### 42 [KM算法](src\main\java\com\laz\arithmetic\datastructure\graph\KM.java)
 #### 43 [AC自动机](src\main\java\com\laz\arithmetic\search\AhoCorasickAutomation.java)
+#### 44 [Manacher](src\main\java\com\laz\arithmetic\search\Manacher.java)
