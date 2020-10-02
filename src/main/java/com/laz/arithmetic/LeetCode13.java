@@ -750,29 +750,72 @@ public class LeetCode13 {
 	// 爱吃香蕉的珂珂
 	@Test
 	public void test15() {
-		Assert.assertEquals(23, minEatingSpeed(new int[] {30,11,23,4,20},6));
+		Assert.assertEquals(23, minEatingSpeed(new int[] { 30, 11, 23, 4, 20 }, 6));
 	}
 
 	public int minEatingSpeed(int[] piles, int H) {
-        int lo = 1;
-        int hi = 1_000_000_000;
-        while (lo < hi) {
-            int mi = (lo + hi) / 2;
-            if (!possible(piles, H, mi))
-                lo = mi + 1;
-            else
-                hi = mi;
-        }
+		int lo = 1;
+		int hi = 1_000_000_000;
+		while (lo < hi) {
+			int mi = (lo + hi) / 2;
+			if (!possible(piles, H, mi))
+				lo = mi + 1;
+			else
+				hi = mi;
+		}
 
-        return lo;
-    }
+		return lo;
+	}
 
-    // Can Koko eat all bananas in H hours with eating speed K?
-    public boolean possible(int[] piles, int H, int K) {
-        int time = 0;
-        for (int p: piles)
-            time += (p-1) / K + 1;
-        return time <= H;
-    }
+	// Can Koko eat all bananas in H hours with eating speed K?
+	public boolean possible(int[] piles, int H, int K) {
+		int time = 0;
+		for (int p : piles)
+			time += (p - 1) / K + 1;
+		return time <= H;
+	}
 
+	// 宝石与石头
+	@Test
+	public void test16() {
+		Assert.assertEquals(3, numJewelsInStones("aA", "aAAbbbb"));
+	}
+
+	public int numJewelsInStones(String J, String S) {
+		Set<Character> sets = new HashSet();
+		for (int i = 0; i < J.length(); i++) {
+			sets.add(J.charAt(i));
+		}
+		int count = 0;
+		for (int i = 0; i < S.length(); i++) {
+			if (sets.contains(S.charAt(i))) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	// 秋叶收藏集
+	@Test
+	public void test17() {
+		Assert.assertEquals(2, minimumOperations("rrryyyrryyyrr"));
+	}
+
+	public int minimumOperations(String leaves) {
+		//状态 0 和状态 2 分别表示前面和后面的红色部分，状态 1 表示黄色部分
+		int n = leaves.length();
+		int[][] f = new int[n][3];
+		f[0][0] = leaves.charAt(0) == 'y' ? 1 : 0;
+		f[0][1] = f[0][2] = f[1][2] = Integer.MAX_VALUE;
+		for (int i = 1; i < n; ++i) {
+			int isRed = leaves.charAt(i) == 'r' ? 1 : 0;
+			int isYellow = leaves.charAt(i) == 'y' ? 1 : 0;
+			f[i][0] = f[i - 1][0] + isYellow;
+			f[i][1] = Math.min(f[i - 1][0], f[i - 1][1]) + isRed;
+			if (i >= 2) {
+				f[i][2] = Math.min(f[i - 1][1], f[i - 1][2]) + isYellow;
+			}
+		}
+		return f[n - 1][2];
+	}
 }
