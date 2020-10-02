@@ -44,3 +44,8 @@
 #### 38 [Spfa算法](src\main\java\com\laz\arithmetic\datastructure\graph\Spfa.java)
 #### 39 [Floyd算法](src\main\java\com\laz\arithmetic\datastructure\graph\Floyd.java)
 #### 40 [欧拉路径和欧拉回路](src\main\java\com\laz\arithmetic\datastructure\graph\EulerCircuit.java)
+#### 41 [匈牙利算法](src\main\java\com\laz\arithmetic\datastructure\graph\Hungary.java)
+#### 42 [KM算法](src\main\java\com\laz\arithmetic\datastructure\graph\KM.java)
+#### 43 [AC自动机](src\main\java\com\laz\arithmetic\search\AhoCorasickAutomation.java)
+#### 44 [Manacher](src\main\java\com\laz\arithmetic\search\Manacher.java)
+#### 45 [后缀数组](src\main\java\com\laz\arithmetic\datastructure\SuffixArray.java)

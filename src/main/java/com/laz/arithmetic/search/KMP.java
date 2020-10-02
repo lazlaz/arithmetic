@@ -10,7 +10,7 @@ import org.junit.Test;
 public class KMP {
 	@Test
 	public void test() {
-		Assert.assertEquals(6, kmp("abcabaabaabcacb", "abaabcac"));
+		Assert.assertEquals(6, kmp("GTGTGAGCTGGTGTGTGCFAA", "GTGTGCF"));
 	}
 
 	// KMP算法主体逻辑。str是主串，pattern是模式串
@@ -37,6 +37,7 @@ public class KMP {
 
 	// 生成Next数组
 	private static int[] getNexts(String pattern) {
+		//数组的下标代表了“已匹配前缀的下一个位置”，元素的值则是“最长可匹配前缀子串的下一个位置
 		int[] next = new int[pattern.length()];
 		int j = 0;
 		for (int i = 2; i < pattern.length(); i++) {

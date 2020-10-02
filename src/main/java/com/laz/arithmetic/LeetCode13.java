@@ -1,6 +1,8 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -802,7 +804,7 @@ public class LeetCode13 {
 	}
 
 	public int minimumOperations(String leaves) {
-		//状态 0 和状态 2 分别表示前面和后面的红色部分，状态 1 表示黄色部分
+		// 状态 0 和状态 2 分别表示前面和后面的红色部分，状态 1 表示黄色部分
 		int n = leaves.length();
 		int[][] f = new int[n][3];
 		f[0][0] = leaves.charAt(0) == 'y' ? 1 : 0;
@@ -817,5 +819,105 @@ public class LeetCode13 {
 			}
 		}
 		return f[n - 1][2];
+	}
+
+	// 二叉树的后序遍历 （迭代遍历）
+	@Test
+	public void test18() {
+		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 4, null, null, 5, 7 });
+		List<Integer> ret = postorderTraversal(root);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> postorderTraversal(TreeNode root) {
+		List<Integer> res = new ArrayList<Integer>();
+		if (root == null) {
+			return res;
+		}
+		Deque<TreeNode> stack = new LinkedList<TreeNode>();
+		TreeNode prev = null;
+		while (root != null || !stack.isEmpty()) {
+			while (root != null) {
+				stack.push(root);
+				root = root.left;
+			}
+			root = stack.pop();
+			if (root.right == null || root.right == prev) {
+				res.add(root.val);
+				prev = root;
+				root = null;
+			} else {
+				stack.push(root);
+				root = root.right;
+			}
+		}
+		return res;
+	}
+
+	// 石子游戏
+	@Test
+	public void test19() {
+		Assert.assertEquals(true, stoneGame(new int[] { 5, 3, 4, 5 }));
+	}
+
+	// https://leetcode-cn.com/problems/stone-game/solution/ji-yi-hua-di-gui-dong-tai-gui-hua-shu-xue-jie-java/
+	public boolean stoneGame(int[] piles) {
+		int len = piles.length;
+		int[][] memo = new int[len][len];
+		for (int i = 0; i < len; i++) {
+			// 由于是相对分数，有可能是在负值里面选较大者，因此初始化的时候不能为 0
+			Arrays.fill(memo[i], Integer.MIN_VALUE);
+			memo[i][i] = piles[i];
+		}
+		return stoneGame(piles, 0, len - 1, memo) > 0;
+	}
+
+	/**
+	 * 计算子区间 [left, right] 里先手能够得到的分数
+	 *
+	 * @param piles
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	private int stoneGame(int[] piles, int left, int right, int[][] memo) {
+		if (left == right) {
+			return piles[left];
+		}
+		if (memo[left][right] != Integer.MIN_VALUE) {
+			return memo[left][right];
+		}
+
+		int chooseLeft = piles[left] - stoneGame(piles, left + 1, right, memo);
+		int chooseRight = piles[right] - stoneGame(piles, left, right - 1, memo);
+		int res = Math.max(chooseLeft, chooseRight);
+		memo[left][right] = res;
+		return res;
+	}
+
+	// 煎饼排序
+	@Test
+	public void test20() {
+		int[] arr = new int[] { 3, 2, 4, 1 };
+		List<Integer> ret = pancakeSort(arr);
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<Integer> pancakeSort(int[] A) {
+		List<Integer> ans = new ArrayList<Integer>();
+		int N = A.length;
+		Integer[] B = new Integer[N];
+		for (int i = 0; i < N; ++i)
+			B[i] = i + 1;
+		Arrays.sort(B, (i, j) -> A[j - 1] - A[i - 1]);
+
+		for (int i : B) {
+			for (int f : ans)
+				if (i <= f)
+					i = f + 1 - i; // 执行一次煎饼翻转操作 f，会将位置在 i, i <= f 的元素翻转到位置 f+1 - i 上
+			ans.add(i);
+			ans.add(N--);
+		}
+		return ans;
 	}
 }
