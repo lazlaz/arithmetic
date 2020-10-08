@@ -1,8 +1,12 @@
 package com.laz.arithmetic.competition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import org.junit.Assert;
@@ -95,4 +99,87 @@ public class Competition3 {
 		}
 		return true;
 	}
+	
+	//使整数变为 0 的最少操作次数
+	@Test
+	public void test3() {
+		Assert.assertEquals(4, new Solution3().minimumOneBitOperations(6));
+	}
+	//https://leetcode-cn.com/problems/minimum-one-bit-operations-to-make-integers-zero/solution/gen-zhao-ti-shi-zhao-gui-lu-kan-liao-bie-ren-de-ge/
+	class Solution3 {
+		Map<Integer, Integer> map;
+		public int minimumOneBitOperations(int n) {
+	        map=new HashMap<>();
+	        int i=1; map.put(i,1); map.put(0,0);
+	        while(i<n){
+	            map.put(i<<1, (map.get(i)<<1)+1);
+	            i<<=1;
+	        }
+	        return dfs(n);
+	    }
+	    int dfs(int n){
+	        if(map.containsKey(n)) return map.get(n);
+	        int t=n;
+	        t|=t>>1;
+	        t|=t>>2;
+	        t|=t>>4;
+	        t|=t>>8;
+	        t|=t>>16;
+	        t+=1;
+	        t>>=1;
+	        int ans=dfs(t)-dfs(n-t);
+	        map.put(n, ans);
+	        return ans;
+	    }
+
+    }
+	
+	//可见点的最大数目
+	@Test
+	public void test4() {
+		List<List<Integer>> points = new ArrayList<List<Integer>>();
+		points.add(Arrays.asList(0,1));
+		points.add(Arrays.asList(2,1));
+		
+		int angle = 13;
+		List<Integer> location = new ArrayList<Integer>();
+		location.addAll(Arrays.asList(1,1));
+		Assert.assertEquals(1, visiblePoints(points,angle,location));
+	}
+	
+	//https://leetcode-cn.com/problems/maximum-number-of-visible-points/solution/ji-zuo-biao-hua-dong-chuang-kou-zui-da-chang-du-zh/
+	public int visiblePoints(List<List<Integer>> points, int angle, List<Integer> location) {
+        final int pointCnt = points.size();
+        List<Double> angles = new ArrayList<>();
+        int extraAns = 0;
+        for (int i = 0; i < pointCnt; ++i){
+            int deltaY = points.get(i).get(1) - location.get(1);
+            int deltaX = points.get(i).get(0) - location.get(0);
+            if (deltaY == 0 && deltaX == 0){
+                ++extraAns;
+                continue;
+            }
+            double curAngle = Math.atan2(deltaY, deltaX);
+            angles.add(curAngle);
+            angles.add(curAngle + 2 * Math.PI);
+        }
+        Collections.sort(angles);
+        int ans = 0;
+        int left = 0;
+        int right = 0;
+        double maxAngle = angle * Math.PI / 180.0;
+        while (true){
+            if (right == angles.size()){
+                return ans + extraAns;
+            }
+            if (angles.get(right) - angles.get(left) <= maxAngle){
+                ans = Math.max(ans, right - left + 1);
+                ++right;
+            }
+            else{
+                ++left;
+            }
+        }
+    }
+
 }
