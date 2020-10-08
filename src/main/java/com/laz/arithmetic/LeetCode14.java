@@ -131,4 +131,26 @@ public class LeetCode14 {
 
 	}
 
+	// 反转字符串
+	@Test
+	public void test3() {
+		char[] s = new char[] {'h','e','l','l','o'};
+		reverseString(s);
+		Assert.assertArrayEquals(new char[] {'o','l','l','e','h'}, s);
+	}
+
+	public void reverseString(char[] s) {
+		if (s==null || s.length==0) {
+			return ;
+		}
+		int l = 0,r= s.length-1;
+		while (l<=r) {
+			char temp = s[l];
+			s[l] = s[r];
+			s[r] = temp;
+			l++;
+			r--;
+		}
+	}
+
 }
