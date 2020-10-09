@@ -67,72 +67,73 @@ public class LeetCodeLearn {
 		long end = System.currentTimeMillis();
 		System.out.println("耗时：" + (end - start));
 	}
-	
-	//分割回文串
+
+	// 分割回文串
 	@Test
 	public void test4_1() {
 		System.out.println(partition("aabb"));
 	}
+
 	public List<List<String>> partition(String s) {
-        int len = s.length();
-        List<List<String>> res = new ArrayList<>();
-        if (len == 0) {
-            return res;
-        }
+		int len = s.length();
+		List<List<String>> res = new ArrayList<>();
+		if (len == 0) {
+			return res;
+		}
 
-        // Stack 这个类 Java 的文档里推荐写成 Deque<Integer> stack = new ArrayDeque<Integer>();
-        // 注意：只使用 stack 相关的接口
-        Deque<String> stack = new ArrayDeque<>();
-        backtracking(s, 0, len, stack, res);
-        return res;
-    }
+		// Stack 这个类 Java 的文档里推荐写成 Deque<Integer> stack = new ArrayDeque<Integer>();
+		// 注意：只使用 stack 相关的接口
+		Deque<String> stack = new ArrayDeque<>();
+		backtracking(s, 0, len, stack, res);
+		return res;
+	}
 
-    /**
-     * @param s
-     * @param start 起始字符的索引
-     * @param len   字符串 s 的长度，可以设置为全局变量
-     * @param path  记录从根结点到叶子结点的路径
-     * @param res   记录所有的结果
-     */
-    private void backtracking(String s, int start, int len, Deque<String> path, List<List<String>> res) {
-        if (start == len) {
-            res.add(new ArrayList<>(path));
-            return;
-        }
+	/**
+	 * @param s
+	 * @param start 起始字符的索引
+	 * @param len   字符串 s 的长度，可以设置为全局变量
+	 * @param path  记录从根结点到叶子结点的路径
+	 * @param res   记录所有的结果
+	 */
+	private void backtracking(String s, int start, int len, Deque<String> path, List<List<String>> res) {
+		if (start == len) {
+			res.add(new ArrayList<>(path));
+			return;
+		}
 
-        for (int i = start; i < len; i++) {
+		for (int i = start; i < len; i++) {
 
-            // 因为截取字符串是消耗性能的，因此，采用传子串索引的方式判断一个子串是否是回文子串
-            // 不是的话，剪枝
-            if (!checkPalindrome(s, start, i)) {
-                continue;
-            }
+			// 因为截取字符串是消耗性能的，因此，采用传子串索引的方式判断一个子串是否是回文子串
+			// 不是的话，剪枝
+			if (!checkPalindrome(s, start, i)) {
+				continue;
+			}
 
-            path.addLast(s.substring(start, i + 1));
-            backtracking(s, i + 1, len, path, res);
-            path.removeLast();
-        }
-    }
+			path.addLast(s.substring(start, i + 1));
+			backtracking(s, i + 1, len, path, res);
+			path.removeLast();
+		}
+	}
 
-    /**
-     * 这一步的时间复杂度是 O(N)，因此，可以采用动态规划先把回文子串的结果记录在一个表格里
-     *
-     * @param str
-     * @param left  子串的左边界，可以取到
-     * @param right 子串的右边界，可以取到
-     * @return
-     */
-    private boolean checkPalindrome(String str, int left, int right) {
-        // 严格小于即可
-        while (left < right) {
-            if (str.charAt(left) != str.charAt(right)) {
-                return false;
-            }
-            left++;
-            right--;
-        }
-        return true;
-    }
+	/**
+	 * 这一步的时间复杂度是 O(N)，因此，可以采用动态规划先把回文子串的结果记录在一个表格里
+	 *
+	 * @param str
+	 * @param left  子串的左边界，可以取到
+	 * @param right 子串的右边界，可以取到
+	 * @return
+	 */
+	private boolean checkPalindrome(String str, int left, int right) {
+		// 严格小于即可
+		while (left < right) {
+			if (str.charAt(left) != str.charAt(right)) {
+				return false;
+			}
+			left++;
+			right--;
+		}
+		return true;
+	}
 
 	// 字符串转换整数 (atoi)
 	@Test
@@ -154,25 +155,25 @@ public class LeetCodeLearn {
 	}
 
 	public String longestCommonPrefix2(String[] strs) {
-		if (strs== null || strs.length<=0) {
+		if (strs == null || strs.length <= 0) {
 			return "";
 		}
-		String ans =strs[0];
-		for (int i=1;i<strs.length;i++) {
-			int j=0;
-			for (;j<ans.length()&&j<strs[i].length();j++) {
+		String ans = strs[0];
+		for (int i = 1; i < strs.length; i++) {
+			int j = 0;
+			for (; j < ans.length() && j < strs[i].length(); j++) {
 				if (ans.charAt(j) != strs[i].charAt(j)) {
 					break;
 				}
 			}
-			ans = ans.substring(0,j);
+			ans = ans.substring(0, j);
 			if (ans.equals("")) {
 				return "";
 			}
 		}
 		return ans;
 	}
-	
+
 	// 删除链表中的节点
 	@Test
 	public void test8() {
@@ -295,14 +296,38 @@ public class LeetCodeLearn {
 		System.out.println(hasCycle(head));
 	}
 
+	// 快慢指针
+	public boolean hasCycle2(ListNode head) {
+		if (head == null) {
+			return false;
+		}
+		ListNode fast, slow;
+		fast = head;
+		slow = head;
+		while (slow != null && fast != null) {
+			slow = slow.next;
+			fast = fast.next;
+			if (fast == null) {
+				return false;
+			} else {
+				fast = fast.next;
+			}
+			if (fast == slow) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
 	public boolean hasCycle(ListNode head) {
-		if (head==null) {
+		if (head == null) {
 			return false;
 		}
 		ListNode temp = head;
 		Set<ListNode> sets = new HashSet<ListNode>();
 		sets.add(temp);
-		while (temp.next!=null) {
+		while (temp.next != null) {
 			ListNode node = temp.next;
 			if (sets.contains(node)) {
 				return true;
@@ -311,7 +336,7 @@ public class LeetCodeLearn {
 				temp = node;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -597,8 +622,7 @@ public class LeetCodeLearn {
 		char[] cs = s.toCharArray();
 		List<Character> cList = new ArrayList<Character>();
 		for (int i = 0; i < cs.length; i++) {
-			if ((cs[i] >= 48 && cs[i] <= 57) || (cs[i] >= 65 && cs[i] <= 90)
-					|| (cs[i] >= 97 && cs[i] <= 122)) {
+			if ((cs[i] >= 48 && cs[i] <= 57) || (cs[i] >= 65 && cs[i] <= 90) || (cs[i] >= 97 && cs[i] <= 122)) {
 				cList.add(cs[i]);
 			}
 		}
@@ -608,8 +632,7 @@ public class LeetCodeLearn {
 			value.append(character);
 		}
 
-		if (value.toString().equalsIgnoreCase(
-				new StringBuffer(value).reverse().toString())) {
+		if (value.toString().equalsIgnoreCase(new StringBuffer(value).reverse().toString())) {
 			return true;
 		}
 		return false;
@@ -620,8 +643,7 @@ public class LeetCodeLearn {
 		char[] cs = s.toCharArray();
 		List<Character> cList = new ArrayList<Character>();
 		for (int i = 0; i < cs.length; i++) {
-			if ((cs[i] >= 48 && cs[i] <= 57) || (cs[i] >= 65 && cs[i] <= 90)
-					|| (cs[i] >= 97 && cs[i] <= 122)) {
+			if ((cs[i] >= 48 && cs[i] <= 57) || (cs[i] >= 65 && cs[i] <= 90) || (cs[i] >= 97 && cs[i] <= 122)) {
 				cList.add(cs[i]);
 			}
 		}
