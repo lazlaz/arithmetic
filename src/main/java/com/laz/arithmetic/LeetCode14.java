@@ -1,13 +1,11 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -134,17 +132,17 @@ public class LeetCode14 {
 	// 反转字符串
 	@Test
 	public void test3() {
-		char[] s = new char[] {'h','e','l','l','o'};
+		char[] s = new char[] { 'h', 'e', 'l', 'l', 'o' };
 		reverseString(s);
-		Assert.assertArrayEquals(new char[] {'o','l','l','e','h'}, s);
+		Assert.assertArrayEquals(new char[] { 'o', 'l', 'l', 'e', 'h' }, s);
 	}
 
 	public void reverseString(char[] s) {
-		if (s==null || s.length==0) {
-			return ;
+		if (s == null || s.length == 0) {
+			return;
 		}
-		int l = 0,r= s.length-1;
-		while (l<=r) {
+		int l = 0, r = s.length - 1;
+		while (l <= r) {
 			char temp = s[l];
 			s[l] = s[r];
 			s[r] = temp;
@@ -152,7 +150,120 @@ public class LeetCode14 {
 			r--;
 		}
 	}
-	
-	
-	
+
+	// 环形链表 II
+	@Test
+	public void test4() {
+		ListNode head = new ListNode(3);
+		ListNode head1 = new ListNode(2);
+		ListNode head2 = new ListNode(0);
+		ListNode head3 = new ListNode(-4);
+
+		head.next = head1;
+		head1.next = head2;
+		head2.next = head3;
+		head3.next = head1;
+		ListNode ret = detectCycle(head);
+		System.out.println(ret.val);
+	}
+
+	public ListNode detectCycle(ListNode head) {
+		Set<ListNode> set = new HashSet<ListNode>();
+		while (head != null) {
+			set.add(head);
+			head = head.next;
+			if (set.contains(head)) {
+				return head;
+			}
+		}
+		return null;
+	}
+
+	// 区间列表的交集
+	@Test
+	public void test5() {
+		int[][] A = new int[][] { { 4, 6 }, { 7, 8 }, { 10, 17 } };
+		int[][] B = new int[][] { { 5, 10 } };
+
+		int[][] ret = intervalIntersection2(A, B);
+		for (int[] is : ret) {
+			for (int i : is) {
+				System.out.print(i + " ");
+			}
+			System.out.println();
+		}
+	}
+
+	// https://leetcode-cn.com/problems/interval-list-intersections/solution/jiu-pa-ni-bu-dong-shuang-zhi-zhen-by-hyj8/
+	// 优雅的双指针解法
+	public int[][] intervalIntersection2(int[][] A, int[][] B) {
+		List<int[]> res = new ArrayList<int[]>();
+		int i = 0;
+		int j = 0;
+		while (i < A.length && j < B.length) {
+			int start = Math.max(A[i][0], B[j][0]);
+			int end = Math.min(A[i][1], B[j][1]);
+			if (start <= end) {
+				res.add(new int[] { start, end });
+			}
+			if (A[i][1] < B[j][1]) {
+				i++;
+			} else {
+				j++;
+			}
+		}
+		int[][] r = new int[res.size()][2];
+		int index = 0;
+		for (int[] rv : res) {
+			r[index++] = rv;
+		}
+		return r;
+
+	}
+
+	public int[][] intervalIntersection(int[][] A, int[][] B) {
+		List<int[]> ret = new ArrayList<int[]>();
+		int aLen = A.length;
+		int bLen = B.length;
+		for (int i = 0; i < aLen; i++) {
+			for (int j = 0; j < bLen; j++) {
+				// 包含
+				if (B[j][0] <= A[i][0] && B[j][1] >= A[i][1]) {
+					int[] v = new int[2];
+					v[0] = A[i][0];
+					v[1] = A[i][1];
+					ret.add(v);
+				} else if (B[j][0] >= A[i][0] && B[j][0] <= A[i][1]) {
+					int[] v = new int[2];
+					v[0] = B[j][0];
+					if (B[j][1] >= A[i][1]) {
+						v[1] = A[i][1];
+					} else {
+						v[1] = B[j][1];
+					}
+					ret.add(v);
+				} else if (B[j][1] <= A[i][1] && B[j][1] >= A[i][0]) {
+					int[] v = new int[2];
+					v[0] = A[i][0];
+					if (B[j][1] <= A[i][1]) {
+						v[1] = B[j][1];
+					} else {
+						v[1] = A[i][1];
+					}
+					ret.add(v);
+				}
+				if (B[j][0] > A[i][1]) {
+					break;
+				}
+			}
+		}
+
+		int[][] r = new int[ret.size()][2];
+		int i = 0;
+		for (int[] rv : ret) {
+			r[i++] = rv;
+		}
+		return r;
+	}
+
 }
