@@ -136,5 +136,9 @@ public class Competition4 {
 
 	}
 	
-	//
+	//统计子树中城市之间最大距离
+	@Test
+	public void test4() {
+		
+	}
 }
