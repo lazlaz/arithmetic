@@ -266,4 +266,37 @@ public class LeetCode14 {
 		return r;
 	}
 
+	// 二叉搜索树的最小绝对差
+	@Test
+	public void test6() {
+		TreeNode root = Utils.createTree(new Integer[] {1,null,3,2,null});
+		Assert.assertEquals(1, new Solution6().getMinimumDifference(root));
+	}
+	
+	class Solution6 {
+		int pre;
+	    int ans;
+
+	    public int getMinimumDifference(TreeNode root) {
+	        ans = Integer.MAX_VALUE;
+	        pre = -1;
+	        dfs(root);
+	        return ans;
+	    }
+
+	    public void dfs(TreeNode root) {
+	        if (root == null) {
+	            return;
+	        }
+	        dfs(root.left);
+	        if (pre == -1) {
+	            pre = root.val;
+	        } else {
+	            ans = Math.min(ans, root.val - pre);
+	            pre = root.val;
+	        }
+	        dfs(root.right);
+	    }
+
+	}
 }
