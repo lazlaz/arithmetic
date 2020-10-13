@@ -10,8 +10,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.base.Joiner;
-
 public class LeetCode14 {
 	// 鸡蛋掉落
 	@Test
@@ -269,34 +267,64 @@ public class LeetCode14 {
 	// 二叉搜索树的最小绝对差
 	@Test
 	public void test6() {
-		TreeNode root = Utils.createTree(new Integer[] {1,null,3,2,null});
+		TreeNode root = Utils.createTree(new Integer[] { 1, null, 3, 2, null });
 		Assert.assertEquals(1, new Solution6().getMinimumDifference(root));
 	}
-	
+
 	class Solution6 {
 		int pre;
-	    int ans;
+		int ans;
 
-	    public int getMinimumDifference(TreeNode root) {
-	        ans = Integer.MAX_VALUE;
-	        pre = -1;
-	        dfs(root);
-	        return ans;
-	    }
+		public int getMinimumDifference(TreeNode root) {
+			ans = Integer.MAX_VALUE;
+			pre = -1;
+			dfs(root);
+			return ans;
+		}
 
-	    public void dfs(TreeNode root) {
-	        if (root == null) {
-	            return;
-	        }
-	        dfs(root.left);
-	        if (pre == -1) {
-	            pre = root.val;
-	        } else {
-	            ans = Math.min(ans, root.val - pre);
-	            pre = root.val;
-	        }
-	        dfs(root.right);
-	    }
+		public void dfs(TreeNode root) {
+			if (root == null) {
+				return;
+			}
+			dfs(root.left);
+			if (pre == -1) {
+				pre = root.val;
+			} else {
+				ans = Math.min(ans, root.val - pre);
+				pre = root.val;
+			}
+			dfs(root.right);
+		}
 
+	}
+
+	// 两两交换链表中的节点
+	@Test
+	public void test7() {
+		ListNode head = Utils.createListNode(new Integer[] {1,2,3,4});
+		ListNode head2 = swapPairs(head);
+		Utils.printListNode(head2);
+	}
+
+	public ListNode swapPairs(ListNode head) {
+		ListNode tmp = new ListNode(-1);
+		tmp.next = head;
+		ListNode p=tmp,q=head;
+		int count = 1;
+		while (q!=null) {
+			q = q.next;
+			count++;
+			if (count%2==0 && q!=null) {
+				//交换
+				ListNode tmp1 = q.next;
+				ListNode tmp2 = p.next;
+				p.next = q;
+				q.next = tmp2;
+				tmp2.next = tmp1;
+				p = q.next;
+				q = p;
+			}
+		}
+		return tmp.next;
 	}
 }
