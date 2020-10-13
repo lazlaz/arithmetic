@@ -301,7 +301,7 @@ public class LeetCode14 {
 	// 两两交换链表中的节点
 	@Test
 	public void test7() {
-		ListNode head = Utils.createListNode(new Integer[] {1,2,3,4});
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4 });
 		ListNode head2 = swapPairs(head);
 		Utils.printListNode(head2);
 	}
@@ -309,13 +309,13 @@ public class LeetCode14 {
 	public ListNode swapPairs(ListNode head) {
 		ListNode tmp = new ListNode(-1);
 		tmp.next = head;
-		ListNode p=tmp,q=head;
+		ListNode p = tmp, q = head;
 		int count = 1;
-		while (q!=null) {
+		while (q != null) {
 			q = q.next;
 			count++;
-			if (count%2==0 && q!=null) {
-				//交换
+			if (count % 2 == 0 && q != null) {
+				// 交换
 				ListNode tmp1 = q.next;
 				ListNode tmp2 = p.next;
 				p.next = q;
@@ -326,5 +326,198 @@ public class LeetCode14 {
 			}
 		}
 		return tmp.next;
+	}
+
+	// 买卖股票的最佳时机 II
+	@Test
+	public void test8() {
+		Assert.assertEquals(7, new Solution8().maxProfit(new int[] { 7, 1, 5, 3, 6, 4 }));
+	}
+
+	class Solution8 {
+		// 峰谷法 找到所有谷峰之和
+		public int maxProfit(int[] prices) {
+			int i = 0;
+			int valley = prices[0];
+			int peak = prices[0];
+			int maxprofit = 0;
+			while (i < prices.length - 1) {
+				while (i < prices.length - 1 && prices[i] >= prices[i + 1])
+					i++;
+				valley = prices[i];
+				while (i < prices.length - 1 && prices[i] <= prices[i + 1])
+					i++;
+				peak = prices[i];
+				maxprofit += peak - valley;
+			}
+			return maxprofit;
+		}
+	}
+
+	// 买卖股票的最佳时机 III
+	@Test
+	public void test9() {
+		Assert.assertEquals(6, new Solution9().maxProfit(new int[] { 3, 3, 5, 0, 0, 3, 1, 4 }));
+	}
+
+	class Solution9 {
+		// https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/solution/wu-chong-shi-xian-xiang-xi-tu-jie-123mai-mai-gu-pi/
+		public int maxProfit(int[] prices) {
+			if (prices == null || prices.length == 0) {
+				return 0;
+			}
+			int n = prices.length;
+			// 定义二维数组，5种状态
+			/**
+			 * dp[i][0] 初始化状态 dp[i][1] 第一次买入 dp[i][2] 第一次卖出 dp[i][3] 第二次买入 dp[i][4] 第二次卖出
+			 */
+			int[][] dp = new int[n][5];
+			// 初始化第一天的状态
+			dp[0][0] = 0;
+			dp[0][1] = -prices[0];
+			dp[0][2] = 0;
+			dp[0][3] = -prices[0];
+			dp[0][4] = 0;
+			for (int i = 1; i < n; ++i) {
+				// dp[i][0]相当于初始状态，它只能从初始状态转换来
+				dp[i][0] = dp[i - 1][0];
+				// 处理第一次买入、第一次卖出
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+				dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1] + prices[i]);
+				// 处理第二次买入、第二次卖出
+				dp[i][3] = Math.max(dp[i - 1][3], dp[i - 1][2] - prices[i]);
+				dp[i][4] = Math.max(dp[i - 1][4], dp[i - 1][3] + prices[i]);
+			}
+			// 返回最大值
+			int a = Math.max(dp[n - 1][0], dp[n - 1][1]); // 第n-1天初始状态和第n-1天买入1比较
+			int b = Math.max(dp[n - 1][2], dp[n - 1][3]);// 第n-1天买出1和第n-1天买入2比较
+			int c = dp[n - 1][4];// 第n-1天卖出2
+			return Math.max(Math.max(a, b), c);
+		}
+	}
+
+	// 买卖股票的最佳时机
+	@Test
+	public void test10() {
+		int[] prices = new int[] { 7, 1, 5, 3, 6, 4 };
+		System.out.println(new Solution10().maxProfit2(prices));
+	}
+
+	class Solution10 {
+		// 暴力
+		public int maxProfit(int[] prices) {
+			int max = 0;
+			for (int i = 0; i < prices.length; i++) {
+				for (int j = i; j < prices.length; j++) {
+					int temp = prices[j] - prices[i];
+					if (temp > max) {
+						max = temp;
+					}
+				}
+			}
+			return max;
+		}
+
+		public int maxProfit2(int prices[]) {
+			int minprice = Integer.MAX_VALUE;
+			int maxprofit = 0;
+			for (int i = 0; i < prices.length; i++) {
+				if (prices[i] < minprice) {
+					minprice = prices[i];
+				} else if (prices[i] - minprice > maxprofit) {
+					maxprofit = prices[i] - minprice;
+				}
+			}
+			return maxprofit;
+		}
+
+	}
+
+	// 买卖股票的最佳时机 IV
+	@Test
+	public void test11() {
+		Assert.assertEquals(7, new Solution11().maxProfit(2, new int[] { 3, 2, 6, 5, 0, 3 }));
+	}
+
+	class Solution11 {
+		public int maxProfit(int k, int[] prices) {
+			if (prices == null || prices.length == 0) {
+				return 0;
+			}
+			int n = prices.length;
+			// 当k非常大时转为无限次交易
+			if (k >= n / 2) {
+				// 退化为买卖股票的最佳时机 II
+				int dp0 = 0, dp1 = -prices[0];
+				for (int i = 1; i < n; ++i) {
+					int tmp = dp0;
+					dp0 = Math.max(dp0, dp1 + prices[i]);
+					dp1 = Math.max(dp1, dp0 - prices[i]);
+				}
+				return Math.max(dp0, dp1);
+			}
+			// 定义二维数组，交易了多少次、当前的买卖状态
+			int[][] dp = new int[k + 1][2];
+			for (int i = 0; i <= k; ++i) {
+				dp[i][0] = 0;
+				dp[i][1] = -prices[0];
+			}
+			for (int i = 1; i < n; ++i) {
+				for (int j = k; j > 0; --j) {
+					// 处理第k次买入
+					dp[j - 1][1] = Math.max(dp[j - 1][1], dp[j - 1][0] - prices[i]);
+					// 处理第k次卖出
+					dp[j][0] = Math.max(dp[j][0], dp[j - 1][1] + prices[i]);
+
+				}
+			}
+			return dp[k][0];
+
+		}
+	}
+
+	// 最佳买卖股票时机含冷冻期
+	@Test
+	public void test12() {
+		Assert.assertEquals(3, new Solution12().maxProfit(new int[] { 1, 2, 3, 0, 2 }));
+	}
+
+	class Solution12 {
+		public int maxProfit(int[] prices) {
+			int n = prices.length;
+			if (n < 2) {
+				return 0;
+			}
+			// 初始化第一天和第二天
+			int[][] dp = new int[n][2];
+			dp[0][0] = 0;
+			dp[0][1] = -prices[0];
+			dp[1][0] = Math.max(dp[0][0], dp[0][1] + prices[1]);
+			dp[1][1] = Math.max(dp[0][1], dp[0][0] - prices[1]);
+			for (int i = 2; i < n; ++i) {
+				// 求第i天累计卖出最大利润，累计买入的最大利润
+				dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]); //0 卖出   
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]); //1 买入
+			}
+			return Math.max(dp[n - 1][0], dp[n - 1][1]);
+		}
+	}
+	
+	//买卖股票的最佳时机含手续费
+	@Test
+	public void test13() {
+		Assert.assertEquals(8, new Solution13().maxProfit(new int[] { 1, 3, 2, 8, 4, 9},2));
+	}
+	class Solution13 {
+	    public int maxProfit(int[] prices, int fee) {
+	    	int n = prices.length;
+	    	int dp0 = 0, dp1 = -prices[0];
+			for (int i = 1; i < n; ++i) {
+				int tmp = dp0;
+				dp0 = Math.max(dp0, dp1 + prices[i]-fee);
+				dp1 = Math.max(dp1, dp0 - prices[i]);
+			}
+			return Math.max(dp0, dp1);
+	    }
 	}
 }
