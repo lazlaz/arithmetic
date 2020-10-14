@@ -102,6 +102,7 @@ public class Competition4 {
 	}
 
 	class Solution3 {
+		//https://leetcode-cn.com/problems/split-two-strings-to-make-palindrome/solution/javashuang-zhi-zhen-on-by-deltapluskai/
 		public boolean checkPalindromeFormation(String a, String b) {
 			int len = a.length();
 			if (isPalindrome(a, 0, len) || isPalindrome(b, 0, len))
