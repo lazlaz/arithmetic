@@ -3,6 +3,7 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -498,88 +499,90 @@ public class LeetCode14 {
 			dp[1][1] = Math.max(dp[0][1], dp[0][0] - prices[1]);
 			for (int i = 2; i < n; ++i) {
 				// 求第i天累计卖出最大利润，累计买入的最大利润
-				dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]); //0 卖出   
-				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]); //1 买入
+				dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]); // 0 卖出
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]); // 1 买入
 			}
 			return Math.max(dp[n - 1][0], dp[n - 1][1]);
 		}
 	}
-	
-	//买卖股票的最佳时机含手续费
+
+	// 买卖股票的最佳时机含手续费
 	@Test
 	public void test13() {
-		Assert.assertEquals(8, new Solution13().maxProfit(new int[] { 1, 3, 2, 8, 4, 9},2));
+		Assert.assertEquals(8, new Solution13().maxProfit(new int[] { 1, 3, 2, 8, 4, 9 }, 2));
 	}
+
 	class Solution13 {
-	    public int maxProfit(int[] prices, int fee) {
-	    	int n = prices.length;
-	    	int dp0 = 0, dp1 = -prices[0];
+		public int maxProfit(int[] prices, int fee) {
+			int n = prices.length;
+			int dp0 = 0, dp1 = -prices[0];
 			for (int i = 1; i < n; ++i) {
 				int tmp = dp0;
-				dp0 = Math.max(dp0, dp1 + prices[i]-fee);
+				dp0 = Math.max(dp0, dp1 + prices[i] - fee);
 				dp1 = Math.max(dp1, dp0 - prices[i]);
 			}
 			return Math.max(dp0, dp1);
-	    }
+		}
 	}
-	
-	//查找常用字符
+
+	// 查找常用字符
 	@Test
 	public void test14() {
 		{
-			List<String> res = commonChars(new String[] {"bella","label","roller"});
-			System.out.println(Joiner.on(",").join(res)); //"e","l","l"
+			List<String> res = commonChars(new String[] { "bella", "label", "roller" });
+			System.out.println(Joiner.on(",").join(res)); // "e","l","l"
 		}
-		
+
 		{
-			List<String> res = commonChars(new String[] {"cool","lock","cook"});
-			System.out.println(Joiner.on(",").join(res));//"c","o"
+			List<String> res = commonChars(new String[] { "cool", "lock", "cook" });
+			System.out.println(Joiner.on(",").join(res));// "c","o"
 		}
 		{
 			List<String> res = commonChars(new String[] {});
 			System.out.println(Joiner.on(",").join(res));//
 		}
 	}
+
 	public List<String> commonChars(String[] A) {
 		int[] letter = new int[26];
-		for (int i=0;i<A.length;i++) {
-			if (i==0) {
-				for (int j=0;j<A[i].length();j++) {
-					letter[A[i].charAt(j)-'a']++;
+		for (int i = 0; i < A.length; i++) {
+			if (i == 0) {
+				for (int j = 0; j < A[i].length(); j++) {
+					letter[A[i].charAt(j) - 'a']++;
 				}
 			} else {
 				int[] letter2 = new int[26];
-				for (int j=0;j<A[i].length();j++) {
-					letter2[A[i].charAt(j)-'a']++;
+				for (int j = 0; j < A[i].length(); j++) {
+					letter2[A[i].charAt(j) - 'a']++;
 				}
-				for (int j=0;j<letter.length;j++) {
-					if (letter[j]>0 && letter2[j]<letter[j]) {
+				for (int j = 0; j < letter.length; j++) {
+					if (letter[j] > 0 && letter2[j] < letter[j]) {
 						letter[j] = letter2[j];
 					}
 				}
 			}
 		}
 		List<String> res = new ArrayList<String>();
-		for (int i=0;i<letter.length;i++) {
-			if (letter[i]>0) {
+		for (int i = 0; i < letter.length; i++) {
+			if (letter[i] > 0) {
 				int count = letter[i];
-				while (count>0) {
-					char c = (char)(i+'a');
-					res.add(c+"");
+				while (count > 0) {
+					char c = (char) (i + 'a');
+					res.add(c + "");
 					count--;
 				}
 			}
 		}
 		return res;
-    }
-	
-	//从前序与中序遍历序列构造二叉树
+	}
+
+	// 从前序与中序遍历序列构造二叉树
 	@Test
 	public void test15() {
-		TreeNode root = new Solution15().buildTree(new int[] {3,9,20,15,7}, new int[] {9,3,15,20,7});
+		TreeNode root = new Solution15().buildTree(new int[] { 3, 9, 20, 15, 7 }, new int[] { 9, 3, 15, 20, 7 });
 		Utils.printTreeNode(root);
 	}
-	
+
 	class Solution15 {
 		int post_idx;
 		int[] preorder;
@@ -588,7 +591,7 @@ public class LeetCode14 {
 
 		public TreeNode helper(int in_left, int in_right) {
 			// 如果这里没有节点构造二叉树了，就结束
-			if (in_left > in_right || post_idx>=preorder.length) {
+			if (in_left > in_right || post_idx >= preorder.length) {
 				return null;
 			}
 
@@ -621,5 +624,38 @@ public class LeetCode14 {
 
 			return helper(0, inorder.length - 1);
 		}
+	}
+
+	// 最长连续序列
+	@Test
+	public void test16() {
+		Assert.assertEquals(4, longestConsecutive(new int[] { 100, 4, 200, 1, 3, 4,2 }));
+	}
+
+	// https://leetcode-cn.com/problems/longest-consecutive-sequence/solution/zui-chang-lian-xu-xu-lie-by-leetcode-solution/
+	public int longestConsecutive(int[] nums) {
+		Set<Integer> num_set = new LinkedHashSet<Integer>();
+		for (int num : nums) {
+			num_set.add(num);
+		}
+
+		int longestStreak = 0;
+
+		for (int num : num_set) {
+			if (!num_set.contains(num - 1)) {
+				int currentNum = num;
+				int currentStreak = 1;
+
+				while (num_set.contains(currentNum + 1)) {
+					currentNum += 1;
+					currentStreak += 1;
+				}
+
+				longestStreak = Math.max(longestStreak, currentStreak);
+			}
+		}
+
+		return longestStreak;
+
 	}
 }
