@@ -23,25 +23,6 @@ public class LeetCodeDynamicPlanning {
 		return dp[n];
 	}
 
-	// 买卖股票的最佳时机
-	@Test
-	public void test2() {
-		int[] prices = new int[] { 7, 1, 5, 3, 6, 4 };
-		System.out.println(maxProfit(prices));
-	}
-
-	public int maxProfit(int[] prices) {
-		int max = 0;
-		for (int i = 0; i < prices.length; i++) {
-			for (int j = i; j < prices.length; j++) {
-				int temp = prices[j] - prices[i];
-				if (temp > max) {
-					max = temp;
-				}
-			}
-		}
-		return max;
-	}
 
 	// 最大子序和
 	@Test

@@ -3,6 +3,7 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -266,4 +267,395 @@ public class LeetCode14 {
 		return r;
 	}
 
+	// 二叉搜索树的最小绝对差
+	@Test
+	public void test6() {
+		TreeNode root = Utils.createTree(new Integer[] { 1, null, 3, 2, null });
+		Assert.assertEquals(1, new Solution6().getMinimumDifference(root));
+	}
+
+	class Solution6 {
+		int pre;
+		int ans;
+
+		public int getMinimumDifference(TreeNode root) {
+			ans = Integer.MAX_VALUE;
+			pre = -1;
+			dfs(root);
+			return ans;
+		}
+
+		public void dfs(TreeNode root) {
+			if (root == null) {
+				return;
+			}
+			dfs(root.left);
+			if (pre == -1) {
+				pre = root.val;
+			} else {
+				ans = Math.min(ans, root.val - pre);
+				pre = root.val;
+			}
+			dfs(root.right);
+		}
+
+	}
+
+	// 两两交换链表中的节点
+	@Test
+	public void test7() {
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4 });
+		ListNode head2 = swapPairs(head);
+		Utils.printListNode(head2);
+	}
+
+	public ListNode swapPairs(ListNode head) {
+		ListNode tmp = new ListNode(-1);
+		tmp.next = head;
+		ListNode p = tmp, q = head;
+		int count = 1;
+		while (q != null) {
+			q = q.next;
+			count++;
+			if (count % 2 == 0 && q != null) {
+				// 交换
+				ListNode tmp1 = q.next;
+				ListNode tmp2 = p.next;
+				p.next = q;
+				q.next = tmp2;
+				tmp2.next = tmp1;
+				p = q.next;
+				q = p;
+			}
+		}
+		return tmp.next;
+	}
+
+	// 买卖股票的最佳时机 II
+	@Test
+	public void test8() {
+		Assert.assertEquals(7, new Solution8().maxProfit(new int[] { 7, 1, 5, 3, 6, 4 }));
+	}
+
+	class Solution8 {
+		// 峰谷法 找到所有谷峰之和
+		public int maxProfit(int[] prices) {
+			int i = 0;
+			int valley = prices[0];
+			int peak = prices[0];
+			int maxprofit = 0;
+			while (i < prices.length - 1) {
+				while (i < prices.length - 1 && prices[i] >= prices[i + 1])
+					i++;
+				valley = prices[i];
+				while (i < prices.length - 1 && prices[i] <= prices[i + 1])
+					i++;
+				peak = prices[i];
+				maxprofit += peak - valley;
+			}
+			return maxprofit;
+		}
+	}
+
+	// 买卖股票的最佳时机 III
+	@Test
+	public void test9() {
+		Assert.assertEquals(6, new Solution9().maxProfit(new int[] { 3, 3, 5, 0, 0, 3, 1, 4 }));
+	}
+
+	class Solution9 {
+		// https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/solution/wu-chong-shi-xian-xiang-xi-tu-jie-123mai-mai-gu-pi/
+		public int maxProfit(int[] prices) {
+			if (prices == null || prices.length == 0) {
+				return 0;
+			}
+			int n = prices.length;
+			// 定义二维数组，5种状态
+			/**
+			 * dp[i][0] 初始化状态 dp[i][1] 第一次买入 dp[i][2] 第一次卖出 dp[i][3] 第二次买入 dp[i][4] 第二次卖出
+			 */
+			int[][] dp = new int[n][5];
+			// 初始化第一天的状态
+			dp[0][0] = 0;
+			dp[0][1] = -prices[0];
+			dp[0][2] = 0;
+			dp[0][3] = -prices[0];
+			dp[0][4] = 0;
+			for (int i = 1; i < n; ++i) {
+				// dp[i][0]相当于初始状态，它只能从初始状态转换来
+				dp[i][0] = dp[i - 1][0];
+				// 处理第一次买入、第一次卖出
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+				dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1] + prices[i]);
+				// 处理第二次买入、第二次卖出
+				dp[i][3] = Math.max(dp[i - 1][3], dp[i - 1][2] - prices[i]);
+				dp[i][4] = Math.max(dp[i - 1][4], dp[i - 1][3] + prices[i]);
+			}
+			// 返回最大值
+			int a = Math.max(dp[n - 1][0], dp[n - 1][1]); // 第n-1天初始状态和第n-1天买入1比较
+			int b = Math.max(dp[n - 1][2], dp[n - 1][3]);// 第n-1天买出1和第n-1天买入2比较
+			int c = dp[n - 1][4];// 第n-1天卖出2
+			return Math.max(Math.max(a, b), c);
+		}
+	}
+
+	// 买卖股票的最佳时机
+	@Test
+	public void test10() {
+		int[] prices = new int[] { 7, 1, 5, 3, 6, 4 };
+		System.out.println(new Solution10().maxProfit2(prices));
+	}
+
+	class Solution10 {
+		// 暴力
+		public int maxProfit(int[] prices) {
+			int max = 0;
+			for (int i = 0; i < prices.length; i++) {
+				for (int j = i; j < prices.length; j++) {
+					int temp = prices[j] - prices[i];
+					if (temp > max) {
+						max = temp;
+					}
+				}
+			}
+			return max;
+		}
+
+		public int maxProfit2(int prices[]) {
+			int minprice = Integer.MAX_VALUE;
+			int maxprofit = 0;
+			for (int i = 0; i < prices.length; i++) {
+				if (prices[i] < minprice) {
+					minprice = prices[i];
+				} else if (prices[i] - minprice > maxprofit) {
+					maxprofit = prices[i] - minprice;
+				}
+			}
+			return maxprofit;
+		}
+
+	}
+
+	// 买卖股票的最佳时机 IV
+	@Test
+	public void test11() {
+		Assert.assertEquals(7, new Solution11().maxProfit(2, new int[] { 3, 2, 6, 5, 0, 3 }));
+	}
+
+	class Solution11 {
+		public int maxProfit(int k, int[] prices) {
+			if (prices == null || prices.length == 0) {
+				return 0;
+			}
+			int n = prices.length;
+			// 当k非常大时转为无限次交易
+			if (k >= n / 2) {
+				// 退化为买卖股票的最佳时机 II
+				int dp0 = 0, dp1 = -prices[0];
+				for (int i = 1; i < n; ++i) {
+					int tmp = dp0;
+					dp0 = Math.max(dp0, dp1 + prices[i]);
+					dp1 = Math.max(dp1, dp0 - prices[i]);
+				}
+				return Math.max(dp0, dp1);
+			}
+			// 定义二维数组，交易了多少次、当前的买卖状态
+			int[][] dp = new int[k + 1][2];
+			for (int i = 0; i <= k; ++i) {
+				dp[i][0] = 0;
+				dp[i][1] = -prices[0];
+			}
+			for (int i = 1; i < n; ++i) {
+				for (int j = k; j > 0; --j) {
+					// 处理第k次买入
+					dp[j - 1][1] = Math.max(dp[j - 1][1], dp[j - 1][0] - prices[i]);
+					// 处理第k次卖出
+					dp[j][0] = Math.max(dp[j][0], dp[j - 1][1] + prices[i]);
+
+				}
+			}
+			return dp[k][0];
+
+		}
+	}
+
+	// 最佳买卖股票时机含冷冻期
+	@Test
+	public void test12() {
+		Assert.assertEquals(3, new Solution12().maxProfit(new int[] { 1, 2, 3, 0, 2 }));
+	}
+
+	class Solution12 {
+		public int maxProfit(int[] prices) {
+			int n = prices.length;
+			if (n < 2) {
+				return 0;
+			}
+			// 初始化第一天和第二天
+			int[][] dp = new int[n][2];
+			dp[0][0] = 0;
+			dp[0][1] = -prices[0];
+			dp[1][0] = Math.max(dp[0][0], dp[0][1] + prices[1]);
+			dp[1][1] = Math.max(dp[0][1], dp[0][0] - prices[1]);
+			for (int i = 2; i < n; ++i) {
+				// 求第i天累计卖出最大利润，累计买入的最大利润
+				dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]); // 0 卖出
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]); // 1 买入
+			}
+			return Math.max(dp[n - 1][0], dp[n - 1][1]);
+		}
+	}
+
+	// 买卖股票的最佳时机含手续费
+	@Test
+	public void test13() {
+		Assert.assertEquals(8, new Solution13().maxProfit(new int[] { 1, 3, 2, 8, 4, 9 }, 2));
+	}
+
+	class Solution13 {
+		public int maxProfit(int[] prices, int fee) {
+			int n = prices.length;
+			int dp0 = 0, dp1 = -prices[0];
+			for (int i = 1; i < n; ++i) {
+				int tmp = dp0;
+				dp0 = Math.max(dp0, dp1 + prices[i] - fee);
+				dp1 = Math.max(dp1, dp0 - prices[i]);
+			}
+			return Math.max(dp0, dp1);
+		}
+	}
+
+	// 查找常用字符
+	@Test
+	public void test14() {
+		{
+			List<String> res = commonChars(new String[] { "bella", "label", "roller" });
+			System.out.println(Joiner.on(",").join(res)); // "e","l","l"
+		}
+
+		{
+			List<String> res = commonChars(new String[] { "cool", "lock", "cook" });
+			System.out.println(Joiner.on(",").join(res));// "c","o"
+		}
+		{
+			List<String> res = commonChars(new String[] {});
+			System.out.println(Joiner.on(",").join(res));//
+		}
+	}
+
+	public List<String> commonChars(String[] A) {
+		int[] letter = new int[26];
+		for (int i = 0; i < A.length; i++) {
+			if (i == 0) {
+				for (int j = 0; j < A[i].length(); j++) {
+					letter[A[i].charAt(j) - 'a']++;
+				}
+			} else {
+				int[] letter2 = new int[26];
+				for (int j = 0; j < A[i].length(); j++) {
+					letter2[A[i].charAt(j) - 'a']++;
+				}
+				for (int j = 0; j < letter.length; j++) {
+					if (letter[j] > 0 && letter2[j] < letter[j]) {
+						letter[j] = letter2[j];
+					}
+				}
+			}
+		}
+		List<String> res = new ArrayList<String>();
+		for (int i = 0; i < letter.length; i++) {
+			if (letter[i] > 0) {
+				int count = letter[i];
+				while (count > 0) {
+					char c = (char) (i + 'a');
+					res.add(c + "");
+					count--;
+				}
+			}
+		}
+		return res;
+	}
+
+	// 从前序与中序遍历序列构造二叉树
+	@Test
+	public void test15() {
+		TreeNode root = new Solution15().buildTree(new int[] { 3, 9, 20, 15, 7 }, new int[] { 9, 3, 15, 20, 7 });
+		Utils.printTreeNode(root);
+	}
+
+	class Solution15 {
+		int post_idx;
+		int[] preorder;
+		int[] inorder;
+		Map<Integer, Integer> idx_map = new HashMap<Integer, Integer>();
+
+		public TreeNode helper(int in_left, int in_right) {
+			// 如果这里没有节点构造二叉树了，就结束
+			if (in_left > in_right || post_idx >= preorder.length) {
+				return null;
+			}
+
+			// 选择 post_idx 位置的元素作为当前子树根节点
+			int root_val = preorder[post_idx];
+			TreeNode root = new TreeNode(root_val);
+
+			// 根据 root 所在位置分成左右两棵子树
+			int index = idx_map.get(root_val);
+
+			post_idx++;
+			// 构造左子树
+			root.left = helper(in_left, index - 1);
+			// 构造右子树
+			root.right = helper(index + 1, in_right);
+			return root;
+		}
+
+		public TreeNode buildTree(int[] preorder, int[] inorder) {
+			this.preorder = preorder;
+			this.inorder = inorder;
+			// 从前序遍历的第一个元素开始
+			post_idx = 0;
+
+			// 建立（元素，下标）键值对的哈希表
+			int idx = 0;
+			for (Integer val : inorder) {
+				idx_map.put(val, idx++);
+			}
+
+			return helper(0, inorder.length - 1);
+		}
+	}
+
+	// 最长连续序列
+	@Test
+	public void test16() {
+		Assert.assertEquals(4, longestConsecutive(new int[] { 100, 4, 200, 1, 3, 4,2 }));
+	}
+
+	// https://leetcode-cn.com/problems/longest-consecutive-sequence/solution/zui-chang-lian-xu-xu-lie-by-leetcode-solution/
+	public int longestConsecutive(int[] nums) {
+		Set<Integer> num_set = new LinkedHashSet<Integer>();
+		for (int num : nums) {
+			num_set.add(num);
+		}
+
+		int longestStreak = 0;
+
+		for (int num : num_set) {
+			if (!num_set.contains(num - 1)) {
+				int currentNum = num;
+				int currentStreak = 1;
+
+				while (num_set.contains(currentNum + 1)) {
+					currentNum += 1;
+					currentStreak += 1;
+				}
+
+				longestStreak = Math.max(longestStreak, currentStreak);
+			}
+		}
+
+		return longestStreak;
+
+	}
 }
