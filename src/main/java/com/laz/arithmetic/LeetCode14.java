@@ -10,6 +10,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 public class LeetCode14 {
 	// 鸡蛋掉落
 	@Test
@@ -520,4 +522,54 @@ public class LeetCode14 {
 			return Math.max(dp0, dp1);
 	    }
 	}
+	
+	//查找常用字符
+	@Test
+	public void test14() {
+		{
+			List<String> res = commonChars(new String[] {"bella","label","roller"});
+			System.out.println(Joiner.on(",").join(res)); //"e","l","l"
+		}
+		
+		{
+			List<String> res = commonChars(new String[] {"cool","lock","cook"});
+			System.out.println(Joiner.on(",").join(res));//"c","o"
+		}
+		{
+			List<String> res = commonChars(new String[] {});
+			System.out.println(Joiner.on(",").join(res));//
+		}
+	}
+	public List<String> commonChars(String[] A) {
+		int[] letter = new int[26];
+		for (int i=0;i<A.length;i++) {
+			if (i==0) {
+				for (int j=0;j<A[i].length();j++) {
+					letter[A[i].charAt(j)-'a']++;
+				}
+			} else {
+				int[] letter2 = new int[26];
+				for (int j=0;j<A[i].length();j++) {
+					letter2[A[i].charAt(j)-'a']++;
+				}
+				for (int j=0;j<letter.length;j++) {
+					if (letter[j]>0 && letter2[j]<letter[j]) {
+						letter[j] = letter2[j];
+					}
+				}
+			}
+		}
+		List<String> res = new ArrayList<String>();
+		for (int i=0;i<letter.length;i++) {
+			if (letter[i]>0) {
+				int count = letter[i];
+				while (count>0) {
+					char c = (char)(i+'a');
+					res.add(c+"");
+					count--;
+				}
+			}
+		}
+		return res;
+    }
 }
