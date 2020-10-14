@@ -766,4 +766,76 @@ public class LeetCode14 {
 		h.next = (left != null ? left : right);
 		return res.next;
 	}
+	
+	//实现 Trie (前缀树)
+	@Test
+	public void test18() {
+		Trie trie = new Trie();
+
+		trie.insert("apple");
+		System.out.println(trie.search("apple"));   // 返回 true
+		System.out.println(trie.search("app"));// 返回 false
+		trie.startsWith("app"); // 返回 true
+		trie.insert("app");   
+		System.out.println(trie.search("app"));   // 返回 true
+	}
+	class TrieNode {
+		Map<Character, TrieNode> children;
+		boolean wordEnd;
+
+		public TrieNode() {
+			children = new HashMap<Character, TrieNode>();
+			wordEnd = false;
+		}
+	}
+	class Trie {
+		private TrieNode root;
+
+	    /** Initialize your data structure here. */
+	    public Trie() {
+	    	root = new TrieNode();
+			root.wordEnd = false;
+	    }
+	    
+	    /** Inserts a word into the trie. */
+	    public void insert(String word) {
+	    	TrieNode node = root;
+			for (int i = 0; i < word.length(); i++) {
+				Character c = new Character(word.charAt(i));
+				if (!node.children.containsKey(c)) {
+					node.children.put(c, new TrieNode());
+				}
+				node = node.children.get(c);
+			}
+			node.wordEnd = true;
+	    }
+	    
+	    /** Returns if the word is in the trie. */
+	    public boolean search(String word) {
+	    	TrieNode node = root;
+			boolean found = true;
+			for (int i = 0; i < word.length(); i++) {
+				Character c = new Character(word.charAt(i));
+				if (!node.children.containsKey(c)) {
+					return false;
+				}
+				node = node.children.get(c);
+			}
+			return found && node.wordEnd;
+	    }
+	    
+	    /** Returns if there is any word in the trie that starts with the given prefix. */
+	    public boolean startsWith(String prefix) {
+	    	TrieNode node = root;
+			boolean found = true;
+			for (int i = 0; i < prefix.length(); i++) {
+				Character c = new Character(prefix.charAt(i));
+				if (!node.children.containsKey(c)) {
+					return false;
+				}
+				node = node.children.get(c);
+			}
+			return found;
+	    }
+	}
 }
