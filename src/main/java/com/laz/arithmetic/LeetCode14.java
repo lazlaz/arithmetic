@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -837,5 +839,73 @@ public class LeetCode14 {
 			}
 			return found;
 	    }
+	}
+	
+	//填充每个节点的下一个右侧节点指针
+	@Test
+	public void test19() {
+		Node root1 = new Node(1);
+		Node root2 = new Node(2);
+		Node root3 = new Node(3);
+		Node root4 = new Node(4);
+		Node root5 = new Node(5);
+		Node root6 = new Node(6);
+		Node root7 = new Node(7);
+		
+		root1.left = root2;
+		root1.right = root3;
+		
+		root2.left = root4;
+		root2.right = root5;
+		
+		root3.left = root6;
+		root3.right = root7;
+		Node node = new Solution19().connect(root1);
+		System.out.println(node);
+	}
+	class Node {
+	    public int val;
+	    public Node left;
+	    public Node right;
+	    public Node next;
+
+	    public Node() {}
+	    
+	    public Node(int _val) {
+	        val = _val;
+	    }
+
+	    public Node(int _val, Node _left, Node _right, Node _next) {
+	        val = _val;
+	        left = _left;
+	        right = _right;
+	        next = _next;
+	    }
+	};
+	
+	class Solution19 {
+		public Node connect(Node root) {
+			if (root==null) {
+					return root;
+			}
+			Queue<Node> queue = new LinkedList<Node>();
+			queue.add(root);
+			while (!queue.isEmpty()) {
+				int level_length = queue.size();
+				Node last = null;
+				for (int i = 0; i < level_length; ++i) {
+					Node node = queue.remove();
+					if (last!=null) {
+						last.next = node;
+					}
+					if (node.left != null)
+						queue.add(node.left);
+					if (node.right != null)
+						queue.add(node.right);
+					last = node;
+				}
+			}
+			return root;
+		}
 	}
 }
