@@ -669,13 +669,14 @@ public class LeetCode14 {
 		Utils.printListNode(head);
 	}
 
-	// 迭代归并 https://leetcode-cn.com/problems/sort-list/solution/pai-xu-lian-biao-di-gui-die-dai-xiang-jie-by-cherr/
+	// 迭代归并
+	// https://leetcode-cn.com/problems/sort-list/solution/pai-xu-lian-biao-di-gui-die-dai-xiang-jie-by-cherr/
 	class Solution17 {
 		public ListNode sortList(ListNode head) {
 			int length = getLength(head);
 			ListNode dummy = new ListNode(-1);
 			dummy.next = head;
-			
+
 			for (int step = 1; step < length; step *= 2) { // 依次将链表分成1块，2块，4块...
 				// 每次变换步长，pre指针和cur指针都初始化在链表头
 				ListNode pre = dummy;
@@ -693,7 +694,7 @@ public class LeetCode14 {
 			}
 			return dummy.next;
 		}
-		
+
 		public int getLength(ListNode head) {
 			// 获取链表长度
 			int count = 0;
@@ -703,7 +704,7 @@ public class LeetCode14 {
 			}
 			return count;
 		}
-		
+
 		public ListNode split(ListNode head, int step) {
 			// 断链操作 返回第二部分链表头
 			if (head == null)
@@ -716,7 +717,7 @@ public class LeetCode14 {
 			cur.next = null; // 切断连接
 			return right;
 		}
-		
+
 		public ListNode merge(ListNode h1, ListNode h2) {
 			// 合并两个有序链表
 			ListNode head = new ListNode(-1);
@@ -735,7 +736,7 @@ public class LeetCode14 {
 				p.next = h1;
 			if (h2 != null)
 				p.next = h2;
-			
+
 			return head.next;
 		}
 	}
@@ -768,19 +769,20 @@ public class LeetCode14 {
 		h.next = (left != null ? left : right);
 		return res.next;
 	}
-	
-	//实现 Trie (前缀树)
+
+	// 实现 Trie (前缀树)
 	@Test
 	public void test18() {
 		Trie trie = new Trie();
 
 		trie.insert("apple");
-		System.out.println(trie.search("apple"));   // 返回 true
+		System.out.println(trie.search("apple")); // 返回 true
 		System.out.println(trie.search("app"));// 返回 false
 		trie.startsWith("app"); // 返回 true
-		trie.insert("app");   
-		System.out.println(trie.search("app"));   // 返回 true
+		trie.insert("app");
+		System.out.println(trie.search("app")); // 返回 true
 	}
+
 	class TrieNode {
 		Map<Character, TrieNode> children;
 		boolean wordEnd;
@@ -790,18 +792,19 @@ public class LeetCode14 {
 			wordEnd = false;
 		}
 	}
+
 	class Trie {
 		private TrieNode root;
 
-	    /** Initialize your data structure here. */
-	    public Trie() {
-	    	root = new TrieNode();
+		/** Initialize your data structure here. */
+		public Trie() {
+			root = new TrieNode();
 			root.wordEnd = false;
-	    }
-	    
-	    /** Inserts a word into the trie. */
-	    public void insert(String word) {
-	    	TrieNode node = root;
+		}
+
+		/** Inserts a word into the trie. */
+		public void insert(String word) {
+			TrieNode node = root;
 			for (int i = 0; i < word.length(); i++) {
 				Character c = new Character(word.charAt(i));
 				if (!node.children.containsKey(c)) {
@@ -810,11 +813,11 @@ public class LeetCode14 {
 				node = node.children.get(c);
 			}
 			node.wordEnd = true;
-	    }
-	    
-	    /** Returns if the word is in the trie. */
-	    public boolean search(String word) {
-	    	TrieNode node = root;
+		}
+
+		/** Returns if the word is in the trie. */
+		public boolean search(String word) {
+			TrieNode node = root;
 			boolean found = true;
 			for (int i = 0; i < word.length(); i++) {
 				Character c = new Character(word.charAt(i));
@@ -824,11 +827,13 @@ public class LeetCode14 {
 				node = node.children.get(c);
 			}
 			return found && node.wordEnd;
-	    }
-	    
-	    /** Returns if there is any word in the trie that starts with the given prefix. */
-	    public boolean startsWith(String prefix) {
-	    	TrieNode node = root;
+		}
+
+		/**
+		 * Returns if there is any word in the trie that starts with the given prefix.
+		 */
+		public boolean startsWith(String prefix) {
+			TrieNode node = root;
 			boolean found = true;
 			for (int i = 0; i < prefix.length(); i++) {
 				Character c = new Character(prefix.charAt(i));
@@ -838,10 +843,10 @@ public class LeetCode14 {
 				node = node.children.get(c);
 			}
 			return found;
-	    }
+		}
 	}
-	
-	//填充每个节点的下一个右侧节点指针
+
+	// 填充每个节点的下一个右侧节点指针
 	@Test
 	public void test19() {
 		Node root1 = new Node(1);
@@ -851,42 +856,44 @@ public class LeetCode14 {
 		Node root5 = new Node(5);
 		Node root6 = new Node(6);
 		Node root7 = new Node(7);
-		
+
 		root1.left = root2;
 		root1.right = root3;
-		
+
 		root2.left = root4;
 		root2.right = root5;
-		
+
 		root3.left = root6;
 		root3.right = root7;
 		Node node = new Solution19().connect(root1);
 		System.out.println(node);
 	}
+
 	class Node {
-	    public int val;
-	    public Node left;
-	    public Node right;
-	    public Node next;
+		public int val;
+		public Node left;
+		public Node right;
+		public Node next;
 
-	    public Node() {}
-	    
-	    public Node(int _val) {
-	        val = _val;
-	    }
+		public Node() {
+		}
 
-	    public Node(int _val, Node _left, Node _right, Node _next) {
-	        val = _val;
-	        left = _left;
-	        right = _right;
-	        next = _next;
-	    }
+		public Node(int _val) {
+			val = _val;
+		}
+
+		public Node(int _val, Node _left, Node _right, Node _next) {
+			val = _val;
+			left = _left;
+			right = _right;
+			next = _next;
+		}
 	};
-	
+
 	class Solution19 {
 		public Node connect(Node root) {
-			if (root==null) {
-					return root;
+			if (root == null) {
+				return root;
 			}
 			Queue<Node> queue = new LinkedList<Node>();
 			queue.add(root);
@@ -895,7 +902,7 @@ public class LeetCode14 {
 				Node last = null;
 				for (int i = 0; i < level_length; ++i) {
 					Node node = queue.remove();
-					if (last!=null) {
+					if (last != null) {
 						last.next = node;
 					}
 					if (node.left != null)
@@ -907,5 +914,23 @@ public class LeetCode14 {
 			}
 			return root;
 		}
+	}
+
+	// 完全平方数
+	@Test
+	public void test20() {
+		Assert.assertEquals(2, numSquares(5));
+	}
+	//https://leetcode-cn.com/problems/perfect-squares/solution/hua-jie-suan-fa-279-wan-quan-ping-fang-shu-by-guan/
+	public int numSquares(int n) {
+		    int[] dp = new int[n + 1]; // 默认初始化值都为0
+	        for (int i = 1; i <= n; i++) {
+	            dp[i] = i; // 最坏的情况就是每次+1
+	            for (int j = 1; j * j <= i; j++) { 
+	                dp[i] = Math.min(dp[i], dp[i - j * j] + 1); // 动态转移方程
+	            }
+	        }
+	        return dp[n];
+
 	}
 }
