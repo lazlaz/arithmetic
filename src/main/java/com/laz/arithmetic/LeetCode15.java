@@ -1,5 +1,7 @@
 package com.laz.arithmetic;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,5 +26,19 @@ public class LeetCode15 {
 			b <<= 1; // b = 2b
 		}
 		return ans;
+	}
+	
+	//有序数组的平方
+	@Test
+	public void test2() {
+		Assert.assertArrayEquals(new int[] {4,9,9,49,121}, sortedSquares(new int[]{-7,-3,2,3,11}));
+	}
+	public int[] sortedSquares(int[] A) {
+		int[] res = new int[A.length];
+		for (int i=0;i<A.length;i++) {
+			res[i] = A[i]*A[i];
+		}
+		Arrays.sort(res);
+		return res;
 	}
 }
