@@ -1,6 +1,8 @@
 package com.laz.arithmetic;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,5 +42,45 @@ public class LeetCode15 {
 		}
 		Arrays.sort(res);
 		return res;
+	}
+	
+	//比较含退格的字符串
+	@Test
+	public void test3() {
+		Assert.assertEquals(true, backspaceCompare("ab#c","ad#c"));
+		Assert.assertEquals(true, backspaceCompare("y#fo##f","y#f#o##f"));
+		Assert.assertEquals(false, backspaceCompare("abcd","bbcd"));
+	}
+	public boolean backspaceCompare(String S, String T) {
+	       Deque<Character> stack1 = new LinkedList<Character>();
+	       Deque<Character> stack2 = new LinkedList<Character>();
+	       for (int i=0;i<S.length();i++) {
+	    	   if (S.charAt(i) == '#' ) {
+	    		   if (stack1.size()>0) {
+	    			   stack1.pop();
+	    		   }
+	    	   } else {
+	    		   stack1.push(S.charAt(i));
+	    	   }
+	       }
+	       for (int i=0;i<T.length();i++) {
+	    	   if (T.charAt(i) == '#') {
+	    		   if (stack2.size()>0) {
+	    			   stack2.pop();
+	    		   }
+	    	   } else {
+	    		   stack2.push(T.charAt(i));
+	    	   }
+	       }
+	       if (stack1.size()!=stack2.size()) {
+	    	   return false;
+	       }
+	       int len = stack1.size();
+	       for (int i=0;i<len;i++) {
+	    	   if (stack1.pop()!=stack2.pop()) {
+	    		   return false;
+	    	   }
+	       }
+	       return true;
 	}
 }
