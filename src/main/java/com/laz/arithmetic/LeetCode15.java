@@ -103,6 +103,7 @@ public class LeetCode15 {
 	class Solution4 {
 		// 用集合存储所有正确的字符串，可避免重复
 		private Set<String> set = new HashSet<>();
+
 		public List<String> removeInvalidParentheses(String s) {
 			char[] ss = s.toCharArray();
 			int open = 0, close = 0;
@@ -162,4 +163,38 @@ public class LeetCode15 {
 		}
 	}
 
+	// 重排链表
+	@Test
+	public void test5() {
+		ListNode head = Utils.createListNode(new Integer[] {1,2,3,4,5,6});
+		reorderList(head);
+		Utils.printListNode(head);
+	}
+
+	public void reorderList(ListNode head) {
+		if (head==null) {
+			return;
+		}
+		ListNode p = head;
+		Deque<ListNode> stack = new LinkedList<ListNode>();
+		while (p.next!=null) {
+			stack.push(p);
+			p = p.next;
+		}
+		ListNode q = head;
+		while (q!=p && q.next!=p) {
+			ListNode tmp = q.next;
+			q.next=p;
+			q = tmp;
+			p.next = q;
+			p = stack.pop();
+		}
+		if (q==p) {
+			q.next = null;
+		}
+		if (q.next==p) {
+			q.next=p;
+			p.next=null;
+		}
+	}
 }
