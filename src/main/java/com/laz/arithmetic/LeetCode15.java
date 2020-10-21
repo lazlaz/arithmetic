@@ -3,9 +3,11 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -166,38 +168,39 @@ public class LeetCode15 {
 	// 重排链表
 	@Test
 	public void test5() {
-		ListNode head = Utils.createListNode(new Integer[] {1,2,3,4,5,6});
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4, 5, 6 });
 		reorderList(head);
 		Utils.printListNode(head);
 	}
 
 	public void reorderList(ListNode head) {
-		if (head==null) {
+		if (head == null) {
 			return;
 		}
 		ListNode p = head;
 		Deque<ListNode> stack = new LinkedList<ListNode>();
-		while (p.next!=null) {
+		while (p.next != null) {
 			stack.push(p);
 			p = p.next;
 		}
 		ListNode q = head;
-		while (q!=p && q.next!=p) {
+		while (q != p && q.next != p) {
 			ListNode tmp = q.next;
-			q.next=p;
+			q.next = p;
 			q = tmp;
 			p.next = q;
 			p = stack.pop();
 		}
-		if (q==p) {
+		if (q == p) {
 			q.next = null;
 		}
-		if (q.next==p) {
-			q.next=p;
-			p.next=null;
+		if (q.next == p) {
+			q.next = p;
+			p.next = null;
 		}
 	}
-	//长按键入
+
+	// 长按键入
 	@Test
 	public void test6() {
 		Assert.assertEquals(true, isLongPressedName("alex", "aaleex"));
@@ -206,36 +209,125 @@ public class LeetCode15 {
 		Assert.assertEquals(false, isLongPressedName("alex", "aal"));
 		Assert.assertEquals(false, isLongPressedName("dfuyalc", "fuuyallc"));
 	}
+
 	public boolean isLongPressedName(String name, String typed) {
-		if (typed==null || typed.length()==0) {
+		if (typed == null || typed.length() == 0) {
 			return false;
 		}
 		int p = 0;
 		int q = 0;
-		while (p<typed.length() && q<name.length()) {
+		while (p < typed.length() && q < name.length()) {
 			if (typed.charAt(p) == name.charAt(q)) {
 				p++;
 				q++;
-			} else if (p>0 && typed.charAt(p) == typed.charAt(p-1)) {
+			} else if (p > 0 && typed.charAt(p) == typed.charAt(p - 1)) {
 				p++;
-			} else if (p>0 && typed.charAt(p) != typed.charAt(p-1)) {
+			} else if (p > 0 && typed.charAt(p) != typed.charAt(p - 1)) {
 				return false;
-			}else if(typed.charAt(p) != name.charAt(q)) {
+			} else if (typed.charAt(p) != name.charAt(q)) {
 				return false;
 			}
 		}
-		if (p==typed.length() && q!=name.length()) {
+		if (p == typed.length() && q != name.length()) {
 			return false;
 		}
-		if (p!=typed.length() && q==name.length()) {
-			while (p<typed.length()) {
-				if (p>0 && typed.charAt(p) == typed.charAt(p-1)) {
+		if (p != typed.length() && q == name.length()) {
+			while (p < typed.length()) {
+				if (p > 0 && typed.charAt(p) == typed.charAt(p - 1)) {
 					p++;
-				}else {
+				} else {
 					return false;
 				}
 			}
 		}
 		return true;
-    }
+	}
+
+	// 除法求值
+	@Test
+	public void test7() {
+		List<List<String>> equations = new ArrayList<List<String>>();
+		equations.add(Arrays.asList("a", "b"));
+		equations.add(Arrays.asList("b", "c"));
+		equations.add(Arrays.asList("d", "a"));
+		double[] values = new double[] { 2.0, 3.0,2.0 };
+		List<List<String>> queries = new ArrayList<List<String>>();
+		queries.add(Arrays.asList("a", "c"));
+		queries.add(Arrays.asList("b", "a"));
+		queries.add(Arrays.asList("a", "e"));
+		queries.add(Arrays.asList("a", "a"));
+		queries.add(Arrays.asList("x", "x"));
+		queries.add(Arrays.asList("d", "b"));
+		double[] res = new Solution7().calcEquation(equations, values, queries);
+		for (double d : res) {
+			System.out.print(d + ",");
+		}
+	}
+	//https://leetcode-cn.com/problems/evaluate-division/solution/zhen-zheng-de-xiao-bai-du-neng-kan-dong-de-bing-ch/
+	class Solution7 {
+		Map<String, String> parents;
+		Map<String, Double> val;
+
+		public String find(String x) {
+
+			if (!x.equals(parents.get(x))) {
+				String tmpParent = parents.get(x);
+				String root = find(tmpParent);
+				double oldVal = val.get(x);
+				val.put(x, oldVal * val.get(tmpParent));
+				parents.put(x, root);
+			}
+			return parents.get(x);
+		}
+
+		public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+			parents = new HashMap<>();
+			val = new HashMap<>();
+			int i = 0;
+			for (List<String> equation : equations) {
+				String from = equation.get(0);
+				String to = equation.get(1);
+				double cur = values[i];
+				if (!parents.containsKey(from) && !parents.containsKey(to)) {
+					parents.put(from, to);
+					val.put(from, cur);
+					parents.put(to, to);
+					val.put(to, 1.0);
+				} else if (!parents.containsKey(from)) {
+					parents.put(from, to);
+					val.put(from, cur);
+				} else if (!parents.containsKey(to)) {
+					parents.put(to, from);
+					val.put(to, 1 / cur);
+				} else {
+					String pa = find(from);
+					String pb = find(to);
+					if (!pa.equals(pb)) {
+						parents.put(pa, pb);
+						val.put(pa, cur * val.get(to) / val.get(from));
+					}
+				}
+				i++;
+			}
+			i = 0;
+			double[] res = new double[queries.size()];
+			for (List<String> query : queries) {
+				String from = query.get(0);
+				String to = query.get(1);
+				if (!parents.containsKey(from) || !parents.containsKey(to)) {
+					res[i++] = -1;
+					continue;
+				}
+				String pa = find(from);
+				String pb = find(to);
+				if (!pa.equals(pb))
+					res[i] = -1;
+				else {
+					res[i] = val.get(from) / val.get(to);
+				}
+				i++;
+			}
+			return res;
+		}
+	}
 }
