@@ -33,6 +33,11 @@ public class UnionFind {
 		int firstRoot = find(firstElement);
 		int secondRoot = find(secondElement);
 
+		//如果已经属于同一个集合了，就不用再合并了。
+        if (firstRoot == secondRoot) {
+            return;
+        }
+        
 		if (height[firstRoot] < height[secondRoot]) {
 			parent[firstRoot] = secondRoot;
 		} else if (height[firstRoot] > height[secondRoot]) {
