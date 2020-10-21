@@ -197,4 +197,45 @@ public class LeetCode15 {
 			p.next=null;
 		}
 	}
+	//长按键入
+	@Test
+	public void test6() {
+		Assert.assertEquals(true, isLongPressedName("alex", "aaleex"));
+		Assert.assertEquals(false, isLongPressedName("saeed", "ssaaedd"));
+		Assert.assertEquals(false, isLongPressedName("alex", "aaleexaaaaaaa"));
+		Assert.assertEquals(false, isLongPressedName("alex", "aal"));
+		Assert.assertEquals(false, isLongPressedName("dfuyalc", "fuuyallc"));
+	}
+	public boolean isLongPressedName(String name, String typed) {
+		if (typed==null || typed.length()==0) {
+			return false;
+		}
+		int p = 0;
+		int q = 0;
+		while (p<typed.length() && q<name.length()) {
+			if (typed.charAt(p) == name.charAt(q)) {
+				p++;
+				q++;
+			} else if (p>0 && typed.charAt(p) == typed.charAt(p-1)) {
+				p++;
+			} else if (p>0 && typed.charAt(p) != typed.charAt(p-1)) {
+				return false;
+			}else if(typed.charAt(p) != name.charAt(q)) {
+				return false;
+			}
+		}
+		if (p==typed.length() && q!=name.length()) {
+			return false;
+		}
+		if (p!=typed.length() && q==name.length()) {
+			while (p<typed.length()) {
+				if (p>0 && typed.charAt(p) == typed.charAt(p-1)) {
+					p++;
+				}else {
+					return false;
+				}
+			}
+		}
+		return true;
+    }
 }
