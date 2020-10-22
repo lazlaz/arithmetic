@@ -330,4 +330,27 @@ public class LeetCode15 {
 			return res;
 		}
 	}
+	
+	//划分字母区间
+	@Test
+	public void test8() {
+		List<Integer> res = partitionLabels("ababcbacadefegdehijhklij");
+		System.out.println(Joiner.on(",").join(res));
+	}
+	public List<Integer> partitionLabels(String S) {
+		int[] last =new int[26];
+		for (int i=0;i<S.length();i++) {
+			last[S.charAt(i)-'a'] = i;
+		}
+		int start=0,end=0;
+		List<Integer> res = new ArrayList<Integer>();
+		for (int i=0;i<S.length();i++) {
+			 end = Math.max(end, last[S.charAt(i)-'a']);
+			if (i==end) {
+				res.add(end-start+1);
+				start = end+1;
+			}
+		}
+		return res;
+    }
 }
