@@ -353,4 +353,45 @@ public class LeetCode15 {
 		}
 		return res;
     }
+	
+	//根据身高重建队列
+	@Test
+	public void test9() {
+		Assert.assertArrayEquals(new int[][] {
+			{5,0},{7,0},{5,2},{6,1},{4,4},{7,1}
+		}, reconstructQueue(new int[][] {
+			{7,0},{4,4},{7,1},{5,0},{6,1},{5,2}
+		}));
+		Assert.assertArrayEquals(new int[][] {
+			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
+		}, reconstructQueue(new int[][] {
+			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
+		}));
+	}
+	//https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
+	public int[][] reconstructQueue(int[][] people) {
+		for (int i=0;i<people.length;i++) {
+			for (int j=0;j<people.length-i-1;j++) {
+				if (people[j][0] < people[j+1][0]) {
+					int[] temp = people[j];
+					people[j] = people[j+1];
+					people[j+1] = temp;
+				} else if (people[j][0] == people[j+1][0] && people[j][1] > people[j+1][1]) {
+					int[] temp = people[j];
+					people[j] = people[j+1];
+					people[j+1] = temp;
+				}
+			}
+		}
+		
+		List<int[]> list = new LinkedList<int[]>();
+		for (int i=0;i<people.length;i++) {
+			list.add(people[i][1], people[i]);
+		}
+		int[][] res = new int[people.length][2];
+		for (int i=0;i<people.length;i++) {
+			res[i] = list.get(i);
+		}
+		return res;
+     }
 }
