@@ -2,6 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -250,7 +253,7 @@ public class LeetCode15 {
 		equations.add(Arrays.asList("a", "b"));
 		equations.add(Arrays.asList("b", "c"));
 		equations.add(Arrays.asList("d", "a"));
-		double[] values = new double[] { 2.0, 3.0,2.0 };
+		double[] values = new double[] { 2.0, 3.0, 2.0 };
 		List<List<String>> queries = new ArrayList<List<String>>();
 		queries.add(Arrays.asList("a", "c"));
 		queries.add(Arrays.asList("b", "a"));
@@ -263,7 +266,8 @@ public class LeetCode15 {
 			System.out.print(d + ",");
 		}
 	}
-	//https://leetcode-cn.com/problems/evaluate-division/solution/zhen-zheng-de-xiao-bai-du-neng-kan-dong-de-bing-ch/
+
+	// https://leetcode-cn.com/problems/evaluate-division/solution/zhen-zheng-de-xiao-bai-du-neng-kan-dong-de-bing-ch/
 	class Solution7 {
 		Map<String, String> parents;
 		Map<String, Double> val;
@@ -330,68 +334,93 @@ public class LeetCode15 {
 			return res;
 		}
 	}
-	
-	//划分字母区间
+
+	// 划分字母区间
 	@Test
 	public void test8() {
 		List<Integer> res = partitionLabels("ababcbacadefegdehijhklij");
 		System.out.println(Joiner.on(",").join(res));
 	}
+
 	public List<Integer> partitionLabels(String S) {
-		int[] last =new int[26];
-		for (int i=0;i<S.length();i++) {
-			last[S.charAt(i)-'a'] = i;
+		int[] last = new int[26];
+		for (int i = 0; i < S.length(); i++) {
+			last[S.charAt(i) - 'a'] = i;
 		}
-		int start=0,end=0;
+		int start = 0, end = 0;
 		List<Integer> res = new ArrayList<Integer>();
-		for (int i=0;i<S.length();i++) {
-			 end = Math.max(end, last[S.charAt(i)-'a']);
-			if (i==end) {
-				res.add(end-start+1);
-				start = end+1;
+		for (int i = 0; i < S.length(); i++) {
+			end = Math.max(end, last[S.charAt(i) - 'a']);
+			if (i == end) {
+				res.add(end - start + 1);
+				start = end + 1;
 			}
 		}
 		return res;
-    }
-	
-	//根据身高重建队列
+	}
+
+	// 根据身高重建队列
 	@Test
 	public void test9() {
-		Assert.assertArrayEquals(new int[][] {
-			{5,0},{7,0},{5,2},{6,1},{4,4},{7,1}
-		}, reconstructQueue(new int[][] {
-			{7,0},{4,4},{7,1},{5,0},{6,1},{5,2}
-		}));
-		Assert.assertArrayEquals(new int[][] {
-			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
-		}, reconstructQueue(new int[][] {
-			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
-		}));
+		Assert.assertArrayEquals(new int[][] { { 5, 0 }, { 7, 0 }, { 5, 2 }, { 6, 1 }, { 4, 4 }, { 7, 1 } },
+				reconstructQueue(new int[][] { { 7, 0 }, { 4, 4 }, { 7, 1 }, { 5, 0 }, { 6, 1 }, { 5, 2 } }));
+		Assert.assertArrayEquals(new int[][] { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 } },
+				reconstructQueue(new int[][] { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 } }));
 	}
-	//https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
+
+	// https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
 	public int[][] reconstructQueue(int[][] people) {
-		for (int i=0;i<people.length;i++) {
-			for (int j=0;j<people.length-i-1;j++) {
-				if (people[j][0] < people[j+1][0]) {
+		for (int i = 0; i < people.length; i++) {
+			for (int j = 0; j < people.length - i - 1; j++) {
+				if (people[j][0] < people[j + 1][0]) {
 					int[] temp = people[j];
-					people[j] = people[j+1];
-					people[j+1] = temp;
-				} else if (people[j][0] == people[j+1][0] && people[j][1] > people[j+1][1]) {
+					people[j] = people[j + 1];
+					people[j + 1] = temp;
+				} else if (people[j][0] == people[j + 1][0] && people[j][1] > people[j + 1][1]) {
 					int[] temp = people[j];
-					people[j] = people[j+1];
-					people[j+1] = temp;
+					people[j] = people[j + 1];
+					people[j + 1] = temp;
 				}
 			}
 		}
-		
+
 		List<int[]> list = new LinkedList<int[]>();
-		for (int i=0;i<people.length;i++) {
+		for (int i = 0; i < people.length; i++) {
 			list.add(people[i][1], people[i]);
 		}
 		int[][] res = new int[people.length][2];
-		for (int i=0;i<people.length;i++) {
+		for (int i = 0; i < people.length; i++) {
 			res[i] = list.get(i);
 		}
 		return res;
-     }
+	}
+
+	// 视频拼接
+	@Test
+	public void test10() {
+		Assert.assertEquals(3,
+				videoStitching(new int[][] { { 0, 2 }, { 4, 6 }, { 8, 10 }, { 1, 9 }, { 1, 5 }, { 5, 9 } }, 10));
+	}
+	//https://leetcode-cn.com/problems/video-stitching/solution/shi-pin-pin-jie-by-leetcode-solution/
+	public int videoStitching(int[][] clips, int T) {
+		int[] maxn = new int[T];
+        int last = 0, ret = 0, pre = 0;
+        for (int[] clip : clips) {
+            if (clip[0] < T) {
+                maxn[clip[0]] = Math.max(maxn[clip[0]], clip[1]);
+            }
+        }
+        for (int i = 0; i < T; i++) {
+            last = Math.max(last, maxn[i]);
+            if (i == last) {
+                return -1;
+            }
+            if (i == pre) {
+                ret++;
+                pre = last;
+            }
+        }
+        return ret;
+	}
 }
+ 
