@@ -469,6 +469,41 @@ public class LeetCode15 {
 		}
 	}
 
-	
+	//数组中的最长山脉
+	@Test
+	public void test12() {
+		//Assert.assertEquals(5, longestMountain(new int[] {2,1,4,7,3,2,5}));
+		
+//		Assert.assertEquals(0, longestMountain(new int[] {2,2,2}));
+//		Assert.assertEquals(0, longestMountain(new int[] {2,3}));
+		
+	//	Assert.assertEquals(11, longestMountain(new int[] {0,1,2,3,4,5,4,3,2,1,0}));
+		Assert.assertEquals(0, longestMountain(new int[] {0,1,2,3,4,5}));
+		Assert.assertEquals(3, longestMountain(new int[] {0,1,0,2,2}));
+	}
+	//https://leetcode-cn.com/problems/longest-mountain-in-array/solution/shu-zu-zhong-de-zui-chang-shan-mai-by-leetcode-sol/
+	 public int longestMountain(int[] A) {
+	        int n = A.length;
+	        if (n == 0) {
+	            return 0;
+	        }
+	        int[] left = new int[n];
+	        for (int i = 1; i < n; ++i) {
+	            left[i] = A[i - 1] < A[i] ? left[i - 1] + 1 : 0;
+	        }
+	        int[] right = new int[n];
+	        for (int i = n - 2; i >= 0; --i) {
+	            right[i] = A[i + 1] < A[i] ? right[i + 1] + 1 : 0;
+	        }
+
+	        int ans = 0;
+	        for (int i = 0; i < n; ++i) {
+	            if (left[i] > 0 && right[i] > 0) {
+	                ans = Math.max(ans, left[i] + right[i] + 1);
+	            }
+	        }
+	        return ans;
+	}
+
 }
  
