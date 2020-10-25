@@ -394,7 +394,7 @@ public class LeetCode15 {
 		}
 		return res;
 	}
-
+	
 	// 视频拼接
 	@Test
 	public void test10() {
@@ -422,5 +422,53 @@ public class LeetCode15 {
         }
         return ret;
 	}
+	
+	//路径总和 III
+	@Test
+	public void test11() {
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {5,4,8,11,null,13,4,7,2,null,null,5,1});
+//			Assert.assertEquals(3, pathSum(root,22));
+//		}
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {1});
+//			Assert.assertEquals(0, pathSum(root,0));
+//		}
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {-2,null,-3});
+//			Assert.assertEquals(1, pathSum(root,-3));
+//		}
+		{
+			TreeNode root = Utils.createTree(new Integer[] {0,1,1});
+			Assert.assertEquals(4, new Solution11().pathSum(root,1));
+		}
+	}
+	class Solution11 {
+		int ans = 0;
+		//https://leetcode-cn.com/problems/path-sum-iii/solution/437-lu-jing-zong-he-iiishuang-zhong-dfs-by-sunny_s/
+		public int pathSum(TreeNode root, int sum) {
+			if (root==null) {
+				return ans;
+			}
+			dfs(root,sum);
+			pathSum(root.left,sum);
+			pathSum(root.right,sum);
+			return ans;
+		}
+		
+		private void dfs(TreeNode root,int sum) {
+			if (root==null) {
+				return;
+			}
+			sum = sum-root.val;
+			if (sum==0) {
+				ans++;
+			}
+			dfs(root.left,sum);
+			dfs(root.right,sum);
+		}
+	}
+
+	
 }
  
