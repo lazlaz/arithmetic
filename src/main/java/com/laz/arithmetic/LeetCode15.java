@@ -2,7 +2,6 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -11,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -394,36 +394,37 @@ public class LeetCode15 {
 		}
 		return res;
 	}
-	
+
 	// 视频拼接
 	@Test
 	public void test10() {
 		Assert.assertEquals(3,
 				videoStitching(new int[][] { { 0, 2 }, { 4, 6 }, { 8, 10 }, { 1, 9 }, { 1, 5 }, { 5, 9 } }, 10));
 	}
-	//https://leetcode-cn.com/problems/video-stitching/solution/shi-pin-pin-jie-by-leetcode-solution/
+
+	// https://leetcode-cn.com/problems/video-stitching/solution/shi-pin-pin-jie-by-leetcode-solution/
 	public int videoStitching(int[][] clips, int T) {
 		int[] maxn = new int[T];
-        int last = 0, ret = 0, pre = 0;
-        for (int[] clip : clips) {
-            if (clip[0] < T) {
-                maxn[clip[0]] = Math.max(maxn[clip[0]], clip[1]);
-            }
-        }
-        for (int i = 0; i < T; i++) {
-            last = Math.max(last, maxn[i]);
-            if (i == last) {
-                return -1;
-            }
-            if (i == pre) {
-                ret++;
-                pre = last;
-            }
-        }
-        return ret;
+		int last = 0, ret = 0, pre = 0;
+		for (int[] clip : clips) {
+			if (clip[0] < T) {
+				maxn[clip[0]] = Math.max(maxn[clip[0]], clip[1]);
+			}
+		}
+		for (int i = 0; i < T; i++) {
+			last = Math.max(last, maxn[i]);
+			if (i == last) {
+				return -1;
+			}
+			if (i == pre) {
+				ret++;
+				pre = last;
+			}
+		}
+		return ret;
 	}
-	
-	//路径总和 III
+
+	// 路径总和 III
 	@Test
 	public void test11() {
 //		{
@@ -439,71 +440,117 @@ public class LeetCode15 {
 //			Assert.assertEquals(1, pathSum(root,-3));
 //		}
 		{
-			TreeNode root = Utils.createTree(new Integer[] {0,1,1});
-			Assert.assertEquals(4, new Solution11().pathSum(root,1));
+			TreeNode root = Utils.createTree(new Integer[] { 0, 1, 1 });
+			Assert.assertEquals(4, new Solution11().pathSum(root, 1));
 		}
 	}
+
 	class Solution11 {
 		int ans = 0;
-		//https://leetcode-cn.com/problems/path-sum-iii/solution/437-lu-jing-zong-he-iiishuang-zhong-dfs-by-sunny_s/
+
+		// https://leetcode-cn.com/problems/path-sum-iii/solution/437-lu-jing-zong-he-iiishuang-zhong-dfs-by-sunny_s/
 		public int pathSum(TreeNode root, int sum) {
-			if (root==null) {
+			if (root == null) {
 				return ans;
 			}
-			dfs(root,sum);
-			pathSum(root.left,sum);
-			pathSum(root.right,sum);
+			dfs(root, sum);
+			pathSum(root.left, sum);
+			pathSum(root.right, sum);
 			return ans;
 		}
-		
-		private void dfs(TreeNode root,int sum) {
-			if (root==null) {
+
+		private void dfs(TreeNode root, int sum) {
+			if (root == null) {
 				return;
 			}
-			sum = sum-root.val;
-			if (sum==0) {
+			sum = sum - root.val;
+			if (sum == 0) {
 				ans++;
 			}
-			dfs(root.left,sum);
-			dfs(root.right,sum);
+			dfs(root.left, sum);
+			dfs(root.right, sum);
 		}
 	}
 
-	//数组中的最长山脉
+	// 数组中的最长山脉
 	@Test
 	public void test12() {
-		//Assert.assertEquals(5, longestMountain(new int[] {2,1,4,7,3,2,5}));
-		
+		// Assert.assertEquals(5, longestMountain(new int[] {2,1,4,7,3,2,5}));
+
 //		Assert.assertEquals(0, longestMountain(new int[] {2,2,2}));
 //		Assert.assertEquals(0, longestMountain(new int[] {2,3}));
-		
-	//	Assert.assertEquals(11, longestMountain(new int[] {0,1,2,3,4,5,4,3,2,1,0}));
-		Assert.assertEquals(0, longestMountain(new int[] {0,1,2,3,4,5}));
-		Assert.assertEquals(3, longestMountain(new int[] {0,1,0,2,2}));
-	}
-	//https://leetcode-cn.com/problems/longest-mountain-in-array/solution/shu-zu-zhong-de-zui-chang-shan-mai-by-leetcode-sol/
-	 public int longestMountain(int[] A) {
-	        int n = A.length;
-	        if (n == 0) {
-	            return 0;
-	        }
-	        int[] left = new int[n];
-	        for (int i = 1; i < n; ++i) {
-	            left[i] = A[i - 1] < A[i] ? left[i - 1] + 1 : 0;
-	        }
-	        int[] right = new int[n];
-	        for (int i = n - 2; i >= 0; --i) {
-	            right[i] = A[i + 1] < A[i] ? right[i + 1] + 1 : 0;
-	        }
 
-	        int ans = 0;
-	        for (int i = 0; i < n; ++i) {
-	            if (left[i] > 0 && right[i] > 0) {
-	                ans = Math.max(ans, left[i] + right[i] + 1);
-	            }
-	        }
-	        return ans;
+		// Assert.assertEquals(11, longestMountain(new int[] {0,1,2,3,4,5,4,3,2,1,0}));
+		Assert.assertEquals(0, longestMountain(new int[] { 0, 1, 2, 3, 4, 5 }));
+		Assert.assertEquals(3, longestMountain(new int[] { 0, 1, 0, 2, 2 }));
+	}
+
+	// https://leetcode-cn.com/problems/longest-mountain-in-array/solution/shu-zu-zhong-de-zui-chang-shan-mai-by-leetcode-sol/
+	public int longestMountain(int[] A) {
+		int n = A.length;
+		if (n == 0) {
+			return 0;
+		}
+		int[] left = new int[n];
+		for (int i = 1; i < n; ++i) {
+			left[i] = A[i - 1] < A[i] ? left[i - 1] + 1 : 0;
+		}
+		int[] right = new int[n];
+		for (int i = n - 2; i >= 0; --i) {
+			right[i] = A[i + 1] < A[i] ? right[i + 1] + 1 : 0;
+		}
+
+		int ans = 0;
+		for (int i = 0; i < n; ++i) {
+			if (left[i] > 0 && right[i] > 0) {
+				ans = Math.max(ans, left[i] + right[i] + 1);
+			}
+		}
+		return ans;
+	}
+
+	// 有多少小于当前数字的数字
+	@Test
+	public void test13() {
+		Assert.assertArrayEquals(new int[] { 4, 0, 1, 1, 3 }, smallerNumbersThanCurrent(new int[] { 8, 1, 2, 2, 3 }));
+		Assert.assertArrayEquals(new int[] { 0,0,0,0 }, smallerNumbersThanCurrent(new int[] {7,7,7,7 }));
+		Assert.assertArrayEquals(new int[] { 2,1,0,3 }, smallerNumbersThanCurrent(new int[] {6,5,4,8 }));
+	}
+
+	public int[] smallerNumbersThanCurrent(int[] nums) {
+		int[] res = new int[nums.length];
+		if (nums == null || nums.length == 0) {
+			return res;
+		}
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums.length; i++) {
+			map.put(i, nums[i]);
+		}
+		// 自定义比较器
+		Comparator<Map.Entry<Integer, Integer>> valCmp = new Comparator<Map.Entry<Integer, Integer>>() {
+			@Override
+			public int compare(Entry<Integer, Integer> o1, Entry<Integer, Integer> o2) {
+				return o1.getValue() - o2.getValue(); // 降序排序，如果想升序就反过来
+			}
+		};
+		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
+		Collections.sort(list, valCmp);
+
+		for (int i = 0; i < list.size(); i++) {
+			Map.Entry<Integer, Integer> v = list.get(i);
+			//排除相等的情况
+			int index =i;
+			while(index>0) {
+				Map.Entry<Integer, Integer> v2 = list.get(index-1);
+				if (v.getValue()==v2.getValue()) {
+					index--;
+				} else {
+					break;
+				}
+			}
+			res[v.getKey()] = index;
+		}
+		return res;
 	}
 
 }
- 
