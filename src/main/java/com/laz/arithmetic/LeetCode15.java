@@ -2,6 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -250,7 +253,7 @@ public class LeetCode15 {
 		equations.add(Arrays.asList("a", "b"));
 		equations.add(Arrays.asList("b", "c"));
 		equations.add(Arrays.asList("d", "a"));
-		double[] values = new double[] { 2.0, 3.0,2.0 };
+		double[] values = new double[] { 2.0, 3.0, 2.0 };
 		List<List<String>> queries = new ArrayList<List<String>>();
 		queries.add(Arrays.asList("a", "c"));
 		queries.add(Arrays.asList("b", "a"));
@@ -263,7 +266,8 @@ public class LeetCode15 {
 			System.out.print(d + ",");
 		}
 	}
-	//https://leetcode-cn.com/problems/evaluate-division/solution/zhen-zheng-de-xiao-bai-du-neng-kan-dong-de-bing-ch/
+
+	// https://leetcode-cn.com/problems/evaluate-division/solution/zhen-zheng-de-xiao-bai-du-neng-kan-dong-de-bing-ch/
 	class Solution7 {
 		Map<String, String> parents;
 		Map<String, Double> val;
@@ -330,68 +334,176 @@ public class LeetCode15 {
 			return res;
 		}
 	}
-	
-	//划分字母区间
+
+	// 划分字母区间
 	@Test
 	public void test8() {
 		List<Integer> res = partitionLabels("ababcbacadefegdehijhklij");
 		System.out.println(Joiner.on(",").join(res));
 	}
+
 	public List<Integer> partitionLabels(String S) {
-		int[] last =new int[26];
-		for (int i=0;i<S.length();i++) {
-			last[S.charAt(i)-'a'] = i;
+		int[] last = new int[26];
+		for (int i = 0; i < S.length(); i++) {
+			last[S.charAt(i) - 'a'] = i;
 		}
-		int start=0,end=0;
+		int start = 0, end = 0;
 		List<Integer> res = new ArrayList<Integer>();
-		for (int i=0;i<S.length();i++) {
-			 end = Math.max(end, last[S.charAt(i)-'a']);
-			if (i==end) {
-				res.add(end-start+1);
-				start = end+1;
+		for (int i = 0; i < S.length(); i++) {
+			end = Math.max(end, last[S.charAt(i) - 'a']);
+			if (i == end) {
+				res.add(end - start + 1);
+				start = end + 1;
 			}
 		}
 		return res;
-    }
-	
-	//根据身高重建队列
+	}
+
+	// 根据身高重建队列
 	@Test
 	public void test9() {
-		Assert.assertArrayEquals(new int[][] {
-			{5,0},{7,0},{5,2},{6,1},{4,4},{7,1}
-		}, reconstructQueue(new int[][] {
-			{7,0},{4,4},{7,1},{5,0},{6,1},{5,2}
-		}));
-		Assert.assertArrayEquals(new int[][] {
-			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
-		}, reconstructQueue(new int[][] {
-			{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0}
-		}));
+		Assert.assertArrayEquals(new int[][] { { 5, 0 }, { 7, 0 }, { 5, 2 }, { 6, 1 }, { 4, 4 }, { 7, 1 } },
+				reconstructQueue(new int[][] { { 7, 0 }, { 4, 4 }, { 7, 1 }, { 5, 0 }, { 6, 1 }, { 5, 2 } }));
+		Assert.assertArrayEquals(new int[][] { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 } },
+				reconstructQueue(new int[][] { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 } }));
 	}
-	//https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
+
+	// https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
 	public int[][] reconstructQueue(int[][] people) {
-		for (int i=0;i<people.length;i++) {
-			for (int j=0;j<people.length-i-1;j++) {
-				if (people[j][0] < people[j+1][0]) {
+		for (int i = 0; i < people.length; i++) {
+			for (int j = 0; j < people.length - i - 1; j++) {
+				if (people[j][0] < people[j + 1][0]) {
 					int[] temp = people[j];
-					people[j] = people[j+1];
-					people[j+1] = temp;
-				} else if (people[j][0] == people[j+1][0] && people[j][1] > people[j+1][1]) {
+					people[j] = people[j + 1];
+					people[j + 1] = temp;
+				} else if (people[j][0] == people[j + 1][0] && people[j][1] > people[j + 1][1]) {
 					int[] temp = people[j];
-					people[j] = people[j+1];
-					people[j+1] = temp;
+					people[j] = people[j + 1];
+					people[j + 1] = temp;
 				}
 			}
 		}
-		
+
 		List<int[]> list = new LinkedList<int[]>();
-		for (int i=0;i<people.length;i++) {
+		for (int i = 0; i < people.length; i++) {
 			list.add(people[i][1], people[i]);
 		}
 		int[][] res = new int[people.length][2];
-		for (int i=0;i<people.length;i++) {
+		for (int i = 0; i < people.length; i++) {
 			res[i] = list.get(i);
 		}
 		return res;
-     }
+	}
+	
+	// 视频拼接
+	@Test
+	public void test10() {
+		Assert.assertEquals(3,
+				videoStitching(new int[][] { { 0, 2 }, { 4, 6 }, { 8, 10 }, { 1, 9 }, { 1, 5 }, { 5, 9 } }, 10));
+	}
+	//https://leetcode-cn.com/problems/video-stitching/solution/shi-pin-pin-jie-by-leetcode-solution/
+	public int videoStitching(int[][] clips, int T) {
+		int[] maxn = new int[T];
+        int last = 0, ret = 0, pre = 0;
+        for (int[] clip : clips) {
+            if (clip[0] < T) {
+                maxn[clip[0]] = Math.max(maxn[clip[0]], clip[1]);
+            }
+        }
+        for (int i = 0; i < T; i++) {
+            last = Math.max(last, maxn[i]);
+            if (i == last) {
+                return -1;
+            }
+            if (i == pre) {
+                ret++;
+                pre = last;
+            }
+        }
+        return ret;
+	}
+	
+	//路径总和 III
+	@Test
+	public void test11() {
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {5,4,8,11,null,13,4,7,2,null,null,5,1});
+//			Assert.assertEquals(3, pathSum(root,22));
+//		}
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {1});
+//			Assert.assertEquals(0, pathSum(root,0));
+//		}
+//		{
+//			TreeNode root = Utils.createTree(new Integer[] {-2,null,-3});
+//			Assert.assertEquals(1, pathSum(root,-3));
+//		}
+		{
+			TreeNode root = Utils.createTree(new Integer[] {0,1,1});
+			Assert.assertEquals(4, new Solution11().pathSum(root,1));
+		}
+	}
+	class Solution11 {
+		int ans = 0;
+		//https://leetcode-cn.com/problems/path-sum-iii/solution/437-lu-jing-zong-he-iiishuang-zhong-dfs-by-sunny_s/
+		public int pathSum(TreeNode root, int sum) {
+			if (root==null) {
+				return ans;
+			}
+			dfs(root,sum);
+			pathSum(root.left,sum);
+			pathSum(root.right,sum);
+			return ans;
+		}
+		
+		private void dfs(TreeNode root,int sum) {
+			if (root==null) {
+				return;
+			}
+			sum = sum-root.val;
+			if (sum==0) {
+				ans++;
+			}
+			dfs(root.left,sum);
+			dfs(root.right,sum);
+		}
+	}
+
+	//数组中的最长山脉
+	@Test
+	public void test12() {
+		//Assert.assertEquals(5, longestMountain(new int[] {2,1,4,7,3,2,5}));
+		
+//		Assert.assertEquals(0, longestMountain(new int[] {2,2,2}));
+//		Assert.assertEquals(0, longestMountain(new int[] {2,3}));
+		
+	//	Assert.assertEquals(11, longestMountain(new int[] {0,1,2,3,4,5,4,3,2,1,0}));
+		Assert.assertEquals(0, longestMountain(new int[] {0,1,2,3,4,5}));
+		Assert.assertEquals(3, longestMountain(new int[] {0,1,0,2,2}));
+	}
+	//https://leetcode-cn.com/problems/longest-mountain-in-array/solution/shu-zu-zhong-de-zui-chang-shan-mai-by-leetcode-sol/
+	 public int longestMountain(int[] A) {
+	        int n = A.length;
+	        if (n == 0) {
+	            return 0;
+	        }
+	        int[] left = new int[n];
+	        for (int i = 1; i < n; ++i) {
+	            left[i] = A[i - 1] < A[i] ? left[i - 1] + 1 : 0;
+	        }
+	        int[] right = new int[n];
+	        for (int i = n - 2; i >= 0; --i) {
+	            right[i] = A[i + 1] < A[i] ? right[i + 1] + 1 : 0;
+	        }
+
+	        int ans = 0;
+	        for (int i = 0; i < n; ++i) {
+	            if (left[i] > 0 && right[i] > 0) {
+	                ans = Math.max(ans, left[i] + right[i] + 1);
+	            }
+	        }
+	        return ans;
+	}
+
 }
+ 
