@@ -552,5 +552,24 @@ public class LeetCode15 {
 		}
 		return res;
 	}
-
+	
+	//二叉树的前序遍历
+	@Test
+	public void test14() {
+		TreeNode root = Utils.createTree(new Integer[] {1,null,2,3});
+		List<Integer> res = new Solution14().preorderTraversal(root);
+		System.out.println(Joiner.on(",").join(res));
+	}
+	class Solution14 {
+		List<Integer> res = new ArrayList<Integer>();
+		public List<Integer> preorderTraversal(TreeNode root) {
+			if (root==null) {
+				return res;
+			}
+			res.add(root.val);
+			preorderTraversal(root.left);
+			preorderTraversal(root.right);
+			return res;
+		}
+	}
 }
