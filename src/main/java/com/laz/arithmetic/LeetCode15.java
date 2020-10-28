@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -513,8 +514,8 @@ public class LeetCode15 {
 	@Test
 	public void test13() {
 		Assert.assertArrayEquals(new int[] { 4, 0, 1, 1, 3 }, smallerNumbersThanCurrent(new int[] { 8, 1, 2, 2, 3 }));
-		Assert.assertArrayEquals(new int[] { 0,0,0,0 }, smallerNumbersThanCurrent(new int[] {7,7,7,7 }));
-		Assert.assertArrayEquals(new int[] { 2,1,0,3 }, smallerNumbersThanCurrent(new int[] {6,5,4,8 }));
+		Assert.assertArrayEquals(new int[] { 0, 0, 0, 0 }, smallerNumbersThanCurrent(new int[] { 7, 7, 7, 7 }));
+		Assert.assertArrayEquals(new int[] { 2, 1, 0, 3 }, smallerNumbersThanCurrent(new int[] { 6, 5, 4, 8 }));
 	}
 
 	public int[] smallerNumbersThanCurrent(int[] nums) {
@@ -538,11 +539,11 @@ public class LeetCode15 {
 
 		for (int i = 0; i < list.size(); i++) {
 			Map.Entry<Integer, Integer> v = list.get(i);
-			//排除相等的情况
-			int index =i;
-			while(index>0) {
-				Map.Entry<Integer, Integer> v2 = list.get(index-1);
-				if (v.getValue()==v2.getValue()) {
+			// 排除相等的情况
+			int index = i;
+			while (index > 0) {
+				Map.Entry<Integer, Integer> v2 = list.get(index - 1);
+				if (v.getValue() == v2.getValue()) {
 					index--;
 				} else {
 					break;
@@ -552,18 +553,20 @@ public class LeetCode15 {
 		}
 		return res;
 	}
-	
-	//二叉树的前序遍历
+
+	// 二叉树的前序遍历
 	@Test
 	public void test14() {
-		TreeNode root = Utils.createTree(new Integer[] {1,null,2,3});
+		TreeNode root = Utils.createTree(new Integer[] { 1, null, 2, 3 });
 		List<Integer> res = new Solution14().preorderTraversal(root);
 		System.out.println(Joiner.on(",").join(res));
 	}
+
 	class Solution14 {
 		List<Integer> res = new ArrayList<Integer>();
+
 		public List<Integer> preorderTraversal(TreeNode root) {
-			if (root==null) {
+			if (root == null) {
 				return res;
 			}
 			res.add(root.val);
@@ -571,5 +574,32 @@ public class LeetCode15 {
 			preorderTraversal(root.right);
 			return res;
 		}
+	}
+
+	// 独一无二的出现次数
+	@Test
+	public void test15() {
+		Assert.assertEquals(true, uniqueOccurrences(new int[] { 1, 2, 2, 1, 1, 3 }));
+		Assert.assertEquals(false, uniqueOccurrences(new int[] { 1, 2}));
+		Assert.assertEquals(true, uniqueOccurrences(new int[] { -3,0,1,-3,1,1,1,-3,10,0}));
+	}
+
+	public boolean uniqueOccurrences(int[] arr) {
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < arr.length; i++) {
+			Integer count = map.getOrDefault(arr[i], 0);
+			map.put(arr[i], (++count));
+		}
+		Collection<Integer> collection   = map.values();
+		List<Integer>   list   =    new  ArrayList<Integer>(collection);
+		Collections.sort(list);
+		if (list.size()>1) {
+			for (int i=1;i<list.size();i++) {
+				if (list.get(i)==list.get(i-1)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
