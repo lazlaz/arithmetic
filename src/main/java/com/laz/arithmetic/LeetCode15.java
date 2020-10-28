@@ -580,8 +580,8 @@ public class LeetCode15 {
 	@Test
 	public void test15() {
 		Assert.assertEquals(true, uniqueOccurrences(new int[] { 1, 2, 2, 1, 1, 3 }));
-		Assert.assertEquals(false, uniqueOccurrences(new int[] { 1, 2}));
-		Assert.assertEquals(true, uniqueOccurrences(new int[] { -3,0,1,-3,1,1,1,-3,10,0}));
+		Assert.assertEquals(false, uniqueOccurrences(new int[] { 1, 2 }));
+		Assert.assertEquals(true, uniqueOccurrences(new int[] { -3, 0, 1, -3, 1, 1, 1, -3, 10, 0 }));
 	}
 
 	public boolean uniqueOccurrences(int[] arr) {
@@ -590,49 +590,81 @@ public class LeetCode15 {
 			Integer count = map.getOrDefault(arr[i], 0);
 			map.put(arr[i], (++count));
 		}
-		Collection<Integer> collection   = map.values();
-		List<Integer>   list   =    new  ArrayList<Integer>(collection);
+		Collection<Integer> collection = map.values();
+		List<Integer> list = new ArrayList<Integer>(collection);
 		Collections.sort(list);
-		if (list.size()>1) {
-			for (int i=1;i<list.size();i++) {
-				if (list.get(i)==list.get(i-1)) {
+		if (list.size() > 1) {
+			for (int i = 1; i < list.size(); i++) {
+				if (list.get(i) == list.get(i - 1)) {
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
-	//目标和
+
+	// 目标和
 	@Test
 	public void test16() {
-		//Assert.assertEquals(5, new Solution16().findTargetSumWays(new int[] {1, 1, 1, 1, 1}, 3));
-		Assert.assertEquals(5699, new Solution16().findTargetSumWays(new int[] {25,29,23,21,45,36,16,35,13,39,44,15,16,14,45,23,50,43,9,15}, 32));
+		// Assert.assertEquals(5, new Solution16().findTargetSumWays(new int[] {1, 1, 1,
+		// 1, 1}, 3));
+		Assert.assertEquals(5699, new Solution16().findTargetSumWays(
+				new int[] { 25, 29, 23, 21, 45, 36, 16, 35, 13, 39, 44, 15, 16, 14, 45, 23, 50, 43, 9, 15 }, 32));
 	}
-	class Solution16{
-		private int res=0;
+
+	class Solution16 {
+		private int res = 0;
+
 		public int findTargetSumWays(int[] nums, int S) {
-			dfs(nums,0,'+',S,0);
-			dfs(nums,0,'-',S,0);
+			dfs(nums, 0, '+', S, 0);
+			dfs(nums, 0, '-', S, 0);
 			return res;
 		}
 
 		private void dfs(int[] nums, int index, char op, int S, int sum) {
-			if (op=='+') {
+			if (op == '+') {
 				sum += nums[index];
 			}
-			if (op=='-') {
+			if (op == '-') {
 				sum -= nums[index];
 			}
-			if (index >= (nums.length-1)) {
-				if (sum==S) {
+			if (index >= (nums.length - 1)) {
+				if (sum == S) {
 					res++;
 				}
 				return;
 			}
 			index++;
-			dfs(nums,index,'+',S,sum);
-			dfs(nums,index,'-',S,sum);
+			dfs(nums, index, '+', S, sum);
+			dfs(nums, index, '-', S, sum);
+		}
+	}
+
+	// 二叉树的直径
+	@Test
+	public void test17() {
+		//Assert.assertEquals(3, new Solution17().diameterOfBinaryTree(Utils.createTree(new Integer[] { 1, 2, 3, 4, 5 })));
+		
+		Assert.assertEquals(8, new Solution17().diameterOfBinaryTree(Utils.createTree(new Integer[] { 4,-7,-3,null,null,-9,-3,9,-7,-4,null,6,null,-6,-6,null,null,0,6,5,null,9,null,null,-1,-4,null,null,null,-2})));
+	}
+	
+	//https://leetcode-cn.com/problems/diameter-of-binary-tree/solution/hot-100-9er-cha-shu-de-zhi-jing-python3-di-gui-ye-/
+	class Solution17{
+		int max = 0;
+		public int diameterOfBinaryTree(TreeNode root) {
+			depth(root);
+			return max;
+		}
+			
+		private int depth(TreeNode node) {
+			if (node==null) {
+				return 0;
+			}
+			int l = depth(node.left);
+			int r =depth(node.right);
+			//每个结点都要去判断左子树+右子树的高度是否大于self.max，更新最大值
+			max = Math.max(max, l+r);
+			return Math.max(l,r)+1;
 		}
 	}
 }
