@@ -602,4 +602,37 @@ public class LeetCode15 {
 		}
 		return true;
 	}
+	
+	//目标和
+	@Test
+	public void test16() {
+		//Assert.assertEquals(5, new Solution16().findTargetSumWays(new int[] {1, 1, 1, 1, 1}, 3));
+		Assert.assertEquals(5699, new Solution16().findTargetSumWays(new int[] {25,29,23,21,45,36,16,35,13,39,44,15,16,14,45,23,50,43,9,15}, 32));
+	}
+	class Solution16{
+		private int res=0;
+		public int findTargetSumWays(int[] nums, int S) {
+			dfs(nums,0,'+',S,0);
+			dfs(nums,0,'-',S,0);
+			return res;
+		}
+
+		private void dfs(int[] nums, int index, char op, int S, int sum) {
+			if (op=='+') {
+				sum += nums[index];
+			}
+			if (op=='-') {
+				sum -= nums[index];
+			}
+			if (index >= (nums.length-1)) {
+				if (sum==S) {
+					res++;
+				}
+				return;
+			}
+			index++;
+			dfs(nums,index,'+',S,sum);
+			dfs(nums,index,'-',S,sum);
+		}
+	}
 }
