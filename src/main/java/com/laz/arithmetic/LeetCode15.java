@@ -746,4 +746,35 @@ public class LeetCode15 {
 		return (end - start >= 0 ? end - start + 1 : 0);
 
 	}
+
+	// 任务调度器
+	@Test
+	public void test20() {
+		Assert.assertEquals(8, leastInterval(new char[] {
+				'A','A','A','B','B','B'
+		},2)); 
+	}
+	//https://leetcode-cn.com/problems/task-scheduler/solution/ren-wu-diao-du-qi-by-leetcode/
+	public int leastInterval(char[] tasks, int n) {
+		int[] map = new int[26];
+        for (char c: tasks) {
+            map[c - 'A']++;
+        }
+        Arrays.sort(map);
+        int time = 0;
+        while (map[25] > 0) {
+            int i = 0;
+            while (i <= n) {
+            	//说明已经没有任务了
+                if (map[25] == 0)
+                    break;
+                if (i < 26 && map[25 - i] > 0)
+                    map[25 - i]--;
+                time++;
+                i++;
+            }
+            Arrays.sort(map);
+        }
+        return time;
+	}
 }
