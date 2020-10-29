@@ -679,43 +679,71 @@ public class LeetCode15 {
 	public void test18() {
 		Assert.assertEquals(1026, new Solution18().sumNumbers(Utils.createTree(new Integer[] { 4, 9, 0, 5, 1 })));
 	}
-	class Solution18_2{
-		    public int sumNumbers(TreeNode root) {
-		        return dfs(root, 0);
-		    }
 
-		    public int dfs(TreeNode root, int prevSum) {
-		        if (root == null) {
-		            return 0;
-		        }
-		        int sum = prevSum * 10 + root.val;
-		        if (root.left == null && root.right == null) {
-		            return sum;
-		        } else {
-		            return dfs(root.left, sum) + dfs(root.right, sum);
-		        }
-		    }
-	}
-	class Solution18{
-		private int res;
+	class Solution18_2 {
 		public int sumNumbers(TreeNode root) {
-			dfs(root,"");
+			return dfs(root, 0);
+		}
+
+		public int dfs(TreeNode root, int prevSum) {
+			if (root == null) {
+				return 0;
+			}
+			int sum = prevSum * 10 + root.val;
+			if (root.left == null && root.right == null) {
+				return sum;
+			} else {
+				return dfs(root.left, sum) + dfs(root.right, sum);
+			}
+		}
+	}
+
+	class Solution18 {
+		private int res;
+
+		public int sumNumbers(TreeNode root) {
+			dfs(root, "");
 			return res;
 		}
-		private void dfs(TreeNode root,String str) {
-			if (root==null) {
+
+		private void dfs(TreeNode root, String str) {
+			if (root == null) {
 				return;
 			}
 			str += root.val;
-			if (root.left==null && root.right==null) {
-				if (str!=null && !"".equals(str)) {
+			if (root.left == null && root.right == null) {
+				if (str != null && !"".equals(str)) {
 					int v = Integer.parseInt(str);
-					res+=v;
+					res += v;
 				}
 				return;
 			}
-			dfs(root.left,str);
-			dfs(root.right,str);
+			dfs(root.left, str);
+			dfs(root.right, str);
 		}
+	}
+
+	// 最短无序连续子数组
+	@Test
+	public void test19() {
+//		Assert.assertEquals(5, findUnsortedSubarray(new int[] {2, 6, 4, 8, 10, 9, 15}));
+//		Assert.assertEquals(0, findUnsortedSubarray(new int[] {1,2,3,4,5}));
+//		Assert.assertEquals(4, findUnsortedSubarray(new int[] {1,3,2,2,2}));
+		Assert.assertEquals(0, findUnsortedSubarray(new int[] { 1, 2, 3, 3, 3 }));
+	}
+
+	// https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/solution/zui-duan-wu-xu-lian-xu-zi-shu-zu-by-leetcode/
+	public int findUnsortedSubarray(int[] nums) {
+		int[] snums = nums.clone();
+		Arrays.sort(snums);
+		int start = snums.length, end = 0;
+		for (int i = 0; i < snums.length; i++) {
+			if (snums[i] != nums[i]) {
+				start = Math.min(start, i);
+				end = Math.max(end, i);
+			}
+		}
+		return (end - start >= 0 ? end - start + 1 : 0);
+
 	}
 }
