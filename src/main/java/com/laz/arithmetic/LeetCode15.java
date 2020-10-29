@@ -643,28 +643,79 @@ public class LeetCode15 {
 	// 二叉树的直径
 	@Test
 	public void test17() {
-		//Assert.assertEquals(3, new Solution17().diameterOfBinaryTree(Utils.createTree(new Integer[] { 1, 2, 3, 4, 5 })));
-		
-		Assert.assertEquals(8, new Solution17().diameterOfBinaryTree(Utils.createTree(new Integer[] { 4,-7,-3,null,null,-9,-3,9,-7,-4,null,6,null,-6,-6,null,null,0,6,5,null,9,null,null,-1,-4,null,null,null,-2})));
+		// Assert.assertEquals(3, new
+		// Solution17().diameterOfBinaryTree(Utils.createTree(new Integer[] { 1, 2, 3,
+		// 4, 5 })));
+
+		Assert.assertEquals(8,
+				new Solution17().diameterOfBinaryTree(
+						Utils.createTree(new Integer[] { 4, -7, -3, null, null, -9, -3, 9, -7, -4, null, 6, null, -6,
+								-6, null, null, 0, 6, 5, null, 9, null, null, -1, -4, null, null, null, -2 })));
 	}
-	
-	//https://leetcode-cn.com/problems/diameter-of-binary-tree/solution/hot-100-9er-cha-shu-de-zhi-jing-python3-di-gui-ye-/
-	class Solution17{
+
+	// https://leetcode-cn.com/problems/diameter-of-binary-tree/solution/hot-100-9er-cha-shu-de-zhi-jing-python3-di-gui-ye-/
+	class Solution17 {
 		int max = 0;
+
 		public int diameterOfBinaryTree(TreeNode root) {
 			depth(root);
 			return max;
 		}
-			
+
 		private int depth(TreeNode node) {
-			if (node==null) {
+			if (node == null) {
 				return 0;
 			}
 			int l = depth(node.left);
-			int r =depth(node.right);
-			//每个结点都要去判断左子树+右子树的高度是否大于self.max，更新最大值
-			max = Math.max(max, l+r);
-			return Math.max(l,r)+1;
+			int r = depth(node.right);
+			// 每个结点都要去判断左子树+右子树的高度是否大于self.max，更新最大值
+			max = Math.max(max, l + r);
+			return Math.max(l, r) + 1;
+		}
+	}
+
+	// 求根到叶子节点数字之和
+	@Test
+	public void test18() {
+		Assert.assertEquals(1026, new Solution18().sumNumbers(Utils.createTree(new Integer[] { 4, 9, 0, 5, 1 })));
+	}
+	class Solution18_2{
+		    public int sumNumbers(TreeNode root) {
+		        return dfs(root, 0);
+		    }
+
+		    public int dfs(TreeNode root, int prevSum) {
+		        if (root == null) {
+		            return 0;
+		        }
+		        int sum = prevSum * 10 + root.val;
+		        if (root.left == null && root.right == null) {
+		            return sum;
+		        } else {
+		            return dfs(root.left, sum) + dfs(root.right, sum);
+		        }
+		    }
+	}
+	class Solution18{
+		private int res;
+		public int sumNumbers(TreeNode root) {
+			dfs(root,"");
+			return res;
+		}
+		private void dfs(TreeNode root,String str) {
+			if (root==null) {
+				return;
+			}
+			str += root.val;
+			if (root.left==null && root.right==null) {
+				if (str!=null && !"".equals(str)) {
+					int v = Integer.parseInt(str);
+					res+=v;
+				}
+				return;
+			}
+			dfs(root.left,str);
+			dfs(root.right,str);
 		}
 	}
 }
