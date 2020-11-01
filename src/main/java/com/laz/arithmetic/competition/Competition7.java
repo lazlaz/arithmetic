@@ -1,6 +1,8 @@
 package com.laz.arithmetic.competition;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -53,4 +55,35 @@ public class Competition7 {
 		}
 		return res;
     }
+	
+	//统计字典序元音字符串的数目
+	@Test
+	public void test2() {
+		Assert.assertEquals(15, new Solution2().countVowelStrings(2));
+		Assert.assertEquals(66045, new Solution2().countVowelStrings(33));
+	}
+	class Solution2 {
+		int res = 0;
+		public int countVowelStrings(int n) {
+			char[] dict = new char[] {'a','e','i','o','u'};
+			LinkedList<Character> list = new LinkedList<Character>();
+			backtrack(dict,list,n);
+			return res;
+		}
+		private void backtrack(char[] dict, LinkedList<Character> list, int n) {
+			for (int i=0;i<dict.length;i++) {
+				if (list.size()>0 && list.getLast()>dict[i]) {
+					continue;
+				}
+				if (list.size()==n) {
+					res++;
+					return;
+				}
+				list.add(dict[i]);
+				backtrack(dict, list, n);
+				list.removeLast();
+			}
+			
+		}
+	}
 }
