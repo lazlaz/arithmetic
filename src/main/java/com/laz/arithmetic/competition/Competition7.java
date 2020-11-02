@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -114,5 +116,64 @@ public class Competition7 {
 			}
 			return n - 1;
 		}
+	}
+
+	// 第 K 条最小指令
+	@Test
+	public void test4() {
+		Assert.assertEquals("HHHVV", new Solution4().kthSmallestPath(new int[] { 2, 3 }, 1));
+	}
+
+	// https://leetcode-cn.com/problems/kth-smallest-instructions/solution/dong-tai-gui-hua-by-jack-117/
+	class Solution4 {
+		public String kthSmallestPath(int[] destination, int k) {
+			int rows = destination[0];
+			int cols = destination[1];
+			// 字符"H"的数量
+			int h = cols;
+			// 字符"V"的数量
+			int v = rows;
+			StringBuffer sb = new StringBuffer();
+			//h与v的排列数量
+			int[][] dp = new int[v + 1][h+1];
+			 //更新dp
+	        for(int i = 0; i <=v; i++)
+	        {
+	            for(int j = 0; j <=h; j++)
+	            {
+	                if(i ==0 || j == 0)
+	                {
+	                    dp[i][j] = 1;
+	                }
+	                else
+	                {
+	                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+	                }
+	            }
+	        }
+			// 依次求解各个位置的字符
+			while (h > 0 && v > 0) {
+				int low = dp[v][h - 1];
+				if (k <= low) {
+					sb.append("H");
+					h--;
+				} else {
+					sb.append("V");
+					v--;
+					k -= low; // 更新k值
+				}
+			}
+			if (h == 0) {// 如果"H"用完,则把剩余位置都是"V"
+				for (int i = 0; i < v; i++) {
+					sb.append("V");
+				}
+			} else {// 如果"V"用完,则剩余位置都是"H"
+				for (int i = 0; i < h; i++) {
+					sb.append("H");
+				}
+			}
+			return sb.toString();
+		}
+
 	}
 }
