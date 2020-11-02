@@ -172,12 +172,31 @@ public class LeetCode5 {
 	public void test5() {
 		int[] num1 = new int[] { 1, 2, 2, 1 };
 		int[] num2 = new int[] { 2, 2 };
-		int[] res = intersection(num1, num2);
+		int[] res = intersection2(num1, num2);
 		for (int i : res) {
 			System.out.println(i);
 		}
 	}
-
+	//利用双指针提高速度
+	public int[] intersection2(int[] nums1, int[] nums2) {
+		Arrays.sort(nums1);
+		Arrays.sort(nums2);
+		Set<Integer> set = new HashSet<Integer>();
+		int p1 = 0;
+		int p2 =0;
+		while (p1<nums1.length && p2<nums2.length) {
+			if (nums1[p1] == nums2[p2]) {
+				set.add(nums1[p1]);
+				p1++;
+				p2++;
+			}else if (nums1[p1]>nums2[p2]) {
+				p2++;
+			}else if (nums1[p1]<nums2[p2]) {
+				p1++;
+			}
+		}
+		return set.stream().mapToInt(Integer::valueOf).toArray();
+	}
 	public int[] intersection(int[] nums1, int[] nums2) {
 		Arrays.parallelSort(nums1);
 		Arrays.parallelSort(nums2);
