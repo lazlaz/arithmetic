@@ -1,9 +1,11 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode16 {
 	// 岛屿的周长
@@ -181,104 +185,148 @@ public class LeetCode16 {
 	// 有效的山脉数组
 	@Test
 	public void test3() {
-		Assert.assertEquals(true, validMountainArray(new int[] {
-				0,3,2,1
-		}));
-		Assert.assertEquals(false, validMountainArray(new int[] {
-				3,5,5
-		}));
-		Assert.assertEquals(false, validMountainArray(new int[] {
-				1,2,3,4,5
-		}));
-		Assert.assertEquals(false, validMountainArray(new int[] {
-				5,4,3,2,1
-		}));
-		Assert.assertEquals(false, validMountainArray(new int[] {
-				1,2,3,3,2,1
-		}));
+		Assert.assertEquals(true, validMountainArray(new int[] { 0, 3, 2, 1 }));
+		Assert.assertEquals(false, validMountainArray(new int[] { 3, 5, 5 }));
+		Assert.assertEquals(false, validMountainArray(new int[] { 1, 2, 3, 4, 5 }));
+		Assert.assertEquals(false, validMountainArray(new int[] { 5, 4, 3, 2, 1 }));
+		Assert.assertEquals(false, validMountainArray(new int[] { 1, 2, 3, 3, 2, 1 }));
 	}
 
 	public boolean validMountainArray(int[] A) {
-		if (A==null || A.length<3) {
+		if (A == null || A.length < 3) {
 			return false;
 		}
 		int index = 1;
-		while (index<A.length) {
-			if (A[index]<A[index-1]) {
-				index=index-1;
+		while (index < A.length) {
+			if (A[index] < A[index - 1]) {
+				index = index - 1;
 				break;
-			}else if (A[index]>A[index-1]) {
+			} else if (A[index] > A[index - 1]) {
 				index++;
-			}else {
+			} else {
 				return false;
 			}
 		}
-		if (index==0 || index>=A.length) {
+		if (index == 0 || index >= A.length) {
 			return false;
 		}
-		while (index<A.length-1) {
-			if (A[index]>A[index+1]) {
+		while (index < A.length - 1) {
+			if (A[index] > A[index + 1]) {
 				index++;
-			}else if (A[index]<A[index-1]) {
+			} else if (A[index] < A[index - 1]) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	//每日温度
+
+	// 每日温度
 	@Test
 	public void test4() {
-		Assert.assertArrayEquals(new int[] {
-				1, 1, 4, 2, 1, 1, 0, 0
-		}, dailyTemperatures(new int[] {
-				73, 74, 75, 71, 69, 72, 76, 73
-		}));
+		Assert.assertArrayEquals(new int[] { 1, 1, 4, 2, 1, 1, 0, 0 },
+				dailyTemperatures(new int[] { 73, 74, 75, 71, 69, 72, 76, 73 }));
 	}
+
 	public int[] dailyTemperatures(int[] T) {
 		int[] res = new int[T.length];
-		int index = res.length-1;
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-		for (int i=T.length-1;i>=0;i--) {
-			if (map.size()==0) {
+		int index = res.length - 1;
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = T.length - 1; i >= 0; i--) {
+			if (map.size() == 0) {
 				res[index--] = 0;
 			} else {
 				int pos = Integer.MAX_VALUE;
-				for (Integer key:map.keySet()) {
-					if (key>T[i]) {
-						pos=Math.min(pos, map.get(key)-i);
+				for (Integer key : map.keySet()) {
+					if (key > T[i]) {
+						pos = Math.min(pos, map.get(key) - i);
 					}
 				}
-				res[index--]=pos==Integer.MAX_VALUE?0:pos;
+				res[index--] = pos == Integer.MAX_VALUE ? 0 : pos;
 			}
 			int v = map.getOrDefault(T[i], Integer.MAX_VALUE);
-			if (v>i) {
+			if (v > i) {
 				map.put(T[i], i);
 			}
 		}
 		return res;
 	}
-	
-	//二叉搜索树中第K小的元素
+
+	// 二叉搜索树中第K小的元素
 	@Test
 	public void test5() {
-		Assert.assertEquals(1, new Solution5().kthSmallest(Utils.createTree(new Integer[] {3,1,4,null,2}),1));
+		Assert.assertEquals(1, new Solution5().kthSmallest(Utils.createTree(new Integer[] { 3, 1, 4, null, 2 }), 1));
 	}
-	class Solution5{
+
+	class Solution5 {
 		public int kthSmallest(TreeNode root, int k) {
 			List<Integer> res = new ArrayList<Integer>();
-			dfs(root,res);
-			return res.get(k-1);
+			dfs(root, res);
+			return res.get(k - 1);
 		}
 
 		private void dfs(TreeNode root, List<Integer> res) {
-			if (root.left!=null) {
-				dfs(root.left,res);
+			if (root.left != null) {
+				dfs(root.left, res);
 			}
 			res.add(root.val);
-			if (root.right!=null) {
-				dfs(root.right,res);
+			if (root.right != null) {
+				dfs(root.right, res);
 			}
 		}
+	}
+
+	// 二叉树的锯齿形层次遍历
+	@Test
+	public void test6() {
+		List<List<Integer>> res = new Solution6().zigzagLevelOrder(Utils.createTree(new Integer[] { 1,2,3,4,null,null,5 }));
+		for (List<Integer> r : res) {
+			System.out.println(Joiner.on(",").join(r));
+		}
+	}
+	class Solution6{
+		public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+			List<List<Integer>> res = new ArrayList<List<Integer>>();
+			Deque<TreeNode> queue = new LinkedList<TreeNode>();
+			if (root==null) {
+				return res;
+			}
+			queue.offer(root);
+			int level =0;
+			while (!queue.isEmpty()) {
+				level++;
+				int len = queue.size();
+				List<Integer> list = new ArrayList<Integer>();
+				Deque<TreeNode> stack = new LinkedList<TreeNode>();
+				for (int i=0;i<len;i++) {
+					TreeNode node = queue.poll();
+					list.add(node.val);
+					stack.push(node);
+				
+				}
+				while(!stack.isEmpty()) {
+					TreeNode node = stack.pop();
+					if (level%2==0) {
+						if (node.left!=null) {
+							queue.offer(node.left);
+						}
+						if (node.right!=null) {
+							queue.offer(node.right);
+						}
+					} else {
+						if (node.right!=null) {
+							queue.offer(node.right);
+						}
+						if (node.left!=null) {
+							queue.offer(node.left);
+						}
+					}
+				}
+				res.add(list);
+			}
+			
+			return res;
+		}
+
+		
 	}
 }
