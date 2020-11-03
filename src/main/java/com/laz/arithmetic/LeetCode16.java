@@ -225,4 +225,37 @@ public class LeetCode16 {
 		}
 		return true;
 	}
+	
+	//每日温度
+	@Test
+	public void test4() {
+		Assert.assertArrayEquals(new int[] {
+				1, 1, 4, 2, 1, 1, 0, 0
+		}, dailyTemperatures(new int[] {
+				73, 74, 75, 71, 69, 72, 76, 73
+		}));
+	}
+	public int[] dailyTemperatures(int[] T) {
+		int[] res = new int[T.length];
+		int index = res.length-1;
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		for (int i=T.length-1;i>=0;i--) {
+			if (map.size()==0) {
+				res[index--] = 0;
+			} else {
+				int pos = Integer.MAX_VALUE;
+				for (Integer key:map.keySet()) {
+					if (key>T[i]) {
+						pos=Math.min(pos, map.get(key)-i);
+					}
+				}
+				res[index--]=pos==Integer.MAX_VALUE?0:pos;
+			}
+			int v = map.getOrDefault(T[i], Integer.MAX_VALUE);
+			if (v>i) {
+				map.put(T[i], i);
+			}
+		}
+		return res;
+	}
 }
