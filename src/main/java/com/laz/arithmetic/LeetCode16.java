@@ -1,6 +1,7 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
@@ -278,55 +280,137 @@ public class LeetCode16 {
 	// 二叉树的锯齿形层次遍历
 	@Test
 	public void test6() {
-		List<List<Integer>> res = new Solution6().zigzagLevelOrder(Utils.createTree(new Integer[] { 1,2,3,4,null,null,5 }));
+		List<List<Integer>> res = new Solution6()
+				.zigzagLevelOrder(Utils.createTree(new Integer[] { 1, 2, 3, 4, null, null, 5 }));
 		for (List<Integer> r : res) {
 			System.out.println(Joiner.on(",").join(r));
 		}
 	}
-	class Solution6{
+
+	class Solution6 {
 		public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 			List<List<Integer>> res = new ArrayList<List<Integer>>();
 			Deque<TreeNode> queue = new LinkedList<TreeNode>();
-			if (root==null) {
+			if (root == null) {
 				return res;
 			}
 			queue.offer(root);
-			int level =0;
+			int level = 0;
 			while (!queue.isEmpty()) {
 				level++;
 				int len = queue.size();
 				List<Integer> list = new ArrayList<Integer>();
 				Deque<TreeNode> stack = new LinkedList<TreeNode>();
-				for (int i=0;i<len;i++) {
+				for (int i = 0; i < len; i++) {
 					TreeNode node = queue.poll();
 					list.add(node.val);
 					stack.push(node);
-				
+
 				}
-				while(!stack.isEmpty()) {
+				while (!stack.isEmpty()) {
 					TreeNode node = stack.pop();
-					if (level%2==0) {
-						if (node.left!=null) {
+					if (level % 2 == 0) {
+						if (node.left != null) {
 							queue.offer(node.left);
 						}
-						if (node.right!=null) {
+						if (node.right != null) {
 							queue.offer(node.right);
 						}
 					} else {
-						if (node.right!=null) {
+						if (node.right != null) {
 							queue.offer(node.right);
 						}
-						if (node.left!=null) {
+						if (node.left != null) {
 							queue.offer(node.left);
 						}
 					}
 				}
 				res.add(list);
 			}
-			
+
 			return res;
 		}
+	}
 
-		
+	// 单词接龙
+	@Test
+	public void test7() {
+		Assert.assertEquals(5, new Solution7().ladderLength("hit", "cog", Arrays.asList("hot", "dot", "dog", "lot", "log", "cog")));
+	}
+
+	class Solution7 {
+		class Pair<K, V> {
+			private K k;
+			private V v;
+
+			public Pair(K k, V v) {
+				this.k = k;
+				this.v = v;
+			}
+
+			public K getKey() {
+				return k;
+			}
+
+			public V getValue() {
+				return v;
+			}
+
+		}
+
+		// https://leetcode-cn.com/problems/word-ladder/solution/dan-ci-jie-long-by-leetcode/
+		public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+			// Since all words are of same length.
+			int L = beginWord.length();
+
+			// Dictionary to hold combination of words that can be formed,
+			// from any given word. By changing one letter at a time.
+			Map<String, List<String>> allComboDict = new HashMap<>();
+
+			wordList.forEach(word -> {
+				for (int i = 0; i < L; i++) {
+					// Key is the generic word
+					// Value is a list of words which have the same intermediate generic word.
+					String newWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+					List<String> transformations = allComboDict.getOrDefault(newWord, new ArrayList<>());
+					transformations.add(word);
+					allComboDict.put(newWord, transformations);
+				}
+			});
+			// Queue for BFS
+			Queue<Pair<String, Integer>> Q = new LinkedList<>();
+			Q.add(new Pair(beginWord, 1));
+
+			// Visited to make sure we don't repeat processing same word.
+			Map<String, Boolean> visited = new HashMap<>();
+			visited.put(beginWord, true);
+
+			while (!Q.isEmpty()) {
+				Pair<String, Integer> node = Q.remove();
+				String word = node.getKey();
+				int level = node.getValue();
+				for (int i = 0; i < L; i++) {
+
+					// Intermediate words for current word
+					String newWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+
+					// Next states are all the words which share the same intermediate state.
+					for (String adjacentWord : allComboDict.getOrDefault(newWord, new ArrayList<>())) {
+						// If at any point if we find what we are looking for
+						// i.e. the end word - we can return with the answer.
+						if (adjacentWord.equals(endWord)) {
+							return level + 1;
+						}
+						// Otherwise, add it to the BFS Queue. Also mark it visited
+						if (!visited.containsKey(adjacentWord)) {
+							visited.put(adjacentWord, true);
+							Q.add(new Pair(adjacentWord, level + 1));
+						}
+					}
+				}
+			}
+
+			return 0;
+		}
 	}
 }
