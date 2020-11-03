@@ -258,4 +258,27 @@ public class LeetCode16 {
 		}
 		return res;
 	}
+	
+	//二叉搜索树中第K小的元素
+	@Test
+	public void test5() {
+		Assert.assertEquals(1, new Solution5().kthSmallest(Utils.createTree(new Integer[] {3,1,4,null,2}),1));
+	}
+	class Solution5{
+		public int kthSmallest(TreeNode root, int k) {
+			List<Integer> res = new ArrayList<Integer>();
+			dfs(root,res);
+			return res.get(k-1);
+		}
+
+		private void dfs(TreeNode root, List<Integer> res) {
+			if (root.left!=null) {
+				dfs(root.left,res);
+			}
+			res.add(root.val);
+			if (root.right!=null) {
+				dfs(root.right,res);
+			}
+		}
+	}
 }
