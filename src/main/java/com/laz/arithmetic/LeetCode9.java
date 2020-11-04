@@ -53,15 +53,21 @@ public class LeetCode9 {
 	// 插入区间
 	@Test
 	public void test2() {
-		int[][] intervals = new int[][] { { 1, 3 }, { 6, 9 } };
-		int[] newInterval = new int[] { 2, 5 };
-		int[][] res = insert(intervals, newInterval);
-		for (int[] is : res) {
-			for (int r : is) {
-				System.out.print(r);
-			}
-			System.out.println();
-		}
+//		int[][] intervals = new int[][] { { 1, 3 }, { 6, 9 } };
+//		int[] newInterval = new int[] { 2, 5 };
+//		int[][] res = insert(intervals, newInterval);
+//		for (int[] is : res) {
+//			for (int r : is) {
+//				System.out.print(r);
+//			}
+//			System.out.println();
+//		}
+		
+		Assert.assertArrayEquals(new int[][] {
+				{1,2},{3,10},{12,16}
+		}, insert(new int[][] {
+			{1,2},{3,5},{6,7},{8,10},{12,16}
+		},new int[] {4,8}));
 	}
 
 	public int[][] insert(int[][] intervals, int[] newInterval) {
