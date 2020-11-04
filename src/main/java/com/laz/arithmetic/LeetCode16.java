@@ -413,4 +413,49 @@ public class LeetCode16 {
 			return 0;
 		}
 	}
+	
+	//加油站
+	@Test
+	public void test8() {
+		Assert.assertEquals(3, canCompleteCircuit(new int[] {1,2,3,4,5},new int[] {3,4,5,1,2}));
+		Assert.assertEquals(-1, canCompleteCircuit(new int[] {2,3,4},new int[] {3,4,3}));
+		Assert.assertEquals(4, canCompleteCircuit(new int[] {5,1,2,3,4},new int[] {4,4,1,5,1}));
+	}
+	public int canCompleteCircuit(int[] gas, int[] cost) {
+		int[] sum = new int[gas.length];
+		//前缀和
+		for (int i=0;i<gas.length;i++) {
+			if (i>0) {
+				sum[i]=sum[i-1]+(gas[i]-cost[i]);
+			} else {
+				sum[i]=(gas[i]-cost[i]);
+			}
+		}
+		int len = gas.length;
+		for (int i=0;i<gas.length;i++) {
+			if (gas[i]-cost[i]>=0) {
+				int j = i;
+				j++;
+				while (j%len!=i) {
+					int diffI = gas[i]-cost[i];
+					if (j<len) {
+						//i-j差异和
+						if (sum[j]-sum[i]+diffI<0) {
+							break;
+						}
+					} else {
+						//i到len的差异和+0,j的差异和
+						if (sum[len-1]-sum[i]+diffI+sum[j%len]<0) {
+							break;
+						}
+					}
+					j++;
+				}
+				if (j%len==i) {
+					return i;
+				}
+			} 
+		}
+		return -1;
+	}
 }
