@@ -335,7 +335,8 @@ public class LeetCode16 {
 	// 单词接龙
 	@Test
 	public void test7() {
-		Assert.assertEquals(5, new Solution7().ladderLength("hit", "cog", Arrays.asList("hot", "dot", "dog", "lot", "log", "cog")));
+		Assert.assertEquals(5,
+				new Solution7().ladderLength("hit", "cog", Arrays.asList("hot", "dot", "dog", "lot", "log", "cog")));
 	}
 
 	class Solution7 {
@@ -413,49 +414,131 @@ public class LeetCode16 {
 			return 0;
 		}
 	}
-	
-	//加油站
+
+	// 加油站
 	@Test
 	public void test8() {
-		Assert.assertEquals(3, canCompleteCircuit(new int[] {1,2,3,4,5},new int[] {3,4,5,1,2}));
-		Assert.assertEquals(-1, canCompleteCircuit(new int[] {2,3,4},new int[] {3,4,3}));
-		Assert.assertEquals(4, canCompleteCircuit(new int[] {5,1,2,3,4},new int[] {4,4,1,5,1}));
+		Assert.assertEquals(3, canCompleteCircuit(new int[] { 1, 2, 3, 4, 5 }, new int[] { 3, 4, 5, 1, 2 }));
+		Assert.assertEquals(-1, canCompleteCircuit(new int[] { 2, 3, 4 }, new int[] { 3, 4, 3 }));
+		Assert.assertEquals(4, canCompleteCircuit(new int[] { 5, 1, 2, 3, 4 }, new int[] { 4, 4, 1, 5, 1 }));
 	}
+
 	public int canCompleteCircuit(int[] gas, int[] cost) {
 		int[] sum = new int[gas.length];
-		//前缀和
-		for (int i=0;i<gas.length;i++) {
-			if (i>0) {
-				sum[i]=sum[i-1]+(gas[i]-cost[i]);
+		// 前缀和
+		for (int i = 0; i < gas.length; i++) {
+			if (i > 0) {
+				sum[i] = sum[i - 1] + (gas[i] - cost[i]);
 			} else {
-				sum[i]=(gas[i]-cost[i]);
+				sum[i] = (gas[i] - cost[i]);
 			}
 		}
 		int len = gas.length;
-		for (int i=0;i<gas.length;i++) {
-			if (gas[i]-cost[i]>=0) {
+		for (int i = 0; i < gas.length; i++) {
+			if (gas[i] - cost[i] >= 0) {
 				int j = i;
 				j++;
-				while (j%len!=i) {
-					int diffI = gas[i]-cost[i];
-					if (j<len) {
-						//i-j差异和
-						if (sum[j]-sum[i]+diffI<0) {
+				while (j % len != i) {
+					int diffI = gas[i] - cost[i];
+					if (j < len) {
+						// i-j差异和
+						if (sum[j] - sum[i] + diffI < 0) {
 							break;
 						}
 					} else {
-						//i到len的差异和+0,j的差异和
-						if (sum[len-1]-sum[i]+diffI+sum[j%len]<0) {
+						// i到len的差异和+0,j的差异和
+						if (sum[len - 1] - sum[i] + diffI + sum[j % len] < 0) {
 							break;
 						}
 					}
 					j++;
 				}
-				if (j%len==i) {
+				if (j % len == i) {
 					return i;
 				}
-			} 
+			}
 		}
 		return -1;
+	}
+
+	// 复制带随机指针的链表
+	@Test
+	public void test9() {
+		Node n = new Node(7);
+		Node n2 = new Node(13);
+		Node n3 = new Node(11);
+		Node n4 = new Node(10);
+		Node n5 = new Node(1);
+		
+		n.next = n2;
+		n.random = null;
+		
+		n2.next = n3;
+		n2.random = n;
+		
+		n3.next = n4;
+		n3.random = n4;
+		
+		n4.next = n5;
+		n4.random = n2;
+		
+		n5.random = n;
+		
+		Node copyN = new Solution9().copyRandomList(n);
+		while (copyN!=null) {
+			int ran = copyN.random==null?0:copyN.random.val;
+			System.out.println(copyN.val+" "+ran);
+			copyN = copyN.next;
+		}
+	}
+
+	static class Node {
+		int val;
+		Node next;
+		Node random;
+		
+		public Node(int val) {
+			this.val = val;
+			this.next = null;
+			this.random = null;
+		}
+	}
+	class Solution9 {
+
+		public Node copyRandomList(Node head) {
+			if (head==null) {
+				return null;
+			}
+			Map<Node,Node> map = new HashMap<Node,Node>();
+			Node tail = new Node(-1);
+			Node newHead = copyNode(head);
+			Node tmp = head;
+			tail.next = newHead;
+			while (head!=null) {
+				
+				map.put(head,newHead);
+				newHead.next=copyNode(head.next);
+				head = head.next;
+				newHead = newHead.next;
+			}
+			newHead = tail.next;
+			while (tmp!=null) {
+				if (tmp.random!=null) {
+					newHead.random=map.get(tmp.random);
+				}
+				tmp = tmp.next;
+				newHead = newHead.next;
+			}
+			
+			return tail.next;
+		}
+
+		private Node copyNode(Node head) {
+			if (head==null) {
+				return null;
+			}
+			Node n = new Node(head.val);
+			return n;
+		}
 	}
 }
