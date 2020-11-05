@@ -607,41 +607,41 @@ public class LeetCode16 {
 	}
 
 	public int evalRPN(String[] tokens) {
-		Deque<String> stack = new LinkedList<String>();
+		Deque<Integer> stack = new LinkedList<Integer>();
 		int res = 0;
 		for (int i = 0; i < tokens.length; i++) {
 			switch (tokens[i]) {
 			case "+":
-				String a = stack.pop();
-				String b = stack.pop();
-				int v = Integer.valueOf(b) + Integer.valueOf(a);
-				stack.push(v + "");
+				int a = stack.pop();
+				int b = stack.pop();
+				int v = b+a;
+				stack.push(v);
 				break;
 			case "-":
 				a = stack.pop();
 				b = stack.pop();
-				v = Integer.valueOf(b) - Integer.valueOf(a);
-				stack.push(v + "");
+				v = b-a;
+				stack.push(v);
 				break;
 			case "/":
 				a = stack.pop();
 				b = stack.pop();
-				v = Integer.valueOf(b) / Integer.valueOf(a);
-				stack.push(v + "");
+				v = b/a;
+				stack.push(v);
 				break;
 			case "*":
 				a = stack.pop();
 				b = stack.pop();
-				v = Integer.valueOf(b) * Integer.valueOf(a);
-				stack.push(v + "");
+				v = b*a;
+				stack.push(v);
 				break;
 			default:
-				stack.push(tokens[i]);
+				stack.push(Integer.valueOf(tokens[i]));
 				break;
 			}
 		}
 		if (!stack.isEmpty())
-			res = Integer.valueOf(stack.pop());
+			res = stack.pop();
 		return res;
 	}
 
