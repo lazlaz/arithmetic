@@ -469,25 +469,25 @@ public class LeetCode16 {
 		Node n3 = new Node(11);
 		Node n4 = new Node(10);
 		Node n5 = new Node(1);
-		
+
 		n.next = n2;
 		n.random = null;
-		
+
 		n2.next = n3;
 		n2.random = n;
-		
+
 		n3.next = n4;
 		n3.random = n4;
-		
+
 		n4.next = n5;
 		n4.random = n2;
-		
+
 		n5.random = n;
-		
+
 		Node copyN = new Solution9().copyRandomList(n);
-		while (copyN!=null) {
-			int ran = copyN.random==null?0:copyN.random.val;
-			System.out.println(copyN.val+" "+ran);
+		while (copyN != null) {
+			int ran = copyN.random == null ? 0 : copyN.random.val;
+			System.out.println(copyN.val + " " + ran);
 			copyN = copyN.next;
 		}
 	}
@@ -496,103 +496,153 @@ public class LeetCode16 {
 		int val;
 		Node next;
 		Node random;
-		
+
 		public Node(int val) {
 			this.val = val;
 			this.next = null;
 			this.random = null;
 		}
 	}
+
 	class Solution9 {
 
 		public Node copyRandomList(Node head) {
-			if (head==null) {
+			if (head == null) {
 				return null;
 			}
-			Map<Node,Node> map = new HashMap<Node,Node>();
+			Map<Node, Node> map = new HashMap<Node, Node>();
 			Node tail = new Node(-1);
 			Node newHead = copyNode(head);
 			Node tmp = head;
 			tail.next = newHead;
-			while (head!=null) {
-				
-				map.put(head,newHead);
-				newHead.next=copyNode(head.next);
+			while (head != null) {
+
+				map.put(head, newHead);
+				newHead.next = copyNode(head.next);
 				head = head.next;
 				newHead = newHead.next;
 			}
 			newHead = tail.next;
-			while (tmp!=null) {
-				if (tmp.random!=null) {
-					newHead.random=map.get(tmp.random);
+			while (tmp != null) {
+				if (tmp.random != null) {
+					newHead.random = map.get(tmp.random);
 				}
 				tmp = tmp.next;
 				newHead = newHead.next;
 			}
-			
+
 			return tail.next;
 		}
 
 		private Node copyNode(Node head) {
-			if (head==null) {
+			if (head == null) {
 				return null;
 			}
 			Node n = new Node(head.val);
 			return n;
 		}
 	}
-	
-	//直线上最多的点数
+
+	// 直线上最多的点数
 	@Test
 	public void test10() {
-		Assert.assertEquals(3, new Solution10().maxPoints(new int[][] {
-			{1,1},{2,2},{3,3}
-		}));
+		Assert.assertEquals(3, new Solution10().maxPoints(new int[][] { { 1, 1 }, { 2, 2 }, { 3, 3 } }));
 	}
-	//https://leetcode-cn.com/problems/max-points-on-a-line/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--35/
+
+	// https://leetcode-cn.com/problems/max-points-on-a-line/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--35/
 	class Solution10 {
 		public int maxPoints(int[][] points) {
-		    if (points.length < 3) {
-		        return points.length;
-		    }
-		    int res = 0;
-		    //遍历每个点
-		    for (int i = 0; i < points.length; i++) {
-		        int duplicate = 0;
-		        int max = 0;//保存经过当前点的直线中，最多的点
-		        HashMap<String, Integer> map = new HashMap<>();
-		        for (int j = i + 1; j < points.length; j++) {
-		            //求出分子分母
-		            int x = points[j][0] - points[i][0];
-		            int y = points[j][1] - points[i][1];
-		            if (x == 0 && y == 0) {
-		                duplicate++;
-		                continue;
+			if (points.length < 3) {
+				return points.length;
+			}
+			int res = 0;
+			// 遍历每个点
+			for (int i = 0; i < points.length; i++) {
+				int duplicate = 0;
+				int max = 0;// 保存经过当前点的直线中，最多的点
+				HashMap<String, Integer> map = new HashMap<>();
+				for (int j = i + 1; j < points.length; j++) {
+					// 求出分子分母
+					int x = points[j][0] - points[i][0];
+					int y = points[j][1] - points[i][1];
+					if (x == 0 && y == 0) {
+						duplicate++;
+						continue;
 
-		            }
-		            //进行约分
-		            int gcd = gcd(x, y);
-		            x = x / gcd;
-		            y = y / gcd;
-		            String key = x + "@" + y;
-		            map.put(key, map.getOrDefault(key, 0) + 1);
-		            max = Math.max(max, map.get(key));
-		        }
-		        //1 代表当前考虑的点，duplicate 代表和当前的点重复的点
-		        res = Math.max(res, max + duplicate + 1);
-		    }
-		    return res;
+					}
+					// 进行约分
+					int gcd = gcd(x, y);
+					x = x / gcd;
+					y = y / gcd;
+					String key = x + "@" + y;
+					map.put(key, map.getOrDefault(key, 0) + 1);
+					max = Math.max(max, map.get(key));
+				}
+				// 1 代表当前考虑的点，duplicate 代表和当前的点重复的点
+				res = Math.max(res, max + duplicate + 1);
+			}
+			return res;
 		}
 
 		private int gcd(int a, int b) {
-		    while (b != 0) {
-		        int temp = a % b;
-		        a = b;
-		        b = temp;
-		    }
-		    return a;
+			while (b != 0) {
+				int temp = a % b;
+				a = b;
+				b = temp;
+			}
+			return a;
 		}
 
 	}
-	   
+
+	// 逆波兰表达式求值
+	@Test
+	public void test11() {
+		Assert.assertEquals(9, evalRPN(new String[] { "2", "1", "+", "3", "*" }));
+
+		Assert.assertEquals(6, evalRPN(new String[] { "4", "13", "5", "/", "+" }));
+
+		Assert.assertEquals(22,
+				evalRPN(new String[] { "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+" }));
+	}
+
+	public int evalRPN(String[] tokens) {
+		Deque<String> stack = new LinkedList<String>();
+		int res = 0;
+		for (int i = 0; i < tokens.length; i++) {
+			switch (tokens[i]) {
+			case "+":
+				String a = stack.pop();
+				String b = stack.pop();
+				int v = Integer.valueOf(b) + Integer.valueOf(a);
+				stack.push(v + "");
+				break;
+			case "-":
+				a = stack.pop();
+				b = stack.pop();
+				v = Integer.valueOf(b) - Integer.valueOf(a);
+				stack.push(v + "");
+				break;
+			case "/":
+				a = stack.pop();
+				b = stack.pop();
+				v = Integer.valueOf(b) / Integer.valueOf(a);
+				stack.push(v + "");
+				break;
+			case "*":
+				a = stack.pop();
+				b = stack.pop();
+				v = Integer.valueOf(b) * Integer.valueOf(a);
+				stack.push(v + "");
+				break;
+			default:
+				stack.push(tokens[i]);
+				break;
+			}
+		}
+		if (!stack.isEmpty())
+			res = Integer.valueOf(stack.pop());
+		return res;
+	}
+
 }
