@@ -469,25 +469,25 @@ public class LeetCode16 {
 		Node n3 = new Node(11);
 		Node n4 = new Node(10);
 		Node n5 = new Node(1);
-		
+
 		n.next = n2;
 		n.random = null;
-		
+
 		n2.next = n3;
 		n2.random = n;
-		
+
 		n3.next = n4;
 		n3.random = n4;
-		
+
 		n4.next = n5;
 		n4.random = n2;
-		
+
 		n5.random = n;
-		
+
 		Node copyN = new Solution9().copyRandomList(n);
-		while (copyN!=null) {
-			int ran = copyN.random==null?0:copyN.random.val;
-			System.out.println(copyN.val+" "+ran);
+		while (copyN != null) {
+			int ran = copyN.random == null ? 0 : copyN.random.val;
+			System.out.println(copyN.val + " " + ran);
 			copyN = copyN.next;
 		}
 	}
@@ -496,49 +496,69 @@ public class LeetCode16 {
 		int val;
 		Node next;
 		Node random;
-		
+
 		public Node(int val) {
 			this.val = val;
 			this.next = null;
 			this.random = null;
 		}
 	}
+
 	class Solution9 {
 
 		public Node copyRandomList(Node head) {
-			if (head==null) {
+			if (head == null) {
 				return null;
 			}
-			Map<Node,Node> map = new HashMap<Node,Node>();
+			Map<Node, Node> map = new HashMap<Node, Node>();
 			Node tail = new Node(-1);
 			Node newHead = copyNode(head);
 			Node tmp = head;
 			tail.next = newHead;
-			while (head!=null) {
-				
-				map.put(head,newHead);
-				newHead.next=copyNode(head.next);
+			while (head != null) {
+
+				map.put(head, newHead);
+				newHead.next = copyNode(head.next);
 				head = head.next;
 				newHead = newHead.next;
 			}
 			newHead = tail.next;
-			while (tmp!=null) {
-				if (tmp.random!=null) {
-					newHead.random=map.get(tmp.random);
+			while (tmp != null) {
+				if (tmp.random != null) {
+					newHead.random = map.get(tmp.random);
 				}
 				tmp = tmp.next;
 				newHead = newHead.next;
 			}
-			
+
 			return tail.next;
 		}
 
 		private Node copyNode(Node head) {
-			if (head==null) {
+			if (head == null) {
 				return null;
 			}
 			Node n = new Node(head.val);
 			return n;
 		}
+	}
+
+	// 寻找峰值
+	@Test
+	public void test13() {
+		Assert.assertEquals(5, findPeakElement(new int[] { 1, 2, 1, 3, 5, 6, 4 }));
+	}
+
+	public int findPeakElement(int[] nums) {
+		int l = 0, r = nums.length - 1;
+		while (l < r) {
+			int mid = (l + r) / 2;
+			if (nums[mid] > nums[mid + 1])
+				r = mid;
+			else
+				l = mid + 1;
+		}
+		return l;
+
 	}
 }
