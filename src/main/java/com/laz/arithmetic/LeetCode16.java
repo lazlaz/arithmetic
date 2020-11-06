@@ -2,6 +2,8 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -614,25 +616,25 @@ public class LeetCode16 {
 			case "+":
 				int a = stack.pop();
 				int b = stack.pop();
-				int v = b+a;
+				int v = b + a;
 				stack.push(v);
 				break;
 			case "-":
 				a = stack.pop();
 				b = stack.pop();
-				v = b-a;
+				v = b - a;
 				stack.push(v);
 				break;
 			case "/":
 				a = stack.pop();
 				b = stack.pop();
-				v = b/a;
+				v = b / a;
 				stack.push(v);
 				break;
 			case "*":
 				a = stack.pop();
 				b = stack.pop();
-				v = b*a;
+				v = b * a;
 				stack.push(v);
 				break;
 			default:
@@ -645,4 +647,60 @@ public class LeetCode16 {
 		return res;
 	}
 
+	// 寻找峰值
+	@Test
+	public void test12() {
+		Assert.assertEquals(5, findPeakElement(new int[] { 1, 2, 1, 3, 5, 6, 4 }));
+	}
+
+	public int findPeakElement(int[] nums) {
+		int l = 0, r = nums.length - 1;
+		while (l < r) {
+			int mid = (l + r) / 2;
+			if (nums[mid] > nums[mid + 1])
+				r = mid;
+			else
+				l = mid + 1;
+		}
+		return l;
+
+	}
+
+	// 根据数字二进制下 1 的数目排序
+	@Test
+	public void test13() {
+		Assert.assertArrayEquals(new int[] { 0, 1, 2, 4, 8, 3, 5, 6, 7 },
+				new Solution13().sortByBits(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }));
+	}
+	class Solution13 {
+		public int[] sortByBits(int[] arr) {
+			List<Integer> list = new ArrayList<Integer>();
+			for (int i=0;i<arr.length;i++) {
+				list.add(arr[i]);
+			}
+			Collections.sort(list, new Comparator<Integer>() {
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					if (getBinaryOneNum(o1)>getBinaryOneNum(o2)) {
+						return 1;
+					}
+					if (getBinaryOneNum(o1)<getBinaryOneNum(o2)) {
+						return -1;
+					}
+					return o1-o2;
+				}
+			});
+			return list.stream().mapToInt(Integer::valueOf).toArray();
+		}
+		private int getBinaryOneNum(Integer v) {
+			String str = Integer.toBinaryString(v);
+			int num = 0;
+			for (int i=0;i<str.length();i++) {
+				if (str.charAt(i) == '1') {
+					num++;
+				}
+			}
+			return num;
+		}
+	}
 }
