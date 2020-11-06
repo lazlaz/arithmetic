@@ -673,6 +673,7 @@ public class LeetCode16 {
 				new Solution13().sortByBits(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }));
 	}
 	class Solution13 {
+		
 		public int[] sortByBits(int[] arr) {
 			List<Integer> list = new ArrayList<Integer>();
 			for (int i=0;i<arr.length;i++) {
