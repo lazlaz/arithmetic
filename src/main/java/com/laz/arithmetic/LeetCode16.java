@@ -651,4 +651,56 @@ public class LeetCode16 {
 	        rchild = null;
 	    }
 	}
+	
+	//分数到小数
+	@Test
+	public void test15() {
+		Assert.assertEquals("0.(6)", fractionToDecimal(2,3));
+		Assert.assertEquals("2", fractionToDecimal(2,1));
+		Assert.assertEquals("0.(012)", fractionToDecimal(4,333));
+		Assert.assertEquals("0.2", fractionToDecimal(1,5));
+		Assert.assertEquals("-6.25", fractionToDecimal(-50,8));
+		Assert.assertEquals("11", fractionToDecimal(-22,-2));
+	}
+	public String fractionToDecimal(int numerator, int denominator) {
+		if (numerator==0) {
+			return "0";
+		}
+		boolean flag = true; //正为true,父为false;
+		int v = numerator^denominator;
+		if (v<0) { //符号不同
+			flag = false;
+		}
+		long dividend =  Math.abs(Long.valueOf(numerator)); //防止除以最小的情况，扩大位数
+		long divisor =  Math.abs(Long.valueOf(denominator));
+		StringBuilder sb = new StringBuilder();
+		if (dividend<divisor) {
+			sb.append("0.");
+		}else {
+			while (dividend>=divisor) {
+				sb.append(dividend/divisor);
+				dividend = dividend%divisor;
+			}
+			if (dividend!=0 && sb.length()>0) {
+				sb.append(".");
+			} 
+		}
+		Map<Long,Integer> map = new HashMap<Long,Integer>();
+		while (dividend!=0) {
+			dividend = dividend*10;
+			if (map.get(dividend)!=null) {
+				int index = map.get(dividend);
+				sb.insert(index-1, '(');
+				sb.append(")");
+				break;
+			}
+			sb.append(dividend/divisor);
+			map.put(dividend, sb.length());
+			dividend = dividend%divisor;
+		}
+		if (!flag) {
+			sb.insert(0,"-");
+		}
+		return sb.toString();
+    }
 }
