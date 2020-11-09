@@ -11,9 +11,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.junit.Assert;
@@ -673,31 +675,33 @@ public class LeetCode16 {
 		Assert.assertArrayEquals(new int[] { 0, 1, 2, 4, 8, 3, 5, 6, 7 },
 				new Solution13().sortByBits(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }));
 	}
+
 	class Solution13 {
-		
+
 		public int[] sortByBits(int[] arr) {
 			List<Integer> list = new ArrayList<Integer>();
-			for (int i=0;i<arr.length;i++) {
+			for (int i = 0; i < arr.length; i++) {
 				list.add(arr[i]);
 			}
 			Collections.sort(list, new Comparator<Integer>() {
 				@Override
 				public int compare(Integer o1, Integer o2) {
-					if (getBinaryOneNum(o1)>getBinaryOneNum(o2)) {
+					if (getBinaryOneNum(o1) > getBinaryOneNum(o2)) {
 						return 1;
 					}
-					if (getBinaryOneNum(o1)<getBinaryOneNum(o2)) {
+					if (getBinaryOneNum(o1) < getBinaryOneNum(o2)) {
 						return -1;
 					}
-					return o1-o2;
+					return o1 - o2;
 				}
 			});
 			return list.stream().mapToInt(Integer::valueOf).toArray();
 		}
+
 		private int getBinaryOneNum(Integer v) {
 			String str = Integer.toBinaryString(v);
 			int num = 0;
-			for (int i=0;i<str.length();i++) {
+			for (int i = 0; i < str.length(); i++) {
 				if (str.charAt(i) == '1') {
 					num++;
 				}
@@ -705,145 +709,181 @@ public class LeetCode16 {
 			return num;
 		}
 	}
-	
-	//区间和的个数
+
+	// 区间和的个数
 	@Test
 	public void test14() {
-		Assert.assertEquals(3, new Solution14().countRangeSum(new int[] {
-				-2,5,-1
-		}, -2, 2));
+		Assert.assertEquals(3, new Solution14().countRangeSum(new int[] { -2, 5, -1 }, -2, 2));
 	}
-	//https://leetcode-cn.com/problems/count-of-range-sum/solution/qu-jian-he-de-ge-shu-by-leetcode-solution/
-	class Solution14{
+
+	// https://leetcode-cn.com/problems/count-of-range-sum/solution/qu-jian-he-de-ge-shu-by-leetcode-solution/
+	class Solution14 {
 		public int countRangeSum(int[] nums, int lower, int upper) {
-	        long sum = 0;
-	        long[] preSum = new long[nums.length + 1];
-	        for (int i = 0; i < nums.length; ++i) {
-	            sum += nums[i];
-	            preSum[i + 1] = sum;
-	        }
-	        
-	        Set<Long> allNumbers = new TreeSet<Long>();
-	        for (long x : preSum) {
-	            allNumbers.add(x);
-	            allNumbers.add(x - lower);
-	            allNumbers.add(x - upper);
-	        }
-	        // 利用哈希表进行离散化
-	        Map<Long, Integer> values = new HashMap<Long, Integer>();
-	        int idx = 0;
-	        for (long x : allNumbers) {
-	            values.put(x, idx);
-	            idx++;
-	        }
+			long sum = 0;
+			long[] preSum = new long[nums.length + 1];
+			for (int i = 0; i < nums.length; ++i) {
+				sum += nums[i];
+				preSum[i + 1] = sum;
+			}
 
-	        SegNode root = build(0, values.size() - 1);
-	        int ret = 0;
-	        for (long x : preSum) {
-	            int left = values.get(x - upper), right = values.get(x - lower);
-	            ret += count(root, left, right);
-	            insert(root, values.get(x));
-	        }
-	        return ret;
-	    }
+			Set<Long> allNumbers = new TreeSet<Long>();
+			for (long x : preSum) {
+				allNumbers.add(x);
+				allNumbers.add(x - lower);
+				allNumbers.add(x - upper);
+			}
+			// 利用哈希表进行离散化
+			Map<Long, Integer> values = new HashMap<Long, Integer>();
+			int idx = 0;
+			for (long x : allNumbers) {
+				values.put(x, idx);
+				idx++;
+			}
 
-	    public SegNode build(int left, int right) {
-	        SegNode node = new SegNode(left, right);
-	        if (left == right) {
-	            return node;
-	        }
-	        int mid = (left + right) / 2;
-	        node.lchild = build(left, mid);
-	        node.rchild = build(mid + 1, right);
-	        return node;
-	    }
+			SegNode root = build(0, values.size() - 1);
+			int ret = 0;
+			for (long x : preSum) {
+				int left = values.get(x - upper), right = values.get(x - lower);
+				ret += count(root, left, right);
+				insert(root, values.get(x));
+			}
+			return ret;
+		}
 
-	    public int count(SegNode root, int left, int right) {
-	        if (left > root.hi || right < root.lo) {
-	            return 0;
-	        }
-	        if (left <= root.lo && root.hi <= right) {
-	            return root.add;
-	        }
-	        return count(root.lchild, left, right) + count(root.rchild, left, right);
-	    }
+		public SegNode build(int left, int right) {
+			SegNode node = new SegNode(left, right);
+			if (left == right) {
+				return node;
+			}
+			int mid = (left + right) / 2;
+			node.lchild = build(left, mid);
+			node.rchild = build(mid + 1, right);
+			return node;
+		}
 
-	    public void insert(SegNode root, int val) {
-	        root.add++;
-	        if (root.lo == root.hi) {
-	            return;
-	        }
-	        int mid = (root.lo + root.hi) / 2;
-	        if (val <= mid) {
-	            insert(root.lchild, val);
-	        } else {
-	            insert(root.rchild, val);
-	        }
-	    }
+		public int count(SegNode root, int left, int right) {
+			if (left > root.hi || right < root.lo) {
+				return 0;
+			}
+			if (left <= root.lo && root.hi <= right) {
+				return root.add;
+			}
+			return count(root.lchild, left, right) + count(root.rchild, left, right);
+		}
+
+		public void insert(SegNode root, int val) {
+			root.add++;
+			if (root.lo == root.hi) {
+				return;
+			}
+			int mid = (root.lo + root.hi) / 2;
+			if (val <= mid) {
+				insert(root.lchild, val);
+			} else {
+				insert(root.rchild, val);
+			}
+		}
 	}
 
 	class SegNode {
-	    int lo, hi, add;
-	    SegNode lchild, rchild;
+		int lo, hi, add;
+		SegNode lchild, rchild;
 
-	    public SegNode(int left, int right) {
-	        lo = left;
-	        hi = right;
-	        add = 0;
-	        lchild = null;
-	        rchild = null;
-	    }
+		public SegNode(int left, int right) {
+			lo = left;
+			hi = right;
+			add = 0;
+			lchild = null;
+			rchild = null;
+		}
 	}
-	
-	//分数到小数
+
+	// 分数到小数
 	@Test
 	public void test15() {
-		Assert.assertEquals("0.(6)", fractionToDecimal(2,3));
-		Assert.assertEquals("2", fractionToDecimal(2,1));
-		Assert.assertEquals("0.(012)", fractionToDecimal(4,333));
-		Assert.assertEquals("0.2", fractionToDecimal(1,5));
-		Assert.assertEquals("-6.25", fractionToDecimal(-50,8));
-		Assert.assertEquals("11", fractionToDecimal(-22,-2));
+		Assert.assertEquals("0.(6)", fractionToDecimal(2, 3));
+		Assert.assertEquals("2", fractionToDecimal(2, 1));
+		Assert.assertEquals("0.(012)", fractionToDecimal(4, 333));
+		Assert.assertEquals("0.2", fractionToDecimal(1, 5));
+		Assert.assertEquals("-6.25", fractionToDecimal(-50, 8));
+		Assert.assertEquals("11", fractionToDecimal(-22, -2));
 	}
+
 	public String fractionToDecimal(int numerator, int denominator) {
-		if (numerator==0) {
+		if (numerator == 0) {
 			return "0";
 		}
-		boolean flag = true; //正为true,父为false;
-		int v = numerator^denominator;
-		if (v<0) { //符号不同
+		boolean flag = true; // 正为true,父为false;
+		int v = numerator ^ denominator;
+		if (v < 0) { // 符号不同
 			flag = false;
 		}
-		long dividend =  Math.abs(Long.valueOf(numerator)); //防止除以最小的情况，扩大位数
-		long divisor =  Math.abs(Long.valueOf(denominator));
+		long dividend = Math.abs(Long.valueOf(numerator)); // 防止除以最小的情况，扩大位数
+		long divisor = Math.abs(Long.valueOf(denominator));
 		StringBuilder sb = new StringBuilder();
-		if (dividend<divisor) {
+		if (dividend < divisor) {
 			sb.append("0.");
-		}else {
-			while (dividend>=divisor) {
-				sb.append(dividend/divisor);
-				dividend = dividend%divisor;
+		} else {
+			while (dividend >= divisor) {
+				sb.append(dividend / divisor);
+				dividend = dividend % divisor;
 			}
-			if (dividend!=0 && sb.length()>0) {
+			if (dividend != 0 && sb.length() > 0) {
 				sb.append(".");
-			} 
+			}
 		}
-		Map<Long,Integer> map = new HashMap<Long,Integer>();
-		while (dividend!=0) {
-			dividend = dividend*10;
-			if (map.get(dividend)!=null) {
+		Map<Long, Integer> map = new HashMap<Long, Integer>();
+		while (dividend != 0) {
+			dividend = dividend * 10;
+			if (map.get(dividend) != null) {
 				int index = map.get(dividend);
-				sb.insert(index-1, '(');
+				sb.insert(index - 1, '(');
 				sb.append(")");
 				break;
 			}
-			sb.append(dividend/divisor);
+			sb.append(dividend / divisor);
 			map.put(dividend, sb.length());
-			dividend = dividend%divisor;
+			dividend = dividend % divisor;
 		}
 		if (!flag) {
-			sb.insert(0,"-");
+			sb.insert(0, "-");
 		}
 		return sb.toString();
-    }
+	}
+
+	// 最接近原点的 K 个点
+	@Test
+	public void test16() {
+		Assert.assertArrayEquals(new int[][] { { -2, 2 } }, kClosest(new int[][] { { 1, 3 }, { -2, 2 } }, 1));
+
+		Assert.assertArrayEquals(new int[][] { { 3, 3 }, { -2, 4 } },
+				kClosest(new int[][] { { 3, 3 }, { 5, -1 }, { -2, 4 } }, 2));
+	}
+
+	public int[][] kClosest(int[][] points, int K) {
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < points.length; i++) {
+			int v = (int) (Math.pow(points[i][0], 2) + Math.pow(points[i][1], 2));
+			map.put(i, v);
+		}
+		List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(map.entrySet());
+		Comparator<Map.Entry<Integer, Integer>> valueComparator = new Comparator<Map.Entry<Integer, Integer>>() {
+			@Override
+			public int compare(Entry<Integer, Integer> o1, Entry<Integer, Integer> o2) {
+				return o1.getValue() - o2.getValue();
+			}
+		};
+		Collections.sort(list, valueComparator);
+		int[][] res = new int[K][2];
+		int count = 0;
+		for (int i = 0; i < list.size(); i++) {
+			if (count >= K) {
+				break;
+			}
+			res[count][0] = points[list.get(i).getKey()][0];
+			res[count][1] = points[list.get(i).getKey()][1];
+			count++;
+		}
+		return res;
+	}
 }
