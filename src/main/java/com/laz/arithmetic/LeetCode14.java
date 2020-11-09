@@ -357,6 +357,31 @@ public class LeetCode14 {
 			}
 			return maxprofit;
 		}
+
+		// 动态规划
+		// https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/solution/tan-xin-suan-fa-by-liweiwei1419-2/
+		public int maxProfit2(int[] prices) {
+			int len = prices.length;
+			if (len < 2) {
+				return 0;
+			}
+			// dp[i][j] 表示到下标为 i 的这一天，持股状态为 j 时，我们手上拥有的最大现金数。
+			// 0：持有现金
+			// 1：持有股票
+			// 状态转移：0 → 1 → 0 → 1 → 0 → 1 → 0
+			int[][] dp = new int[len][2];
+
+			dp[0][0] = 0;
+			dp[0][1] = -prices[0];
+
+			for (int i = 1; i < len; i++) {
+				// 这两行调换顺序也是可以的
+				dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+				dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+			}
+			return dp[len - 1][0];
+
+		}
 	}
 
 	// 买卖股票的最佳时机 III
@@ -921,16 +946,17 @@ public class LeetCode14 {
 	public void test20() {
 		Assert.assertEquals(2, numSquares(5));
 	}
-	//https://leetcode-cn.com/problems/perfect-squares/solution/hua-jie-suan-fa-279-wan-quan-ping-fang-shu-by-guan/
+
+	// https://leetcode-cn.com/problems/perfect-squares/solution/hua-jie-suan-fa-279-wan-quan-ping-fang-shu-by-guan/
 	public int numSquares(int n) {
-		    int[] dp = new int[n + 1]; // 默认初始化值都为0
-	        for (int i = 1; i <= n; i++) {
-	            dp[i] = i; // 最坏的情况就是每次+1
-	            for (int j = 1; j * j <= i; j++) { 
-	                dp[i] = Math.min(dp[i], dp[i - j * j] + 1); // 动态转移方程
-	            }
-	        }
-	        return dp[n];
+		int[] dp = new int[n + 1]; // 默认初始化值都为0
+		for (int i = 1; i <= n; i++) {
+			dp[i] = i; // 最坏的情况就是每次+1
+			for (int j = 1; j * j <= i; j++) {
+				dp[i] = Math.min(dp[i], dp[i - j * j] + 1); // 动态转移方程
+			}
+		}
+		return dp[n];
 
 	}
 }
