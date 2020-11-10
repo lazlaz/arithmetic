@@ -179,22 +179,29 @@ public class LeetCode7 {
 	@Test
 	public void test5() {
 		// Assert.assertEquals(3, firstMissingPositive(new int[] {1,2,0}));
-		Assert.assertEquals(1, firstMissingPositive(new int[] { 3, 2, 3 }));
+		Assert.assertEquals(1, new Solution5().firstMissingPositive(new int[] { 3, 2, 3 }));
 	}
-
-	public int firstMissingPositive(int[] nums) {
-		int len = nums.length;
-		for (int i = 0; i < len; i++) {
-			while (nums[i] > 0 && nums[i] <= len && nums[nums[i] - 1] != nums[i]) {
-				swap(nums, nums[i] - 1, i);
+	
+	class Solution5 {
+		public int firstMissingPositive(int[] nums) {
+			int len = nums.length;
+			for (int i = 0; i < len; i++) {
+				while (nums[i] > 0 && nums[i] <= len && nums[nums[i] - 1] != nums[i]) {
+					swap(nums, nums[i] - 1, i);
+				}
 			}
-		}
-		for (int i = 0; i < len; i++) {
-			if (nums[i] != i + 1) {
-				return i + 1;
+			for (int i = 0; i < len; i++) {
+				if (nums[i] != i + 1) {
+					return i + 1;
+				}
 			}
+			return len + 1;
 		}
-		return len + 1;
+		public void swap(int[] nums, int index1, int index2) {
+			int temp = nums[index1];
+			nums[index1] = nums[index2];
+			nums[index2] = temp;
+		}
 	}
 
 	// K 个一组翻转链表
@@ -267,44 +274,46 @@ public class LeetCode7 {
 	@Test
 	public void test8() {
 		int[] nums = new int[] { 1, 5, 1 };
-		nextPermutation(nums);
+		new Solution8().nextPermutation(nums);
 		for (int i : nums) {
 			System.out.print(i + " ");
 		}
 	}
-
-	public void nextPermutation(int[] nums) {
-		if (nums == null || nums.length < 0) {
-			return;
+	//https://leetcode-cn.com/problems/next-permutation/solution/xia-yi-ge-pai-lie-by-leetcode-solution/
+	class Solution8 {
+		public void nextPermutation(int[] nums) {
+			if (nums == null || nums.length < 0) {
+				return;
+			}
+			int i = nums.length - 2;
+			while (i >= 0 && nums[i] >= nums[i + 1]) {
+				i--;
+			}
+			if (i >= 0) {
+				int j = nums.length - 1;
+				while (j > i && nums[j] <= nums[i]) {
+					j--;
+				}
+				swap(nums, i, j);
+			}
+			reverse(nums, i + 1);
+			
 		}
-		int i = nums.length - 2;
-		while (i >= 0 && nums[i] >= nums[i + 1]) {
-			i--;
-		}
-		if (i >= 0) {
-			int j = nums.length - 1;
-			while (j > i && nums[j] <= nums[i]) {
+		
+		public void reverse(int[] nums, int start) {
+			int i = start, j = nums.length - 1;
+			while (i < j) {
+				swap(nums, i, j);
+				i++;
 				j--;
 			}
-			swap(nums, i, j);
 		}
-		reverse(nums, i + 1);
-
-	}
-
-	public void reverse(int[] nums, int start) {
-		int i = start, j = nums.length - 1;
-		while (i < j) {
-			swap(nums, i, j);
-			i++;
-			j--;
+		
+		public void swap(int[] nums, int index1, int index2) {
+			int temp = nums[index1];
+			nums[index1] = nums[index2];
+			nums[index2] = temp;
 		}
-	}
-
-	public void swap(int[] nums, int index1, int index2) {
-		int temp = nums[index1];
-		nums[index1] = nums[index2];
-		nums[index2] = temp;
 	}
 
 	// 串联所有单词的子串
