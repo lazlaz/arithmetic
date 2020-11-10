@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -885,5 +886,115 @@ public class LeetCode16 {
 			count++;
 		}
 		return res;
+	}
+
+	// 最大数
+	@Test
+	public void test17() {
+		Assert.assertEquals("9534330", new Solution17_2().largestNumber(new int[] { 3, 30, 34, 5, 9 }));
+		Assert.assertEquals("10", new Solution17_2().largestNumber(new int[] { 10}));
+		Assert.assertEquals("1", new Solution17_2().largestNumber(new int[] { 1}));
+		Assert.assertEquals("43243432", new Solution17_2().largestNumber(new int[] { 432,43243}));
+		Assert.assertEquals("343234323", new Solution17_2().largestNumber(new int[] { 34323,3432}));
+		Assert.assertEquals("0", new Solution17_2().largestNumber(new int[] { 0,0}));
+	}
+	//https://leetcode-cn.com/problems/largest-number/solution/zui-da-shu-by-leetcode/
+	class Solution17_2 {
+	    private class LargerNumberComparator implements Comparator<String> {
+	        @Override
+	        public int compare(String a, String b) {
+	            String order1 = a + b;
+	            String order2 = b + a;
+	           return order2.compareTo(order1);
+	        }
+	    }
+
+	    public String largestNumber(int[] nums) {
+	        // Get input integers as strings.
+	        String[] asStrs = new String[nums.length];
+	        for (int i = 0; i < nums.length; i++) {
+	            asStrs[i] = String.valueOf(nums[i]);
+	        }
+
+	        // Sort strings according to custom comparator.
+	        Arrays.sort(asStrs, new LargerNumberComparator());
+
+	        // If, after being sorted, the largest number is `0`, the entire number
+	        // is zero.
+	        if (asStrs[0].equals("0")) {
+	            return "0";
+	        }
+
+	        // Build largest number from sorted array.
+	        String largestNumberStr = new String();
+	        for (String numAsStr : asStrs) {
+	            largestNumberStr += numAsStr;
+	        }
+
+	        return largestNumberStr;
+	    }
+	}
+	class Solution17{
+		//思路： 根据1-9建立队列，优先级队列里面根据第一位、第二位这样排序，然后输出队列里面的值
+		public String largestNumber(int[] nums) {
+			//全为0的情况
+			int sum = 0;
+			for (int i=0;i<nums.length;i++) {
+				sum+=nums[i];
+			}
+			if (sum==0) {
+				return "0";
+			}
+			StringBuilder sb = new StringBuilder();
+			Map<Integer,PriorityQueue<Integer>> map = new HashMap<Integer,PriorityQueue<Integer>>();
+			for (int i=0;i<nums.length;i++) {
+				int key = getFirst(nums[i]);
+				PriorityQueue<Integer> queue = map.get(key);
+				if (queue==null) {
+					queue = new PriorityQueue<Integer>(new Comparator<Integer>() {
+						@Override
+						public int compare(Integer o1, Integer o2) {
+							String str1 = String.valueOf(o1);
+							String str2 = String.valueOf(o2);
+							return customCompare(str1,str2);
+						}
+					});
+				}
+				queue.add(nums[i]);
+				map.put(key, queue);
+			}
+			for (int i=9;i>=0;i--) {
+				PriorityQueue<Integer> queue = map.get(i);
+				while (queue!=null && !queue.isEmpty()) {
+					sb.append(queue.poll());
+				}
+			}
+			return sb.toString();
+		}
+		//得到第一位数字
+		private int getFirst(Integer o1) {
+			return Integer.valueOf(String.valueOf(o1).charAt(0)+"");
+		}
+		private int customCompare(String str1, String str2) {
+			int p1=0;
+			while (p1<str1.length()&&p1<str2.length()) {
+				if (str1.charAt(p1) > str2.charAt(p1)) {
+					return -1;
+				}
+				if (str1.charAt(p1) < str2.charAt(p1)) {
+					return 1;
+				}
+				p1++;
+			}
+			if (p1<str1.length()) {
+				String newStr = str1.substring(p1);
+				return customCompare(newStr, str2);
+			}
+			if (p1<str2.length()) {
+				String newStr = str2.substring(p1);
+				return customCompare(str1, newStr);
+			}
+			return 0;
+		}
 	}
 }
