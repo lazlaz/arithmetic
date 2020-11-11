@@ -1202,20 +1202,20 @@ public class LeetCode16 {
 				if (c >= '0' && c <= '9') {
 					sb.append(c);
 				} else {
-					if (sb.length()>0) {
+					if (sb.length() > 0) {
 						list.add(sb.toString());
 					}
 					sb.delete(0, sb.length());
-					if (c == '+' || c == '-' || c==')') {
+					if (c == '+' || c == '-' || c == ')') {
 						while (!stack.isEmpty()) {
 							char op = stack.pop();
-							if (op=='(') {
+							if (op == '(') {
 								stack.push(op);
 								break;
 							}
 							list.add(op + "");
 						}
-						if (c==')' && stack.peek()=='(') {
+						if (c == ')' && stack.peek() == '(') {
 							stack.pop();
 						}
 					}
@@ -1229,7 +1229,7 @@ public class LeetCode16 {
 							}
 						}
 					}
-					if (c!=')') {
+					if (c != ')') {
 						stack.push(c);
 					}
 				}
