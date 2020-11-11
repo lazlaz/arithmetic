@@ -892,92 +892,96 @@ public class LeetCode16 {
 	@Test
 	public void test17() {
 		Assert.assertEquals("9534330", new Solution17_2().largestNumber(new int[] { 3, 30, 34, 5, 9 }));
-		Assert.assertEquals("10", new Solution17_2().largestNumber(new int[] { 10}));
-		Assert.assertEquals("1", new Solution17_2().largestNumber(new int[] { 1}));
-		Assert.assertEquals("43243432", new Solution17_2().largestNumber(new int[] { 432,43243}));
-		Assert.assertEquals("343234323", new Solution17_2().largestNumber(new int[] { 34323,3432}));
-		Assert.assertEquals("0", new Solution17_2().largestNumber(new int[] { 0,0}));
+		Assert.assertEquals("10", new Solution17_2().largestNumber(new int[] { 10 }));
+		Assert.assertEquals("1", new Solution17_2().largestNumber(new int[] { 1 }));
+		Assert.assertEquals("43243432", new Solution17_2().largestNumber(new int[] { 432, 43243 }));
+		Assert.assertEquals("343234323", new Solution17_2().largestNumber(new int[] { 34323, 3432 }));
+		Assert.assertEquals("0", new Solution17_2().largestNumber(new int[] { 0, 0 }));
 	}
-	//https://leetcode-cn.com/problems/largest-number/solution/zui-da-shu-by-leetcode/
+
+	// https://leetcode-cn.com/problems/largest-number/solution/zui-da-shu-by-leetcode/
 	class Solution17_2 {
-	    private class LargerNumberComparator implements Comparator<String> {
-	        @Override
-	        public int compare(String a, String b) {
-	            String order1 = a + b;
-	            String order2 = b + a;
-	           return order2.compareTo(order1);
-	        }
-	    }
-
-	    public String largestNumber(int[] nums) {
-	        // Get input integers as strings.
-	        String[] asStrs = new String[nums.length];
-	        for (int i = 0; i < nums.length; i++) {
-	            asStrs[i] = String.valueOf(nums[i]);
-	        }
-
-	        // Sort strings according to custom comparator.
-	        Arrays.sort(asStrs, new LargerNumberComparator());
-
-	        // If, after being sorted, the largest number is `0`, the entire number
-	        // is zero.
-	        if (asStrs[0].equals("0")) {
-	            return "0";
-	        }
-
-	        // Build largest number from sorted array.
-	        String largestNumberStr = new String();
-	        for (String numAsStr : asStrs) {
-	            largestNumberStr += numAsStr;
-	        }
-
-	        return largestNumberStr;
-	    }
-	}
-	class Solution17{
-		//思路： 根据1-9建立队列，优先级队列里面根据第一位、第二位这样排序，然后输出队列里面的值
-		public String largestNumber(int[] nums) {
-			//全为0的情况
-			int sum = 0;
-			for (int i=0;i<nums.length;i++) {
-				sum+=nums[i];
+		private class LargerNumberComparator implements Comparator<String> {
+			@Override
+			public int compare(String a, String b) {
+				String order1 = a + b;
+				String order2 = b + a;
+				return order2.compareTo(order1);
 			}
-			if (sum==0) {
+		}
+
+		public String largestNumber(int[] nums) {
+			// Get input integers as strings.
+			String[] asStrs = new String[nums.length];
+			for (int i = 0; i < nums.length; i++) {
+				asStrs[i] = String.valueOf(nums[i]);
+			}
+
+			// Sort strings according to custom comparator.
+			Arrays.sort(asStrs, new LargerNumberComparator());
+
+			// If, after being sorted, the largest number is `0`, the entire number
+			// is zero.
+			if (asStrs[0].equals("0")) {
+				return "0";
+			}
+
+			// Build largest number from sorted array.
+			String largestNumberStr = new String();
+			for (String numAsStr : asStrs) {
+				largestNumberStr += numAsStr;
+			}
+
+			return largestNumberStr;
+		}
+	}
+
+	class Solution17 {
+		// 思路： 根据1-9建立队列，优先级队列里面根据第一位、第二位这样排序，然后输出队列里面的值
+		public String largestNumber(int[] nums) {
+			// 全为0的情况
+			int sum = 0;
+			for (int i = 0; i < nums.length; i++) {
+				sum += nums[i];
+			}
+			if (sum == 0) {
 				return "0";
 			}
 			StringBuilder sb = new StringBuilder();
-			Map<Integer,PriorityQueue<Integer>> map = new HashMap<Integer,PriorityQueue<Integer>>();
-			for (int i=0;i<nums.length;i++) {
+			Map<Integer, PriorityQueue<Integer>> map = new HashMap<Integer, PriorityQueue<Integer>>();
+			for (int i = 0; i < nums.length; i++) {
 				int key = getFirst(nums[i]);
 				PriorityQueue<Integer> queue = map.get(key);
-				if (queue==null) {
+				if (queue == null) {
 					queue = new PriorityQueue<Integer>(new Comparator<Integer>() {
 						@Override
 						public int compare(Integer o1, Integer o2) {
 							String str1 = String.valueOf(o1);
 							String str2 = String.valueOf(o2);
-							return customCompare(str1,str2);
+							return customCompare(str1, str2);
 						}
 					});
 				}
 				queue.add(nums[i]);
 				map.put(key, queue);
 			}
-			for (int i=9;i>=0;i--) {
+			for (int i = 9; i >= 0; i--) {
 				PriorityQueue<Integer> queue = map.get(i);
-				while (queue!=null && !queue.isEmpty()) {
+				while (queue != null && !queue.isEmpty()) {
 					sb.append(queue.poll());
 				}
 			}
 			return sb.toString();
 		}
-		//得到第一位数字
+
+		// 得到第一位数字
 		private int getFirst(Integer o1) {
-			return Integer.valueOf(String.valueOf(o1).charAt(0)+"");
+			return Integer.valueOf(String.valueOf(o1).charAt(0) + "");
 		}
+
 		private int customCompare(String str1, String str2) {
-			int p1=0;
-			while (p1<str1.length()&&p1<str2.length()) {
+			int p1 = 0;
+			while (p1 < str1.length() && p1 < str2.length()) {
 				if (str1.charAt(p1) > str2.charAt(p1)) {
 					return -1;
 				}
@@ -986,15 +990,259 @@ public class LeetCode16 {
 				}
 				p1++;
 			}
-			if (p1<str1.length()) {
+			if (p1 < str1.length()) {
 				String newStr = str1.substring(p1);
 				return customCompare(newStr, str2);
 			}
-			if (p1<str2.length()) {
+			if (p1 < str2.length()) {
 				String newStr = str2.substring(p1);
 				return customCompare(str1, newStr);
 			}
 			return 0;
+		}
+	}
+
+	// 自由之路
+	@Test
+	public void test18() {
+		Assert.assertEquals(4, findRotateSteps("godding", "gd"));
+	}
+
+	// https://leetcode-cn.com/problems/freedom-trail/solution/zi-you-zhi-lu-by-leetcode-solution/
+	// https://leetcode-cn.com/problems/freedom-trail/solution/freedom-trail-by-ikaruga/
+	public int findRotateSteps(String ring, String key) {
+		int n = ring.length(), m = key.length();
+		List<Integer>[] pos = new List[26];
+		for (int i = 0; i < 26; ++i) {
+			pos[i] = new ArrayList<Integer>();
+		}
+		for (int i = 0; i < n; ++i) {
+			pos[ring.charAt(i) - 'a'].add(i);
+		}
+		// dp[i][j] 表示从前往后拼写出 {key}的第 i 个字符， ring 的第 j个字符与 12:00方向对齐的最少步数
+		int[][] dp = new int[m][n];
+		for (int i = 0; i < m; ++i) {
+			Arrays.fill(dp[i], 0x3f3f3f);
+		}
+		for (int i : pos[key.charAt(0) - 'a']) {
+			dp[0][i] = Math.min(i, n - i) + 1;
+		}
+		for (int i = 1; i < m; ++i) {
+			for (int j : pos[key.charAt(i) - 'a']) {
+				for (int k : pos[key.charAt(i - 1) - 'a']) {
+					// dp[i][j] 等于到达 前一个i-1的字符后步数+（前一个字符逆时针走货顺时针走叫小的）+按下确认建的一步
+					dp[i][j] = Math.min(dp[i][j], dp[i - 1][k] + Math.min(Math.abs(j - k), n - Math.abs(j - k)) + 1);
+				}
+			}
+		}
+		return Arrays.stream(dp[m - 1]).min().getAsInt();
+	}
+
+	// 基本计算器 II
+	@Test
+	public void test19() {
+//		 Assert.assertEquals(5, new Solution19().calculate("3+5 / 2"));
+//		 Assert.assertEquals(42, new Solution19().calculate("42"));
+//		Assert.assertEquals(-2147483647, new Solution19().calculate("0-2147483647"));
+		// Assert.assertEquals(3, new Solution19().calculate("1+1+1"));
+		Assert.assertEquals(1, new Solution19().calculate("1-1+1"));
+		Assert.assertEquals(8, new Solution19().calculate("14/3*2"));
+	}
+
+	class Solution19 {
+		public int calculate(String s) {
+
+			// 中缀表达式转后缀表达式
+			List<String> list = toPostfixexpression(s);
+			int p = 0;
+			Deque<Integer> stackV = new LinkedList<Integer>();
+			while (p < list.size()) {
+				String c = list.get(p);
+				if (c.equals("*")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b * a));
+				} else if (c.equals("/")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b / a));
+				} else if (c.equals("+")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b + a));
+				} else if (c.equals("-")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b - a));
+				} else {
+					stackV.push(Integer.valueOf(c + ""));
+				}
+				p++;
+			}
+			if (stackV.size() > 1) {
+				StringBuilder sb = new StringBuilder();
+				sb.delete(0, sb.length());
+				while (!stackV.isEmpty()) {
+					sb.insert(0, stackV.pop());
+				}
+				return Integer.valueOf(sb.toString());
+			}
+			return stackV.pop();
+		}
+
+		private List<String> toPostfixexpression(String s) {
+			/**
+			 * 当当前字符为数字时，直接输出； 当当前字符为”(“时，将其压栈；
+			 * 当当前字符为”)”时，则弹出堆栈中最上的”(“之前的所有运算符并输出，然后删除堆栈中的”(” ；
+			 * 当当前字符为运算符时，则依次弹出堆栈中优先级大于等于当前运算符的(到”(“之前为止)，输出，再将当前运算符压栈； 最后弹出所有栈中的内容输出
+			 */
+			Deque<Character> stack = new LinkedList<Character>();
+			int p = 0;
+			List<String> list = new ArrayList<String>();
+			StringBuilder sb = new StringBuilder();
+			while (p < s.length()) {
+				char c = s.charAt(p);
+				if (c == ' ') {
+					p++;
+					continue;
+				}
+				if (c >= '0' && c <= '9') {
+					sb.append(c);
+				} else {
+					list.add(sb.toString());
+					sb.delete(0, sb.length());
+					if (c == '+' || c == '-') {
+						while (!stack.isEmpty()) {
+							char op = stack.pop();
+							list.add(op + "");
+						}
+					}
+					if (c == '*' || c == '/') {
+						while (!stack.isEmpty()) {
+							if (stack.peek() == '*' || stack.peek() == '/') {
+								char op = stack.pop();
+								list.add(op + "");
+							} else {
+								break;
+							}
+						}
+					}
+					stack.push(c);
+				}
+				p++;
+			}
+			if (sb.length() > 0) {
+				list.add(sb.toString());
+			}
+			while (!stack.isEmpty()) {
+				char op = stack.pop();
+				list.add(op + "");
+			}
+			return list;
+		}
+	}
+
+	// 基本计算器
+	@Test
+	public void test20() {
+		Assert.assertEquals(23, new Solution20().calculate("(1+(4+5+2)-3)+(6+8)"));
+	}
+
+	class Solution20 {
+		public int calculate(String s) {
+			// 中缀表达式转后缀表达式
+			List<String> list = toPostfixexpression(s);
+			int p = 0;
+			Deque<Integer> stackV = new LinkedList<Integer>();
+			while (p < list.size()) {
+				String c = list.get(p);
+				if (c.equals("*")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b * a));
+				} else if (c.equals("/")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b / a));
+				} else if (c.equals("+")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b + a));
+				} else if (c.equals("-")) {
+					int a = stackV.pop();
+					int b = stackV.pop();
+					stackV.push((b - a));
+				} else {
+					stackV.push(Integer.valueOf(c + ""));
+				}
+				p++;
+			}
+			if (stackV.size() > 1) {
+				StringBuilder sb = new StringBuilder();
+				sb.delete(0, sb.length());
+				while (!stackV.isEmpty()) {
+					sb.insert(0, stackV.pop());
+				}
+				return Integer.valueOf(sb.toString());
+			}
+			return stackV.pop();
+		}
+
+		private List<String> toPostfixexpression(String s) {
+			Deque<Character> stack = new LinkedList<Character>();
+			int p = 0;
+			List<String> list = new ArrayList<String>();
+			StringBuilder sb = new StringBuilder();
+			while (p < s.length()) {
+				char c = s.charAt(p);
+				if (c == ' ') {
+					p++;
+					continue;
+				}
+				if (c >= '0' && c <= '9') {
+					sb.append(c);
+				} else {
+					if (sb.length()>0) {
+						list.add(sb.toString());
+					}
+					sb.delete(0, sb.length());
+					if (c == '+' || c == '-' || c==')') {
+						while (!stack.isEmpty()) {
+							char op = stack.pop();
+							if (op=='(') {
+								stack.push(op);
+								break;
+							}
+							list.add(op + "");
+						}
+						if (c==')' && stack.peek()=='(') {
+							stack.pop();
+						}
+					}
+					if (c == '*' || c == '/') {
+						while (!stack.isEmpty()) {
+							if (stack.peek() == '*' || stack.peek() == '/') {
+								char op = stack.pop();
+								list.add(op + "");
+							} else {
+								break;
+							}
+						}
+					}
+					if (c!=')') {
+						stack.push(c);
+					}
+				}
+				p++;
+			}
+			if (sb.length() > 0) {
+				list.add(sb.toString());
+			}
+			while (!stack.isEmpty()) {
+				char op = stack.pop();
+				list.add(op + "");
+			}
+			return list;
 		}
 	}
 }
