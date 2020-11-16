@@ -372,19 +372,7 @@ public class LeetCode15 {
 	// https://leetcode-cn.com/problems/queue-reconstruction-by-height/solution/gen-ju-shen-gao-zhong-jian-dui-lie-by-leetcode/
 	public int[][] reconstructQueue(int[][] people) {
 		//根据h与k排序，身高大的在前，身高相同的情况下，k小的在前
-		for (int i = 0; i < people.length; i++) {
-			for (int j = 0; j < people.length - i - 1; j++) {
-				if (people[j][0] < people[j + 1][0]) {
-					int[] temp = people[j];
-					people[j] = people[j + 1];
-					people[j + 1] = temp;
-				} else if (people[j][0] == people[j + 1][0] && people[j][1] > people[j + 1][1]) {
-					int[] temp = people[j];
-					people[j] = people[j + 1];
-					people[j + 1] = temp;
-				}
-			}
-		}
+		Arrays.sort(people,(a,b)->(a[0]==b[0]?a[1]-b[1]:b[0]-a[0]));
 		//根据排序后的k值，在list对应位置出入数组
 		List<int[]> list = new LinkedList<int[]>();
 		for (int i = 0; i < people.length; i++) {
