@@ -91,8 +91,8 @@ public class Competition9 {
 	// 将 x 减到 0 的最小操作数
 	@Test
 	public void test3() {
-		//Assert.assertEquals(2, minOperations(new int[] { 1, 1, 4, 2, 3 }, 5));
-		Assert.assertEquals(5, minOperations(new int[] {3,2,20,1,1,3 }, 10));
+		// Assert.assertEquals(2, minOperations(new int[] { 1, 1, 4, 2, 3 }, 5));
+		Assert.assertEquals(5, minOperations(new int[] { 3, 2, 20, 1, 1, 3 }, 10));
 	}
 
 	// https://leetcode-cn.com/problems/minimum-operations-to-reduce-x-to-zero/solution/java-shuang-bai-qian-zhui-he-hou-zhui-he-twosum-by/
@@ -128,5 +128,99 @@ public class Competition9 {
 		}
 
 		return res == Integer.MAX_VALUE ? -1 : res;
+	}
+
+	// 最大化网格幸福感
+	@Test
+	public void test4() {
+		Assert.assertEquals(240, new Solution4().getMaxGridHappiness(2, 3, 1, 2));
+	}
+
+	// https://leetcode-cn.com/problems/maximize-grid-happiness/solution/zui-da-hua-wang-ge-xing-fu-gan-by-zerotrac2/
+	class Solution4 {
+		// 预处理：每一个 mask 的三进制表示
+		int mask_span[][] = new int[729][6];
+		// dp[位置][轮廓线上的 mask][剩余的内向人数][剩余的外向人数]
+		int dp[][][][] = new int[25][729][7][7];
+		// 预处理：每一个 mask 去除最高位、乘 3、加上新的最低位的结果
+		int truncate[][] = new int[729][3];
+		// n3 = n^3
+		int m, n, n3;
+
+		public int getMaxGridHappiness(int m, int n, int nx, int wx) {
+			this.m = m;
+			this.n = n;
+			this.n3 = (int) Math.pow(3, n);
+
+			// 预处理
+			int highest = this.n3 / 3;
+			for (int mask = 0; mask < n3; ++mask) {
+				for (int mask_tmp = mask, i = 0; i < n; ++i) {
+					// 与方法一不同的是，这里需要反过来存储，这样 [0] 对应最高位，[n-1] 对应最低位
+					mask_span[mask][n - i - 1] = mask_tmp % 3;
+					mask_tmp /= 3;
+				}
+				truncate[mask][0] = mask % highest * 3;
+				truncate[mask][1] = mask % highest * 3 + 1;
+				truncate[mask][2] = mask % highest * 3 + 2;
+			}
+			//初始化dp值为-1
+			for (int i=0;i<dp.length;i++) {
+				for (int j=0;j<dp[i].length;j++) {
+					for (int w=0;w<dp[i][j].length;w++) {
+						for (int z=0;z<dp[i][j][w].length;z++) {
+							dp[i][j][w][z] = -1;
+						}
+					}
+				}
+			}
+			return dfs(0, 0, nx, wx);
+		}
+
+		// 如果 x 和 y 相邻，需要加上的分数
+		int calc(int x, int y) {
+			if (x == 0 || y == 0) {
+				return 0;
+			}
+			// 例如两个内向的人，每个人要 -30，一共 -60，下同
+			if (x == 1 && y == 1) {
+				return -60;
+			}
+			if (x == 2 && y == 2) {
+				return 40;
+			}
+			return -10;
+		}
+
+		// dfs(位置，轮廓线上的 mask，剩余的内向人数，剩余的外向人数)
+		int dfs(int pos, int borderline, int nx, int wx) {
+	        // 边界条件：如果已经处理完，或者没有人了
+	        if (pos == m * n || nx + wx == 0) {
+	            return 0;
+	        }
+	        // 记忆化
+	        if (dp[pos][borderline][nx][wx] != -1) {
+	            return dp[pos][borderline][nx][wx];
+	        }
+	        
+	        int x = pos / n, y = pos % n;
+	        
+	        // 什么都不做
+	        int best = dfs(pos + 1, truncate[borderline][0], nx, wx);
+	        // 放一个内向的人
+	        if (nx > 0) {
+	            best = Math.max(best, 120 + calc(1, mask_span[borderline][0]) 
+	                                 + (y == 0 ? 0 : calc(1, mask_span[borderline][n - 1])) 
+	                                 + dfs(pos + 1, truncate[borderline][1], nx - 1, wx));
+	        }
+	        // 放一个外向的人
+	        if (wx > 0) {
+	            best = Math.max(best, 40 + calc(2, mask_span[borderline][0]) 
+	                                + (y == 0 ? 0 : calc(2, mask_span[borderline][n - 1])) 
+	                                + dfs(pos + 1, truncate[borderline][2], nx, wx - 1));
+	        }
+
+	        return dp[pos][borderline][nx][wx] = best;
+	    }
 	}
 }
