@@ -424,11 +424,28 @@ public class LeetCode16 {
 	// 加油站
 	@Test
 	public void test8() {
-		Assert.assertEquals(3, canCompleteCircuit(new int[] { 1, 2, 3, 4, 5 }, new int[] { 3, 4, 5, 1, 2 }));
-		Assert.assertEquals(-1, canCompleteCircuit(new int[] { 2, 3, 4 }, new int[] { 3, 4, 3 }));
-		Assert.assertEquals(4, canCompleteCircuit(new int[] { 5, 1, 2, 3, 4 }, new int[] { 4, 4, 1, 5, 1 }));
+		Assert.assertEquals(3, canCompleteCircuit2(new int[] { 1, 2, 3, 4, 5 }, new int[] { 3, 4, 5, 1, 2 }));
+		Assert.assertEquals(-1, canCompleteCircuit2(new int[] { 2, 3, 4 }, new int[] { 3, 4, 3 }));
+		Assert.assertEquals(4, canCompleteCircuit2(new int[] { 5, 1, 2, 3, 4 }, new int[] { 4, 4, 1, 5, 1 }));
 	}
+	//https://leetcode-cn.com/problems/gas-station/solution/shi-yong-tu-de-si-xiang-fen-xi-gai-wen-ti-by-cyayc/
+	public int canCompleteCircuit2(int[] gas, int[] cost) {
+	    int len = gas.length;
+	    int spare = 0;
+	    int minSpare = Integer.MAX_VALUE;
+	    int minIndex = 0;
 
+	    for (int i = 0; i < len; i++) {
+	        spare += gas[i] - cost[i];
+	        if (spare < minSpare) {
+	            minSpare = spare;
+	            minIndex = i;
+	        }
+	    }
+
+	    return spare < 0 ? -1 : (minIndex + 1) % len;
+	}
+	
 	public int canCompleteCircuit(int[] gas, int[] cost) {
 		int[] sum = new int[gas.length];
 		// 前缀和
