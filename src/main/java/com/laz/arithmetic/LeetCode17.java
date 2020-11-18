@@ -9,11 +9,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode17 {
 	// 按奇偶排序数组 II
@@ -409,7 +412,7 @@ public class LeetCode17 {
 		public void wiggleSort(int[] nums) {
 			int n = nums.length;
 			Arrays.sort(nums);
-			int[] A = new int[n %2==0?n/2:n/2+1];
+			int[] A = new int[n % 2 == 0 ? n / 2 : n / 2 + 1];
 			int[] B = new int[n / 2];
 			System.arraycopy(nums, 0, A, 0, A.length);
 			System.arraycopy(nums, A.length, B, 0, B.length);
@@ -418,6 +421,61 @@ public class LeetCode17 {
 			for (int i = 0; i < n; i++) {
 				nums[i] = i % 2 == 0 ? A[indexA--] : B[indexB--];
 			}
+		}
+	}
+
+	// 天际线问题
+	@Test
+	public void test6() {
+		List<List<Integer>> res = new Solution6().getSkyline(new int[][] {
+			{2,9,10},{3,7,15},{5,12,12},{15,20,10},{19,24,8}
+		});
+		System.out.println(Joiner.on(",").join(res));
+	}
+	// https://leetcode-cn.com/problems/the-skyline-problem/solution/218tian-ji-xian-wen-ti-sao-miao-xian-fa-by-ivan_al/
+	class Solution6 {
+		public List<List<Integer>> getSkyline(int[][] buildings) {
+			// x轴从小到大排序，如果x相等，则按照高度从低到高排序
+			PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+			for (int[] building : buildings) {
+				// 左端点和高度入队，高度为负值说明是左端点
+				pq.offer(new int[] { building[0], -building[2] });
+				// 右端点和高度入队
+				pq.offer(new int[] { building[1], building[2] });
+			}
+
+			List<List<Integer>> res = new ArrayList<>();
+
+			// 降序排列
+			TreeMap<Integer, Integer> heights = new TreeMap<>((a, b) -> b - a);
+			heights.put(0, 1);
+			int left = 0, height = 0;
+
+			while (!pq.isEmpty()) {
+				int[] arr = pq.poll();
+				// 如果是左端点
+				if (arr[1] < 0) {
+					// 高度 --> 高度 + 1
+					heights.put(-arr[1], heights.getOrDefault(-arr[1], 0) + 1);
+				}
+				// 右端点
+				else {
+					// 高度 --> 高度 - 1
+					heights.put(arr[1], heights.get(arr[1]) - 1);
+					// 说明左右端点都已经遍历完
+					if (heights.get(arr[1]) == 0)
+						heights.remove(arr[1]);
+				}
+				// heights是以降序的方式排列的，所以以下会获得最大高度
+				int maxHeight = heights.keySet().iterator().next();
+				// 如果最大高度不变，则说明当前建筑高度在一个比它高的建筑下面，不做操作
+				if (maxHeight != height) {
+					left = arr[0];
+					height = maxHeight;
+					res.add(Arrays.asList(left, height));
+				}
+			}
+			return res;
 		}
 	}
 
