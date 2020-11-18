@@ -321,87 +321,104 @@ public class LeetCode17 {
 	public void test5() {
 //		{
 //			int[] res = new int[] { 1, 5, 1, 1, 6, 4 };
-//			new Solution5().wiggleSort(res);
+//			new Solution5_2().wiggleSort(res);
 //			Assert.assertArrayEquals(new int[] { 1, 6, 1, 5, 1, 4 }, res);
 //		}
 //
 //		{
 //			int[] res = new int[] { 1, 3, 2, 2, 3, 1 };
-//			new Solution5().wiggleSort(res);
+//			new Solution5_2().wiggleSort(res);
 //			Assert.assertArrayEquals(new int[] { 2, 3, 1, 3, 1, 2 }, res);
 //		}
 //		{
 //			int[] res = new int[] { 4, 5, 5, 6 };
-//			new Solution5().wiggleSort(res);
+//			new Solution5_2().wiggleSort(res);
 //			Assert.assertArrayEquals(new int[] { 5, 6, 4, 5 }, res);
 //		}
 		{
-			int[] res = new int[] { 2,1,1,2,1,3,3,3,1,3,1,3,2 };
-			new Solution5().wiggleSort(res);
-			Assert.assertArrayEquals(new int[] { 2,3,2,3,1,3,1,3,1,3,1,2,1 }, res);
+			int[] res = new int[] { 2, 1, 1, 2, 1, 3, 3, 3, 1, 3, 1, 3, 2 };
+			new Solution5_2().wiggleSort(res);
+			Assert.assertArrayEquals(new int[] { 2, 3, 2, 3, 1, 3, 1, 3, 1, 3, 1, 2, 1 }, res);
 		}
-		
+
 	}
 
 	// https://leetcode-cn.com/problems/wiggle-sort-ii/solution/yi-bu-yi-bu-jiang-shi-jian-fu-za-du-cong-onlognjia/
-	//https://leetcode-cn.com/problems/wiggle-sort-ii/solution/bai-dong-pai-xu-ii-jie-ti-bao-gao-shi-jian-fu-za-d/
+	// https://leetcode-cn.com/problems/wiggle-sort-ii/solution/bai-dong-pai-xu-ii-jie-ti-bao-gao-shi-jian-fu-za-d/
 	class Solution5 {
-		int n=-1;
-	    public void wiggleSort(int[] nums) {
-	        //找到中位数索引
-	        int midIndex = this.quickSelect(nums,0,nums.length-1);
-	        //找到中位数
-	        int mid = nums[midIndex];
-	        n=nums.length;
-	        //三分法
-	        for(int i=0,j=0,k=nums.length-1;j<=k;){
-	            if(nums[V(j)]>mid){
-	                swap(nums,V(j++),V(i++));
-	            }else if(nums[V(j)]<mid){
-	                swap(nums,V(j),V(k--));
-	            }else{
-	                j++;
-	            }
-	        }
-	    }
-	    
-	    public int V(int i){
-	        return (1+2*(i)) % (n|1);
-	    }
-	    
-	    public void swap(int[] nums,int i,int j){
-	        int t = nums[i];
-	        nums[i]=nums[j];
-	        nums[j]=t;
-	    }
-	    
-	    public int quickSelect(int[] nums,int left,int right){
-	        int pivot = nums[left];
-	        int l = left;
-	        int r = right;
-	        while(l<r){
-	            while(l<r&&nums[r]>=pivot){
-	                r--;
-	            }
-	            if(l<r){
-	                nums[l++]=nums[r];
-	            }
-	            while(l<r&&nums[l]<=pivot){
-	                l++;
-	            }
-	            if(l<r){
-	                nums[r--]=nums[l];
-	            }
-	        }
-	        nums[l]=pivot;
-	        if(l==nums.length/2){
-	            return l;
-	        }else if(l>nums.length/2){
-	            return this.quickSelect(nums,left,l-1);
-	        }else{
-	            return this.quickSelect(nums,l+1,right);
-	        }
-	    }
+		int n = -1;
+
+		public void wiggleSort(int[] nums) {
+			// 找到中位数索引
+			int midIndex = this.quickSelect(nums, 0, nums.length - 1);
+			// 找到中位数
+			int mid = nums[midIndex];
+			n = nums.length;
+			// 三分法
+			for (int i = 0, j = 0, k = nums.length - 1; j <= k;) {
+				if (nums[V(j)] > mid) {
+					swap(nums, V(j++), V(i++));
+				} else if (nums[V(j)] < mid) {
+					swap(nums, V(j), V(k--));
+				} else {
+					j++;
+				}
+			}
+		}
+
+		public int V(int i) {
+			return (1 + 2 * (i)) % (n | 1);
+		}
+
+		public void swap(int[] nums, int i, int j) {
+			int t = nums[i];
+			nums[i] = nums[j];
+			nums[j] = t;
+		}
+
+		public int quickSelect(int[] nums, int left, int right) {
+			int pivot = nums[left];
+			int l = left;
+			int r = right;
+			while (l < r) {
+				while (l < r && nums[r] >= pivot) {
+					r--;
+				}
+				if (l < r) {
+					nums[l++] = nums[r];
+				}
+				while (l < r && nums[l] <= pivot) {
+					l++;
+				}
+				if (l < r) {
+					nums[r--] = nums[l];
+				}
+			}
+			nums[l] = pivot;
+			if (l == nums.length / 2) {
+				return l;
+			} else if (l > nums.length / 2) {
+				return this.quickSelect(nums, left, l - 1);
+			} else {
+				return this.quickSelect(nums, l + 1, right);
+			}
+		}
+	}
+
+	class Solution5_2 {
+		public void wiggleSort(int[] nums) {
+			int n = nums.length;
+			Arrays.sort(nums);
+			int[] A = new int[n %2==0?n/2:n/2+1];
+			int[] B = new int[n / 2];
+			System.arraycopy(nums, 0, A, 0, A.length);
+			System.arraycopy(nums, A.length, B, 0, B.length);
+			int indexA = A.length - 1;
+			int indexB = B.length - 1;
+			for (int i = 0; i < n; i++) {
+				nums[i] = i % 2 == 0 ? A[indexA--] : B[indexB--];
+			}
+		}
 	}
 
 }
