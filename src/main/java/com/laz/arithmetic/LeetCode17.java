@@ -595,21 +595,55 @@ public class LeetCode17 {
 	public void test9() {
 //		Assert.assertEquals(true, increasingTriplet(new int[] { 1, 2, 3, 4, 5 }));
 //		Assert.assertEquals(false, increasingTriplet(new int[] { 5,4,3,2,1 }));
-		//Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
-		Assert.assertEquals(true, increasingTriplet(new int[] {5,6,1,5,5,2,5,4 }));
+		// Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
+		Assert.assertEquals(true, increasingTriplet(new int[] { 5, 6, 1, 5, 5, 2, 5, 4 }));
 	}
-	//https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
+
+	// https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
 	public boolean increasingTriplet(int[] nums) {
-		int small = Integer.MAX_VALUE,mid = Integer.MAX_VALUE;
-		for (int i=0;i<nums.length;i++) {
-			if (nums[i]<=small) {
-				small=nums[i];
-			} else if (nums[i]<=mid) {
-				mid=nums[i];
+		int small = Integer.MAX_VALUE, mid = Integer.MAX_VALUE;
+		for (int i = 0; i < nums.length; i++) {
+			if (nums[i] <= small) {
+				small = nums[i];
+			} else if (nums[i] <= mid) {
+				mid = nums[i];
 			} else {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	// 反转链表
+	@Test
+	public void test10() {
+		ListNode head = new ListNode(1);
+		ListNode node1 = new ListNode(2);
+		ListNode node2 = new ListNode(3);
+		ListNode node3 = new ListNode(4);
+		ListNode node4 = new ListNode(5);
+		head.next = node1;
+		node1.next = node2;
+		node2.next = node3;
+		node3.next = node4;
+		head = reverseList(head);
+		while (head.next != null) {
+			System.out.print(head.val + "->");
+			head = head.next;
+		}
+		System.out.print(head.val);
+	}
+
+//https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/
+	public ListNode reverseList(ListNode head) {
+		ListNode prev = null;
+		ListNode curr = head;
+		while (curr != null) {
+			ListNode nextTemp = curr.next;
+			curr.next = prev;
+			prev = curr;
+			curr = nextTemp;
+		}
+		return prev;
 	}
 }
