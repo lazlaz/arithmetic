@@ -560,13 +560,13 @@ public class LeetCode17 {
 		private PriorityQueue<Integer> minheap;
 
 		/**
-	     * initialize your data structure here.
-	     */
-	    public MedianFinder2() {
-	        count = 0;
-	        maxheap = new PriorityQueue<>((x, y) -> y - x);
-	        minheap = new PriorityQueue<>();
-	    }
+		 * initialize your data structure here.
+		 */
+		public MedianFinder2() {
+			count = 0;
+			maxheap = new PriorityQueue<>((x, y) -> y - x);
+			minheap = new PriorityQueue<>();
+		}
 
 		public void addNum(int num) {
 			count += 1;
@@ -588,5 +588,27 @@ public class LeetCode17 {
 			}
 		}
 
+	}
+
+	// 递增的三元子序列(不一定连续)
+	@Test
+	public void test9() {
+//		Assert.assertEquals(true, increasingTriplet(new int[] { 1, 2, 3, 4, 5 }));
+//		Assert.assertEquals(false, increasingTriplet(new int[] { 5,4,3,2,1 }));
+		Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
+	}
+	//https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
+	public boolean increasingTriplet(int[] nums) {
+		int small = Integer.MAX_VALUE,mid = Integer.MAX_VALUE;
+		for (int i=0;i<nums.length;i++) {
+			if (nums[i]<=small) {
+				small=nums[i];
+			} else if (nums[i]<=mid) {
+				mid=nums[i];
+			} else {
+				return true;
+			}
+		}
+		return false;
 	}
 }
