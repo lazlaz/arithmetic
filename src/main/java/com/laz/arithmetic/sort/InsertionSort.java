@@ -13,20 +13,10 @@ public class InsertionSort {
 	}
 
 	public void insertionSort(int[] arr) {
-		int temp;
-
-		for (int i = 1; i < arr.length; i++) {
-
-			// 待排元素小于有序序列的最后一个元素时，向前插入
-			if (arr[i] < arr[i - 1]) {
-				temp = arr[i];
-				for (int j = i; j >= 0; j--) {
-					if (j > 0 && arr[j - 1] > temp) {
-						arr[j] = arr[j - 1];
-					} else {
-						arr[j] = temp;
-						break;
-					}
+		for (int i=1;i<arr.length;i++) {
+			for (int j=i;j>0;j--) {
+				if (arr[j]<arr[j-1]) {
+					SortUtils.swap(arr, j, j-1);
 				}
 			}
 		}
