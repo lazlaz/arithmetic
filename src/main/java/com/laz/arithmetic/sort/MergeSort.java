@@ -10,9 +10,9 @@ import org.junit.Test;
 public class MergeSort {
 	@Test
 	public void test() {
-		int[] arr = new int[] { 3, 23, 45, 5, 2, 2, 5, 2, 5 };
+		int[] arr = new int[] { 3, 23, 45, 5, 2, 2, 5, 2 };
 		new MergeSort().mergeSort(arr);
-		Assert.assertArrayEquals(new int[] { 2, 2, 2, 3, 5, 5, 5, 23, 45 }, arr);
+		Assert.assertArrayEquals(new int[] { 2, 2, 2, 3, 5, 5, 23, 45 }, arr);
 	}
 
 	public void mergeSort(int[] arr) {
@@ -29,9 +29,11 @@ public class MergeSort {
 			return;
 		}
 		// 先拆分
+		//System.out.println("拆分  "+start+" : " + end);
 		int len = end - start, mid = start + (len >> 1);
 		divide(arr, result, start, mid);
 		divide(arr, result, mid + 1, end);
+		//System.out.println("合并  "+start+" : " + end);
 		// 合并
 		merge(arr, result, start, mid, end);
 	}
