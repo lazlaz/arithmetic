@@ -478,5 +478,30 @@ public class LeetCode17 {
 			return res;
 		}
 	}
+	
+	//移动零
+	@Test
+	public void test7() {
+		int[] res = new int[] {0,1,0,3,12};
+		new Solution7().moveZeroes(res);
+		Assert.assertArrayEquals(new int[] {1,3,12,0,0}, res);
+	}
+	class Solution7{
+		public void moveZeroes(int[] nums) {
+			int n = nums.length;
+			int index = n-1;
+			for (int i=n-1;i>=0;i--) {
+				if (nums[i] == 0) {
+					//移动
+					for (int j=i;j<index;j++) {
+						nums[j]=nums[j+1];
+					}
+					nums[index] = 0;
+					index--;
+				}
+			}
+		}
+		
+	}
 
 }
