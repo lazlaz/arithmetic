@@ -595,7 +595,8 @@ public class LeetCode17 {
 	public void test9() {
 //		Assert.assertEquals(true, increasingTriplet(new int[] { 1, 2, 3, 4, 5 }));
 //		Assert.assertEquals(false, increasingTriplet(new int[] { 5,4,3,2,1 }));
-		Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
+		//Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
+		Assert.assertEquals(true, increasingTriplet(new int[] {5,6,1,5,5,2,5,4 }));
 	}
 	//https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
 	public boolean increasingTriplet(int[] nums) {
