@@ -2,14 +2,23 @@ package com.laz.arithmetic.sort;
 
 import java.util.Random;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 //快速排序
 public class QuickSort {
-	public static void main(String[] args) {
-		int[] arr = new int[] {2,2,2,5,7,43,3};
-		new QuickSort().quickSort(arr);
-		for (int i : arr) {
-			System.out.print(i+" ");
-		}
+	@Test
+	public void test(){
+		{
+			int[] arr = new int[] {2,2,2,5,7,43,3};
+			quickSort(arr);
+			Assert.assertArrayEquals(new int[] {2,2,2,3,5,7,43}, arr);
+		}	
+		{
+			int[] arr = new int[] {5,4,3,2,1};
+			quickSort(arr);
+			Assert.assertArrayEquals(new int[] {1,2,3,4,5}, arr);
+		}	
 	}
 
 	public void quickSort(int[] arr) {
@@ -19,35 +28,35 @@ public class QuickSort {
 		quickSort(arr,0,arr.length-1);
 	}
 
-	private void quickSort(int[] arr, int l, int r) {
-		if (l<r) {
-			//把数组中随机的一个元素与最后一个元素交换，这样以最后一个元素作为基准值实际上就是以数组中随机的一个元素作为基准值
-			swap(arr,new Random().nextInt(r-l+1)+l,r);
-			int[] p = partition(arr,l,r);
-			quickSort(arr,l,p[0]);
-			quickSort(arr,p[1],r);
+	private void quickSort(int[] arr, int start, int end) {
+		if (start>=end) {
+			return;
 		}
-		
+		//把数组中随机的一个元素与第一个元素交换，这样以第一个元素作为基准值实际上就是以数组中随机的一个元素作为基准值
+		SortUtils.swap(arr,new Random().nextInt(end-start+1)+start,start);
+		int index = partition(arr,start,end);
+		quickSort(arr,start,index-1);
+		quickSort(arr,index+1,end);
 	}
-	public int[] partition(int[] arr,int l,int r) {
-		int basic = arr[r];
-		//l-1 r+1来处理等于的情况
-		int less = l-1;
-		int more = r+1;
-		while (l<more) {
-			if (arr[l]<basic) {
-				swap(arr,++less,l++);
-			} else if (arr[l]>basic) {
-				swap(arr,--more,l);
-			} else {
-				l++;
+
+	private int partition(int[] arr, int start, int end) {
+		int i=start,j=end+1;
+		int ref = arr[start]; //切分参考值
+		while (i<j) {
+			//右移动i，找到大于等于ref的值
+			while (arr[++i]<ref && i<end) {
 			}
+			//左移动j，找到小于等于ref的值
+			while (arr[--j]>ref && j>start) {
+			}
+			if (i>=j) {
+				break;
+			}
+			SortUtils.swap(arr, i, j);
 		}
-		return new int[] {less,more};
+		SortUtils.swap(arr, start, j);
+		return j;
 	}
-	public void swap(int[] arr, int i,int j) {
-		int temp = arr[i];
-		arr[i] = arr[j];
-		arr[j] = temp;
-	}
+
+	
 }
