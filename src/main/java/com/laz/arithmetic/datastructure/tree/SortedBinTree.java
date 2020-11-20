@@ -7,8 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * 排序二叉树
- *
+ * 排序二叉树 https://www.cnblogs.com/yahuian/p/10813614.html
  */
 public class SortedBinTree<T extends Comparable> {
 	private static class Node {
@@ -51,61 +50,73 @@ public class SortedBinTree<T extends Comparable> {
 		root = new Node(data, null, null, null);
 	}
 
-	public void remove(T data) {
+	private Node getSuccessor(Node delNode) // 寻找要删除节点的中序后继结点
+	{
+		Node successor = delNode;
+		Node current = delNode.right;
+
+		// 用来寻找后继结点
+		while (current != null) {
+			successor = current;
+			current = current.left;
+		}
+		// 如果后继结点为要删除结点的右子树的左子，需要预先调整一下要删除结点的右子树
+		if (successor != delNode.right) {
+			successor.parent.left = successor.right;
+			successor.right = delNode.right;
+		}
+		return successor;
+	}
+
+	public boolean delete(T data) // 删除结点
+	{
 		Node target = getNode(data);
 		if (target == null) {
-			return;
+			return false;
 		}
-		
-		if (target.left == null && target.right == null) {//如果该节点无左右节点
+		// 要删除结点为叶子结点
+		if (target.right == null && target.left == null) {
 			if (target == root) {
-				root = null;
+				root = null; // 整棵树清空
 			} else {
-				if (target == target.parent.left) {
+				if (target.parent.left == target) {
 					target.parent.left = null;
 				} else {
 					target.parent.right = null;
 				}
 			}
-		} else if (target.left != null && target.right == null) { //有左节点无右节点，左节点变为父的节点
-			if (target == root) {
-				root = target.left;
-			} else {
-				if (target == target.parent.left) {
-					target.parent.left = target.left;
-				} else {
-					target.parent.right = target.left;
-				}
-				target.left.parent = target.parent;
-			}
-		} else if (target.left == null && target.right != null) { //有右节点无左节点，右节点变为父的节点
-			if (target == root) {
-				root = target.right;
-			} else {
-				if (target == target.parent.left) {
-					target.parent.left = target.right;
-				} else {
-					target.parent.right = target.right;
-				}
-				target.right.parent = target.parent;
-			}
-		} else {// 左右子树都不为空，用小于删除节点的最大子节点代替它
-			Node leftMaxNode = target.left;
-			while (leftMaxNode.right != null) {
-				leftMaxNode = leftMaxNode.right;
-			}
-			leftMaxNode.parent.right = null;
-			leftMaxNode.parent = target.parent;
-			if (target == target.parent.left) {
-				target.parent.left = leftMaxNode;
-			} else {
-				target.parent.right = leftMaxNode;
-			}
-			leftMaxNode.left = target.left;
-			leftMaxNode.right = target.right;
-			target.parent = target.left = target.right = null;
+			return true;
 		}
-		target = null;
+		// 要删除结点有一个子结点
+		else if (target.left == null) {
+			if (target == root)
+				root = target.right;
+			else if (target.parent.right == target)
+				target.parent.right = target.right;
+			else
+				target.parent.left = target.right;
+			return true;
+		} else if (target.right == null) {
+			if (target == root)
+				root = target.left;
+			else if (target.parent.right == target)
+				target.parent.right = target.left;
+			else
+				target.parent.left = target.left;
+			return true;
+		}
+		// 要删除结点有两个子结点
+		else {
+			Node successor = getSuccessor(target); // 找到要删除结点的后继结点
+			if (target == root)
+				root = successor;
+			else if (target.parent.right == target)
+				target.parent.right = successor;
+			else
+				target.parent.left = successor;
+			successor.left = target.left;
+			return true;
+		}
 	}
 
 	public void insert(T data) {

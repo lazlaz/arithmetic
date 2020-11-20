@@ -14,8 +14,9 @@ public class SortedBinTreeTest {
 		tree.insert(15);
 		tree.insert(30);
 		tree.insert(4);
+		tree.insert(13);
 		System.out.println(tree.inOrder());
-		tree.remove(20);
+		tree.delete(10);
 		System.out.println(tree.inOrder());
 
 	}
