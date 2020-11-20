@@ -646,4 +646,51 @@ public class LeetCode17 {
 		}
 		return prev;
 	}
+	
+	//对链表进行插入排序
+	@Test
+	public void test11() {
+		ListNode head =new ListNode(4);
+		ListNode head2 =new ListNode(2);
+		ListNode head3 =new ListNode(1);
+		ListNode head4 =new ListNode(3);
+		
+		head.next = head2;
+		head2.next = head3;
+		head3.next = head4;
+		
+		ListNode node = insertionSortList(head);
+		Utils.printListNode(node);
+	}
+    public ListNode insertionSortList(ListNode head) {
+    	if (head==null) {
+    		return null;
+    	}
+    	ListNode tail = new ListNode(-1);
+    	tail.next = null;
+    	while(head!=null) {
+    		ListNode curr = head;
+    		//进行插入排序
+    		ListNode h = tail.next;
+    		ListNode last = tail;
+    		while (h!=null) {
+    			if (curr.val<h.val) {
+    				head = curr.next;
+    				ListNode tmp = last.next;
+    				last.next = curr;
+    				curr.next = tmp;
+    				break;
+    			}
+    			last = h;
+    			h = h.next;
+    		}
+    		//找完了还没有找到比curr大的，连接到后面
+    		if (h==null) {
+    			head = curr.next;
+    			last.next = curr;
+    			curr.next=null;
+    		}
+    	}
+    	return tail.next;
+    }
 }

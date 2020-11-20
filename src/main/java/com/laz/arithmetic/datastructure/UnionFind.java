@@ -32,7 +32,6 @@ public class UnionFind {
 	public void unionElements(int firstElement, int secondElement) {
 		int firstRoot = find(firstElement);
 		int secondRoot = find(secondElement);
-
 		//如果已经属于同一个集合了，就不用再合并了。
         if (firstRoot == secondRoot) {
             return;
@@ -61,7 +60,6 @@ public class UnionFind {
 	public static void main(String[] args) {
 		int n = 10;
 		UnionFind union = new UnionFind(n);
-
 		System.out.println("初始parent：");
 		union.printArr(union.parent);
 		System.out.println("初始height：");
