@@ -427,11 +427,11 @@ public class LeetCode17 {
 	// 天际线问题
 	@Test
 	public void test6() {
-		List<List<Integer>> res = new Solution6().getSkyline(new int[][] {
-			{2,9,10},{3,7,15},{5,12,12},{15,20,10},{19,24,8}
-		});
+		List<List<Integer>> res = new Solution6()
+				.getSkyline(new int[][] { { 2, 9, 10 }, { 3, 7, 15 }, { 5, 12, 12 }, { 15, 20, 10 }, { 19, 24, 8 } });
 		System.out.println(Joiner.on(",").join(res));
 	}
+
 	// https://leetcode-cn.com/problems/the-skyline-problem/solution/218tian-ji-xian-wen-ti-sao-miao-xian-fa-by-ivan_al/
 	class Solution6 {
 		public List<List<Integer>> getSkyline(int[][] buildings) {
@@ -478,30 +478,172 @@ public class LeetCode17 {
 			return res;
 		}
 	}
-	
-	//移动零
+
+	// 移动零
 	@Test
 	public void test7() {
-		int[] res = new int[] {0,1,0,3,12};
+		int[] res = new int[] { 0, 1, 0, 3, 12 };
 		new Solution7().moveZeroes(res);
-		Assert.assertArrayEquals(new int[] {1,3,12,0,0}, res);
+		Assert.assertArrayEquals(new int[] { 1, 3, 12, 0, 0 }, res);
 	}
-	class Solution7{
+
+	class Solution7 {
 		public void moveZeroes(int[] nums) {
 			int n = nums.length;
-			int index = n-1;
-			for (int i=n-1;i>=0;i--) {
+			int index = n - 1;
+			for (int i = n - 1; i >= 0; i--) {
 				if (nums[i] == 0) {
-					//移动
-					for (int j=i;j<index;j++) {
-						nums[j]=nums[j+1];
+					// 移动
+					for (int j = i; j < index; j++) {
+						nums[j] = nums[j + 1];
 					}
 					nums[index] = 0;
 					index--;
 				}
 			}
 		}
-		
+
 	}
 
+	// 数据流的中位数
+	@Test
+	public void test8() {
+		MedianFinder2 mf = new MedianFinder2();
+		mf.addNum(6);
+		mf.addNum(10);
+		Assert.assertEquals(8.0d, mf.findMedian(), 0.00001);
+		mf.addNum(2);
+		mf.addNum(1);
+		mf.addNum(3);
+		mf.addNum(4);
+		Assert.assertEquals(3.5d, mf.findMedian(), 0.00001);
+	}
+
+	class MedianFinder {
+		private List<Integer> res;
+
+		/** initialize your data structure here. */
+		public MedianFinder() {
+			res = new ArrayList<Integer>();
+		}
+
+		public void addNum(int num) {
+			int index = res.size();
+			for (int i = res.size() - 1; i >= 0; i--) {
+				if (num < res.get(i)) {
+					index = i;
+				}
+			}
+			res.add(index, num);
+		}
+
+		public double findMedian() {
+			double v = 0;
+			if (res.size() % 2 != 0) {
+				v = res.get(res.size() / 2);
+			} else {
+				int a = res.size() / 2 - 1;
+				int b = res.size() / 2;
+				v = (res.get(a) + res.get(b)) / 2d;
+			}
+			return v;
+		}
+	}
+
+	// https://leetcode-cn.com/problems/find-median-from-data-stream/solution/you-xian-dui-lie-python-dai-ma-java-dai-ma-by-liwe/
+	class MedianFinder2 {
+		/**
+		 * 当前大顶堆和小顶堆的元素个数之和
+		 */
+		private int count;
+		private PriorityQueue<Integer> maxheap;
+		private PriorityQueue<Integer> minheap;
+
+		/**
+		 * initialize your data structure here.
+		 */
+		public MedianFinder2() {
+			count = 0;
+			maxheap = new PriorityQueue<>((x, y) -> y - x);
+			minheap = new PriorityQueue<>();
+		}
+
+		public void addNum(int num) {
+			count += 1;
+			maxheap.add(num);
+			minheap.add(maxheap.poll());
+			// 如果两个堆合起来的元素个数是奇数，小顶堆要拿出堆顶元素给大顶堆
+			if ((count & 1) != 0) {
+				maxheap.add(minheap.poll());
+			}
+		}
+
+		public double findMedian() {
+			if ((count & 1) == 0) {
+				// 如果两个堆合起来的元素个数是偶数，数据流的中位数就是各自堆顶元素的平均值
+				return (double) (maxheap.peek() + minheap.peek()) / 2;
+			} else {
+				// 如果两个堆合起来的元素个数是奇数，数据流的中位数大顶堆的堆顶元素
+				return (double) maxheap.peek();
+			}
+		}
+
+	}
+
+	// 递增的三元子序列(不一定连续)
+	@Test
+	public void test9() {
+//		Assert.assertEquals(true, increasingTriplet(new int[] { 1, 2, 3, 4, 5 }));
+//		Assert.assertEquals(false, increasingTriplet(new int[] { 5,4,3,2,1 }));
+		// Assert.assertEquals(true, increasingTriplet(new int[] {2,1,5,0,4,6 }));
+		Assert.assertEquals(true, increasingTriplet(new int[] { 5, 6, 1, 5, 5, 2, 5, 4 }));
+	}
+
+	// https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
+	public boolean increasingTriplet(int[] nums) {
+		int small = Integer.MAX_VALUE, mid = Integer.MAX_VALUE;
+		for (int i = 0; i < nums.length; i++) {
+			if (nums[i] <= small) {
+				small = nums[i];
+			} else if (nums[i] <= mid) {
+				mid = nums[i];
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 反转链表
+	@Test
+	public void test10() {
+		ListNode head = new ListNode(1);
+		ListNode node1 = new ListNode(2);
+		ListNode node2 = new ListNode(3);
+		ListNode node3 = new ListNode(4);
+		ListNode node4 = new ListNode(5);
+		head.next = node1;
+		node1.next = node2;
+		node2.next = node3;
+		node3.next = node4;
+		head = reverseList(head);
+		while (head.next != null) {
+			System.out.print(head.val + "->");
+			head = head.next;
+		}
+		System.out.print(head.val);
+	}
+
+//https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/
+	public ListNode reverseList(ListNode head) {
+		ListNode prev = null;
+		ListNode curr = head;
+		while (curr != null) {
+			ListNode nextTemp = curr.next;
+			curr.next = prev;
+			prev = curr;
+			curr = nextTemp;
+		}
+		return prev;
+	}
 }
