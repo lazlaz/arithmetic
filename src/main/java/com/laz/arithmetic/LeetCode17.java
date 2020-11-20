@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -646,51 +647,130 @@ public class LeetCode17 {
 		}
 		return prev;
 	}
-	
-	//对链表进行插入排序
+
+	// 对链表进行插入排序
 	@Test
 	public void test11() {
-		ListNode head =new ListNode(4);
-		ListNode head2 =new ListNode(2);
-		ListNode head3 =new ListNode(1);
-		ListNode head4 =new ListNode(3);
-		
+		ListNode head = new ListNode(4);
+		ListNode head2 = new ListNode(2);
+		ListNode head3 = new ListNode(1);
+		ListNode head4 = new ListNode(3);
+
 		head.next = head2;
 		head2.next = head3;
 		head3.next = head4;
-		
+
 		ListNode node = insertionSortList(head);
 		Utils.printListNode(node);
 	}
-    public ListNode insertionSortList(ListNode head) {
-    	if (head==null) {
-    		return null;
-    	}
-    	ListNode tail = new ListNode(-1);
-    	tail.next = null;
-    	while(head!=null) {
-    		ListNode curr = head;
-    		//进行插入排序
-    		ListNode h = tail.next;
-    		ListNode last = tail;
-    		while (h!=null) {
-    			if (curr.val<h.val) {
-    				head = curr.next;
-    				ListNode tmp = last.next;
-    				last.next = curr;
-    				curr.next = tmp;
-    				break;
-    			}
-    			last = h;
-    			h = h.next;
-    		}
-    		//找完了还没有找到比curr大的，连接到后面
-    		if (h==null) {
-    			head = curr.next;
-    			last.next = curr;
-    			curr.next=null;
-    		}
-    	}
-    	return tail.next;
-    }
+
+	public ListNode insertionSortList(ListNode head) {
+		if (head == null) {
+			return null;
+		}
+		ListNode tail = new ListNode(-1);
+		tail.next = null;
+		while (head != null) {
+			ListNode curr = head;
+			// 进行插入排序
+			ListNode h = tail.next;
+			ListNode last = tail;
+			while (h != null) {
+				if (curr.val < h.val) {
+					head = curr.next;
+					ListNode tmp = last.next;
+					last.next = curr;
+					curr.next = tmp;
+					break;
+				}
+				last = h;
+				h = h.next;
+			}
+			// 找完了还没有找到比curr大的，连接到后面
+			if (h == null) {
+				head = curr.next;
+				last.next = curr;
+				curr.next = null;
+			}
+		}
+		return tail.next;
+	}
+
+	// 扁平化嵌套列表迭代器
+	@Test
+	public void test12() {
+//		{
+//			
+//			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
+//			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
+//			NestedIntegerImpl n1 = new NestedIntegerImpl();
+//			n1.setValue(1);
+//			NestedIntegerImpl n2 = new NestedIntegerImpl();
+//			n2.setValue(1);
+//			nestedList1.add(n1);
+//			nestedList1.add(n2);
+//			NestedIntegerImpl v1 = new NestedIntegerImpl();
+//			v1.setResult(nestedList1);
+//			nestedList.add(v1);
+//			
+//			NestedIntegerImpl v2 = new NestedIntegerImpl();
+//			v2.setValue(2);
+//			nestedList.add(v2);
+//			
+//			List<NestedInteger> nestedList2 = new ArrayList<NestedInteger>();
+//			NestedIntegerImpl n12 = new NestedIntegerImpl();
+//			n12.setValue(1);
+//			NestedIntegerImpl n22 = new NestedIntegerImpl();
+//			n22.setValue(1);
+//			nestedList2.add(n12);
+//			nestedList2.add(n22);
+//			NestedIntegerImpl v3 = new NestedIntegerImpl();
+//			v3.setResult(nestedList2);
+//			nestedList.add(v3);
+//			
+//			NestedIterator it = new NestedIterator(nestedList);
+//			while (it.hasNext()) {
+//				System.out.println(it.next());
+//			}
+//		}
+		{
+			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
+			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl v1 = new NestedIntegerImpl();
+			v1.setResult(nestedList1);
+			nestedList.add(v1);
+			NestedIterator it = new NestedIterator(nestedList);
+			while (it.hasNext()) {
+				System.out.println(it.next());
+			}
+		}
+	}
+	//https://leetcode-cn.com/problems/flatten-nested-list-iterator/solution/shu-de-bian-li-kuang-jia-ti-mu-bu-rang-wo-zuo-shi-/
+	public class NestedIterator implements Iterator<Integer> {
+		private LinkedList<NestedInteger> list;
+
+		public NestedIterator(List<NestedInteger> nestedList) {
+			// 不直接用 nestedList 的引用，是因为不能确定它的底层实现
+			// 必须保证是 LinkedList，否则下面的 addFirst 会很低效
+			list = new LinkedList<>(nestedList);
+		}
+
+		public Integer next() {
+			// hasNext 方法保证了第一个元素一定是整数类型
+			return list.remove(0).getInteger();
+		}
+
+		public boolean hasNext() {
+			// 循环拆分列表元素，直到列表第一个元素是整数类型
+			while (!list.isEmpty() && !list.get(0).isInteger()) {
+				// 当列表开头第一个元素是列表类型时，进入循环
+				List<NestedInteger> first = list.remove(0).getList();
+				// 将第一个列表打平并按顺序添加到开头
+				for (int i = first.size() - 1; i >= 0; i--) {
+					list.addFirst(first.get(i));
+				}
+			}
+			return !list.isEmpty();
+		}
+	}
 }
