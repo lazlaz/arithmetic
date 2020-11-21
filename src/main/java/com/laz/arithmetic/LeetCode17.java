@@ -699,40 +699,40 @@ public class LeetCode17 {
 	// 扁平化嵌套列表迭代器
 	@Test
 	public void test12() {
-//		{
-//			
-//			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
-//			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
-//			NestedIntegerImpl n1 = new NestedIntegerImpl();
-//			n1.setValue(1);
-//			NestedIntegerImpl n2 = new NestedIntegerImpl();
-//			n2.setValue(1);
-//			nestedList1.add(n1);
-//			nestedList1.add(n2);
-//			NestedIntegerImpl v1 = new NestedIntegerImpl();
-//			v1.setResult(nestedList1);
-//			nestedList.add(v1);
-//			
-//			NestedIntegerImpl v2 = new NestedIntegerImpl();
-//			v2.setValue(2);
-//			nestedList.add(v2);
-//			
-//			List<NestedInteger> nestedList2 = new ArrayList<NestedInteger>();
-//			NestedIntegerImpl n12 = new NestedIntegerImpl();
-//			n12.setValue(1);
-//			NestedIntegerImpl n22 = new NestedIntegerImpl();
-//			n22.setValue(1);
-//			nestedList2.add(n12);
-//			nestedList2.add(n22);
-//			NestedIntegerImpl v3 = new NestedIntegerImpl();
-//			v3.setResult(nestedList2);
-//			nestedList.add(v3);
-//			
-//			NestedIterator it = new NestedIterator(nestedList);
-//			while (it.hasNext()) {
-//				System.out.println(it.next());
-//			}
-//		}
+		{
+
+			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
+			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl n1 = new NestedIntegerImpl();
+			n1.setValue(1);
+			NestedIntegerImpl n2 = new NestedIntegerImpl();
+			n2.setValue(1);
+			nestedList1.add(n1);
+			nestedList1.add(n2);
+			NestedIntegerImpl v1 = new NestedIntegerImpl();
+			v1.setResult(nestedList1);
+			nestedList.add(v1);
+
+			NestedIntegerImpl v2 = new NestedIntegerImpl();
+			v2.setValue(2);
+			nestedList.add(v2);
+
+			List<NestedInteger> nestedList2 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl n12 = new NestedIntegerImpl();
+			n12.setValue(1);
+			NestedIntegerImpl n22 = new NestedIntegerImpl();
+			n22.setValue(1);
+			nestedList2.add(n12);
+			nestedList2.add(n22);
+			NestedIntegerImpl v3 = new NestedIntegerImpl();
+			v3.setResult(nestedList2);
+			nestedList.add(v3);
+
+			NestedIterator it = new NestedIterator(nestedList);
+			while (it.hasNext()) {
+				System.out.println(it.next());
+			}
+		}
 		{
 			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
 			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
@@ -745,7 +745,8 @@ public class LeetCode17 {
 			}
 		}
 	}
-	//https://leetcode-cn.com/problems/flatten-nested-list-iterator/solution/shu-de-bian-li-kuang-jia-ti-mu-bu-rang-wo-zuo-shi-/
+
+	// https://leetcode-cn.com/problems/flatten-nested-list-iterator/solution/shu-de-bian-li-kuang-jia-ti-mu-bu-rang-wo-zuo-shi-/
 	public class NestedIterator implements Iterator<Integer> {
 		private LinkedList<NestedInteger> list;
 
@@ -771,6 +772,60 @@ public class LeetCode17 {
 				}
 			}
 			return !list.isEmpty();
+		}
+	}
+
+	// 两整数之和
+	@Test
+	public void test13() {
+		Assert.assertEquals(12, getSum(5, 7));
+	}
+
+	// https://leetcode-cn.com/problems/sum-of-two-integers/solution/li-yong-wei-cao-zuo-shi-xian-liang-shu-qiu-he-by-p/
+	public int getSum(int a, int b) {
+		while (b != 0) {
+			int temp = a ^ b;
+			b = (a & b) << 1;
+			a = temp;
+		}
+		return a;
+	}
+
+	// 有序矩阵中第K小的元素
+	@Test
+	public void test14() {
+		Assert.assertEquals(13, new Solution14().kthSmallest(new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } }, 8));
+	}
+	//https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/solution/you-xu-ju-zhen-zhong-di-kxiao-de-yuan-su-by-leetco/
+	class Solution14 {
+		public int kthSmallest(int[][] matrix, int k) {
+			int n = matrix.length;
+			int left = matrix[0][0];
+			int right = matrix[n - 1][n - 1];
+			while (left < right) {
+				int mid = left + ((right - left) >> 1);
+				if (check(matrix, mid, k, n)) {
+					right = mid;
+				} else {
+					left = mid + 1;
+				}
+			}
+			return left;
+		}
+
+		public boolean check(int[][] matrix, int mid, int k, int n) {
+			int i = n - 1;
+			int j = 0;
+			int num = 0;
+			while (i >= 0 && j < n) {
+				if (matrix[i][j] <= mid) {
+					num += i + 1; //比mid小的值数量
+					j++; 
+				} else {
+					i--;
+				}
+			}
+			return num >= k;
 		}
 	}
 }
