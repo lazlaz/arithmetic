@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -828,4 +830,58 @@ public class LeetCode17 {
 			return num >= k;
 		}
 	}
+	
+	//常数时间插入、删除和获取随机元素
+	@Test
+	public void test15() {
+		RandomizedSet randomSet = new RandomizedSet();
+		randomSet.insert(0);
+		randomSet.insert(1);
+		randomSet.remove(0);
+		randomSet.insert(2);
+		randomSet.remove(1);
+		System.out.println(randomSet.getRandom());
+	}
+	class RandomizedSet {
+		Map<Integer, Integer> idx;
+		List<Integer> nums;
+		 Random rand = new Random();
+	    /** Initialize your data structure here. */
+	    public RandomizedSet() {
+	    	idx = new HashMap<Integer, Integer>();
+			nums = new ArrayList<Integer>();
+	    }
+	    
+	    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+	    public boolean insert(int val) {
+	    	if (idx.containsKey(val)) {
+	    		return false;
+	    	}
+	    	nums.add(val);
+			idx.put(val, nums.size() - 1);
+	    	return true;
+	    }
+	    
+	    /** Removes a value from the set. Returns true if the set contained the specified element. */
+	    public boolean remove(int val) {
+	    	if (!idx.containsKey(val)) {
+				return false;
+			}
+			int index = idx.get(val); //获取要删除的值，在list中的下标
+			int lastElement = nums.get(nums.size()-1); //得到最后一个元素的值
+			nums.set(index, lastElement); //将最后一个元素的值赋值到index处
+			idx.put(lastElement, index);
+			//删除元素
+			nums.remove(nums.size() - 1);
+			idx.remove(val);
+			return true;
+	    }
+	    
+	    /** Get a random element from the set. */
+	    public int getRandom() {
+	    	int size = rand.nextInt(nums.size());
+	    	return nums.get(size);
+	    }
+	}
+	
 }
