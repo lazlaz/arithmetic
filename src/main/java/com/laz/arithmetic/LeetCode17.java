@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -796,9 +798,11 @@ public class LeetCode17 {
 	// 有序矩阵中第K小的元素
 	@Test
 	public void test14() {
-		Assert.assertEquals(13, new Solution14().kthSmallest(new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } }, 8));
+		Assert.assertEquals(13,
+				new Solution14().kthSmallest(new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } }, 8));
 	}
-	//https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/solution/you-xu-ju-zhen-zhong-di-kxiao-de-yuan-su-by-leetco/
+
+	// https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/solution/you-xu-ju-zhen-zhong-di-kxiao-de-yuan-su-by-leetco/
 	class Solution14 {
 		public int kthSmallest(int[][] matrix, int k) {
 			int n = matrix.length;
@@ -821,8 +825,8 @@ public class LeetCode17 {
 			int num = 0;
 			while (i >= 0 && j < n) {
 				if (matrix[i][j] <= mid) {
-					num += i + 1; //比mid小的值数量
-					j++; 
+					num += i + 1; // 比mid小的值数量
+					j++;
 				} else {
 					i--;
 				}
@@ -830,8 +834,8 @@ public class LeetCode17 {
 			return num >= k;
 		}
 	}
-	
-	//常数时间插入、删除和获取随机元素
+
+	// 常数时间插入、删除和获取随机元素
 	@Test
 	public void test15() {
 		RandomizedSet randomSet = new RandomizedSet();
@@ -842,46 +846,91 @@ public class LeetCode17 {
 		randomSet.remove(1);
 		System.out.println(randomSet.getRandom());
 	}
+
 	class RandomizedSet {
 		Map<Integer, Integer> idx;
 		List<Integer> nums;
-		 Random rand = new Random();
-	    /** Initialize your data structure here. */
-	    public RandomizedSet() {
-	    	idx = new HashMap<Integer, Integer>();
+		Random rand = new Random();
+
+		/** Initialize your data structure here. */
+		public RandomizedSet() {
+			idx = new HashMap<Integer, Integer>();
 			nums = new ArrayList<Integer>();
-	    }
-	    
-	    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
-	    public boolean insert(int val) {
-	    	if (idx.containsKey(val)) {
-	    		return false;
-	    	}
-	    	nums.add(val);
-			idx.put(val, nums.size() - 1);
-	    	return true;
-	    }
-	    
-	    /** Removes a value from the set. Returns true if the set contained the specified element. */
-	    public boolean remove(int val) {
-	    	if (!idx.containsKey(val)) {
+		}
+
+		/**
+		 * Inserts a value to the set. Returns true if the set did not already contain
+		 * the specified element.
+		 */
+		public boolean insert(int val) {
+			if (idx.containsKey(val)) {
 				return false;
 			}
-			int index = idx.get(val); //获取要删除的值，在list中的下标
-			int lastElement = nums.get(nums.size()-1); //得到最后一个元素的值
-			nums.set(index, lastElement); //将最后一个元素的值赋值到index处
+			nums.add(val);
+			idx.put(val, nums.size() - 1);
+			return true;
+		}
+
+		/**
+		 * Removes a value from the set. Returns true if the set contained the specified
+		 * element.
+		 */
+		public boolean remove(int val) {
+			if (!idx.containsKey(val)) {
+				return false;
+			}
+			int index = idx.get(val); // 获取要删除的值，在list中的下标
+			int lastElement = nums.get(nums.size() - 1); // 得到最后一个元素的值
+			nums.set(index, lastElement); // 将最后一个元素的值赋值到index处
 			idx.put(lastElement, index);
-			//删除元素
+			// 删除元素
 			nums.remove(nums.size() - 1);
 			idx.remove(val);
 			return true;
-	    }
-	    
-	    /** Get a random element from the set. */
-	    public int getRandom() {
-	    	int size = rand.nextInt(nums.size());
-	    	return nums.get(size);
-	    }
+		}
+
+		/** Get a random element from the set. */
+		public int getRandom() {
+			int size = rand.nextInt(nums.size());
+			return nums.get(size);
+		}
 	}
-	
+
+	// 有效的字母异位词
+	@Test
+	public void test16() {
+		//Assert.assertEquals(true, isAnagram("anagram","nagaram"));
+		List<String> str1;
+		List<String> str2;
+		try {
+			str1 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16.txt"));
+			str2 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16_2.txt"));
+			Assert.assertEquals(true, isAnagram(str1.get(0),str2.get(0)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean isAnagram(String s, String t) {
+		Map<Character, Integer> map1 = new HashMap<Character, Integer>();
+		Map<Character, Integer> map2 = new HashMap<Character, Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			int v = map1.getOrDefault(s.charAt(i), 0);
+			map1.put(s.charAt(i), ++v);
+		}
+		for (int i = 0; i < t.length(); i++) {
+			int v = map2.getOrDefault(t.charAt(i), 0);
+			map2.put(t.charAt(i), ++v);
+		}
+		if (map1.size() == map2.size()) {
+			for (Character c : map1.keySet()) {
+				if (!map1.get(c).equals(map2.get(c))) { //Integer需要用equals比较
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 }
