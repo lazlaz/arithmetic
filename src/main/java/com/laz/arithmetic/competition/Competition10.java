@@ -6,7 +6,7 @@ import org.junit.Test;
 //https://leetcode-cn.com/contest/weekly-contest-216
 public class Competition10 {
 	@Test
-	//检查两个字符串数组是否相等
+	// 检查两个字符串数组是否相等
 	public void test1() {
 //		Assert.assertEquals(true, arrayStringsAreEqual(new String[] { "ab", "c" }, new String[] { "a", "bc" }));
 //
@@ -54,27 +54,29 @@ public class Competition10 {
 	class Solution2 {
 		// 思路，贪心算法，最后的值尽量选择最大的
 		public String getSmallestString(int n, int k) {
-			StringBuilder sb = new StringBuilder();
+			char[] arr = new char[n];
+			int index = arr.length-1;
 			while (n > 0) {
 				if (k == n) {
 					for (int i = 1; i <= n; i++) {
-						sb.insert(0, 'a');
+						arr[index--] = 'a';
 					}
 					break;
 				}
 				if (k - 26 > (n - 1)) {
-					sb.insert(0, 'z');
+					arr[index--] = 'z';
 					k -= 26;
 				} else {
 					char c = (char) ('a' + (k - (n - 1) - 1));
-					sb.insert(0, c);
+					arr[index--] = c;
 					k = k - (k - (n - 1));
 				}
 				n--;
 			}
-			return sb.toString();
+			return new String(arr);
 		}
 	}
+
 
 	// 生成平衡数组的方案数
 	@Test
@@ -153,9 +155,7 @@ public class Competition10 {
 	// 完成所有任务的最少初始能量
 	@Test
 	public void test() {
-		Assert.assertEquals(8, minimumEffort(new int[][] {
-			{1,2},{2,4},{4,8}
-		}));
+		Assert.assertEquals(8, minimumEffort(new int[][] { { 1, 2 }, { 2, 4 }, { 4, 8 } }));
 	}
 
 	public int minimumEffort(int[][] tasks) {
