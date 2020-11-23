@@ -1,5 +1,8 @@
 package com.laz.arithmetic.competition;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -55,7 +58,7 @@ public class Competition10 {
 		// 思路，贪心算法，最后的值尽量选择最大的
 		public String getSmallestString(int n, int k) {
 			char[] arr = new char[n];
-			int index = arr.length-1;
+			int index = arr.length - 1;
 			while (n > 0) {
 				if (k == n) {
 					for (int i = 1; i <= n; i++) {
@@ -76,7 +79,6 @@ public class Competition10 {
 			return new String(arr);
 		}
 	}
-
 
 	// 生成平衡数组的方案数
 	@Test
@@ -155,10 +157,62 @@ public class Competition10 {
 	// 完成所有任务的最少初始能量
 	@Test
 	public void test() {
-		Assert.assertEquals(8, minimumEffort(new int[][] { { 1, 2 }, { 2, 4 }, { 4, 8 } }));
+		Assert.assertEquals(8, new Solution42().minimumEffort(new int[][] { { 1, 2 }, { 2, 4 }, { 4, 8 } }));
 	}
 
+	// https://leetcode-cn.com/problems/minimum-initial-energy-to-finish-tasks/solution/wan-cheng-suo-you-ren-wu-de-zui-shao-chu-shi-neng-/
 	public int minimumEffort(int[][] tasks) {
-		return 0;
+		Arrays.sort(tasks, new Comparator<int[]>() {
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				return (o1[0] - o1[1]) - (o2[0] - o2[1]);
+			}
+		});
+		int p = 0;
+		int suma = 0;
+		for (int[] task : tasks) {
+			p = Math.max(p, suma + task[1]);
+			suma += task[0];
+		}
+		return p;
 	}
+
+	// https://leetcode-cn.com/problems/minimum-initial-energy-to-finish-tasks/solution/javaer-fen-cha-zhao-by-electrobikeman-nanning/
+	// 根据差值排序，使用二分查找确定最少的能量
+	class Solution42 {
+		public int minimumEffort(int[][] tasks) {
+			int sumActual = 0;
+			int sumMin = 0;
+			for (int[] actualMin : tasks) {
+				sumActual += actualMin[0];
+				sumMin += actualMin[1];
+			}
+			Arrays.sort(tasks, (o1, o2) -> (o2[1] - o2[0]) - (o1[1] - o1[0]));//排序，保障m的值合理
+			int res = binarySearch(tasks, Math.min(sumActual, sumMin), Math.max(sumActual, sumMin));
+			return res;
+		}
+
+		private int binarySearch(int[][] tasks, int left, int right) {
+			while (left < right) {
+				int mid = left + (right - left) / 2;
+				int sum = mid;
+				boolean isOk = true;
+				for (int[] actualMin : tasks) {
+					if (sum >= actualMin[1]) {
+						sum -= actualMin[0];
+					} else {
+						isOk = false;
+						break;
+					}
+				}
+				if (isOk && mid >= 0) {
+					right = mid;
+				} else {
+					left = mid + 1;
+				}
+			}
+			return left;
+		}
+	}
+
 }
