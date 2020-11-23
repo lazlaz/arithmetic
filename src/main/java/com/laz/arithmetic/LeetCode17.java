@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,12 +8,16 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -645,5 +650,287 @@ public class LeetCode17 {
 			curr = nextTemp;
 		}
 		return prev;
+	}
+
+	// 对链表进行插入排序
+	@Test
+	public void test11() {
+		ListNode head = new ListNode(4);
+		ListNode head2 = new ListNode(2);
+		ListNode head3 = new ListNode(1);
+		ListNode head4 = new ListNode(3);
+
+		head.next = head2;
+		head2.next = head3;
+		head3.next = head4;
+
+		ListNode node = insertionSortList(head);
+		Utils.printListNode(node);
+	}
+
+	public ListNode insertionSortList(ListNode head) {
+		if (head == null) {
+			return null;
+		}
+		ListNode tail = new ListNode(-1);
+		tail.next = null;
+		while (head != null) {
+			ListNode curr = head;
+			// 进行插入排序
+			ListNode h = tail.next;
+			ListNode last = tail;
+			while (h != null) {
+				if (curr.val < h.val) {
+					head = curr.next;
+					ListNode tmp = last.next;
+					last.next = curr;
+					curr.next = tmp;
+					break;
+				}
+				last = h;
+				h = h.next;
+			}
+			// 找完了还没有找到比curr大的，连接到后面
+			if (h == null) {
+				head = curr.next;
+				last.next = curr;
+				curr.next = null;
+			}
+		}
+		return tail.next;
+	}
+
+	// 扁平化嵌套列表迭代器
+	@Test
+	public void test12() {
+		{
+
+			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
+			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl n1 = new NestedIntegerImpl();
+			n1.setValue(1);
+			NestedIntegerImpl n2 = new NestedIntegerImpl();
+			n2.setValue(1);
+			nestedList1.add(n1);
+			nestedList1.add(n2);
+			NestedIntegerImpl v1 = new NestedIntegerImpl();
+			v1.setResult(nestedList1);
+			nestedList.add(v1);
+
+			NestedIntegerImpl v2 = new NestedIntegerImpl();
+			v2.setValue(2);
+			nestedList.add(v2);
+
+			List<NestedInteger> nestedList2 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl n12 = new NestedIntegerImpl();
+			n12.setValue(1);
+			NestedIntegerImpl n22 = new NestedIntegerImpl();
+			n22.setValue(1);
+			nestedList2.add(n12);
+			nestedList2.add(n22);
+			NestedIntegerImpl v3 = new NestedIntegerImpl();
+			v3.setResult(nestedList2);
+			nestedList.add(v3);
+
+			NestedIterator it = new NestedIterator(nestedList);
+			while (it.hasNext()) {
+				System.out.println(it.next());
+			}
+		}
+		{
+			List<NestedInteger> nestedList = new ArrayList<NestedInteger>();
+			List<NestedInteger> nestedList1 = new ArrayList<NestedInteger>();
+			NestedIntegerImpl v1 = new NestedIntegerImpl();
+			v1.setResult(nestedList1);
+			nestedList.add(v1);
+			NestedIterator it = new NestedIterator(nestedList);
+			while (it.hasNext()) {
+				System.out.println(it.next());
+			}
+		}
+	}
+
+	// https://leetcode-cn.com/problems/flatten-nested-list-iterator/solution/shu-de-bian-li-kuang-jia-ti-mu-bu-rang-wo-zuo-shi-/
+	public class NestedIterator implements Iterator<Integer> {
+		private LinkedList<NestedInteger> list;
+
+		public NestedIterator(List<NestedInteger> nestedList) {
+			// 不直接用 nestedList 的引用，是因为不能确定它的底层实现
+			// 必须保证是 LinkedList，否则下面的 addFirst 会很低效
+			list = new LinkedList<>(nestedList);
+		}
+
+		public Integer next() {
+			// hasNext 方法保证了第一个元素一定是整数类型
+			return list.remove(0).getInteger();
+		}
+
+		public boolean hasNext() {
+			// 循环拆分列表元素，直到列表第一个元素是整数类型
+			while (!list.isEmpty() && !list.get(0).isInteger()) {
+				// 当列表开头第一个元素是列表类型时，进入循环
+				List<NestedInteger> first = list.remove(0).getList();
+				// 将第一个列表打平并按顺序添加到开头
+				for (int i = first.size() - 1; i >= 0; i--) {
+					list.addFirst(first.get(i));
+				}
+			}
+			return !list.isEmpty();
+		}
+	}
+
+	// 两整数之和
+	@Test
+	public void test13() {
+		Assert.assertEquals(12, getSum(5, 7));
+	}
+
+	// https://leetcode-cn.com/problems/sum-of-two-integers/solution/li-yong-wei-cao-zuo-shi-xian-liang-shu-qiu-he-by-p/
+	public int getSum(int a, int b) {
+		while (b != 0) {
+			int temp = a ^ b;
+			b = (a & b) << 1;
+			a = temp;
+		}
+		return a;
+	}
+
+	// 有序矩阵中第K小的元素
+	@Test
+	public void test14() {
+		Assert.assertEquals(13,
+				new Solution14().kthSmallest(new int[][] { { 1, 5, 9 }, { 10, 11, 13 }, { 12, 13, 15 } }, 8));
+	}
+
+	// https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/solution/you-xu-ju-zhen-zhong-di-kxiao-de-yuan-su-by-leetco/
+	class Solution14 {
+		public int kthSmallest(int[][] matrix, int k) {
+			int n = matrix.length;
+			int left = matrix[0][0];
+			int right = matrix[n - 1][n - 1];
+			while (left < right) {
+				int mid = left + ((right - left) >> 1);
+				if (check(matrix, mid, k, n)) {
+					right = mid;
+				} else {
+					left = mid + 1;
+				}
+			}
+			return left;
+		}
+
+		public boolean check(int[][] matrix, int mid, int k, int n) {
+			int i = n - 1;
+			int j = 0;
+			int num = 0;
+			while (i >= 0 && j < n) {
+				if (matrix[i][j] <= mid) {
+					num += i + 1; // 比mid小的值数量
+					j++;
+				} else {
+					i--;
+				}
+			}
+			return num >= k;
+		}
+	}
+
+	// 常数时间插入、删除和获取随机元素
+	@Test
+	public void test15() {
+		RandomizedSet randomSet = new RandomizedSet();
+		randomSet.insert(0);
+		randomSet.insert(1);
+		randomSet.remove(0);
+		randomSet.insert(2);
+		randomSet.remove(1);
+		System.out.println(randomSet.getRandom());
+	}
+
+	class RandomizedSet {
+		Map<Integer, Integer> idx;
+		List<Integer> nums;
+		Random rand = new Random();
+
+		/** Initialize your data structure here. */
+		public RandomizedSet() {
+			idx = new HashMap<Integer, Integer>();
+			nums = new ArrayList<Integer>();
+		}
+
+		/**
+		 * Inserts a value to the set. Returns true if the set did not already contain
+		 * the specified element.
+		 */
+		public boolean insert(int val) {
+			if (idx.containsKey(val)) {
+				return false;
+			}
+			nums.add(val);
+			idx.put(val, nums.size() - 1);
+			return true;
+		}
+
+		/**
+		 * Removes a value from the set. Returns true if the set contained the specified
+		 * element.
+		 */
+		public boolean remove(int val) {
+			if (!idx.containsKey(val)) {
+				return false;
+			}
+			int index = idx.get(val); // 获取要删除的值，在list中的下标
+			int lastElement = nums.get(nums.size() - 1); // 得到最后一个元素的值
+			nums.set(index, lastElement); // 将最后一个元素的值赋值到index处
+			idx.put(lastElement, index);
+			// 删除元素
+			nums.remove(nums.size() - 1);
+			idx.remove(val);
+			return true;
+		}
+
+		/** Get a random element from the set. */
+		public int getRandom() {
+			int size = rand.nextInt(nums.size());
+			return nums.get(size);
+		}
+	}
+
+	// 有效的字母异位词
+	@Test
+	public void test16() {
+		//Assert.assertEquals(true, isAnagram("anagram","nagaram"));
+		List<String> str1;
+		List<String> str2;
+		try {
+			str1 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16.txt"));
+			str2 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16_2.txt"));
+			Assert.assertEquals(true, isAnagram(str1.get(0),str2.get(0)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean isAnagram(String s, String t) {
+		Map<Character, Integer> map1 = new HashMap<Character, Integer>();
+		Map<Character, Integer> map2 = new HashMap<Character, Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			int v = map1.getOrDefault(s.charAt(i), 0);
+			map1.put(s.charAt(i), ++v);
+		}
+		for (int i = 0; i < t.length(); i++) {
+			int v = map2.getOrDefault(t.charAt(i), 0);
+			map2.put(t.charAt(i), ++v);
+		}
+		if (map1.size() == map2.size()) {
+			for (Character c : map1.keySet()) {
+				if (!map1.get(c).equals(map2.get(c))) { //Integer需要用equals比较
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 }
