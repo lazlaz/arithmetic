@@ -1,354 +1,402 @@
 package com.laz.arithmetic.datastructure.tree;
 
-import java.util.Comparator;
+import java.util.LinkedList;
 
 /**
- * AVL树（平衡二叉树） https://blog.csdn.net/liyong199012/article/details/29219261
+ * Java 语言: AVL树 https://www.cnblogs.com/skywang12345/p/3577479.html
  */
+
 public class AVLBalanceTree<T extends Comparable<T>> {
-	private AvlNode<T> root;
-	private Comparator<T> cmp;
+	private AVLTreeNode<T> mRoot; // 根结点
 
-	/********* AVL树节点数据结构定义 **********/
-	private static class AvlNode<T> {
-		T element;
-		AvlNode<T> left;
-		AvlNode<T> right;
-		int height;
+	// AVL树的节点(内部类)
+	class AVLTreeNode<T extends Comparable<T>> {
+		T key; // 关键字(键值)
+		int height; // 高度
+		AVLTreeNode<T> left; // 左孩子
+		AVLTreeNode<T> right; // 右孩子
 
-		AvlNode(T theElement) {
-			this(theElement, null, null);
-		}
-
-		AvlNode(T theElement, AvlNode<T> lt, AvlNode<T> rt) {
-			element = theElement;
-			left = lt;
-			right = rt;
-			height = 0;
+		public AVLTreeNode(T key, AVLTreeNode<T> left, AVLTreeNode<T> right) {
+			this.key = key;
+			this.left = left;
+			this.right = right;
+			this.height = 0;
 		}
 	}
 
+	// 构造函数
 	public AVLBalanceTree() {
-		root = null;
+		mRoot = null;
 	}
 
-	public void makeEmpty() {
-		root = null;
+	/*
+	 * 获取树的高度
+	 */
+	private int height(AVLTreeNode<T> tree) {
+		if (tree != null)
+			return tree.height;
+
+		return 0;
 	}
 
-	public boolean isEmpty() {
-		return root == null;
+	public int height() {
+		return height(mRoot);
 	}
 
-	public void insert(T element) {
-		root = insert(element, root);
+	/*
+	 * 比较两个值的大小
+	 */
+	private int max(int a, int b) {
+		return a > b ? a : b;
 	}
 
-	public boolean contains(T x) {
-		return contains(x, root);
-	}
-
-	public void remove(T element) {
-		root = remove(element, root);
-	}
-
-	private int myCompare(T lhs, T rhs) {
-		if (cmp != null)
-			return cmp.compare(lhs, rhs);
-		else
-			return ((Comparable) lhs).compareTo(rhs);
-	}
-
-	private boolean contains(T x, AvlNode<T> t) {
-		// 空树处理
-		if (t == null)
-			return false;
-		// 正常情况处理
-		// @方式一：对Comparable型的对象进行比较
-		// int compareResult = x.compareTo(t.element);
-		// @方式二：使用一个函数对象而不是要求这些项是Comparable的
-		int compareResult = myCompare(x, t.element);
-		if (compareResult < 0)
-			return contains(x, t.left);
-		else if (compareResult > 0)
-			return contains(x, t.right);
-		else
-			return true;
-	}
-
-	private int height(AvlNode<T> t) {
-		return t == null ? -1 : t.height;
-	}
-
-	private AvlNode<T> findMin(AvlNode<T> t) {
-		if (t == null)
-			return null;
-		if (t.left == null)
-			return t;
-		return findMin(t.left);
-	}
-
-	private AvlNode<T> findMax(AvlNode<T> t) {
-		if (t == null)
-			return null;
-		if (t.right == null)
-			return t;
-		return findMax(t.right);
-	}
-
-	private AvlNode<T> insert(T x, AvlNode<T> t) {
-		if (t == null)
-			return new AvlNode<T>(x, null, null);
-		int compareResult = myCompare(x, t.element);
-		if (compareResult < 0) {
-			t.left = insert(x, t.left);
-			if (height(t.left) - height(t.right) == 2) {
-				if (myCompare(x, t.left.element) < 0) // 左左情况
-					t = rotateWithLeftChild(t);
-				else // 左右情况
-					t = doubleWithLeftChild(t);
-			}
-		} else if (compareResult > 0) {
-			t.right = insert(x, t.right);
-			if (height(t.right) - height(t.left) == 2) {
-				if (myCompare(x, t.right.element) < 0) // 右左情况
-					t = doubleWithRightChild(t);
-				else // 右右情况
-					t = rotateWithRightChild(t);
-			}
+	/*
+	 * 前序遍历"AVL树"
+	 */
+	private void preOrder(AVLTreeNode<T> tree) {
+		if (tree != null) {
+			System.out.print(tree.key + " ");
+			preOrder(tree.left);
+			preOrder(tree.right);
 		}
-		// 完了之后更新height值
-		t.height = Math.max(height(t.left), height(t.right)) + 1;
-		return t;
 	}
 
-	private AvlNode<T> remove(T x, AvlNode<T> t) {
-		if (t == null)
-			return null;
-		int compareResult = myCompare(x, t.element);
-		if (compareResult < 0) {
-			t.left = remove(x, t.left);
-			// 完了之后验证该子树是否平衡
-			if (t.right != null) { // 若右子树为空，则一定是平衡的，此时左子树相当对父节点深度最多为1, 所以只考虑右子树非空情况
-				if (t.left == null) { // 若左子树删除后为空，则需要判断右子树
-					if (height(t.right) - t.height == 2) {
-						AvlNode<T> k = t.right;
-						if (k.right != null) { // 右子树存在，按正常情况单旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------11111");
-							t = rotateWithRightChild(t);
-						} else { // 否则是右左情况，双旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------22222");
-							t = doubleWithRightChild(t);
-						}
-					}
-				} else { // 否则判断左右子树的高度差
-					// 左子树自身也可能不平衡，故先平衡左子树，再考虑整体
-					AvlNode<T> k = t.left;
-					// 删除操作默认用右子树上最小节点补删除的节点
-					// k的左子树高度不低于k的右子树
-					if (k.right != null) {
-						if (height(k.left) - height(k.right) == 2) {
-							AvlNode<T> m = k.left;
-							if (m.left != null) { // 左子树存在，按正常情况单旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------33333");
-								k = rotateWithLeftChild(k);
-							} else { // 否则是左右情况，双旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------44444");
-								k = doubleWithLeftChild(k);
-							}
-						}
-					} else {
-						if (height(k.left) - k.height == 2) {
-							AvlNode<T> m = k.left;
-							if (m.left != null) { // 左子树存在，按正常情况单旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------hhhhh");
-								k = rotateWithLeftChild(k);
-							} else { // 否则是左右情况，双旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------iiiii");
-								k = doubleWithLeftChild(k);
-							}
-						}
-					}
-					if (height(t.right) - height(t.left) == 2) {
-						// 右子树自身一定是平衡的，左右失衡的话单旋转可以解决问题
-						System.out.println(
-								"-----------------------------------------------------------------------------55555");
-						t = rotateWithRightChild(t);
-					}
-				}
-			}
-			// 完了之后更新height值
-			t.height = Math.max(height(t.left), height(t.right)) + 1;
-		} else if (compareResult > 0) {
-			t.right = remove(x, t.right);
-			// 下面验证子树是否平衡
-			if (t.left != null) { // 若左子树为空，则一定是平衡的，此时右子树相当对父节点深度最多为1
-				if (t.right == null) { // 若右子树删除后为空，则只需判断左子树
-					if (height(t.left) - t.height == 2) {
-						AvlNode<T> k = t.left;
-						if (k.left != null) {
-							System.out.println(
-									"-----------------------------------------------------------------------------66666");
-							t = rotateWithLeftChild(t);
-						} else {
-							System.out.println(
-									"-----------------------------------------------------------------------------77777");
-							t = doubleWithLeftChild(t);
-						}
-					}
-				} else { // 若右子树删除后非空，则判断左右子树的高度差
-					// 右子树自身也可能不平衡，故先平衡右子树，再考虑整体
-					AvlNode<T> k = t.right;
-					// 删除操作默认用右子树上最小节点（靠左）补删除的节点
-					// k的右子树高度不低于k的左子树
-					if (k.left != null) {
-						if (height(k.right) - height(k.left) == 2) {
-							AvlNode<T> m = k.right;
-							if (m.right != null) { // 右子树存在，按正常情况单旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------88888");
-								k = rotateWithRightChild(k);
-							} else { // 否则是右左情况，双旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------99999");
-								k = doubleWithRightChild(k);
-							}
-						}
-					} else {
-						if (height(k.right) - k.height == 2) {
-							AvlNode<T> m = k.right;
-							if (m.right != null) { // 右子树存在，按正常情况单旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------aaaaa");
-								k = rotateWithRightChild(k);
-							} else { // 否则是右左情况，双旋转
-								System.out.println(
-										"-----------------------------------------------------------------------------bbbbb");
-								k = doubleWithRightChild(k);
-							}
-						}
-					}
-					if (height(t.left) - height(t.right) == 2) {
-						// 左子树自身一定是平衡的，左右失衡的话单旋转可以解决问题
-						System.out.println(
-								"-----------------------------------------------------------------------------ccccc");
-						t = rotateWithLeftChild(t);
-					}
-				}
-			}
-			// 完了之后更新height值
-			t.height = Math.max(height(t.left), height(t.right)) + 1;
-		} else if (t.left != null && t.right != null) {
-			// 默认用其右子树的最小数据代替该节点的数据并递归的删除那个节点
-			t.element = findMin(t.right).element;
-			t.right = remove(t.element, t.right);
-			if (t.right == null) { // 若右子树删除后为空，则只需判断左子树与根的高度差
-				if (height(t.left) - t.height == 2) {
-					AvlNode<T> k = t.left;
-					if (k.left != null) {
-						System.out.println(
-								"-----------------------------------------------------------------------------ddddd");
-						t = rotateWithLeftChild(t);
-					} else {
-						System.out.println(
-								"-----------------------------------------------------------------------------eeeee");
-						t = doubleWithLeftChild(t);
-					}
-				}
-			} else { // 若右子树删除后非空，则判断左右子树的高度差
-				// 右子树自身也可能不平衡，故先平衡右子树，再考虑整体
-				AvlNode<T> k = t.right;
-				// 删除操作默认用右子树上最小节点（靠左）补删除的节点
+	public void preOrder() {
+		preOrder(mRoot);
+	}
 
-				if (k.left != null) {
-					if (height(k.right) - height(k.left) == 2) {
-						AvlNode<T> m = k.right;
-						if (m.right != null) { // 右子树存在，按正常情况单旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------fffff");
-							k = rotateWithRightChild(k);
-						} else { // 否则是右左情况，双旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------ggggg");
-							k = doubleWithRightChild(k);
-						}
-					}
-				} else {
-					if (height(k.right) - k.height == 2) {
-						AvlNode<T> m = k.right;
-						if (m.right != null) { // 右子树存在，按正常情况单旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------hhhhh");
-							k = rotateWithRightChild(k);
-						} else { // 否则是右左情况，双旋转
-							System.out.println(
-									"-----------------------------------------------------------------------------iiiii");
-							k = doubleWithRightChild(k);
-						}
-					}
-				}
-				// 左子树自身一定是平衡的，左右失衡的话单旋转可以解决问题
-				if (height(t.left) - height(t.right) == 2) {
-					System.out.println(
-							"-----------------------------------------------------------------------------jjjjj");
-					t = rotateWithLeftChild(t);
-				}
-			}
-			// 完了之后更新height值
-			t.height = Math.max(height(t.left), height(t.right)) + 1;
-		} else {
-			System.out.println("-----------------------------------------------------------------------------kkkkk");
-			t = (t.left != null) ? t.left : t.right;
+	/*
+	 * 中序遍历"AVL树"
+	 */
+	private void inOrder(AVLTreeNode<T> tree) {
+		if (tree != null) {
+			inOrder(tree.left);
+			System.out.print(tree.key + " ");
+			inOrder(tree.right);
 		}
-		return t;
 	}
 
-	// 左左情况单旋转
-	private AvlNode<T> rotateWithLeftChild(AvlNode<T> k2) {
-		AvlNode<T> k1 = k2.left;
+	public void inOrder() {
+		inOrder(mRoot);
+	}
+
+	/*
+	 * 后序遍历"AVL树"
+	 */
+	private void postOrder(AVLTreeNode<T> tree) {
+		if (tree != null) {
+			postOrder(tree.left);
+			postOrder(tree.right);
+			System.out.print(tree.key + " ");
+		}
+	}
+
+	public void postOrder() {
+		postOrder(mRoot);
+	}
+
+	/*
+	 * (递归实现)查找"AVL树x"中键值为key的节点
+	 */
+	private AVLTreeNode<T> search(AVLTreeNode<T> x, T key) {
+		if (x == null)
+			return x;
+
+		int cmp = key.compareTo(x.key);
+		if (cmp < 0)
+			return search(x.left, key);
+		else if (cmp > 0)
+			return search(x.right, key);
+		else
+			return x;
+	}
+
+	public AVLTreeNode<T> search(T key) {
+		return search(mRoot, key);
+	}
+
+	/*
+	 * (非递归实现)查找"AVL树x"中键值为key的节点
+	 */
+	private AVLTreeNode<T> iterativeSearch(AVLTreeNode<T> x, T key) {
+		while (x != null) {
+			int cmp = key.compareTo(x.key);
+
+			if (cmp < 0)
+				x = x.left;
+			else if (cmp > 0)
+				x = x.right;
+			else
+				return x;
+		}
+
+		return x;
+	}
+
+	public AVLTreeNode<T> iterativeSearch(T key) {
+		return iterativeSearch(mRoot, key);
+	}
+
+	/*
+	 * 查找最小结点：返回tree为根结点的AVL树的最小结点。
+	 */
+	private AVLTreeNode<T> minimum(AVLTreeNode<T> tree) {
+		if (tree == null)
+			return null;
+
+		while (tree.left != null)
+			tree = tree.left;
+		return tree;
+	}
+
+	public T minimum() {
+		AVLTreeNode<T> p = minimum(mRoot);
+		if (p != null)
+			return p.key;
+
+		return null;
+	}
+
+	/*
+	 * 查找最大结点：返回tree为根结点的AVL树的最大结点。
+	 */
+	private AVLTreeNode<T> maximum(AVLTreeNode<T> tree) {
+		if (tree == null)
+			return null;
+
+		while (tree.right != null)
+			tree = tree.right;
+		return tree;
+	}
+
+	public T maximum() {
+		AVLTreeNode<T> p = maximum(mRoot);
+		if (p != null)
+			return p.key;
+
+		return null;
+	}
+
+	/*
+	 * LL：左左对应的情况(左单旋转)。
+	 *
+	 * 返回值：旋转后的根节点
+	 */
+	private AVLTreeNode<T> leftLeftRotation(AVLTreeNode<T> k2) {
+		AVLTreeNode<T> k1;
+
+		k1 = k2.left;
 		k2.left = k1.right;
 		k1.right = k2;
-		k2.height = Math.max(height(k2.left), height(k2.right)) + 1;
-		k1.height = Math.max(height(k1.left), k2.height) + 1;
-		return k1; // 返回新的根
+
+		k2.height = max(height(k2.left), height(k2.right)) + 1;
+		k1.height = max(height(k1.left), k2.height) + 1;
+
+		return k1;
 	}
 
-	// 右右情况单旋转
-	private AvlNode<T> rotateWithRightChild(AvlNode<T> k2) {
-		AvlNode<T> k1 = k2.right;
-		k2.right = k1.left;
-		k1.left = k2;
-		k2.height = Math.max(height(k2.left), height(k2.right)) + 1;
-		k1.height = Math.max(height(k1.right), k2.height) + 1;
-		return k1; // 返回新的根
+	/*
+	 * RR：右右对应的情况(右单旋转)。
+	 *
+	 * 返回值：旋转后的根节点
+	 */
+	private AVLTreeNode<T> rightRightRotation(AVLTreeNode<T> k1) {
+		AVLTreeNode<T> k2;
+
+		k2 = k1.right;
+		k1.right = k2.left;
+		k2.left = k1;
+
+		k1.height = max(height(k1.left), height(k1.right)) + 1;
+		k2.height = max(height(k2.right), k1.height) + 1;
+
+		return k2;
 	}
 
-	// 左右情况
-	private AvlNode<T> doubleWithLeftChild(AvlNode<T> k3) {
-		try {
-			k3.left = rotateWithRightChild(k3.left);
-		} catch (NullPointerException e) {
-			System.out.println("k.left.right为：" + k3.left.right);
-			throw e;
+	/*
+	 * LR：左右对应的情况(左双旋转)。
+	 *
+	 * 返回值：旋转后的根节点
+	 */
+	private AVLTreeNode<T> leftRightRotation(AVLTreeNode<T> k3) {
+		k3.left = rightRightRotation(k3.left);
+
+		return leftLeftRotation(k3);
+	}
+
+	/*
+	 * RL：右左对应的情况(右双旋转)。
+	 *
+	 * 返回值：旋转后的根节点
+	 */
+	private AVLTreeNode<T> rightLeftRotation(AVLTreeNode<T> k1) {
+		k1.right = leftLeftRotation(k1.right);
+
+		return rightRightRotation(k1);
+	}
+
+	/*
+	 * 将结点插入到AVL树中，并返回根节点
+	 *
+	 * 参数说明： tree AVL树的根结点 key 插入的结点的键值 返回值： 根节点
+	 */
+	private AVLTreeNode<T> insert(AVLTreeNode<T> tree, T key) {
+		if (tree == null) {
+			// 新建节点
+			tree = new AVLTreeNode<T>(key, null, null);
+			if (tree == null) {
+				System.out.println("ERROR: create avltree node failed!");
+				return null;
+			}
+		} else {
+			int cmp = key.compareTo(tree.key);
+
+			if (cmp < 0) { // 应该将key插入到"tree的左子树"的情况
+				tree.left = insert(tree.left, key);
+				// 插入节点后，若AVL树失去平衡，则进行相应的调节。
+				if (height(tree.left) - height(tree.right) == 2) {
+					if (key.compareTo(tree.left.key) < 0)
+						tree = leftLeftRotation(tree);
+					else
+						tree = leftRightRotation(tree);
+				}
+			} else if (cmp > 0) { // 应该将key插入到"tree的右子树"的情况
+				tree.right = insert(tree.right, key);
+				// 插入节点后，若AVL树失去平衡，则进行相应的调节。
+				if (height(tree.right) - height(tree.left) == 2) {
+					if (key.compareTo(tree.right.key) > 0)
+						tree = rightRightRotation(tree);
+					else
+						tree = rightLeftRotation(tree);
+				}
+			} else { // cmp==0
+				System.out.println("添加失败：不允许添加相同的节点！");
+			}
 		}
-		return rotateWithLeftChild(k3);
+
+		tree.height = max(height(tree.left), height(tree.right)) + 1;
+
+		return tree;
 	}
 
-	// 右左情况
-	private AvlNode<T> doubleWithRightChild(AvlNode<T> k3) {
-		try {
-			k3.right = rotateWithLeftChild(k3.right);
-		} catch (NullPointerException e) {
-			System.out.println("k.right.left为：" + k3.right.left);
-			throw e;
+	public void insert(T key) {
+		mRoot = insert(mRoot, key);
+	}
+
+	/*
+	 * 删除结点(z)，返回根节点
+	 *
+	 * 参数说明： tree AVL树的根结点 z 待删除的结点 返回值： 根节点
+	 */
+	private AVLTreeNode<T> remove(AVLTreeNode<T> tree, AVLTreeNode<T> z) {
+		// 根为空 或者 没有要删除的节点，直接返回null。
+		if (tree == null || z == null)
+			return null;
+
+		int cmp = z.key.compareTo(tree.key);
+		if (cmp < 0) { // 待删除的节点在"tree的左子树"中
+			tree.left = remove(tree.left, z);
+			// 删除节点后，若AVL树失去平衡，则进行相应的调节。
+			if (height(tree.right) - height(tree.left) == 2) {
+				AVLTreeNode<T> r = tree.right;
+				if (height(r.left) > height(r.right))
+					tree = rightLeftRotation(tree);
+				else
+					tree = rightRightRotation(tree);
+			}
+		} else if (cmp > 0) { // 待删除的节点在"tree的右子树"中
+			tree.right = remove(tree.right, z);
+			// 删除节点后，若AVL树失去平衡，则进行相应的调节。
+			if (height(tree.left) - height(tree.right) == 2) {
+				AVLTreeNode<T> l = tree.left;
+				if (height(l.right) > height(l.left))
+					tree = leftRightRotation(tree);
+				else
+					tree = leftLeftRotation(tree);
+			}
+		} else { // tree是对应要删除的节点。
+			// tree的左右孩子都非空
+			if ((tree.left != null) && (tree.right != null)) {
+				if (height(tree.left) > height(tree.right)) {
+					// 如果tree的左子树比右子树高；
+					// 则(01)找出tree的左子树中的最大节点
+					// (02)将该最大节点的值赋值给tree。
+					// (03)删除该最大节点。
+					// 这类似于用"tree的左子树中最大节点"做"tree"的替身；
+					// 采用这种方式的好处是：删除"tree的左子树中最大节点"之后，AVL树仍然是平衡的。
+					AVLTreeNode<T> max = maximum(tree.left);
+					tree.key = max.key;
+					tree.left = remove(tree.left, max);
+				} else {
+					// 如果tree的左子树不比右子树高(即它们相等，或右子树比左子树高1)
+					// 则(01)找出tree的右子树中的最小节点
+					// (02)将该最小节点的值赋值给tree。
+					// (03)删除该最小节点。
+					// 这类似于用"tree的右子树中最小节点"做"tree"的替身；
+					// 采用这种方式的好处是：删除"tree的右子树中最小节点"之后，AVL树仍然是平衡的。
+					AVLTreeNode<T> min = minimum(tree.right);
+					tree.key = min.key;
+					tree.right = remove(tree.right, min);
+				}
+			} else {
+				AVLTreeNode<T> tmp = tree;
+				tree = (tree.left != null) ? tree.left : tree.right;
+				tmp = null;
+			}
 		}
-		return rotateWithRightChild(k3);
+
+		return tree;
 	}
 
+	public void remove(T key) {
+		AVLTreeNode<T> z;
+		if ((z = search(mRoot, key)) != null) {
+			mRoot = remove(mRoot, z);
+			if (mRoot != null) {
+				//更新跟节点高度
+				mRoot.height = max(height(mRoot.left), height(mRoot.right)) + 1;
+			}
+		}
+	}
+
+	/*
+	 * 销毁AVL树
+	 */
+	private void destroy(AVLTreeNode<T> tree) {
+		if (tree == null)
+			return;
+
+		if (tree.left != null)
+			destroy(tree.left);
+		if (tree.right != null)
+			destroy(tree.right);
+
+		tree = null;
+	}
+
+	public void destroy() {
+		destroy(mRoot);
+	}
+
+	/*
+	 * 打印"二叉查找树"
+	 *
+	 * key -- 节点的键值 direction -- 0，表示该节点是根节点; -1，表示该节点是它的父结点的左孩子; 1，表示该节点是它的父结点的右孩子。
+	 */
+	private void print(AVLTreeNode<T> tree, T key, int direction) {
+		if (tree != null) {
+			if (direction == 0) // tree是根节点
+				System.out.printf("%2d is root\n", tree.key, key);
+			else // tree是分支节点
+				System.out.printf("%2d is %2d's %6s child\n", tree.key, key, direction == 1 ? "right" : "left");
+
+			print(tree.left, tree.key, -1);
+			print(tree.right, tree.key, 1);
+		}
+	}
+
+	public void print() {
+		if (mRoot != null)
+			print(mRoot, mRoot.key, 0);
+	}
 }
