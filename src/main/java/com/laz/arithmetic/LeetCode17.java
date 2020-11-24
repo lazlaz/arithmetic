@@ -899,13 +899,13 @@ public class LeetCode17 {
 	// 有效的字母异位词
 	@Test
 	public void test16() {
-		//Assert.assertEquals(true, isAnagram("anagram","nagaram"));
+		// Assert.assertEquals(true, isAnagram("anagram","nagaram"));
 		List<String> str1;
 		List<String> str2;
 		try {
 			str1 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16.txt"));
 			str2 = IOUtils.readLines(this.getClass().getClassLoader().getResourceAsStream("test17_16_2.txt"));
-			Assert.assertEquals(true, isAnagram(str1.get(0),str2.get(0)));
+			Assert.assertEquals(true, isAnagram(str1.get(0), str2.get(0)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -925,7 +925,7 @@ public class LeetCode17 {
 		}
 		if (map1.size() == map2.size()) {
 			for (Character c : map1.keySet()) {
-				if (!map1.get(c).equals(map2.get(c))) { //Integer需要用equals比较
+				if (!map1.get(c).equals(map2.get(c))) { // Integer需要用equals比较
 					return false;
 				}
 			}
@@ -933,4 +933,37 @@ public class LeetCode17 {
 		}
 		return false;
 	}
+
+	// 完全二叉树的节点个数
+	@Test
+	public void test17() {
+		TreeNode root = Utils.createTree(new Integer[] { 2, 0, 3, -4, 1 });
+		Assert.assertEquals(5, new Solution17().countNodes(root));
+	}
+
+	// https://leetcode-cn.com/problems/count-complete-tree-nodes/solution/chang-gui-jie-fa-he-ji-bai-100de-javajie-fa-by-xia/
+	class Solution17 {
+		public int countNodes(TreeNode root) {
+			if (root == null) {
+				return 0;
+			}
+			int left = countLevel(root.left); // 左子树高度
+			int right = countLevel(root.right);// 右子树高度
+			if (left == right) {
+				return countNodes(root.right) + (1 << left);
+			} else {
+				return countNodes(root.left) + (1 << right);
+			}
+		}
+
+		private int countLevel(TreeNode root) {
+			int level = 0;
+			while (root != null) {
+				level++;
+				root = root.left;
+			}
+			return level;
+		}
+	}
+
 }
