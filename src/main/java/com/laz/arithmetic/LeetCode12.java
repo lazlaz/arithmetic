@@ -874,6 +874,8 @@ public class LeetCode12 {
 	@Test
 	public void test14() {
 		Assert.assertEquals(2, findMinArrowShots(new int[][] { { 10, 16 }, { 2, 8 }, { 1, 6 }, { 7, 12 } }));
+		
+		Assert.assertEquals(2, findMinArrowShots(new int[][] { {-2147483646,-2147483645},{2147483646,2147483647}}));
 	}
 
 	public int findMinArrowShots(int[][] points) {
@@ -884,7 +886,14 @@ public class LeetCode12 {
 
 			@Override
 			public int compare(int[] o1, int[] o2) {
-				return o1[1] - o2[1];
+				// return o1[1] - o2[1]; 不能用详见，当o1为2147483646 o2为-2147483646会超出范围变为负数
+				if (o1[1]>o2[1]) {
+					return 1;
+				} else if (o1[1]<o2[1]) {
+					return -1;
+				} else {
+					return 0;
+				}
 			}
 
 		});
