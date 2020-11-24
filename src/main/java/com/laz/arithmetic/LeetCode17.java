@@ -966,4 +966,117 @@ public class LeetCode17 {
 		}
 	}
 
+	// 至少有K个重复字符的最长子串
+	@Test
+	public void test18() {
+		Assert.assertEquals(3, new Solution18().longestSubstring("aaabb", 3));
+
+		Assert.assertEquals(5, new Solution18().longestSubstring("ababbc", 2));
+
+		Assert.assertEquals(5, new Solution18().longestSubstring("aaaaadabcbb", 3));
+
+		Assert.assertEquals(3, new Solution18().longestSubstring("bbaaacddcaabdbd", 3));
+	}
+	//https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/395-zhi-shao-you-kge-zhong-fu-zi-fu-de-zui-chang-5/
+	class Solution18_2{
+		 public int longestSubstring(String s, int k) {
+		        if (s == null || s.length() == 0) {
+		            return 0;
+		        }
+		        
+		        Map<Character, Integer> map = new HashMap<>();
+		        for (char chs : s.toCharArray()) {
+		            map.put(chs, map.getOrDefault(chs, 0) + 1);
+		        }
+		        
+		        // 这里是先把 s 传进 sb 中来找出不满足 k 个的元素及其位置
+		        StringBuilder sb = new StringBuilder(s);
+		        for (int i = 0; i < s.length(); i++) {
+		            if (map.get(s.charAt(i)) < k) {
+		                sb.setCharAt(i, ',');
+		            }
+		        }
+		        
+		        // 然后以不符合要求的元素位置进行分割存储到字符串数组中
+		        String[] string = sb.toString().split(",");
+		        // 如果仅有一组，则说明只有一个字母，返回首字母既可
+		        if (string.length == 1) {
+		            return string[0].length();
+		        }
+		        int max = 0;
+		        // 如果有多组，就进行最大值比较
+		        // 例如 aaabcccc，通过上面的操作后 化为 aaa,cccc
+		        for (String str : string) {
+		            max = Math.max(max, longestSubstring(str, k));
+		        }
+		        return max;
+		    }
+	}
+	class Solution18 {
+		public int longestSubstring(String s, int k) {
+			int[] arr = new int[26];
+			for (int i = 0; i < s.length(); i++) {
+				arr[s.charAt(i) - 'a']++;
+			}
+			int p = 0, q = s.length() - 1;
+			int max = 0;
+			while (p <= q) {
+				if (check(arr, k)) {
+					break;
+				}
+				if (arr[s.charAt(p) - 'a'] < k) {
+					arr[s.charAt(p) - 'a']--;
+					p++;
+				} else if (arr[s.charAt(q) - 'a'] < k) {
+					arr[s.charAt(q) - 'a']--;
+					q--;
+				} else {
+					// 找到最近小于k的字符
+					int index1 = -1;
+
+					for (int i = p; i <= q; i++) {
+						if (arr[s.charAt(i) - 'a'] < k) {
+							index1 = i;
+							break;
+						}
+					}
+					int index2 = -1;
+					for (int i = q; i >= p; i--) {
+						if (arr[s.charAt(i) - 'a'] < k) {
+							index2 = i;
+							break;
+						}
+					}
+					if (index1 != -1 && index2 != -1) {
+						if ((index1 - p) > (q - index2)) {
+							for (int j = q; j >= index2; j--) {
+								arr[s.charAt(j) - 'a']--;
+							}
+							max = Math.max(longestSubstring(s.substring(index2, q+1), k),max);
+							q = index2 - 1;
+						} else {
+							for (int j = p; j <= index1; j++) {
+								arr[s.charAt(j) - 'a']--;
+							}
+							max = Math.max(longestSubstring(s.substring(p, index1+1), k),max);
+							p = index1 + 1;
+						}
+					} else {
+						break;
+					}
+				}
+			}
+			max = Math.max(max, q-p+1);
+			return max;
+		}
+
+		public boolean check(int[] arr, int k) {
+			for (int i = 0; i < arr.length; i++) {
+				if (arr[i] > 0 && arr[i] < k) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
 }
