@@ -1086,13 +1086,13 @@ public class LeetCode17 {
 	@Test
 	public void test19() {
 		Assert.assertEquals("abccbaabccba", sortString("aaaabbbbcccc"));
-		
+
 		Assert.assertEquals("art", sortString("rat"));
-		
+
 		Assert.assertEquals("cdelotee", sortString("leetcode"));
-		
+
 		Assert.assertEquals("ggggggg", sortString("ggggggg"));
-		
+
 		Assert.assertEquals("ops", sortString("spo"));
 	}
 
@@ -1148,5 +1148,37 @@ public class LeetCode17 {
 
 		}
 		return sb.toString();
+	}
+
+	// 四数相加 II
+	@Test
+	public void test20() {
+		Assert.assertEquals(2,
+				fourSumCount(new int[] { 1, 2 }, new int[] { -2, -1 }, new int[] { -1, 2 }, new int[] { 0, 2 }));
+	}
+	//https://leetcode-cn.com/problems/4sum-ii/solution/chao-ji-rong-yi-li-jie-de-fang-fa-si-shu-xiang-jia/
+	public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+		Map<Integer,Integer> map1 = new HashMap<Integer,Integer>();
+		int n = A.length;
+		for (int i=0;i<n;i++) {
+			for (int j=0;j<n;j++) {
+				int count = map1.getOrDefault(A[i]+B[j], 0);
+				map1.put(A[i]+B[j], ++count);
+			}
+		}
+		Map<Integer,Integer> map2 = new HashMap<Integer,Integer>();
+		for (int i=0;i<n;i++) {
+			for (int j=0;j<n;j++) {
+				int count = map2.getOrDefault(C[i]+D[j], 0);
+				map2.put(C[i]+D[j], ++count);
+			}
+		}
+		int res = 0;
+		for (Integer key:map1.keySet()) {
+			Integer key2 = 0-key;
+			Integer v = map2.getOrDefault(key2, 0);
+			res = res+(v*map1.get(key));
+		}
+		return res;
 	}
 }
