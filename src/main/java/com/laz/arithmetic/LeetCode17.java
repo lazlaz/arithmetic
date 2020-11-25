@@ -977,41 +977,43 @@ public class LeetCode17 {
 
 		Assert.assertEquals(3, new Solution18().longestSubstring("bbaaacddcaabdbd", 3));
 	}
-	//https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/395-zhi-shao-you-kge-zhong-fu-zi-fu-de-zui-chang-5/
-	class Solution18_2{
-		 public int longestSubstring(String s, int k) {
-		        if (s == null || s.length() == 0) {
-		            return 0;
-		        }
-		        
-		        Map<Character, Integer> map = new HashMap<>();
-		        for (char chs : s.toCharArray()) {
-		            map.put(chs, map.getOrDefault(chs, 0) + 1);
-		        }
-		        
-		        // 这里是先把 s 传进 sb 中来找出不满足 k 个的元素及其位置
-		        StringBuilder sb = new StringBuilder(s);
-		        for (int i = 0; i < s.length(); i++) {
-		            if (map.get(s.charAt(i)) < k) {
-		                sb.setCharAt(i, ',');
-		            }
-		        }
-		        
-		        // 然后以不符合要求的元素位置进行分割存储到字符串数组中
-		        String[] string = sb.toString().split(",");
-		        // 如果仅有一组，则说明只有一个字母，返回首字母既可
-		        if (string.length == 1) {
-		            return string[0].length();
-		        }
-		        int max = 0;
-		        // 如果有多组，就进行最大值比较
-		        // 例如 aaabcccc，通过上面的操作后 化为 aaa,cccc
-		        for (String str : string) {
-		            max = Math.max(max, longestSubstring(str, k));
-		        }
-		        return max;
-		    }
+
+	// https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/395-zhi-shao-you-kge-zhong-fu-zi-fu-de-zui-chang-5/
+	class Solution18_2 {
+		public int longestSubstring(String s, int k) {
+			if (s == null || s.length() == 0) {
+				return 0;
+			}
+
+			Map<Character, Integer> map = new HashMap<>();
+			for (char chs : s.toCharArray()) {
+				map.put(chs, map.getOrDefault(chs, 0) + 1);
+			}
+
+			// 这里是先把 s 传进 sb 中来找出不满足 k 个的元素及其位置
+			StringBuilder sb = new StringBuilder(s);
+			for (int i = 0; i < s.length(); i++) {
+				if (map.get(s.charAt(i)) < k) {
+					sb.setCharAt(i, ',');
+				}
+			}
+
+			// 然后以不符合要求的元素位置进行分割存储到字符串数组中
+			String[] string = sb.toString().split(",");
+			// 如果仅有一组，则说明只有一个字母，返回首字母既可
+			if (string.length == 1) {
+				return string[0].length();
+			}
+			int max = 0;
+			// 如果有多组，就进行最大值比较
+			// 例如 aaabcccc，通过上面的操作后 化为 aaa,cccc
+			for (String str : string) {
+				max = Math.max(max, longestSubstring(str, k));
+			}
+			return max;
+		}
 	}
+
 	class Solution18 {
 		public int longestSubstring(String s, int k) {
 			int[] arr = new int[26];
@@ -1052,13 +1054,13 @@ public class LeetCode17 {
 							for (int j = q; j >= index2; j--) {
 								arr[s.charAt(j) - 'a']--;
 							}
-							max = Math.max(longestSubstring(s.substring(index2, q+1), k),max);
+							max = Math.max(longestSubstring(s.substring(index2, q + 1), k), max);
 							q = index2 - 1;
 						} else {
 							for (int j = p; j <= index1; j++) {
 								arr[s.charAt(j) - 'a']--;
 							}
-							max = Math.max(longestSubstring(s.substring(p, index1+1), k),max);
+							max = Math.max(longestSubstring(s.substring(p, index1 + 1), k), max);
 							p = index1 + 1;
 						}
 					} else {
@@ -1066,7 +1068,7 @@ public class LeetCode17 {
 					}
 				}
 			}
-			max = Math.max(max, q-p+1);
+			max = Math.max(max, q - p + 1);
 			return max;
 		}
 
@@ -1078,5 +1080,73 @@ public class LeetCode17 {
 			}
 			return true;
 		}
+	}
+
+	// 上升下降字符串
+	@Test
+	public void test19() {
+		Assert.assertEquals("abccbaabccba", sortString("aaaabbbbcccc"));
+		
+		Assert.assertEquals("art", sortString("rat"));
+		
+		Assert.assertEquals("cdelotee", sortString("leetcode"));
+		
+		Assert.assertEquals("ggggggg", sortString("ggggggg"));
+		
+		Assert.assertEquals("ops", sortString("spo"));
+	}
+
+	public String sortString(String s) {
+		StringBuilder sb = new StringBuilder();
+		int[] arr = new int[26];
+		for (int i = 0; i < s.length(); i++) {
+			arr[s.charAt(i) - 'a']++;
+		}
+		char curr = ' ';
+		boolean max = false;
+		while (sb.length() < s.length()) {
+			if (!max) {
+
+				int len = sb.length();
+				for (int i = 0; i < arr.length; i++) {
+					char c = (char) (i + 'a');
+					if (arr[i] > 0) {
+						if (curr == ' ') {
+							sb.append(c);
+							arr[i]--;
+						} else if (c > curr) {
+							sb.append(c);
+							arr[i]--;
+						}
+					}
+				}
+				curr = sb.charAt(sb.length() - 1);
+				if (sb.length() == len) {
+					curr = ' ';
+					max = true;
+				}
+			} else {
+				int len = sb.length();
+				for (int i = arr.length - 1; i >= 0; i--) {
+					char c = (char) (i + 'a');
+					if (arr[i] > 0) {
+						if (curr == ' ') {
+							sb.append(c);
+							arr[i]--;
+						} else if (c < curr) {
+							sb.append(c);
+							arr[i]--;
+						}
+					}
+				}
+				curr = sb.charAt(sb.length() - 1);
+				if (sb.length() == len) {
+					curr = ' ';
+					max = false;
+				}
+			}
+
+		}
+		return sb.toString();
 	}
 }
