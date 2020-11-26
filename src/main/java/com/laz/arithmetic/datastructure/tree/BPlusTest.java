@@ -7,14 +7,14 @@ public class BPlusTest {
 
 		long time1 = System.nanoTime();
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 10; i++) {
 			Product p = new Product(i, "test", 1.0 * i);
 			b.insert(p, p.getId());
 		}
 
 		long time2 = System.nanoTime();
 
-		Product p1 = b.find(345);
+		Product p1 = b.find(3);
 		System.out.println(p1.getName());
 		long time3 = System.nanoTime();
 
