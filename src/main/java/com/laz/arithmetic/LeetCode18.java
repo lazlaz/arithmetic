@@ -92,4 +92,22 @@ public class LeetCode18 {
 			}
 		}
 	}
+	
+	//三角形的最大周长
+	@Test
+	public void test3() {
+		Assert.assertEquals(5, largestPerimeter(new int[] {
+				2,1,2
+		}));
+	}
+	//https://leetcode-cn.com/problems/largest-perimeter-triangle/solution/san-jiao-xing-de-zui-da-zhou-chang-by-leetcode-sol/
+	 public int largestPerimeter(int[] A) {
+		 Arrays.sort(A);
+	        for (int i = A.length - 1; i >= 2; --i) {
+	            if (A[i - 2] + A[i - 1] > A[i]) {
+	                return A[i - 2] + A[i - 1] + A[i];
+	            }
+	        }
+	        return 0;
+	    }
 }
