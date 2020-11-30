@@ -122,7 +122,6 @@ public class LeetCode18 {
 		Assert.assertEquals("ababababab", new Solution4().reorganizeString("abbabbaaab"));
 		Assert.assertEquals("czcxmwbtcsmlombockgi", new Solution4().reorganizeString("ogccckcwmbmxtsbmozli"));
 	}
-
 	class Solution4 {
 		public String reorganizeString(String S) {
 			int[] arr = new int[26];
