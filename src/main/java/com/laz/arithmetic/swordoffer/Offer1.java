@@ -161,17 +161,103 @@ public class Offer1 {
 	}
 
 	public int fib(int n) {
-		if (n<1) {
+		if (n < 1) {
 			return 0;
 		}
 		int MOD = 1000_000_007;
-		int[] dp = new int[n+1];
+		int[] dp = new int[n + 1];
 		dp[0] = 0;
 		dp[1] = 1;
-		for (int i=2;i<=n;i++) {
-			dp[i] = (dp[i-1]+dp[i-2])%MOD;
-			
+		for (int i = 2; i <= n; i++) {
+			dp[i] = (dp[i - 1] + dp[i - 2]) % MOD;
+
 		}
 		return dp[n];
+	}
+
+	// 剑指 Offer 10- II. 青蛙跳台阶问题
+	@Test
+	public void test7() {
+		Assert.assertEquals(2, numWays(2));
+
+		Assert.assertEquals(21, numWays(7));
+	}
+
+	public int numWays(int n) {
+		if (n == 0) {
+			return 1;
+		}
+		if (n <= 2) {
+			return n;
+		}
+		int[] dp = new int[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		dp[2] = 2;
+		for (int i = 3; i <= n; i++) {
+			dp[i] = (dp[i - 1] + dp[i - 2]) % 1000000007;
+		}
+		return dp[n];
+	}
+
+	// 剑指 Offer 12. 矩阵中的路径
+	@Test
+	public void test8() {
+		Assert.assertEquals(true, new Solution8().exist(
+				new char[][] { { 'A', 'B', 'C', 'E' }, { 'S', 'F', 'C', 'S' }, { 'A', 'D', 'E', 'E' } }, "ABCCED"));
+		
+		Assert.assertEquals(false, new Solution8().exist(
+				new char[][] { { 'a','b' }, { 'c','d' } }, "abcd"));
+		
+		Assert.assertEquals(true, new Solution8().exist(
+				new char[][] { { 'a' } }, "a"));
+	}
+
+	class Solution8 {
+		boolean[][] visited;
+		String word;
+		int[][] p = new int[][] {
+			{-1,0},
+			{1,0},
+			{0,1},
+			{0,-1}
+		};
+		boolean res = false;
+		public boolean exist(char[][] board, String word) {
+			int m = board.length;
+			int n = board[0].length;
+			visited = new boolean[m][n];
+			this.word = word;
+			for (int i=0;i<m;i++) {
+				for (int j=0;j<n;j++) {
+					dfs(i,j,board,new StringBuilder());
+				}
+			}
+			return res;
+		}
+		private void dfs(int r, int c, char[][] board, StringBuilder sb) {
+			if (res) {
+				return;
+			}
+			if (r<0 || c<0 || r>=board.length || c>=board[0].length) {
+				return;
+			}
+			if (visited[r][c]) {
+				return;
+			}
+			if (sb.length()<word.length() && word.charAt(sb.length())!=board[r][c]) {
+				return;
+			}
+			visited[r][c] = true;
+			sb.append(board[r][c]);
+			if (sb.length()==word.length()) {
+				res = true;
+			}
+			for (int i=0;i<p.length;i++) {
+				dfs(r+p[i][0],c+p[i][1],board,sb);
+			}
+			visited[r][c] = false;
+			sb.delete(sb.length()-1,sb.length());
+		}
 	}
 }
