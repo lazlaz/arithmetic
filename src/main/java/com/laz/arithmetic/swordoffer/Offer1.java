@@ -205,59 +205,118 @@ public class Offer1 {
 	public void test8() {
 		Assert.assertEquals(true, new Solution8().exist(
 				new char[][] { { 'A', 'B', 'C', 'E' }, { 'S', 'F', 'C', 'S' }, { 'A', 'D', 'E', 'E' } }, "ABCCED"));
-		
-		Assert.assertEquals(false, new Solution8().exist(
-				new char[][] { { 'a','b' }, { 'c','d' } }, "abcd"));
-		
-		Assert.assertEquals(true, new Solution8().exist(
-				new char[][] { { 'a' } }, "a"));
+
+		Assert.assertEquals(false, new Solution8().exist(new char[][] { { 'a', 'b' }, { 'c', 'd' } }, "abcd"));
+
+		Assert.assertEquals(true, new Solution8().exist(new char[][] { { 'a' } }, "a"));
 	}
 
 	class Solution8 {
 		boolean[][] visited;
 		String word;
-		int[][] p = new int[][] {
-			{-1,0},
-			{1,0},
-			{0,1},
-			{0,-1}
-		};
+		int[][] p = new int[][] { { -1, 0 }, { 1, 0 }, { 0, 1 }, { 0, -1 } };
 		boolean res = false;
+
 		public boolean exist(char[][] board, String word) {
 			int m = board.length;
 			int n = board[0].length;
 			visited = new boolean[m][n];
 			this.word = word;
-			for (int i=0;i<m;i++) {
-				for (int j=0;j<n;j++) {
-					dfs(i,j,board,new StringBuilder());
+			for (int i = 0; i < m; i++) {
+				for (int j = 0; j < n; j++) {
+					dfs(i, j, board, new StringBuilder());
 				}
 			}
 			return res;
 		}
+
 		private void dfs(int r, int c, char[][] board, StringBuilder sb) {
 			if (res) {
 				return;
 			}
-			if (r<0 || c<0 || r>=board.length || c>=board[0].length) {
+			if (r < 0 || c < 0 || r >= board.length || c >= board[0].length) {
 				return;
 			}
 			if (visited[r][c]) {
 				return;
 			}
-			if (sb.length()<word.length() && word.charAt(sb.length())!=board[r][c]) {
+			if (sb.length() < word.length() && word.charAt(sb.length()) != board[r][c]) {
 				return;
 			}
 			visited[r][c] = true;
 			sb.append(board[r][c]);
-			if (sb.length()==word.length()) {
+			if (sb.length() == word.length()) {
 				res = true;
 			}
-			for (int i=0;i<p.length;i++) {
-				dfs(r+p[i][0],c+p[i][1],board,sb);
+			for (int i = 0; i < p.length; i++) {
+				dfs(r + p[i][0], c + p[i][1], board, sb);
 			}
 			visited[r][c] = false;
-			sb.delete(sb.length()-1,sb.length());
+			sb.delete(sb.length() - 1, sb.length());
 		}
+	}
+
+	// 剑指 Offer 14- I. 剪绳子
+	@Test
+	public void test9() {
+		Assert.assertEquals(1, cuttingRope(2));
+
+		Assert.assertEquals(18, cuttingRope(8));
+	}
+
+	// https://leetcode-cn.com/problems/jian-sheng-zi-lcof/solution/dong-tai-gui-hua-shu-xue-by-sophia_fez/
+	public int cuttingRope(int n) {
+		int[] dp = new int[n + 1];
+		for (int i = 2; i <= n; i++) {
+			for (int j = 1; j < i; j++) {
+				dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));
+			}
+		}
+		return dp[n];
+	}
+
+	// 剑指 Offer 14- II. 剪绳子 II
+	@Test
+	public void test10() {
+		Assert.assertEquals(18, new Solution10().cuttingRope(8));
+
+		Assert.assertEquals(953271190, new Solution10().cuttingRope(120));
+	}
+
+//https://leetcode-cn.com/problems/jian-sheng-zi-ii-lcof/solution/javatan-xin-si-lu-jiang-jie-by-henrylee4/
+	class Solution10 {
+		public int cuttingRope(int n) {
+			if (n == 2) {
+				return 1;
+			}
+			if (n == 3) {
+				return 2;
+			}
+			int mod = (int) 1e9 + 7;
+			long res = 1;
+			while (n > 4) {
+				res *= 3;
+				res %= mod;
+				n -= 3;
+			}
+			return (int) (res * n % mod);
+		}
+	}
+
+	// 剑指 Offer 15. 二进制中1的个数
+	@Test
+	public void test11() {
+		Assert.assertEquals(2, hammingWeight(9));
+	}
+
+	// https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/solution/liang-chong-fang-fa-yi-zhao-bi-yi-zhao-kuai-chao-z/
+	//https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/solution/mian-shi-ti-15-er-jin-zhi-zhong-1de-ge-shu-wei-yun/
+	public int hammingWeight(int n) {
+		int count = 0;
+		while (n != 0) {
+			n &= (n - 1);
+			count++;
+		}
+		return count;
 	}
 }
