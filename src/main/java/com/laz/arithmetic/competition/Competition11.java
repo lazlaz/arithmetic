@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -76,15 +77,15 @@ public class Competition11 {
 
 	// https://leetcode-cn.com/problems/minimum-moves-to-make-array-complementary/solution/javaonde-chai-fen-shu-zu-by-liusandao/
 	public int minMoves(int[] nums, int limit) {
-		int[] diff = new int[limit * 2 + 1]; //最后和位i时，最少操作次数，用差分数组存储
+		int[] diff = new int[limit * 2 + 1]; // 最后和位i时，最少操作次数，用差分数组存储
 		for (int i = 0; i < nums.length / 2; i++) {
 			int max = Math.max(nums[i], nums[nums.length - i - 1]);
 			int min = Math.min(nums[i], nums[nums.length - i - 1]);
 			if (min == 1) {
-				//如果存在min==1, 为2的操作次数加1
+				// 如果存在min==1, 为2的操作次数加1
 				diff[2] += 1;
 			} else {
-				//如果存在min!=1, 为2的操作次数加2
+				// 如果存在min!=1, 为2的操作次数加2
 				diff[2] += 2;
 				diff[min + 1] -= 1;
 			}
@@ -102,5 +103,26 @@ public class Competition11 {
 			res = Math.min(res, now);
 		}
 		return res;
+	}
+
+	// 数组的最小偏移量
+	@Test
+	public void test4() {
+		Assert.assertEquals(1, minimumDeviation(new int[] {1,2,3,4}));
+	}
+	//https://leetcode-cn.com/problems/minimize-deviation-in-array/solution/you-xu-ji-he-you-xian-dui-lie-xun-huan-chu-li-by-m/
+	public int minimumDeviation(int[] nums) {
+		TreeSet<Integer> set = new TreeSet<>();
+        for (int num : nums) {
+            set.add(num % 2 == 0 ? num : num * 2);
+        }
+        int res = set.last() - set.first();
+        while (res > 0 && set.last() % 2 == 0) {
+            int max = set.last();
+            set.remove(max);
+            set.add(max / 2);
+            res = Math.min(res, set.last() - set.first());
+        }
+        return res;
 	}
 }
