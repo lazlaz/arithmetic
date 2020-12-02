@@ -310,7 +310,7 @@ public class Offer1 {
 	}
 
 	// https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/solution/liang-chong-fang-fa-yi-zhao-bi-yi-zhao-kuai-chao-z/
-	//https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/solution/mian-shi-ti-15-er-jin-zhi-zhong-1de-ge-shu-wei-yun/
+	// https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/solution/mian-shi-ti-15-er-jin-zhi-zhong-1de-ge-shu-wei-yun/
 	public int hammingWeight(int n) {
 		int count = 0;
 		while (n != 0) {
@@ -319,4 +319,32 @@ public class Offer1 {
 		}
 		return count;
 	}
+
+	// 剑指 Offer 16. 数值的整数次方
+	@Test
+	public void test12() {
+//		Assert.assertEquals(1024.00000d, myPow(2.00000d,10),44);
+//		Assert.assertEquals(0.25000d, myPow(2.00000d,-2),44);
+		Assert.assertEquals(0.0d, myPow(2d, -2147483648), 44);
+	}
+
+	// https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/solution/mian-shi-ti-16-shu-zhi-de-zheng-shu-ci-fang-kuai-s/
+	public double myPow(double x, int n) {
+		if (x == 0)
+			return 0;
+		long b = n;
+		double res = 1.0;
+		if (b < 0) {
+			x = 1 / x;
+			b = -b;
+		}
+		while (b > 0) {
+			if ((b & 1) == 1)
+				res *= x;
+			x *= x;
+			b >>= 1;
+		}
+		return res;
+	}
+
 }

@@ -251,4 +251,6 @@ public class LeetCode18 {
 			return (x - index1) - (y - index2);
 		}
 	}
+	
+	
 }
