@@ -347,4 +347,18 @@ public class Offer1 {
 		return res;
 	}
 
+	// 剑指 Offer 17. 打印从1到最大的n位数
+	@Test
+	public void test13() {
+		Assert.assertArrayEquals(new int[] {1,2,3,4,5,6,7,8,9}, printNumbers(1));
+	}
+
+	public int[] printNumbers(int n) {
+		int[] res = new int[(int) (Math.pow(10, n)-1)];
+		int index = 0;
+		for (int i=1;i<Math.pow(10, n);i++) {
+			res[index++] = i;
+		}
+		return res;
+	}
 }
