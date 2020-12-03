@@ -1,9 +1,7 @@
 package com.laz.arithmetic.swordoffer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -388,27 +386,69 @@ public class Offer1 {
 	// 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
 	@Test
 	public void test15() {
-		Assert.assertArrayEquals(new int[] {1,3,2,4}, exchange(new int[] {
-				1,2,3,4
-		}));
-		
+		Assert.assertArrayEquals(new int[] { 1, 3, 2, 4 }, exchange(new int[] { 1, 2, 3, 4 }));
+
 	}
 
 	public int[] exchange(int[] nums) {
 		int i = 0;
-        int j = nums.length - 1;
-        int temp;
-        while (i < j){
-            while (i < j && (nums[i] & 1) == 1){
-                i++;
-            }
-            while (i < j && (nums[j] & 1) == 0){
-                j--;
-            }
-            temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
-        }
-        return nums;
+		int j = nums.length - 1;
+		int temp;
+		while (i < j) {
+			while (i < j && (nums[i] & 1) == 1) {
+				i++;
+			}
+			while (i < j && (nums[j] & 1) == 0) {
+				j--;
+			}
+			temp = nums[i];
+			nums[i] = nums[j];
+			nums[j] = temp;
+		}
+		return nums;
+	}
+
+	// 剑指 Offer 22. 链表中倒数第k个节点
+	@Test
+	public void test16() {
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4, 5 });
+		ListNode h = getKthFromEnd(head, 2);
+		Utils.printListNode(h);
+	}
+
+	// https://leetcode-cn.com/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/solution/mian-shi-ti-22-lian-biao-zhong-dao-shu-di-kge-j-11/
+	public ListNode getKthFromEnd(ListNode head, int k) {
+		ListNode former = head, latter = head;
+		for (int i = 0; i < k; i++)
+			former = former.next;
+		while (former != null) {
+			former = former.next;
+			latter = latter.next;
+		}
+		return latter;
+	}
+
+	// 剑指 Offer 24. 反转链表
+	@Test
+	public void test17() {
+		ListNode head = Utils.createListNode(new Integer[] { 1, 2, 3, 4, 5 });
+		ListNode h = reverseList(head);
+		Utils.printListNode(h);
+	}
+
+	public ListNode reverseList(ListNode head) {
+		if(head==null) {
+			return head;
+		}
+		ListNode tail = head;
+		ListNode node = head.next;
+		while (node != null) {
+			ListNode ln = node;
+			node = ln.next;
+			ln.next = head;
+			head = ln;
+		}
+		tail.next = null;
+		return head;
 	}
 }
