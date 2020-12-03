@@ -350,31 +350,32 @@ public class Offer1 {
 	// 剑指 Offer 17. 打印从1到最大的n位数
 	@Test
 	public void test13() {
-		Assert.assertArrayEquals(new int[] {1,2,3,4,5,6,7,8,9}, printNumbers(1));
+		Assert.assertArrayEquals(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, printNumbers(1));
 	}
 
 	public int[] printNumbers(int n) {
-		int[] res = new int[(int) (Math.pow(10, n)-1)];
+		int[] res = new int[(int) (Math.pow(10, n) - 1)];
 		int index = 0;
-		for (int i=1;i<Math.pow(10, n);i++) {
+		for (int i = 1; i < Math.pow(10, n); i++) {
 			res[index++] = i;
 		}
 		return res;
 	}
-	
-	//剑指 Offer 18. 删除链表的节点
+
+	// 剑指 Offer 18. 删除链表的节点
 	@Test
 	public void test14() {
-		ListNode head = Utils.createListNode(new Integer[] {4,5,1,9});
+		ListNode head = Utils.createListNode(new Integer[] { 4, 5, 1, 9 });
 		ListNode h = deleteNode(head, 5);
 		Utils.printListNode(h);
 	}
+
 	public ListNode deleteNode(ListNode head, int val) {
 		ListNode tail = new ListNode(-1);
 		tail.next = head;
 		ListNode pre = tail;
-		while (head!=null) {
-			if (head.val==val) {
+		while (head != null) {
+			if (head.val == val) {
 				pre.next = head.next;
 				break;
 			}
@@ -382,5 +383,32 @@ public class Offer1 {
 			head = head.next;
 		}
 		return tail.next;
-    }
+	}
+
+	// 剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+	@Test
+	public void test15() {
+		Assert.assertArrayEquals(new int[] {1,3,2,4}, exchange(new int[] {
+				1,2,3,4
+		}));
+		
+	}
+
+	public int[] exchange(int[] nums) {
+		int i = 0;
+        int j = nums.length - 1;
+        int temp;
+        while (i < j){
+            while (i < j && (nums[i] & 1) == 1){
+                i++;
+            }
+            while (i < j && (nums[j] & 1) == 0){
+                j--;
+            }
+            temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+        return nums;
+	}
 }
