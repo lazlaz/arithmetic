@@ -361,4 +361,26 @@ public class Offer1 {
 		}
 		return res;
 	}
+	
+	//剑指 Offer 18. 删除链表的节点
+	@Test
+	public void test14() {
+		ListNode head = Utils.createListNode(new Integer[] {4,5,1,9});
+		ListNode h = deleteNode(head, 5);
+		Utils.printListNode(h);
+	}
+	public ListNode deleteNode(ListNode head, int val) {
+		ListNode tail = new ListNode(-1);
+		tail.next = head;
+		ListNode pre = tail;
+		while (head!=null) {
+			if (head.val==val) {
+				pre.next = head.next;
+				break;
+			}
+			pre = head;
+			head = head.next;
+		}
+		return tail.next;
+    }
 }
