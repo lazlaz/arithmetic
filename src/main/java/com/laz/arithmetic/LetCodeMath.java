@@ -42,6 +42,7 @@ public class LetCodeMath {
 		int count = 0;
 		boolean[] signs = new boolean[n];
 		for (int i = 2; i < n; i++) {
+			//如果 xx 是质数，那么大于 xx 的 xx 的倍数 2x,3x,\ldots2x,3x,… 一定不是质数
 			if (!signs[i]) {
 				count++;
 				for (int j = i + i; j < n; j += i) {
