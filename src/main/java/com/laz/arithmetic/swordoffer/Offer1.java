@@ -451,4 +451,39 @@ public class Offer1 {
 		tail.next = null;
 		return head;
 	}
+	
+	//剑指 Offer 25. 合并两个排序的链表
+	@Test
+	public void test18() {
+		ListNode l1 = Utils.createListNode(new Integer[] {-9,3});
+		ListNode l2 = Utils.createListNode(new Integer[] {5,7});
+		ListNode res = mergeTwoLists(l1, l2);
+		Utils.printListNode(res);
+	}
+	public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+		ListNode tail = new ListNode(-1);
+		ListNode p = new ListNode(-1);
+ 		tail = p;
+		while (l1!=null && l2!=null) {
+			if (l1.val<l2.val) {
+				p.next = l1;
+				l1 = l1.next;
+			} else {
+				p.next = l2;
+				l2 = l2.next;
+			}
+			p = p.next;
+		}
+		while (l1!=null) {
+			p.next = l1;
+			l1 = l1.next;
+			p = p.next;
+		}
+		while (l2!=null) {
+			p.next = l2;
+			l2 = l2.next;
+			p = p.next;
+		}
+		return tail.next;
+    }
 }
