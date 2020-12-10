@@ -2,7 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -287,7 +289,8 @@ public class LeetCode18 {
 			Assert.assertEquals("123,456,579", Joiner.on(",").join(res));
 		}
 	}
-	//https://leetcode-cn.com/problems/split-array-into-fibonacci-sequence/solution/javahui-su-suan-fa-tu-wen-xiang-jie-ji-b-vg5z/
+
+	// https://leetcode-cn.com/problems/split-array-into-fibonacci-sequence/solution/javahui-su-suan-fa-tu-wen-xiang-jie-ji-b-vg5z/
 	class Solution7 {
 		public List<Integer> splitIntoFibonacci(String S) {
 			List<Integer> res = new ArrayList<>();
@@ -337,5 +340,78 @@ public class LeetCode18 {
 			}
 			return res;
 		}
+	}
+
+	// 柠檬水找零
+	@Test
+	public void test8() {
+		Assert.assertEquals(true, lemonadeChange2(new int[] { 5, 5, 5, 10, 20 }));
+		
+		Assert.assertEquals(true, lemonadeChange2(new int[] { 5,5,10 }));
+		
+		Assert.assertEquals(false, lemonadeChange2(new int[] { 10,10 }));
+		Assert.assertEquals(false, lemonadeChange2(new int[] {5,5,10,10,20}));
+	}
+	//https://leetcode-cn.com/problems/lemonade-change/solution/ning-meng-shui-zhao-ling-by-leetcode-sol-nvp7/
+	public boolean lemonadeChange2(int[] bills) {
+		int five = 0, ten = 0;
+        for (int bill : bills) {
+            if (bill == 5) {
+                five++;
+            } else if (bill == 10) {
+                if (five == 0) {
+                    return false;
+                }
+                five--;
+                ten++;
+            } else {
+                if (five > 0 && ten > 0) {
+                    five--;
+                    ten--;
+                } else if (five >= 3) {
+                    five -= 3;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+	}
+	public boolean lemonadeChange(int[] bills) {
+		Map<Integer,Integer> value = new HashMap<Integer,Integer>();
+		boolean res = true;
+		for (int i=0;i<bills.length;i++) {
+			if (bills[i] == 5) {
+				int v = value.getOrDefault(5, 0);
+				value.put(5, ++v);
+			} else if (bills[i] == 10) {
+				int v = value.getOrDefault(5, 0);
+				if (v==0) {
+					return false;
+				}
+				value.put(5, --v);
+				int v1 = value.getOrDefault(10, 0);
+				value.put(10, ++v1);
+			} else if (bills[i] == 20) {
+				//先招10元的，在招5元
+				int v = value.getOrDefault(10, 0);
+				if (v==0) {
+					//招3个5元的
+					v = value.getOrDefault(5, 0);
+					if (v<3) {
+						return false;
+					}
+					value.put(5, (v-3));
+				} else {
+					int v1 = value.getOrDefault(5, 0);
+					if (v1==0) {
+						return false;
+					}
+					value.put(5, --v1);
+					value.put(10, --v);
+				}
+			}
+		}
+		return res;
 	}
 }
