@@ -3,8 +3,10 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -346,65 +348,67 @@ public class LeetCode18 {
 	@Test
 	public void test8() {
 		Assert.assertEquals(true, lemonadeChange2(new int[] { 5, 5, 5, 10, 20 }));
-		
-		Assert.assertEquals(true, lemonadeChange2(new int[] { 5,5,10 }));
-		
-		Assert.assertEquals(false, lemonadeChange2(new int[] { 10,10 }));
-		Assert.assertEquals(false, lemonadeChange2(new int[] {5,5,10,10,20}));
+
+		Assert.assertEquals(true, lemonadeChange2(new int[] { 5, 5, 10 }));
+
+		Assert.assertEquals(false, lemonadeChange2(new int[] { 10, 10 }));
+		Assert.assertEquals(false, lemonadeChange2(new int[] { 5, 5, 10, 10, 20 }));
 	}
-	//https://leetcode-cn.com/problems/lemonade-change/solution/ning-meng-shui-zhao-ling-by-leetcode-sol-nvp7/
+
+	// https://leetcode-cn.com/problems/lemonade-change/solution/ning-meng-shui-zhao-ling-by-leetcode-sol-nvp7/
 	public boolean lemonadeChange2(int[] bills) {
 		int five = 0, ten = 0;
-        for (int bill : bills) {
-            if (bill == 5) {
-                five++;
-            } else if (bill == 10) {
-                if (five == 0) {
-                    return false;
-                }
-                five--;
-                ten++;
-            } else {
-                if (five > 0 && ten > 0) {
-                    five--;
-                    ten--;
-                } else if (five >= 3) {
-                    five -= 3;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return true;
+		for (int bill : bills) {
+			if (bill == 5) {
+				five++;
+			} else if (bill == 10) {
+				if (five == 0) {
+					return false;
+				}
+				five--;
+				ten++;
+			} else {
+				if (five > 0 && ten > 0) {
+					five--;
+					ten--;
+				} else if (five >= 3) {
+					five -= 3;
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
+
 	public boolean lemonadeChange(int[] bills) {
-		Map<Integer,Integer> value = new HashMap<Integer,Integer>();
+		Map<Integer, Integer> value = new HashMap<Integer, Integer>();
 		boolean res = true;
-		for (int i=0;i<bills.length;i++) {
+		for (int i = 0; i < bills.length; i++) {
 			if (bills[i] == 5) {
 				int v = value.getOrDefault(5, 0);
 				value.put(5, ++v);
 			} else if (bills[i] == 10) {
 				int v = value.getOrDefault(5, 0);
-				if (v==0) {
+				if (v == 0) {
 					return false;
 				}
 				value.put(5, --v);
 				int v1 = value.getOrDefault(10, 0);
 				value.put(10, ++v1);
 			} else if (bills[i] == 20) {
-				//先招10元的，在招5元
+				// 先招10元的，在招5元
 				int v = value.getOrDefault(10, 0);
-				if (v==0) {
-					//招3个5元的
+				if (v == 0) {
+					// 招3个5元的
 					v = value.getOrDefault(5, 0);
-					if (v<3) {
+					if (v < 3) {
 						return false;
 					}
-					value.put(5, (v-3));
+					value.put(5, (v - 3));
 				} else {
 					int v1 = value.getOrDefault(5, 0);
-					if (v1==0) {
+					if (v1 == 0) {
 						return false;
 					}
 					value.put(5, --v1);
@@ -413,5 +417,37 @@ public class LeetCode18 {
 			}
 		}
 		return res;
+	}
+
+	//// Dota2 参议院
+	@Test
+	public void test9() {
+		//Assert.assertEquals("Radiant", predictPartyVictory("RD"));
+		Assert.assertEquals("Dire", predictPartyVictory("RDD"));
+		Assert.assertEquals("Dire", predictPartyVictory("DDRRR"));
+	}
+
+	//https://leetcode-cn.com/problems/dota2-senate/solution/dota2-can-yi-yuan-by-leetcode-solution-jb7l/
+	public String predictPartyVictory(String senate) {
+		int n = senate.length();
+		Queue<Integer> rQueue = new LinkedList<Integer>();
+		Queue<Integer> dQueue = new LinkedList<Integer>();
+		for (int i=0;i<n;i++) {
+			if (senate.charAt(i) == 'R') {
+				rQueue.offer(i);
+			} else {
+				dQueue.offer(i);
+			}
+		} 
+ 		while (!rQueue.isEmpty() && !dQueue.isEmpty()) {
+			int rIndex = rQueue.poll();
+			int dIndex = dQueue.poll();
+			if (rIndex<dIndex) {
+				rQueue.offer(rIndex+n);
+			} else {
+				dQueue.offer(dIndex+n);
+			}
+		}
+		return rQueue.isEmpty()?"Dire":"Radiant";
 	}
 }
