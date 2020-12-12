@@ -422,32 +422,62 @@ public class LeetCode18 {
 	//// Dota2 参议院
 	@Test
 	public void test9() {
-		//Assert.assertEquals("Radiant", predictPartyVictory("RD"));
+		// Assert.assertEquals("Radiant", predictPartyVictory("RD"));
 		Assert.assertEquals("Dire", predictPartyVictory("RDD"));
 		Assert.assertEquals("Dire", predictPartyVictory("DDRRR"));
 	}
 
-	//https://leetcode-cn.com/problems/dota2-senate/solution/dota2-can-yi-yuan-by-leetcode-solution-jb7l/
+	// https://leetcode-cn.com/problems/dota2-senate/solution/dota2-can-yi-yuan-by-leetcode-solution-jb7l/
 	public String predictPartyVictory(String senate) {
 		int n = senate.length();
 		Queue<Integer> rQueue = new LinkedList<Integer>();
 		Queue<Integer> dQueue = new LinkedList<Integer>();
-		for (int i=0;i<n;i++) {
+		for (int i = 0; i < n; i++) {
 			if (senate.charAt(i) == 'R') {
 				rQueue.offer(i);
 			} else {
 				dQueue.offer(i);
 			}
-		} 
- 		while (!rQueue.isEmpty() && !dQueue.isEmpty()) {
+		}
+		while (!rQueue.isEmpty() && !dQueue.isEmpty()) {
 			int rIndex = rQueue.poll();
 			int dIndex = dQueue.poll();
-			if (rIndex<dIndex) {
-				rQueue.offer(rIndex+n);
+			if (rIndex < dIndex) {
+				rQueue.offer(rIndex + n);
 			} else {
-				dQueue.offer(dIndex+n);
+				dQueue.offer(dIndex + n);
 			}
 		}
-		return rQueue.isEmpty()?"Dire":"Radiant";
+		return rQueue.isEmpty() ? "Dire" : "Radiant";
+	}
+
+	// 摆动序列
+	@Test
+	public void test10() {
+		Assert.assertEquals(6, wiggleMaxLength(new int[] { 1, 7, 4, 9, 2, 5 }));
+	}
+	//https://leetcode-cn.com/problems/wiggle-subsequence/solution/bai-dong-xu-lie-by-leetcode-solution-yh2m/
+	public int wiggleMaxLength(int[] nums) {
+		int n = nums.length;
+		if (n < 2) {
+			return n;
+		}
+		int[] down = new int[n];
+		int[] up = new int[n];
+		down[0] = 1;
+		up[0] = 1;
+		for (int i=1;i<n;i++) {
+			if (nums[i]>nums[i-1]) {
+				up[i] = Math.max(up[i - 1], down[i - 1] + 1);
+                down[i] = down[i - 1];
+			}else if (nums[i]<nums[i-1]) {
+				up[i] = up[i-1];
+				down[i] = Math.max(up[i - 1] + 1, down[i - 1]);
+			}else {
+                up[i] = up[i - 1];
+                down[i] = down[i - 1];
+            }
+		}
+		return Math.max(up[n-1],down[n-1]);
 	}
 }
