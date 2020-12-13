@@ -352,39 +352,41 @@ public class LeetCode7 {
 	// 最长重复子数组
 	@Test
 	public void test10() {
-		Assert.assertEquals(3, findLength(new int[] { 1, 2, 3, 2, 1 }, new int[] { 3, 2, 1, 4, 7 }));
-		Assert.assertEquals(1, findLength(new int[] { 1, 2, 3, 4, 5 }, new int[] { 3, 2, 1, 4, 7 }));
-		Assert.assertEquals(0, findLength(new int[] {}, new int[] { 3, 2, 1, 4, 7 }));
-		Assert.assertEquals(5, findLength(new int[] { 0, 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0, 0 }));
+		Assert.assertEquals(3, new Solution10().findLength(new int[] { 1, 2, 3, 2, 1 }, new int[] { 3, 2, 1, 4, 7 }));
+		Assert.assertEquals(1, new Solution10().findLength(new int[] { 1, 2, 3, 4, 5 }, new int[] { 3, 2, 1, 4, 7 }));
+		Assert.assertEquals(0, new Solution10().findLength(new int[] {}, new int[] { 3, 2, 1, 4, 7 }));
+		Assert.assertEquals(5, new Solution10().findLength(new int[] { 0, 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0, 0 }));
 	}
-
-	public int findLength(int[] A, int[] B) {
-		int n = A.length, m = B.length;
-		int ret = 0;
-		for (int i = 0; i < n; i++) {
-			int len = Math.min(m, n - i);
-			int maxLen = maxLength(A, B, i, 0, len);
-			ret = Math.max(maxLen, ret);
-		}
-		for (int i = 0; i < n; i++) {
-			int len = Math.min(n, m - i);
-			int maxLen = maxLength(A, B, 0, i, len);
-			ret = Math.max(maxLen, ret);
-		}
-		return ret;
-	}
-
-	private int maxLength(int[] A, int[] B, int addA, int addB, int len) {
-		int ret = 0, k = 0;
-		for (int i = 0; i < len; i++) {
-			if (A[addA + i] == B[addB + i]) {
-				k++;
-			} else {
-				k = 0;
+//https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/solution/zui-chang-zhong-fu-zi-shu-zu-by-leetcode-solution/
+	class Solution10 {
+		public int findLength(int[] A, int[] B) {
+			int n = A.length, m = B.length;
+			int ret = 0;
+			for (int i = 0; i < n; i++) {
+				int len = Math.min(m, n - i);
+				int maxLen = maxLength(A, B, i, 0, len);
+				ret = Math.max(maxLen, ret);
 			}
-			ret = Math.max(ret, k);
+			for (int i = 0; i < n; i++) {
+				int len = Math.min(n, m - i);
+				int maxLen = maxLength(A, B, 0, i, len);
+				ret = Math.max(maxLen, ret);
+			}
+			return ret;
 		}
-		return ret;
+		
+		private int maxLength(int[] A, int[] B, int addA, int addB, int len) {
+			int ret = 0, k = 0;
+			for (int i = 0; i < len; i++) {
+				if (A[addA + i] == B[addB + i]) {
+					k++;
+				} else {
+					k = 0;
+				}
+				ret = Math.max(ret, k);
+			}
+			return ret;
+		}
 	}
 
 	// 搜索旋转排序数组
