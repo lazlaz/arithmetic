@@ -2,7 +2,9 @@ package com.laz.arithmetic.competition;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -146,7 +148,6 @@ public class Competition12 {
 			}
 			return dp[(1 << n) - 1] == Integer.MAX_VALUE ? -1 : dp[(1 << n) - 1];// 最后返回dp[1111111],表示每个数字都选了以后
 		}
-
 		public int countOne(int x) {
 			int res = 0;
 			while (x != 0) {
