@@ -437,7 +437,7 @@ public class Offer1 {
 	}
 
 	public ListNode reverseList(ListNode head) {
-		if(head==null) {
+		if (head == null) {
 			return head;
 		}
 		ListNode tail = head;
@@ -451,21 +451,22 @@ public class Offer1 {
 		tail.next = null;
 		return head;
 	}
-	
-	//剑指 Offer 25. 合并两个排序的链表
+
+	// 剑指 Offer 25. 合并两个排序的链表
 	@Test
 	public void test18() {
-		ListNode l1 = Utils.createListNode(new Integer[] {-9,3});
-		ListNode l2 = Utils.createListNode(new Integer[] {5,7});
+		ListNode l1 = Utils.createListNode(new Integer[] { -9, 3 });
+		ListNode l2 = Utils.createListNode(new Integer[] { 5, 7 });
 		ListNode res = mergeTwoLists(l1, l2);
 		Utils.printListNode(res);
 	}
+
 	public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 		ListNode tail = new ListNode(-1);
 		ListNode p = new ListNode(-1);
- 		tail = p;
-		while (l1!=null && l2!=null) {
-			if (l1.val<l2.val) {
+		tail = p;
+		while (l1 != null && l2 != null) {
+			if (l1.val < l2.val) {
 				p.next = l1;
 				l1 = l1.next;
 			} else {
@@ -474,49 +475,93 @@ public class Offer1 {
 			}
 			p = p.next;
 		}
-		while (l1!=null) {
+		while (l1 != null) {
 			p.next = l1;
 			l1 = l1.next;
 			p = p.next;
 		}
-		while (l2!=null) {
+		while (l2 != null) {
 			p.next = l2;
 			l2 = l2.next;
 			p = p.next;
 		}
 		return tail.next;
-    }
-	
-	//剑指 Offer 26. 树的子结构
+	}
+
+	// 剑指 Offer 26. 树的子结构
 	@Test
 	public void test19() {
-		TreeNode a = Utils.createTree(new Integer[] {3,4,5,1,2});
-		TreeNode b = Utils.createTree(new Integer[] {4,1});
+		TreeNode a = Utils.createTree(new Integer[] { 3, 4, 5, 1, 2 });
+		TreeNode b = Utils.createTree(new Integer[] { 4, 1 });
 		Assert.assertEquals(true, new Solution19().isSubStructure(a, b));
 	}
-	//https://leetcode-cn.com/problems/shu-de-zi-jie-gou-lcof/solution/di-gui-fang-shi-jie-jue-by-sdwwld/
-	class Solution19{
+
+	// https://leetcode-cn.com/problems/shu-de-zi-jie-gou-lcof/solution/di-gui-fang-shi-jie-jue-by-sdwwld/
+	class Solution19 {
 		public boolean isSubStructure(TreeNode A, TreeNode B) {
-		    if (A == null || B == null)
-		        return false;
-		    //先从根节点判断B是不是A的子结构，如果不是在分别从左右两个子树判断，
-		    //只要有一个为true，就说明B是A的子结构
-		    return isSub(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B);
+			if (A == null || B == null)
+				return false;
+			// 先从根节点判断B是不是A的子结构，如果不是在分别从左右两个子树判断，
+			// 只要有一个为true，就说明B是A的子结构
+			return isSub(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B);
 		}
 
 		boolean isSub(TreeNode A, TreeNode B) {
-		    //这里如果B为空，说明B已经访问完了，确定是A的子结构
-		    if (B == null)
-		        return true;
-		    //如果B不为空A为空，或者这两个节点值不同，说明B树不是
-		    //A的子结构，直接返回false
-		    if (A == null || A.val != B.val)
-		        return false;
-		    //当前节点比较完之后还要继续判断左右子节点
-		    return isSub(A.left, B.left) && isSub(A.right, B.right);
+			// 这里如果B为空，说明B已经访问完了，确定是A的子结构
+			if (B == null)
+				return true;
+			// 如果B不为空A为空，或者这两个节点值不同，说明B树不是
+			// A的子结构，直接返回false
+			if (A == null || A.val != B.val)
+				return false;
+			// 当前节点比较完之后还要继续判断左右子节点
+			return isSub(A.left, B.left) && isSub(A.right, B.right);
 		}
 
 	}
-	
-	
+
+	// 剑指 Offer 30. 包含min函数的栈
+	@Test
+	public void test20() {
+		MinStack minStack = new MinStack();
+		minStack.push(-2);
+		minStack.push(0);
+		minStack.push(-3);
+		Assert.assertEquals(-3, minStack.min());
+		minStack.pop();
+		Assert.assertEquals(0, minStack.top());
+		Assert.assertEquals(-2, minStack.min());
+	}
+
+	class MinStack {
+		private LinkedList<Integer> A,B;
+		/** initialize your data structure here. */
+		public MinStack() {
+			A = new LinkedList<Integer>();
+			B = new LinkedList<Integer>();
+		}
+
+		public void push(int x) {
+			A.push(x);
+			if (B.isEmpty() || B.peek()>=x) {
+				B.push(x);
+			}
+		}
+
+		public void pop() {
+			Integer v = A.pop();
+			if (v.equals(B.peek())) {
+				B.pop();
+			}
+		}
+
+		public int top() {
+			return A.peek();
+		}
+
+		public int min() {
+			return B.peek();
+		}
+	}
+
 }
