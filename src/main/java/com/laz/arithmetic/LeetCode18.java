@@ -456,7 +456,8 @@ public class LeetCode18 {
 	public void test10() {
 		Assert.assertEquals(6, wiggleMaxLength(new int[] { 1, 7, 4, 9, 2, 5 }));
 	}
-	//https://leetcode-cn.com/problems/wiggle-subsequence/solution/bai-dong-xu-lie-by-leetcode-solution-yh2m/
+
+	// https://leetcode-cn.com/problems/wiggle-subsequence/solution/bai-dong-xu-lie-by-leetcode-solution-yh2m/
 	public int wiggleMaxLength(int[] nums) {
 		int n = nums.length;
 		if (n < 2) {
@@ -466,18 +467,47 @@ public class LeetCode18 {
 		int[] up = new int[n];
 		down[0] = 1;
 		up[0] = 1;
-		for (int i=1;i<n;i++) {
-			if (nums[i]>nums[i-1]) {
+		for (int i = 1; i < n; i++) {
+			if (nums[i] > nums[i - 1]) {
 				up[i] = Math.max(up[i - 1], down[i - 1] + 1);
-                down[i] = down[i - 1];
-			}else if (nums[i]<nums[i-1]) {
-				up[i] = up[i-1];
+				down[i] = down[i - 1];
+			} else if (nums[i] < nums[i - 1]) {
+				up[i] = up[i - 1];
 				down[i] = Math.max(up[i - 1] + 1, down[i - 1]);
-			}else {
-                up[i] = up[i - 1];
-                down[i] = down[i - 1];
-            }
+			} else {
+				up[i] = up[i - 1];
+				down[i] = down[i - 1];
+			}
 		}
-		return Math.max(up[n-1],down[n-1]);
+		return Math.max(up[n - 1], down[n - 1]);
+	}
+
+	// 单调递增的数字
+	@Test
+	public void test11() {
+		Assert.assertEquals(9, monotoneIncreasingDigits(10));
+		Assert.assertEquals(1234, monotoneIncreasingDigits(1234));
+		Assert.assertEquals(299, monotoneIncreasingDigits(332));
+	}
+
+	public int monotoneIncreasingDigits(int N) {
+		String nStr = String.valueOf(N);
+		int idx = 0, max = -1;
+		char[] chars = nStr.toCharArray();
+		for (int i=0;i<chars.length;i++) {
+			int v = chars[i]-'0';
+			if (max<v) {
+				idx = i;
+				max = v;
+			}
+			if (i>0 && chars[i]<chars[i-1]) {
+				chars[idx] = (char) (chars[idx]-1);
+				for (int j=idx+1;j<chars.length;j++) {
+					chars[j] = '9';
+				}
+				break;
+			}
+		}
+		return Integer.valueOf(new String(chars));
 	}
 }
