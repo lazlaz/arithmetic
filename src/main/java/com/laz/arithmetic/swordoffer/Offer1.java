@@ -534,7 +534,8 @@ public class Offer1 {
 	}
 
 	class MinStack {
-		private LinkedList<Integer> A,B;
+		private LinkedList<Integer> A, B;
+
 		/** initialize your data structure here. */
 		public MinStack() {
 			A = new LinkedList<Integer>();
@@ -543,7 +544,7 @@ public class Offer1 {
 
 		public void push(int x) {
 			A.push(x);
-			if (B.isEmpty() || B.peek()>=x) {
+			if (B.isEmpty() || B.peek() >= x) {
 				B.push(x);
 			}
 		}
@@ -562,6 +563,40 @@ public class Offer1 {
 		public int min() {
 			return B.peek();
 		}
+	}
+
+	@Test
+	//剑指 Offer 31. 栈的压入、弹出序列
+	public void test21() {
+		Assert.assertEquals(true, validateStackSequences(new int[] { 1, 2, 3, 4, 5 }, new int[] { 4, 5, 3, 2, 1 }));
+		Assert.assertEquals(false, validateStackSequences(new int[] { 1,2,3,4,5 }, new int[] { 4,3,5,1,2 }));
+		Assert.assertEquals(true, validateStackSequences(new int[] { 2,1,0 }, new int[] { 1,2,0 }));
+	}
+
+	public boolean validateStackSequences(int[] pushed, int[] popped) {
+		LinkedList<Integer> stack = new LinkedList<Integer>();
+		int j = 0;
+		for (int i=0;i<pushed.length;i++) {
+				while (!stack.isEmpty()) {
+					Integer v = stack.peek();
+					if (v.equals(popped[j])) {
+						stack.pop();
+						j++;
+					} else {
+						break;
+					}
+				}
+				stack.push(pushed[i]);
+		}
+		while (!stack.isEmpty()) {
+			Integer v = stack.pop();
+			if (!v.equals(popped[j])) {
+				return false;
+			}
+			j++;
+		}
+		return true;
+		
 	}
 
 }
