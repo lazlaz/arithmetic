@@ -1,8 +1,11 @@
 package com.laz.arithmetic.swordoffer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -566,27 +569,27 @@ public class Offer1 {
 	}
 
 	@Test
-	//剑指 Offer 31. 栈的压入、弹出序列
+	// 剑指 Offer 31. 栈的压入、弹出序列
 	public void test21() {
 		Assert.assertEquals(true, validateStackSequences(new int[] { 1, 2, 3, 4, 5 }, new int[] { 4, 5, 3, 2, 1 }));
-		Assert.assertEquals(false, validateStackSequences(new int[] { 1,2,3,4,5 }, new int[] { 4,3,5,1,2 }));
-		Assert.assertEquals(true, validateStackSequences(new int[] { 2,1,0 }, new int[] { 1,2,0 }));
+		Assert.assertEquals(false, validateStackSequences(new int[] { 1, 2, 3, 4, 5 }, new int[] { 4, 3, 5, 1, 2 }));
+		Assert.assertEquals(true, validateStackSequences(new int[] { 2, 1, 0 }, new int[] { 1, 2, 0 }));
 	}
 
 	public boolean validateStackSequences(int[] pushed, int[] popped) {
 		LinkedList<Integer> stack = new LinkedList<Integer>();
 		int j = 0;
-		for (int i=0;i<pushed.length;i++) {
-				while (!stack.isEmpty()) {
-					Integer v = stack.peek();
-					if (v.equals(popped[j])) {
-						stack.pop();
-						j++;
-					} else {
-						break;
-					}
+		for (int i = 0; i < pushed.length; i++) {
+			while (!stack.isEmpty()) {
+				Integer v = stack.peek();
+				if (v.equals(popped[j])) {
+					stack.pop();
+					j++;
+				} else {
+					break;
 				}
-				stack.push(pushed[i]);
+			}
+			stack.push(pushed[i]);
 		}
 		while (!stack.isEmpty()) {
 			Integer v = stack.pop();
@@ -596,7 +599,34 @@ public class Offer1 {
 			j++;
 		}
 		return true;
-		
+
 	}
 
+	//剑指 Offer 32 - I. 从上到下打印二叉树
+	@Test
+	public void test22() {
+		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 20, null, null, 15, 7 });
+		Assert.assertArrayEquals(new int[] { 3, 9, 20, 15, 7 }, levelOrder(root));
+	}
+
+	public int[] levelOrder(TreeNode root) {
+		List<Integer> list = new ArrayList<Integer>();
+		Queue<TreeNode> q = new LinkedList<TreeNode>();
+		q.add(root);
+		while (!q.isEmpty()) {
+			TreeNode temp = q.poll();
+			if (temp == null) {
+				continue;
+			} else {
+				list.add(temp.val);
+			}
+			if (temp.left != null) {
+				q.offer(temp.left); // 迭代操作，向左探索
+			}
+			if (temp.right != null) {
+				q.offer(temp.right);
+			}
+		}
+		return	list.stream().mapToInt(Integer::valueOf).toArray();
+    }
 }
