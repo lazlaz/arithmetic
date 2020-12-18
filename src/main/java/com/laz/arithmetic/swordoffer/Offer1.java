@@ -1,6 +1,7 @@
 package com.laz.arithmetic.swordoffer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Queue;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
 import com.laz.arithmetic.ListNode;
 import com.laz.arithmetic.TreeNode;
 import com.laz.arithmetic.Utils;
@@ -602,7 +604,7 @@ public class Offer1 {
 
 	}
 
-	//剑指 Offer 32 - I. 从上到下打印二叉树
+	// 剑指 Offer 32 - I. 从上到下打印二叉树
 	@Test
 	public void test22() {
 		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 20, null, null, 15, 7 });
@@ -627,6 +629,44 @@ public class Offer1 {
 				q.offer(temp.right);
 			}
 		}
-		return	list.stream().mapToInt(Integer::valueOf).toArray();
-    }
+		return list.stream().mapToInt(Integer::valueOf).toArray();
+	}
+
+	// 剑指 Offer 32 - III. 从上到下打印二叉树 III
+	@Test
+	public void test23() {
+		TreeNode root = Utils.createTree(new Integer[] { 3, 9, 20, null, null, 15, 7 });
+		List<List<Integer>> res = new Solution23().levelOrder(root);
+		for (List<Integer> list : res) {
+			System.out.println(Joiner.on(",").join(list));
+		}
+	}
+
+	class Solution23 {
+		public List<List<Integer>> levelOrder(TreeNode root) {
+			List<List<Integer>> levels = new ArrayList<List<Integer>>();
+			if (root == null)
+				return levels;
+			Queue<TreeNode> queue = new LinkedList<TreeNode>();
+			queue.add(root);
+			int level = 0;
+			while (!queue.isEmpty()) {
+				levels.add(new ArrayList<Integer>());
+				int level_length = queue.size();
+				for (int i = 0; i < level_length; ++i) {
+					TreeNode node = queue.remove();
+					levels.get(level).add(node.val);
+					if (node.left != null)
+						queue.add(node.left);
+					if (node.right != null)
+						queue.add(node.right);
+				}
+				if (level%2==1) {
+					Collections.reverse(levels.get(level));
+				}
+				level++;
+			}
+			return levels;
+		}
+	}
 }
