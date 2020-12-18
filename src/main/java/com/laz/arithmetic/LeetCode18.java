@@ -494,20 +494,43 @@ public class LeetCode18 {
 		String nStr = String.valueOf(N);
 		int idx = 0, max = -1;
 		char[] chars = nStr.toCharArray();
-		for (int i=0;i<chars.length;i++) {
-			int v = chars[i]-'0';
-			if (max<v) {
+		for (int i = 0; i < chars.length; i++) {
+			int v = chars[i] - '0';
+			if (max < v) {
 				idx = i;
 				max = v;
 			}
-			if (i>0 && chars[i]<chars[i-1]) {
-				chars[idx] = (char) (chars[idx]-1);
-				for (int j=idx+1;j<chars.length;j++) {
+			if (i > 0 && chars[i] < chars[i - 1]) {
+				chars[idx] = (char) (chars[idx] - 1);
+				for (int j = idx + 1; j < chars.length; j++) {
 					chars[j] = '9';
 				}
 				break;
 			}
 		}
 		return Integer.valueOf(new String(chars));
+	}
+
+	// 389. 找不同
+	@Test
+	public void test12() {
+		Assert.assertEquals('e', findTheDifference("abcd", "abcde"));
+	}
+
+	public char findTheDifference(String s, String t) {
+		int[] sArr = new int[26];
+		int[] tArr = new int[26];
+		for (int i=0;i<s.length();i++) {
+			sArr[s.charAt(i)-'a']++;
+		}
+		for (int i=0;i<t.length();i++) {
+			tArr[t.charAt(i)-'a']++;
+		}
+		for (int i=0;i<sArr.length;i++) {
+			if (tArr[i]>sArr[i]) {
+				return (char) (i+'a');
+			}
+		}
+		return ' ';
 	}
 }
