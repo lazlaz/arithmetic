@@ -669,4 +669,29 @@ public class Offer1 {
 			return levels;
 		}
 	}
+	
+	//剑指 Offer 33. 二叉搜索树的后序遍历序列
+	@Test
+	public void test24() {
+		Assert.assertEquals(false, new Solution24().verifyPostorder(new int[] {
+				1,6,3,2,5
+		}));
+		Assert.assertEquals(true, new Solution24().verifyPostorder(new int[] {
+				1,3,2,6,5
+		}));
+	}
+	//https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/solution/mian-shi-ti-33-er-cha-sou-suo-shu-de-hou-xu-bian-6/
+	class Solution24{
+		public boolean verifyPostorder(int[] postorder) {
+	        return recur(postorder, 0, postorder.length - 1);
+	    }
+	    boolean recur(int[] postorder, int i, int j) {
+	        if(i >= j) return true;
+	        int p = i;
+	        while(postorder[p] < postorder[j]) p++;
+	        int m = p;
+	        while(postorder[p] > postorder[j]) p++;
+	        return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
+	    }
+    }
 }
