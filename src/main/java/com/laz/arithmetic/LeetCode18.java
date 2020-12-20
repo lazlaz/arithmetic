@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -520,17 +521,51 @@ public class LeetCode18 {
 	public char findTheDifference(String s, String t) {
 		int[] sArr = new int[26];
 		int[] tArr = new int[26];
-		for (int i=0;i<s.length();i++) {
-			sArr[s.charAt(i)-'a']++;
+		for (int i = 0; i < s.length(); i++) {
+			sArr[s.charAt(i) - 'a']++;
 		}
-		for (int i=0;i<t.length();i++) {
-			tArr[t.charAt(i)-'a']++;
+		for (int i = 0; i < t.length(); i++) {
+			tArr[t.charAt(i) - 'a']++;
 		}
-		for (int i=0;i<sArr.length;i++) {
-			if (tArr[i]>sArr[i]) {
-				return (char) (i+'a');
+		for (int i = 0; i < sArr.length; i++) {
+			if (tArr[i] > sArr[i]) {
+				return (char) (i + 'a');
 			}
 		}
 		return ' ';
+	}
+
+	// 316. 去除重复字母
+	@Test
+	public void test13() {
+		Assert.assertEquals("abc", removeDuplicateLetters("bcabc"));
+		Assert.assertEquals("acdb", removeDuplicateLetters("cbacdcbc"));
+	}
+
+	// https://leetcode-cn.com/problems/remove-duplicate-letters/solution/zhan-by-liweiwei1419/
+	public String removeDuplicateLetters(String s) {
+		int len = s.length();
+		int[] lastIndex = new int[26];
+		for (int i = 0; i < len; i++) {
+			lastIndex[s.charAt(i) - 'a'] = i;
+		}
+		Deque<Character> stack = new LinkedList<Character>();
+		for (int i = 0; i < len; i++) {
+			char currentChar = s.charAt(i);
+			if (stack.contains(currentChar)) {
+				continue;
+			}
+			// 如果当前字符，小于栈中的值出栈。且出栈的值后面还需要出现
+			while (!stack.isEmpty() && currentChar < stack.peek() && lastIndex[stack.peek() - 'a'] > i) {
+				stack.pop();
+			}
+			stack.push(currentChar);
+
+		}
+		StringBuilder stringBuilder = new StringBuilder();
+		while (!stack.isEmpty()) {
+			stringBuilder.append(stack.pollLast());
+		}
+		return stringBuilder.toString();
 	}
 }
