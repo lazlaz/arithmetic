@@ -51,30 +51,68 @@ public class Competition14 {
 	}
 
 	public int maximumUniqueSubarray(int[] nums) {
-		
+
 		int max = 0;
 		int[] prefSum = new int[nums.length];
 		prefSum[0] = nums[0];
-		for (int i=1;i<nums.length;i++) {
-			prefSum[i] = prefSum[i-1]+ nums[i];
+		for (int i = 1; i < nums.length; i++) {
+			prefSum[i] = prefSum[i - 1] + nums[i];
 		}
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		int startIndex = 0;
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			if (map.containsKey(nums[i])) {
-				int sum = prefSum[i-1]-prefSum[startIndex]+nums[startIndex];
+				int sum = prefSum[i - 1] - prefSum[startIndex] + nums[startIndex];
 				max = Math.max(max, sum);
 				int oldIndex = map.get(nums[i]);
-				if (oldIndex>=startIndex) {//在范围内
-					startIndex = map.get(nums[i])+1;
+				if (oldIndex >= startIndex) {// 在范围内
+					startIndex = map.get(nums[i]) + 1;
 				}
-			} 
+			}
 			map.put(nums[i], i);
 		}
-		if (startIndex<nums.length)  {
-			int sum = prefSum[nums.length-1]-prefSum[startIndex]+nums[startIndex];
+		if (startIndex < nums.length) {
+			int sum = prefSum[nums.length - 1] - prefSum[startIndex] + nums[startIndex];
 			max = Math.max(max, sum);
 		}
 		return max;
+	}
+
+	// 5631. 跳跃游戏 VI
+	@Test
+	public void test3() {
+		Assert.assertEquals(7, maxResult(new int[] { 1, -1, -2, 4, -7, 3 }, 2));
+		
+		Assert.assertEquals(17, maxResult(new int[] { 10,-5,-2,4,0,3 }, 3));
+		
+		Assert.assertEquals(0, maxResult(new int[] { 1,-5,-20,4,-1,3,-6,-3 }, 2));
+		
+		Assert.assertEquals(-3, maxResult(new int[] { 1,-5,-20,4,-1,3,-3,-6 }, 2));
+	}
+
+	public int maxResult(int[] nums, int k) {
+		int ret = nums[0];
+		int n = nums.length;
+		int index = 0;
+		while (index<n-1) {
+			int maxIndex = index+1;
+			for (int i=index+1;i<=(index+k) && i<n;i++) {
+				if (nums[i]>0) {
+					maxIndex = i;
+					break;
+				}
+				if (nums[maxIndex]<nums[i]) {
+					maxIndex = i;
+				}
+			}
+			if (nums[maxIndex] < 0 && (index+k)>=n-1) {
+				index = n-1;
+				ret+=nums[n-1];
+			} else {
+				index = maxIndex;
+				ret+=nums[maxIndex];
+			}
+		}
+		return ret;
 	}
 }
