@@ -694,4 +694,56 @@ public class Offer1 {
 	        return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
 	    }
     }
+	
+	//剑指 Offer 36. 二叉搜索树与双向链表
+	@Test
+	public void test25() {
+		
+	}
+	class Solution25 {
+		class Node {
+		    public int val;
+		    public Node left;
+		    public Node right;
+
+		    public Node() {}
+
+		    public Node(int _val) {
+		        val = _val;
+		    }
+
+		    public Node(int _val,Node _left,Node _right) {
+		        val = _val;
+		        left = _left;
+		        right = _right;
+		    }
+		};
+	    public Node treeToDoublyList(Node root) {
+	    	List<Node> list = new ArrayList<Node>();
+	    	inOrder(root,list);
+	    	if (list.size()==0) {
+	    		return null;
+	    	}
+	    	Node head = null;
+	    	head = list.get(0);
+	    	for (int i=0;i<list.size()-1;i++) {
+	    		Node n = list.get(i);
+	    		Node afterN = list.get(i+1);
+	    		n.right = afterN;
+	    		afterN.left = n;
+	    	}
+	    	head.left = list.get(list.size()-1);
+	    	list.get(list.size()-1).right = head;
+			return head;
+	        
+	    }
+		private void inOrder(Node root, List<Node> list) {
+			if (root==null) {
+				return;
+			}
+			inOrder(root.left,list);
+			list.add(root);
+			inOrder(root.right,list);
+		}
+	}
 }

@@ -578,13 +578,42 @@ public class LeetCode18 {
 
 	public int minCostClimbingStairs(int[] cost) {
 		int n = cost.length;
-		int[] dp = new int[n+1];
+		int[] dp = new int[n + 1];
 		dp[0] = cost[0];
 		dp[1] = cost[1];
-		for (int i=2;i<n;i++) {
-			dp[i] = Math.min(dp[i-1]+cost[i], dp[i-2]+cost[i]);
+		for (int i = 2; i < n; i++) {
+			dp[i] = Math.min(dp[i - 1] + cost[i], dp[i - 2] + cost[i]);
 		}
-		dp[n] = Math.min(dp[n-1], dp[n-2]);
+		dp[n] = Math.min(dp[n - 1], dp[n - 2]);
 		return dp[n];
+	}
+
+	// 135. 分发糖果
+	@Test
+	public void test15() {
+		Assert.assertEquals(13, candy(new int[] { 5, 7, 8, 3, 4, 2, 1 }));
+	}
+	//https://leetcode-cn.com/problems/candy/solution/candy-cong-zuo-zhi-you-cong-you-zhi-zuo-qu-zui-da-/
+	public int candy(int[] ratings) {
+		int n = ratings.length;
+		int[] left = new int[n];
+		int[] right = new int[n];
+		int ret = 0;
+		Arrays.fill(left, 1);
+		Arrays.fill(right, 1);
+		for (int i=1;i<n;i++) {
+			if (ratings[i]>ratings[i-1]) {
+				left[i] = left[i-1]+1;
+			}
+		}
+		for (int i=n-2;i>=0;i--) {
+			if (ratings[i]>ratings[i+1]) {
+				right[i] = right[i+1]+1;
+			}
+		}
+		for (int i=0;i<n;i++) {
+			ret += Math.max(left[i], right[i]);
+		}
+		return ret;
 	}
 }
