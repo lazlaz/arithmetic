@@ -595,6 +595,7 @@ public class LeetCode18 {
 	}
 	//https://leetcode-cn.com/problems/candy/solution/candy-cong-zuo-zhi-you-cong-you-zhi-zuo-qu-zui-da-/
 	public int candy(int[] ratings) {
+		
 		int n = ratings.length;
 		int[] left = new int[n];
 		int[] right = new int[n];
