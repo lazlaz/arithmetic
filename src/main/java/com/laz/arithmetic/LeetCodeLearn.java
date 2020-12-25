@@ -4,10 +4,14 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class LeetCodeLearn {
@@ -50,8 +54,25 @@ public class LeetCodeLearn {
 	// 字符串中的第一个唯一字符
 	@Test
 	public void test3() {
-		String s = "cc";
-		System.out.println(firstUniqChar(s));
+		Assert.assertEquals(-1, firstUniqChar2("cc"));
+
+		Assert.assertEquals(0, firstUniqChar2("leetcode"));
+
+		Assert.assertEquals(2, firstUniqChar2("loveleetcode"));
+	}
+
+	public int firstUniqChar2(String s) {
+		int[] arr = new int[26];
+		int n = s.length();
+		for (int i = 0; i < n; i++) {
+			arr[s.charAt(i) - 'a']++;
+		}
+		for (int i = 0; i < n; i++) {
+			if (arr[s.charAt(i) - 'a'] == 1) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	// 验证回文字符串
