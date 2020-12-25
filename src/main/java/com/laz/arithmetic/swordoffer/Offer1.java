@@ -3,10 +3,12 @@ package com.laz.arithmetic.swordoffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -661,7 +663,7 @@ public class Offer1 {
 					if (node.right != null)
 						queue.add(node.right);
 				}
-				if (level%2==1) {
+				if (level % 2 == 1) {
 					Collections.reverse(levels.get(level));
 				}
 				level++;
@@ -669,81 +671,129 @@ public class Offer1 {
 			return levels;
 		}
 	}
-	
-	//剑指 Offer 33. 二叉搜索树的后序遍历序列
+
+	// 剑指 Offer 33. 二叉搜索树的后序遍历序列
 	@Test
 	public void test24() {
-		Assert.assertEquals(false, new Solution24().verifyPostorder(new int[] {
-				1,6,3,2,5
-		}));
-		Assert.assertEquals(true, new Solution24().verifyPostorder(new int[] {
-				1,3,2,6,5
-		}));
+		Assert.assertEquals(false, new Solution24().verifyPostorder(new int[] { 1, 6, 3, 2, 5 }));
+		Assert.assertEquals(true, new Solution24().verifyPostorder(new int[] { 1, 3, 2, 6, 5 }));
 	}
-	//https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/solution/mian-shi-ti-33-er-cha-sou-suo-shu-de-hou-xu-bian-6/
-	class Solution24{
+
+	// https://leetcode-cn.com/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/solution/mian-shi-ti-33-er-cha-sou-suo-shu-de-hou-xu-bian-6/
+	class Solution24 {
 		public boolean verifyPostorder(int[] postorder) {
-	        return recur(postorder, 0, postorder.length - 1);
-	    }
-	    boolean recur(int[] postorder, int i, int j) {
-	        if(i >= j) return true;
-	        int p = i;
-	        while(postorder[p] < postorder[j]) p++;
-	        int m = p;
-	        while(postorder[p] > postorder[j]) p++;
-	        return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
-	    }
-    }
-	
-	//剑指 Offer 36. 二叉搜索树与双向链表
+			return recur(postorder, 0, postorder.length - 1);
+		}
+
+		boolean recur(int[] postorder, int i, int j) {
+			if (i >= j)
+				return true;
+			int p = i;
+			while (postorder[p] < postorder[j])
+				p++;
+			int m = p;
+			while (postorder[p] > postorder[j])
+				p++;
+			return p == j && recur(postorder, i, m - 1) && recur(postorder, m, j - 1);
+		}
+	}
+
+	// 剑指 Offer 36. 二叉搜索树与双向链表
 	@Test
 	public void test25() {
-		
+
 	}
+
 	class Solution25 {
 		class Node {
-		    public int val;
-		    public Node left;
-		    public Node right;
+			public int val;
+			public Node left;
+			public Node right;
 
-		    public Node() {}
+			public Node() {
+			}
 
-		    public Node(int _val) {
-		        val = _val;
-		    }
+			public Node(int _val) {
+				val = _val;
+			}
 
-		    public Node(int _val,Node _left,Node _right) {
-		        val = _val;
-		        left = _left;
-		        right = _right;
-		    }
+			public Node(int _val, Node _left, Node _right) {
+				val = _val;
+				left = _left;
+				right = _right;
+			}
 		};
-	    public Node treeToDoublyList(Node root) {
-	    	List<Node> list = new ArrayList<Node>();
-	    	inOrder(root,list);
-	    	if (list.size()==0) {
-	    		return null;
-	    	}
-	    	Node head = null;
-	    	head = list.get(0);
-	    	for (int i=0;i<list.size()-1;i++) {
-	    		Node n = list.get(i);
-	    		Node afterN = list.get(i+1);
-	    		n.right = afterN;
-	    		afterN.left = n;
-	    	}
-	    	head.left = list.get(list.size()-1);
-	    	list.get(list.size()-1).right = head;
+
+		public Node treeToDoublyList(Node root) {
+			List<Node> list = new ArrayList<Node>();
+			inOrder(root, list);
+			if (list.size() == 0) {
+				return null;
+			}
+			Node head = null;
+			head = list.get(0);
+			for (int i = 0; i < list.size() - 1; i++) {
+				Node n = list.get(i);
+				Node afterN = list.get(i + 1);
+				n.right = afterN;
+				afterN.left = n;
+			}
+			head.left = list.get(list.size() - 1);
+			list.get(list.size() - 1).right = head;
 			return head;
-	        
-	    }
+
+		}
+
 		private void inOrder(Node root, List<Node> list) {
-			if (root==null) {
+			if (root == null) {
 				return;
 			}
-			inOrder(root.left,list);
+			inOrder(root.left, list);
 			list.add(root);
-			inOrder(root.right,list);
+			inOrder(root.right, list);
+		}
+	}
+
+	// 剑指 Offer 38. 字符串的排列
+	@Test
+	public void test26() {
+		Assert.assertArrayEquals(new String[] {
+				"acb", "bca", "abc", "cba", "bac", "cab"
+		}, new Solution26().permutation("abc"));
+		
+		Assert.assertArrayEquals(new String[] {
+				"aba","aab","baa"
+		}, new Solution26().permutation("aab"));
+	}
+	class Solution26 {
+		public String[] permutation(String s) {
+			int n = s.length();
+			Set<String> ret = new HashSet<String>();
+			Set<Integer> set = new HashSet<Integer>();
+			StringBuilder sb = new StringBuilder();
+			for (int i=0;i<n;i++) {
+				set.add(i);
+				sb.append(s.charAt(i));
+				dfs(ret,s,set,sb);
+				sb.deleteCharAt(sb.length()-1);
+				set.remove(i);
+			}
+			return ret.toArray(new String[] {});
+		}
+
+		private void dfs(Set<String> ret, String s, Set<Integer> set, StringBuilder sb) {
+			if (sb.length()==s.length()) {
+				ret.add(sb.toString());
+			}
+			for (int i=0;i<s.length();i++) {
+				if (!set.contains(i)) {
+					set.add(i);
+					sb.append(s.charAt(i));
+					dfs(ret,s,set,sb);
+					sb.deleteCharAt(sb.length()-1);
+					set.remove(i);
+				}
+			}
 		}
 	}
 }
