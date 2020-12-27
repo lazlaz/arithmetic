@@ -796,4 +796,19 @@ public class Offer1 {
 			}
 		}
 	}
+	
+	//剑指 Offer 42. 连续子数组的最大和
+	@Test
+	public void test27() {
+		Assert.assertEquals(6, maxSubArray(new int[] {-2,1,-3,4,-1,2,1,-5,4}));
+	}
+	//https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/solution/mian-shi-ti-42-lian-xu-zi-shu-zu-de-zui-da-he-do-2/
+	public int maxSubArray(int[] nums) {
+		int res = nums[0];
+        for(int i = 1; i < nums.length; i++) {
+            nums[i] += Math.max(nums[i - 1], 0);
+            res = Math.max(res, nums[i]);
+        }
+        return res;
+    }
 }
