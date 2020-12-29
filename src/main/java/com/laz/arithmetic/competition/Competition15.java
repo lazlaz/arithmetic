@@ -61,7 +61,7 @@ public class Competition15 {
 			int count = 0;
 			int[] arr = new int[100000];
 			int findKey = hasApple(arr, index);
-			while (findKey!=-1 || index <= n) {
+			while (findKey != -1 || index <= n) {
 				if (index <= n) {
 					// 将苹果根据最大坚持的天数放入
 					int day = days[index - 1] + index - 1;
@@ -69,14 +69,14 @@ public class Competition15 {
 					arr[day] = num + apples[index - 1];
 				}
 				findKey = hasApple(arr, index);
-				if (findKey!=-1) {
+				if (findKey != -1) {
 					// 从最近取出苹果进行吃
 					int nowNum = arr[findKey];
 					if (nowNum > 0) {
 						nowNum--;
 						count++; // 吃到苹果
 						arr[findKey] = nowNum;
-					} 
+					}
 				}
 				index++;
 			}
@@ -84,12 +84,60 @@ public class Competition15 {
 		}
 
 		private int hasApple(int[] arr, int index) {
-			for (int i=index;i<arr.length;i++) {
-				if (i >= index && arr[i]>0) {
+			for (int i = index; i < arr.length; i++) {
+				if (i >= index && arr[i] > 0) {
 					return i;
 				}
 			}
 			return -1;
 		}
+	}
+
+	// 1706. 球会落何处
+	@Test
+	public void test3() {
+		Assert.assertArrayEquals(new int[] { 1, -1, -1, -1, -1 }, new Solution3().findBall(new int[][] { { 1, 1, 1, -1, -1 },
+				{ 1, 1, 1, -1, -1 }, { -1, -1, -1, 1, 1 }, { 1, 1, 1, 1, -1 }, { -1, -1, -1, -1, -1 } }));
+	}
+
+	// https://leetcode-cn.com/problems/where-will-the-ball-fall/solution/java-shuang-bai-di-gui-by-ethan-jx-yvx6/
+	class Solution3 {
+		public int[] findBall(int[][] grid) {
+			int row = grid.length;
+			int col = grid[0].length;
+			int[] ans = new int[col];
+			for (int i = 0; i < col; i++) {
+				ans[i] = out(grid, row, col, i, 0);
+			}
+			return ans;
+		}
+
+		private int out(int[][] grid, int row, int col, int x, int y) {
+			// 到达底部
+			if (y == row) {
+				System.out.println(x);
+				return 1;
+			}
+
+			// 卡在边缘
+			if (x == 0 && grid[y][x] == -1) {
+				return -1;
+			}
+			if (x == col - 1 && grid[y][x] == 1) {
+				return -1;
+			}
+
+			// 卡在中间
+			if (grid[y][x] == 1 && grid[y][x + 1] == -1) {
+				return -1;
+			}
+			if (grid[y][x] == -1 && grid[y][x - 1] == 1) {
+				return -1;
+			}
+
+			// 到达下一层
+			return out(grid, row, col, x + grid[y][x], y + 1);
+		}
+
 	}
 }
