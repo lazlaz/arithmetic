@@ -757,58 +757,86 @@ public class Offer1 {
 	// 剑指 Offer 38. 字符串的排列
 	@Test
 	public void test26() {
-		Assert.assertArrayEquals(new String[] {
-				"acb", "bca", "abc", "cba", "bac", "cab"
-		}, new Solution26().permutation("abc"));
-		
-		Assert.assertArrayEquals(new String[] {
-				"aba","aab","baa"
-		}, new Solution26().permutation("aab"));
+		Assert.assertArrayEquals(new String[] { "acb", "bca", "abc", "cba", "bac", "cab" },
+				new Solution26().permutation("abc"));
+
+		Assert.assertArrayEquals(new String[] { "aba", "aab", "baa" }, new Solution26().permutation("aab"));
 	}
+
 	class Solution26 {
 		public String[] permutation(String s) {
 			int n = s.length();
 			Set<String> ret = new HashSet<String>();
 			Set<Integer> set = new HashSet<Integer>();
 			StringBuilder sb = new StringBuilder();
-			for (int i=0;i<n;i++) {
+			for (int i = 0; i < n; i++) {
 				set.add(i);
 				sb.append(s.charAt(i));
-				dfs(ret,s,set,sb);
-				sb.deleteCharAt(sb.length()-1);
+				dfs(ret, s, set, sb);
+				sb.deleteCharAt(sb.length() - 1);
 				set.remove(i);
 			}
 			return ret.toArray(new String[] {});
 		}
 
 		private void dfs(Set<String> ret, String s, Set<Integer> set, StringBuilder sb) {
-			if (sb.length()==s.length()) {
+			if (sb.length() == s.length()) {
 				ret.add(sb.toString());
 			}
-			for (int i=0;i<s.length();i++) {
+			for (int i = 0; i < s.length(); i++) {
 				if (!set.contains(i)) {
 					set.add(i);
 					sb.append(s.charAt(i));
-					dfs(ret,s,set,sb);
-					sb.deleteCharAt(sb.length()-1);
+					dfs(ret, s, set, sb);
+					sb.deleteCharAt(sb.length() - 1);
 					set.remove(i);
 				}
 			}
 		}
 	}
-	
-	//剑指 Offer 42. 连续子数组的最大和
+
+	// 剑指 Offer 42. 连续子数组的最大和
 	@Test
 	public void test27() {
-		Assert.assertEquals(6, maxSubArray(new int[] {-2,1,-3,4,-1,2,1,-5,4}));
+		Assert.assertEquals(6, maxSubArray(new int[] { -2, 1, -3, 4, -1, 2, 1, -5, 4 }));
 	}
-	//https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/solution/mian-shi-ti-42-lian-xu-zi-shu-zu-de-zui-da-he-do-2/
+
+	// https://leetcode-cn.com/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/solution/mian-shi-ti-42-lian-xu-zi-shu-zu-de-zui-da-he-do-2/
 	public int maxSubArray(int[] nums) {
 		int res = nums[0];
-        for(int i = 1; i < nums.length; i++) {
-            nums[i] += Math.max(nums[i - 1], 0);
-            res = Math.max(res, nums[i]);
-        }
-        return res;
-    }
+		for (int i = 1; i < nums.length; i++) {
+			nums[i] += Math.max(nums[i - 1], 0);
+			res = Math.max(res, nums[i]);
+		}
+		return res;
+	}
+
+	// 剑指 Offer 43. 1～n 整数中 1 出现的次数
+	@Test
+	public void test28() {
+//		Assert.assertEquals(5, new Solution28().countDigitOne(12));
+//		Assert.assertEquals(6, new Solution28().countDigitOne(13));
+		Assert.assertEquals(16, new Solution28().countDigitOne(101));
+	}
+
+	// https://leetcode-cn.com/problems/1nzheng-shu-zhong-1chu-xian-de-ci-shu-lcof/solution/javadi-gui-by-xujunyi/
+	class Solution28 {
+		public int countDigitOne(int n) {
+			return f(n);
+		}
+
+		private int f(int n) {
+			if (n <= 0)
+				return 0;
+			String s = String.valueOf(n);
+			int high = s.charAt(0) - '0';
+			int pow = (int) Math.pow(10, s.length() - 1);
+			int last = n - high * pow;
+			if (high == 1) {
+				return f(pow - 1) + last + 1 + f(last);
+			} else {
+				return pow + high * f(pow - 1) + f(last);
+			}
+		}
+	}
 }
