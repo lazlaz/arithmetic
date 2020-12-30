@@ -593,51 +593,81 @@ public class LeetCode18 {
 	public void test15() {
 		Assert.assertEquals(13, candy(new int[] { 5, 7, 8, 3, 4, 2, 1 }));
 	}
-	//https://leetcode-cn.com/problems/candy/solution/candy-cong-zuo-zhi-you-cong-you-zhi-zuo-qu-zui-da-/
+
+	// https://leetcode-cn.com/problems/candy/solution/candy-cong-zuo-zhi-you-cong-you-zhi-zuo-qu-zui-da-/
 	public int candy(int[] ratings) {
-		
+
 		int n = ratings.length;
 		int[] left = new int[n];
 		int[] right = new int[n];
 		int ret = 0;
 		Arrays.fill(left, 1);
 		Arrays.fill(right, 1);
-		for (int i=1;i<n;i++) {
-			if (ratings[i]>ratings[i-1]) {
-				left[i] = left[i-1]+1;
+		for (int i = 1; i < n; i++) {
+			if (ratings[i] > ratings[i - 1]) {
+				left[i] = left[i - 1] + 1;
 			}
 		}
-		for (int i=n-2;i>=0;i--) {
-			if (ratings[i]>ratings[i+1]) {
-				right[i] = right[i+1]+1;
+		for (int i = n - 2; i >= 0; i--) {
+			if (ratings[i] > ratings[i + 1]) {
+				right[i] = right[i + 1] + 1;
 			}
 		}
-		for (int i=0;i<n;i++) {
+		for (int i = 0; i < n; i++) {
 			ret += Math.max(left[i], right[i]);
 		}
 		return ret;
 	}
-	
-	//330. 按要求补齐数组
+
+	// 330. 按要求补齐数组
 	@Test
 	public void test16() {
-		//Assert.assertEquals(1, minPatches(new int[] {1,3}, 6));
-		Assert.assertEquals(2, minPatches(new int[] {1,5,10}, 20));
+		// Assert.assertEquals(1, minPatches(new int[] {1,3}, 6));
+		Assert.assertEquals(2, minPatches(new int[] { 1, 5, 10 }, 20));
 	}
-	//https://leetcode-cn.com/problems/patching-array/solution/an-yao-qiu-bu-qi-shu-zu-by-leetcode-solu-klp1/
-    public int minPatches(int[] nums, int n) {
-    		int patches = 0;
-    		long x = 1;
-    		int length = nums.length,index=0;
-    		while (x<=n) {
-    			if (index < length && nums[index]<=x) {
-    				x += nums[index];
-    				index++;
-    			} else {
-    				x *= 2;
-    				patches++;
-    			}
-    		}
-    		return patches;
-    }
+
+	// https://leetcode-cn.com/problems/patching-array/solution/an-yao-qiu-bu-qi-shu-zu-by-leetcode-solu-klp1/
+	public int minPatches(int[] nums, int n) {
+		int patches = 0;
+		long x = 1;
+		int length = nums.length, index = 0;
+		while (x <= n) {
+			if (index < length && nums[index] <= x) {
+				x += nums[index];
+				index++;
+			} else {
+				x *= 2;
+				patches++;
+			}
+		}
+		return patches;
+	}
+
+	// 1046. 最后一块石头的重量
+	@Test
+	public void test17() {
+		Assert.assertEquals(1, lastStoneWeight(new int[] { 2, 7, 4, 1, 8, 1 }));
+	}
+
+	public int lastStoneWeight(int[] stones) {
+		Arrays.sort(stones);
+		while (stones.length > 1) {
+			int n = stones.length;
+			int x = stones[n-1];
+			int y = stones[n-2];
+			if (x!=y) {
+				int newV = x-y;
+				stones[n-2] = newV;
+				int[] newArr  = new int[n-1];
+				System.arraycopy(stones, 0, newArr, 0, n-1);
+				Arrays.sort(newArr);
+				stones=newArr;
+			} else {
+				int[] newArr  = new int[n-2];
+				System.arraycopy(stones, 0, newArr, 0, n-2);
+				stones=newArr;
+			}
+		}
+		return stones.length == 1 ? stones[0] : 0;
+	}
 }
