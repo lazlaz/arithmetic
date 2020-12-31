@@ -638,7 +638,7 @@ public class LeetCode12 {
 	public void test8() {
 		Assert.assertEquals(1, eraseOverlapIntervals(new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 1, 3 } }));
 	}
-
+	//https://leetcode-cn.com/problems/non-overlapping-intervals/solution/tan-xin-suan-fa-zhi-qu-jian-diao-du-wen-ti-by-labu/
 	public int eraseOverlapIntervals(int[][] intervals) {
 		int n = intervals.length;
 		return n - intervalSchedule(intervals);
