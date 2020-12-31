@@ -1,5 +1,6 @@
 package com.laz.arithmetic.competition;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -96,8 +97,9 @@ public class Competition15 {
 	// 1706. 球会落何处
 	@Test
 	public void test3() {
-		Assert.assertArrayEquals(new int[] { 1, -1, -1, -1, -1 }, new Solution3().findBall(new int[][] { { 1, 1, 1, -1, -1 },
-				{ 1, 1, 1, -1, -1 }, { -1, -1, -1, 1, 1 }, { 1, 1, 1, 1, -1 }, { -1, -1, -1, -1, -1 } }));
+		Assert.assertArrayEquals(new int[] { 1, -1, -1, -1, -1 },
+				new Solution3().findBall(new int[][] { { 1, 1, 1, -1, -1 }, { 1, 1, 1, -1, -1 }, { -1, -1, -1, 1, 1 },
+						{ 1, 1, 1, 1, -1 }, { -1, -1, -1, -1, -1 } }));
 	}
 
 	// https://leetcode-cn.com/problems/where-will-the-ball-fall/solution/java-shuang-bai-di-gui-by-ethan-jx-yvx6/
@@ -140,4 +142,125 @@ public class Competition15 {
 		}
 
 	}
+
+	// 1707. 与数组中元素的最大异或值
+	@Test
+	public void test14() {
+		Assert.assertArrayEquals(new int[] { 3, 3, 7 }, new Solution4().maximizeXor(new int[] { 0, 1, 2, 3, 4 },
+				new int[][] { { 3, 1 }, { 1, 3 }, { 5, 6 } }));
+
+		Assert.assertArrayEquals(new int[] { 15, -1, 5 }, new Solution4().maximizeXor(new int[] { 5, 2, 4, 6, 6, 3 },
+				new int[][] { { 12, 4 }, { 8, 1 }, { 6, 3 } }));
+	}
+
+	// https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/solution/java-zi-dian-shu-chun-tao-mo-ban-si-lu-j-hk51/
+	class Solution4 {
+	    public int[] maximizeXor(int[] nums, int[][] queries) {
+	        int n = queries.length;
+	        int[] res = new int[n];
+	        // 对 nums 从小到大排序
+	        Arrays.sort(nums);
+	        // 对 queries 的索引按照 mi 排序
+	        Integer[] queries_idx = new Integer[n];
+	        for (int i = 0; i < n; i ++) {
+	            queries_idx[i] = i;
+	        }
+	        Arrays.sort(queries_idx, (a, b) -> queries[a][1]- queries[b][1]);
+	        // 构造字典树
+	        Trie trie = new Trie();
+	        int num_idx = 0;
+	        for (int i = 0; i < n; i ++) {   
+	            // 将比当前 mi 小的数添加到字典树中
+	            while (num_idx < nums.length && nums[num_idx] <= queries[queries_idx[i]][1]) {
+	                trie.insert(nums[num_idx], nums[nums.length - 1]);
+	                num_idx ++;
+	            }
+	            // 从字典树中查询
+	            res[queries_idx[i]] = trie.get(queries[queries_idx[i]][0], nums[nums.length - 1]);
+	        }
+	        return res;
+
+	    }    
+	}
+	class TrieNode {
+		int val; // 当前节点存储的字符
+	    TrieNode[] next = new TrieNode[2]; // 节点下的孩子数组
+	    public TrieNode() {}
+	    public TrieNode(int val) {
+	    	this.val = val;
+	    }
+	}
+	class Trie {
+		TrieNode root;
+
+		public Trie() {
+			root = new TrieNode();
+			root.val = -1;
+		}
+		
+		// 1.插入一个整数到Trie树
+		public void insert(int num, int max_num) {
+			TrieNode cur_node = root;
+	        // 按照 nums 中最大的数的二进制位数构造字典树
+			char[] chars = binary2decimal(num, Integer.toBinaryString(max_num).length()).toCharArray();
+			int len = chars.length;
+			for (int i = 0; i < len; i ++) {
+				char c = chars[i];
+				if (c == '0') {
+	                if (cur_node.next[0] == null) {
+	                    cur_node.next[0] = new TrieNode();
+	                }
+	                cur_node = cur_node.next[0];
+	            }
+	            else if (c == '1') {
+	                if (cur_node.next[1] == null) {
+	                    cur_node.next[1] = new TrieNode();
+	                }
+	                cur_node = cur_node.next[1];
+	            }			
+			}
+			cur_node.val = num;
+		}
+		
+		// 2.判断某个单词是否在Trie树之中，由于需要最大异或值，那么在遍历字典树时，高位应尽量选择与需异或数字该位置二进制数不同的树节点
+		public int get(int num, int max_num) {
+			TrieNode cur_node = root;
+	        // 可能 nums 中所有数全都小于 mi，此时字典树为空
+	        if (cur_node.next[0] == null && cur_node.next[1] == null) {
+	        	return -1;
+	        }
+			char[] chars = binary2decimal(num, Integer.toBinaryString(max_num).length()).toCharArray();
+			int len = chars.length;
+			for (int i = 0; i < len; i ++) {
+				char c = chars[i];
+	            // 比如高位为0，对应的树中节点存1时才有异或最大值
+				if (c == '0') {
+	                if (cur_node.next[1] != null) {
+	                   cur_node = cur_node.next[1];
+	                }
+	                else {
+	                    cur_node = cur_node.next[0];
+	                }                
+	            }
+	            else if (c == '1') {
+	                if (cur_node.next[0] != null) {
+	                    cur_node = cur_node.next[0];
+	                }
+	                else {
+	                    cur_node = cur_node.next[1];
+	                }
+	            }			
+			}
+			return cur_node.val ^ num;
+		}
+	    private String binary2decimal(int decNum, int digit) {
+	        StringBuilder sb = new StringBuilder();
+	        for(int i = digit - 1; i >= 0; i --) {
+	            sb.append((decNum >> i) & 1);
+	        }
+	        return sb.toString();
+	    }		
+	}
+
+
 }
