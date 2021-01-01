@@ -3,6 +3,7 @@ package com.laz.arithmetic.swordoffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -770,6 +771,7 @@ public class Offer1 {
 		System.arraycopy(arr, 0, ret, 0, k);
 		return ret;
 	}
+
 	// 剑指 Offer 38. 字符串的排列
 	@Test
 	public void test27() {
@@ -876,5 +878,58 @@ public class Offer1 {
 		}
 		long num = start + (n - 1) / digit; // 2.
 		return Long.toString(num).charAt((n - 1) % digit) - '0'; // 3.
+	}
+
+	// 剑指 Offer 45. 把数组排成最小的数
+	@Test
+	public void test31() {
+//		Assert.assertEquals("102", minNumber(new int[] { 10, 2 }));
+//		Assert.assertEquals("3033459", minNumber(new int[] { 3,30,34,5,9 }));
+//		Assert.assertEquals("1399439856075703697382478249389609", minNumber(new int[] {824,938,1399,5607,6973,5703,9609,4398,8247 }));
+		Assert.assertEquals("3233343486364668594", minNumber(new int[] {3,43,48,94,85,33,64,32,63,66}));
+	}
+
+	public String minNumber(int[] nums) {
+		List<Integer> list = new ArrayList<Integer>(nums.length);
+		for (int num : nums) {
+			list.add(num);
+		}
+		StringBuilder sb = new StringBuilder();
+		Collections.sort(list, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				if (o1==o2) {
+					return 0;
+				}
+				char[] char1 = String.valueOf(o1).toCharArray();
+				char[] char2 = String.valueOf(o2).toCharArray();
+				int i1=0,i2 = 0;
+				while (i1<char1.length && i2<char2.length) {
+					if (char1[i1] == char2[i2]) {
+						if (i1==char1.length-1 && i2==char2.length-1) {
+							return 0;
+						}
+						i1++;
+						i2++;
+					} else if (char1[i1] > char2[i2]) {
+						return 1;
+					} else if (char1[i1] < char2[i2]) {
+						return -1;
+					}
+					if (i1==char1.length) {
+						i1=0;
+					}
+					if (i2==char2.length) {
+						i2=0;
+					}
+				}
+ 				return 0;
+			}
+		});
+		for (Integer integer : list) {
+				sb.append(integer);
+		}
+		return sb.toString();
+
 	}
 }
