@@ -653,21 +653,71 @@ public class LeetCode18 {
 		Arrays.sort(stones);
 		while (stones.length > 1) {
 			int n = stones.length;
-			int x = stones[n-1];
-			int y = stones[n-2];
-			if (x!=y) {
-				int newV = x-y;
-				stones[n-2] = newV;
-				int[] newArr  = new int[n-1];
-				System.arraycopy(stones, 0, newArr, 0, n-1);
+			int x = stones[n - 1];
+			int y = stones[n - 2];
+			if (x != y) {
+				int newV = x - y;
+				stones[n - 2] = newV;
+				int[] newArr = new int[n - 1];
+				System.arraycopy(stones, 0, newArr, 0, n - 1);
 				Arrays.sort(newArr);
-				stones=newArr;
+				stones = newArr;
 			} else {
-				int[] newArr  = new int[n-2];
-				System.arraycopy(stones, 0, newArr, 0, n-2);
-				stones=newArr;
+				int[] newArr = new int[n - 2];
+				System.arraycopy(stones, 0, newArr, 0, n - 2);
+				stones = newArr;
 			}
 		}
 		return stones.length == 1 ? stones[0] : 0;
 	}
+
+	// 605. 种花问题
+	@Test
+	public void test18() {
+		Assert.assertEquals(true, canPlaceFlowers(new int[] { 1, 0, 0, 0, 1 }, 1));
+		Assert.assertEquals(false, canPlaceFlowers(new int[] { 1,0,0,0,1 }, 2));
+	}
+
+	public boolean canPlaceFlowers(int[] flowerbed, int n) {
+		if (n==0) {
+			return true;
+		}
+		if (flowerbed==null ||flowerbed.length==0) {
+			return false;
+		}
+		if (flowerbed.length==1) 
+			if (flowerbed[0] == 1) {
+				return false;
+			} else {
+				if(n==1) {
+					return true;
+				} else {
+					return false;
+				}
+		}
+		int count = 0;
+		for (int i = 0; i < flowerbed.length; i++) {
+			if (i == 0) {
+				if (flowerbed[i] == 0 && flowerbed[i + 1] == 0) {
+					count++;
+					flowerbed[i] = 1;
+				}
+			} else if (i==flowerbed.length-1){
+				if (flowerbed[i-1] == 0 && flowerbed[i] == 0) {
+					count++;
+					flowerbed[i] = 1;
+				}
+			} else {
+				if (flowerbed[i-1] == 0 && flowerbed[i] == 0 && flowerbed[i + 1] == 0) {
+					count++;
+					flowerbed[i] = 1;
+				}
+			}
+			if (count>=n) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

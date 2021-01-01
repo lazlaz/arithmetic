@@ -762,13 +762,14 @@ public class Offer1 {
 	}
 
 	public int[] getLeastNumbers(int[] arr, int k) {
-		if (arr.length==0) {
+		if (arr.length == 0) {
 			return new int[] {};
 		}
 		Arrays.sort(arr);
 		int[] ret = new int[k];
 		System.arraycopy(arr, 0, ret, 0, k);
 		return ret;
+	}
 	// 剑指 Offer 38. 字符串的排列
 	@Test
 	public void test27() {
@@ -858,7 +859,7 @@ public class Offer1 {
 	// 剑指 Offer 44. 数字序列中某一位的数字
 	@Test
 	public void test30() {
-		//Assert.assertEquals(3, findNthDigit(3));
+		// Assert.assertEquals(3, findNthDigit(3));
 		Assert.assertEquals(4, findNthDigit(19));
 	}
 
