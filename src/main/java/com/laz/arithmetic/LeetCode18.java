@@ -2,11 +2,13 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import org.junit.Assert;
@@ -675,26 +677,26 @@ public class LeetCode18 {
 	@Test
 	public void test18() {
 		Assert.assertEquals(true, canPlaceFlowers(new int[] { 1, 0, 0, 0, 1 }, 1));
-		Assert.assertEquals(false, canPlaceFlowers(new int[] { 1,0,0,0,1 }, 2));
+		Assert.assertEquals(false, canPlaceFlowers(new int[] { 1, 0, 0, 0, 1 }, 2));
 	}
 
 	public boolean canPlaceFlowers(int[] flowerbed, int n) {
-		if (n==0) {
+		if (n == 0) {
 			return true;
 		}
-		if (flowerbed==null ||flowerbed.length==0) {
+		if (flowerbed == null || flowerbed.length == 0) {
 			return false;
 		}
-		if (flowerbed.length==1) 
+		if (flowerbed.length == 1)
 			if (flowerbed[0] == 1) {
 				return false;
 			} else {
-				if(n==1) {
+				if (n == 1) {
 					return true;
 				} else {
 					return false;
 				}
-		}
+			}
 		int count = 0;
 		for (int i = 0; i < flowerbed.length; i++) {
 			if (i == 0) {
@@ -702,22 +704,51 @@ public class LeetCode18 {
 					count++;
 					flowerbed[i] = 1;
 				}
-			} else if (i==flowerbed.length-1){
-				if (flowerbed[i-1] == 0 && flowerbed[i] == 0) {
+			} else if (i == flowerbed.length - 1) {
+				if (flowerbed[i - 1] == 0 && flowerbed[i] == 0) {
 					count++;
 					flowerbed[i] = 1;
 				}
 			} else {
-				if (flowerbed[i-1] == 0 && flowerbed[i] == 0 && flowerbed[i + 1] == 0) {
+				if (flowerbed[i - 1] == 0 && flowerbed[i] == 0 && flowerbed[i + 1] == 0) {
 					count++;
 					flowerbed[i] = 1;
 				}
 			}
-			if (count>=n) {
+			if (count >= n) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	// 239. 滑动窗口最大值
+	@Test
+	public void test19() {
+		Assert.assertArrayEquals(new int[] { 3, 3, 5, 5, 6, 7 },
+				maxSlidingWindow(new int[] { 1, 3, -1, -3, 5, 3, 6, 7 }, 3));
+	}
+
+	// https://leetcode-cn.com/problems/sliding-window-maximum/solution/hua-dong-chuang-kou-zui-da-zhi-by-leetco-ki6m/
+	public int[] maxSlidingWindow(int[] nums, int k) {
+		int n = nums.length;
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>(new Comparator<int[]>() {
+            public int compare(int[] pair1, int[] pair2) {
+                return pair1[0] != pair2[0] ? pair2[0] - pair1[0] : pair2[1] - pair1[1];
+            }
+        });
+        for (int i = 0; i < k; ++i) {
+            pq.offer(new int[]{nums[i], i});
+        }
+        int[] ans = new int[n - k + 1];
+        ans[0] = pq.peek()[0];
+        for (int i = k; i < n; ++i) {
+            pq.offer(new int[]{nums[i], i});
+            while (pq.peek()[1] <= i - k) {
+                pq.poll();
+            }
+            ans[i - k + 1] = pq.peek()[0];
+        }
+        return ans;
+	}
 }
