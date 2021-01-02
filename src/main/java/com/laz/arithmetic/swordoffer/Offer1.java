@@ -886,7 +886,7 @@ public class Offer1 {
 //		Assert.assertEquals("102", minNumber(new int[] { 10, 2 }));
 //		Assert.assertEquals("3033459", minNumber(new int[] { 3,30,34,5,9 }));
 //		Assert.assertEquals("1399439856075703697382478249389609", minNumber(new int[] {824,938,1399,5607,6973,5703,9609,4398,8247 }));
-		Assert.assertEquals("3233343486364668594", minNumber(new int[] {3,43,48,94,85,33,64,32,63,66}));
+		Assert.assertEquals("3233343486364668594", minNumber(new int[] { 3, 43, 48, 94, 85, 33, 64, 32, 63, 66 }));
 	}
 
 	public String minNumber(int[] nums) {
@@ -898,15 +898,15 @@ public class Offer1 {
 		Collections.sort(list, new Comparator<Integer>() {
 			@Override
 			public int compare(Integer o1, Integer o2) {
-				if (o1==o2) {
+				if (o1 == o2) {
 					return 0;
 				}
 				char[] char1 = String.valueOf(o1).toCharArray();
 				char[] char2 = String.valueOf(o2).toCharArray();
-				int i1=0,i2 = 0;
-				while (i1<char1.length && i2<char2.length) {
+				int i1 = 0, i2 = 0;
+				while (i1 < char1.length && i2 < char2.length) {
 					if (char1[i1] == char2[i2]) {
-						if (i1==char1.length-1 && i2==char2.length-1) {
+						if (i1 == char1.length - 1 && i2 == char2.length - 1) {
 							return 0;
 						}
 						i1++;
@@ -916,20 +916,38 @@ public class Offer1 {
 					} else if (char1[i1] < char2[i2]) {
 						return -1;
 					}
-					if (i1==char1.length) {
-						i1=0;
+					if (i1 == char1.length) {
+						i1 = 0;
 					}
-					if (i2==char2.length) {
-						i2=0;
+					if (i2 == char2.length) {
+						i2 = 0;
 					}
 				}
- 				return 0;
+				return 0;
 			}
 		});
 		for (Integer integer : list) {
-				sb.append(integer);
+			sb.append(integer);
 		}
 		return sb.toString();
 
+	}
+
+	// 剑指 Offer 46. 把数字翻译成字符串
+	@Test
+	public void test32() {
+		Assert.assertEquals(5, translateNum(12258));
+	}
+	// https://leetcode-cn.com/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/solution/mian-shi-ti-46-ba-shu-zi-fan-yi-cheng-zi-fu-chua-6/
+	public int translateNum(int num) {
+		String s = String.valueOf(num);
+		int a = 1, b = 1;
+		for (int i = 2; i <= s.length(); i++) {
+			String tmp = s.substring(i - 2, i);
+			int c = tmp.compareTo("10") >= 0 && tmp.compareTo("25") <= 0 ? a + b : a;
+			b = a;
+			a = c;
+		}
+		return a;
 	}
 }
