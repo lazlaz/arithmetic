@@ -950,4 +950,27 @@ public class Offer1 {
 		}
 		return a;
 	}
+	
+	//剑指 Offer 48. 最长不含重复字符的子字符串
+	@Test
+	public void test33() {
+		Assert.assertEquals(3, lengthOfLongestSubstring("abcabcbb"));
+		Assert.assertEquals(1, lengthOfLongestSubstring("bbbbb"));
+		Assert.assertEquals(3, lengthOfLongestSubstring("pwwkew"));
+		Assert.assertEquals(0, lengthOfLongestSubstring(""));
+		Assert.assertEquals(3, lengthOfLongestSubstring("dvdf"));
+	}
+	//https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
+	public int lengthOfLongestSubstring(String s) {
+		Map<Character, Integer> dic = new HashMap<>();
+        int res = 0, tmp = 0;
+        for(int j = 0; j < s.length(); j++) {
+            int i = dic.getOrDefault(s.charAt(j), -1); // 获取索引 i
+            dic.put(s.charAt(j), j); // 更新哈希表
+            tmp = tmp < j - i ? tmp + 1 : j - i; // dp[j - 1] -> dp[j]
+            res = Math.max(res, tmp); // max(dp[j - 1], dp[j])
+        }
+        return res;
+		
+    }
 }
