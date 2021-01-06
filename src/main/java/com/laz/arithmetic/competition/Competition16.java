@@ -1,8 +1,10 @@
 package com.laz.arithmetic.competition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -149,5 +151,64 @@ public class Competition16 {
             ret += l - ll;
         }
         return (int) (ret % M);
+    }
+	
+	//1713. 得到子序列的最少操作次数
+	@Test
+	public void test4() {
+//		Assert.assertEquals(2, minOperations(new int[] {
+//				5,1,3
+//		}, new int[] {
+//				9,4,2,3,4
+//		}));	
+//		Assert.assertEquals(4, minOperations(new int[] {
+//				0,6,4,8,1,3,2
+//		}, new int[] {
+//				4,7,6,2,3,8,6,1,0
+//		}));	
+		Assert.assertEquals(7, minOperations(new int[] {
+				17,5,7,1,2,19,4,20,10,18
+		}, new int[] {
+				2,10,5,9,9,17,8,1,19,1
+		}));	
+	}
+	//https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/solution/de-dao-zi-xu-lie-de-zui-shao-cao-zuo-ci-5qeep/
+    public int minOperations(int[] target, int[] arr) {
+    	Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+    	int n = target.length,m = arr.length;
+    	//步骤1. 映射target的下标
+    	for (int i=0;i<n;i++) {
+    		map.put(target[i],i+1);
+    	}
+    	 //步骤2. 把arr的数字标记上在target上的下标
+    	int[] arr2 = new int[m+1];
+    	for (int i=0;i<m;i++) {
+    		if (map.containsKey(arr[i])) {
+    			arr2[i+1] = map.get(arr[i]); //这里下标从1开始
+    		}
+    	}
+    	//步骤3. 贪心法求最长上升子序列
+    	List<Integer> list =new ArrayList();
+    	for (int i=1;i<=m;i++) {
+    		if (arr2[i] == 0) {
+    			continue;
+    		}
+    		if (list.isEmpty() || arr2[i] > list.get(list.size()-1)) {
+    			list.add(arr2[i]);
+    		}else{
+                int l = 0, r = list.size() - 1;
+                while(l < r){
+                    int mid = l + r >> 1;
+                    if(list.get(mid) >= arr2[i]) {
+                    	r = mid;
+                    } else {
+                    	l = mid + 1;
+                    }
+                }
+                list.set(l, arr2[i]);
+            }
+    		
+    	}
+    	return n - list.size();
     }
 }
