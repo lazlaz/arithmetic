@@ -938,6 +938,7 @@ public class Offer1 {
 	public void test32() {
 		Assert.assertEquals(5, translateNum(12258));
 	}
+
 	// https://leetcode-cn.com/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/solution/mian-shi-ti-46-ba-shu-zi-fan-yi-cheng-zi-fu-chua-6/
 	public int translateNum(int num) {
 		String s = String.valueOf(num);
@@ -950,8 +951,8 @@ public class Offer1 {
 		}
 		return a;
 	}
-	
-	//剑指 Offer 48. 最长不含重复字符的子字符串
+
+	// 剑指 Offer 48. 最长不含重复字符的子字符串
 	@Test
 	public void test33() {
 		Assert.assertEquals(3, lengthOfLongestSubstring("abcabcbb"));
@@ -960,17 +961,62 @@ public class Offer1 {
 		Assert.assertEquals(0, lengthOfLongestSubstring(""));
 		Assert.assertEquals(3, lengthOfLongestSubstring("dvdf"));
 	}
-	//https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
+
+	// https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/solution/mian-shi-ti-48-zui-chang-bu-han-zhong-fu-zi-fu-d-9/
 	public int lengthOfLongestSubstring(String s) {
 		Map<Character, Integer> dic = new HashMap<>();
-        int res = 0, tmp = 0;
-        for(int j = 0; j < s.length(); j++) {
-            int i = dic.getOrDefault(s.charAt(j), -1); // 获取索引 i
-            dic.put(s.charAt(j), j); // 更新哈希表
-            tmp = tmp < j - i ? tmp + 1 : j - i; // dp[j - 1] -> dp[j]
-            res = Math.max(res, tmp); // max(dp[j - 1], dp[j])
-        }
-        return res;
-		
+		int res = 0, tmp = 0;
+		for (int j = 0; j < s.length(); j++) {
+			int i = dic.getOrDefault(s.charAt(j), -1); // 获取索引 i
+			dic.put(s.charAt(j), j); // 更新哈希表
+			tmp = tmp < j - i ? tmp + 1 : j - i; // dp[j - 1] -> dp[j]
+			res = Math.max(res, tmp); // max(dp[j - 1], dp[j])
+		}
+		return res;
+
+	}
+
+	// 剑指 Offer 49. 丑数
+	@Test
+	public void test34() {
+		Assert.assertEquals(12, new Solution34().nthUglyNumber(10));
+	}
+	//https://leetcode-cn.com/problems/chou-shu-lcof/solution/chou-shu-ii-qing-xi-de-tui-dao-si-lu-by-mrsate/
+	class Solution34 {
+		public int nthUglyNumber(int n) {
+			int[] dp = new int[n];
+			dp[0] = 1;
+			int p2 = 0, p3 = 0, p5 = 0;
+			for (int i = 1; i < n; i++) {
+				dp[i] = Math.min(Math.min(dp[p2] * 2, dp[p3] * 3), dp[p5] * 5);
+				if (dp[i] == dp[p2] * 2)
+					p2++;
+				if (dp[i] == dp[p3] * 3)
+					p3++;
+				if (dp[i] == dp[p5] * 5)
+					p5++;
+			}
+			return dp[n - 1];
+		}
+	
+	}
+	
+	//剑指 Offer 50. 第一个只出现一次的字符
+	@Test
+	public void test35() {
+		Assert.assertEquals('b', firstUniqChar("abaccdeff"));
+		Assert.assertEquals(' ', firstUniqChar(""));
+	}
+    public char firstUniqChar(String s) {
+    	int[] arr = new int[26];
+    	for (int i=0;i<s.length();i++) {
+    		arr[s.charAt(i)-'a']++;
+    	}
+    	for (int i=0;i<s.length();i++) {
+    		if (arr[s.charAt(i)-'a'] == 1) {
+    			return s.charAt(i);
+    		}
+    	}
+    	return ' ';
     }
 }
