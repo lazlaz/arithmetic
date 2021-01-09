@@ -1019,4 +1019,48 @@ public class Offer1 {
     	}
     	return ' ';
     }
+    
+    //剑指 Offer 53 - II. 0～n-1中缺失的数字
+    @Test
+    public void test36() {
+    	Assert.assertEquals(2, missingNumber(new int[] {0,1,3}));
+    	Assert.assertEquals(8, missingNumber(new int[] {0,1,2,3,4,5,6,7,9}));
+    	Assert.assertEquals(2, missingNumber(new int[] {0,1}));
+    	Assert.assertEquals(1, missingNumber(new int[] {0}));
+    }
+    public int missingNumber(int[] nums) {
+    	int n = nums.length;
+    	for (int i=0;i<n;i++) {
+    		if (nums[i]!=i) {
+    			return nums[i]>i?nums[i]-1:nums[i]+1;
+    		}
+    	}
+    	return n;
+    }
+    //剑指 Offer 54. 二叉搜索树的第k大节点
+    @Test
+    public void test37() {
+    	TreeNode root = Utils.createTree(new Integer[] {
+    			3,1,4,null,2
+    	});
+    	Assert.assertEquals(4, new Solution37().kthLargest(root,1));
+    }
+    
+    class Solution37 {
+    	List<Integer> res= new ArrayList<Integer>();
+    	public int kthLargest(TreeNode root, int k) {
+    		dfs(root,k);
+    		return res.get(k-1);
+    	}
+		private void dfs(TreeNode root,int k) {
+			if (res.size()==k) {
+				return ;
+			}
+			if (root!=null) {
+				dfs(root.right,k);
+				res.add(root.val);
+				dfs(root.left,k);
+			}
+		}
+    }
 }
