@@ -1063,4 +1063,59 @@ public class Offer1 {
 			}
 		}
     }
+    
+    //剑指 Offer 51. 数组中的逆序对
+    @Test
+    public void test38() {
+    	//Assert.assertEquals(5, reversePairs(new int[] {7,5,6,4}));
+    	//Assert.assertEquals(4, reversePairs(new int[] {1,3,2,3,1}));
+    	//Assert.assertEquals(3, reversePairs(new int[] {1,2,1,2,1}));
+    	Assert.assertEquals(6, reversePairs(new int[] {2147483647,2147483647,-2147483647,-2147483647,-2147483647,2147483647}));
+    }
+    public int reversePairs(int[] nums) {
+    	if (nums.length==0 || nums.length==1) {
+    		return 0;
+    	}
+    	int n = nums.length;
+    	int count = 0;
+    	List<Integer> list =new ArrayList<Integer>();
+    	list.add(nums[n-1]);
+    	for (int i=n-2;i>=0;i--) {
+    		//二分查找
+    		int l=0,r=list.size()-1;
+    		int v = nums[i];
+    		//找到v应该放入的下标
+    		while (l<r) {
+    			int mid = (l+r)/2;
+    			if (list.get(mid)>v) {
+    				r = mid;
+    			}
+    			if (list.get(mid)<v) {
+    				l = mid+1;
+    			}
+    			if (list.get(mid)==v) {
+    				l=mid;
+    				break;
+    			}
+    		}
+    		if (v==list.get(l)) {
+    			while ( l>=0 && v<=list.get(l)) {
+    				l--;
+    			}
+    			if (l>=0 && v>list.get(l)) {
+    				count+=l+1;
+    			}
+    			l=l<0?0:l;
+    			list.add(l+1,v);
+    		}else if (v>list.get(l)) {
+    			count+=l+1;
+    			list.add(l+1, v);
+    		}else if (v<list.get(l)) {
+    			count+=l;
+    			list.add(l, v);
+    		}
+    		
+    	}
+    	return count;
+    }
 }
