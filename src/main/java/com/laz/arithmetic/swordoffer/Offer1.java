@@ -981,7 +981,8 @@ public class Offer1 {
 	public void test34() {
 		Assert.assertEquals(12, new Solution34().nthUglyNumber(10));
 	}
-	//https://leetcode-cn.com/problems/chou-shu-lcof/solution/chou-shu-ii-qing-xi-de-tui-dao-si-lu-by-mrsate/
+
+	// https://leetcode-cn.com/problems/chou-shu-lcof/solution/chou-shu-ii-qing-xi-de-tui-dao-si-lu-by-mrsate/
 	class Solution34 {
 		public int nthUglyNumber(int n) {
 			int[] dp = new int[n];
@@ -998,124 +999,175 @@ public class Offer1 {
 			}
 			return dp[n - 1];
 		}
-	
+
 	}
-	
-	//剑指 Offer 50. 第一个只出现一次的字符
+
+	// 剑指 Offer 50. 第一个只出现一次的字符
 	@Test
 	public void test35() {
 		Assert.assertEquals('b', firstUniqChar("abaccdeff"));
 		Assert.assertEquals(' ', firstUniqChar(""));
 	}
-    public char firstUniqChar(String s) {
-    	int[] arr = new int[26];
-    	for (int i=0;i<s.length();i++) {
-    		arr[s.charAt(i)-'a']++;
-    	}
-    	for (int i=0;i<s.length();i++) {
-    		if (arr[s.charAt(i)-'a'] == 1) {
-    			return s.charAt(i);
-    		}
-    	}
-    	return ' ';
-    }
-    
-    //剑指 Offer 53 - II. 0～n-1中缺失的数字
-    @Test
-    public void test36() {
-    	Assert.assertEquals(2, missingNumber(new int[] {0,1,3}));
-    	Assert.assertEquals(8, missingNumber(new int[] {0,1,2,3,4,5,6,7,9}));
-    	Assert.assertEquals(2, missingNumber(new int[] {0,1}));
-    	Assert.assertEquals(1, missingNumber(new int[] {0}));
-    }
-    public int missingNumber(int[] nums) {
-    	int n = nums.length;
-    	for (int i=0;i<n;i++) {
-    		if (nums[i]!=i) {
-    			return nums[i]>i?nums[i]-1:nums[i]+1;
-    		}
-    	}
-    	return n;
-    }
-    //剑指 Offer 54. 二叉搜索树的第k大节点
-    @Test
-    public void test37() {
-    	TreeNode root = Utils.createTree(new Integer[] {
-    			3,1,4,null,2
-    	});
-    	Assert.assertEquals(4, new Solution37().kthLargest(root,1));
-    }
-    
-    class Solution37 {
-    	List<Integer> res= new ArrayList<Integer>();
-    	public int kthLargest(TreeNode root, int k) {
-    		dfs(root,k);
-    		return res.get(k-1);
-    	}
-		private void dfs(TreeNode root,int k) {
-			if (res.size()==k) {
-				return ;
-			}
-			if (root!=null) {
-				dfs(root.right,k);
-				res.add(root.val);
-				dfs(root.left,k);
+
+	public char firstUniqChar(String s) {
+		int[] arr = new int[26];
+		for (int i = 0; i < s.length(); i++) {
+			arr[s.charAt(i) - 'a']++;
+		}
+		for (int i = 0; i < s.length(); i++) {
+			if (arr[s.charAt(i) - 'a'] == 1) {
+				return s.charAt(i);
 			}
 		}
-    }
-    
-    //剑指 Offer 51. 数组中的逆序对
-    @Test
-    public void test38() {
-    	//Assert.assertEquals(5, reversePairs(new int[] {7,5,6,4}));
-    	//Assert.assertEquals(4, reversePairs(new int[] {1,3,2,3,1}));
-    	//Assert.assertEquals(3, reversePairs(new int[] {1,2,1,2,1}));
-    	Assert.assertEquals(6, reversePairs(new int[] {2147483647,2147483647,-2147483647,-2147483647,-2147483647,2147483647}));
-    }
-    public int reversePairs(int[] nums) {
-    	if (nums.length==0 || nums.length==1) {
-    		return 0;
-    	}
-    	int n = nums.length;
-    	int count = 0;
-    	List<Integer> list =new ArrayList<Integer>();
-    	list.add(nums[n-1]);
-    	for (int i=n-2;i>=0;i--) {
-    		//二分查找
-    		int l=0,r=list.size()-1;
-    		int v = nums[i];
-    		//找到v应该放入的下标
-    		while (l<r) {
-    			int mid = (l+r)/2;
-    			if (list.get(mid)>v) {
-    				r = mid;
-    			}
-    			if (list.get(mid)<v) {
-    				l = mid+1;
-    			}
-    			if (list.get(mid)==v) {
-    				l=mid;
-    				break;
-    			}
-    		}
-    		if (v==list.get(l)) {
-    			while ( l>=0 && v<=list.get(l)) {
-    				l--;
-    			}
-    			if (l>=0 && v>list.get(l)) {
-    				count+=l+1;
-    			}
-    			l=l<0?0:l;
-    			list.add(l+1,v);
-    		}else if (v>list.get(l)) {
-    			count+=l+1;
-    			list.add(l+1, v);
-    		}else if (v<list.get(l)) {
-    			count+=l;
-    			list.add(l, v);
-    		}
-    		
-    	}
-    	return count;
-    }
+		return ' ';
+	}
+
+	// 剑指 Offer 53 - II. 0～n-1中缺失的数字
+	@Test
+	public void test36() {
+		Assert.assertEquals(2, missingNumber(new int[] { 0, 1, 3 }));
+		Assert.assertEquals(8, missingNumber(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 9 }));
+		Assert.assertEquals(2, missingNumber(new int[] { 0, 1 }));
+		Assert.assertEquals(1, missingNumber(new int[] { 0 }));
+	}
+
+	public int missingNumber(int[] nums) {
+		int n = nums.length;
+		for (int i = 0; i < n; i++) {
+			if (nums[i] != i) {
+				return nums[i] > i ? nums[i] - 1 : nums[i] + 1;
+			}
+		}
+		return n;
+	}
+
+	// 剑指 Offer 54. 二叉搜索树的第k大节点
+	@Test
+	public void test37() {
+		TreeNode root = Utils.createTree(new Integer[] { 3, 1, 4, null, 2 });
+		Assert.assertEquals(4, new Solution37().kthLargest(root, 1));
+	}
+
+	class Solution37 {
+		List<Integer> res = new ArrayList<Integer>();
+
+		public int kthLargest(TreeNode root, int k) {
+			dfs(root, k);
+			return res.get(k - 1);
+		}
+
+		private void dfs(TreeNode root, int k) {
+			if (res.size() == k) {
+				return;
+			}
+			if (root != null) {
+				dfs(root.right, k);
+				res.add(root.val);
+				dfs(root.left, k);
+			}
+		}
+	}
+
+	// 剑指 Offer 51. 数组中的逆序对
+	@Test
+	public void test38() {
+		// Assert.assertEquals(5, reversePairs(new int[] {7,5,6,4}));
+		// Assert.assertEquals(4, reversePairs(new int[] {1,3,2,3,1}));
+		// Assert.assertEquals(3, reversePairs(new int[] {1,2,1,2,1}));
+		Assert.assertEquals(6,
+				reversePairs(new int[] { 2147483647, 2147483647, -2147483647, -2147483647, -2147483647, 2147483647 }));
+	}
+
+	public int reversePairs(int[] nums) {
+		if (nums.length == 0 || nums.length == 1) {
+			return 0;
+		}
+		int n = nums.length;
+		int count = 0;
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(nums[n - 1]);
+		for (int i = n - 2; i >= 0; i--) {
+			// 二分查找
+			int l = 0, r = list.size() - 1;
+			int v = nums[i];
+			// 找到v应该放入的下标
+			while (l < r) {
+				int mid = (l + r) / 2;
+				if (list.get(mid) > v) {
+					r = mid;
+				}
+				if (list.get(mid) < v) {
+					l = mid + 1;
+				}
+				if (list.get(mid) == v) {
+					l = mid;
+					break;
+				}
+			}
+			if (v == list.get(l)) {
+				while (l >= 0 && v <= list.get(l)) {
+					l--;
+				}
+				if (l >= 0 && v > list.get(l)) {
+					count += l + 1;
+				}
+				l = l < 0 ? 0 : l;
+				list.add(l + 1, v);
+			} else if (v > list.get(l)) {
+				count += l + 1;
+				list.add(l + 1, v);
+			} else if (v < list.get(l)) {
+				count += l;
+				list.add(l, v);
+			}
+
+		}
+		return count;
+	}
+
+	// https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/solution/java-gui-bing-pai-xu-zui-hao-li-jie-de-b-7gnx/
+	class Solution38 {
+		public int reversePairs(int[] nums) {
+			return mergeSortPlus(nums, 0, nums.length - 1);
+		}
+
+		int mergeSortPlus(int[] arr, int arrStart, int arrEnd) {
+			if (arrStart >= arrEnd)
+				return 0;// 递归结束条件
+
+			int arrMid = arrStart + ((arrEnd - arrStart) >> 1);// 左右数组分裂的中间界点位置
+
+			// 左右分别进行递归并统计逆序对数
+			int count = mergeSortPlus(arr, arrStart, arrMid) + mergeSortPlus(arr, arrMid + 1, arrEnd);
+
+			int[] tempArr = new int[arrEnd - arrStart + 1];// 新建一个该层次的临时数组用于左右数组排序后的合并
+			int i = arrStart;// 左边数组的移动指针
+			int j = arrMid + 1;// 右边数组的移动指针
+			int k = 0;// 临时数组tempArr的移动指针
+
+			while (i <= arrMid && j <= arrEnd) {// 左右两数组都还剩有数字未排序时
+				if (arr[i] > arr[j]) { // 如果左边大于右边,构成逆序对
+					/* 核心代码 */
+					// 左数组i位置及其后的数值均比右数值j位置大，故累加上i位置及其后的数值的长度
+					count += arrMid - i + 1;
+					/* 核心代码 */
+					tempArr[k++] = arr[j++]; // 右数组移动到tempArr中
+				} else { // 如果左小于等于右，不构成逆序对
+					tempArr[k++] = arr[i++]; // 左数组移动到tempArr中
+				}
+			}
+			// 左右两数组有一边已经移动完毕，剩下另一边可进行快速移动
+			while (i <= arrMid) // 右边数组已全部被对比过且移动完成，将剩下的左边数组快速移入tempArr中
+				tempArr[k++] = arr[i++];
+
+			while (j <= arrEnd) // 左边数组已全部被对比过且移动完成，将剩下的右边数组快速移入tempArr中
+				tempArr[k++] = arr[j++];
+
+			// 将tempArr中的数还原回原arr中，需加上arrStart确保在原arr上位置正确
+			for (int a = 0; a < tempArr.length; a++)
+				arr[a + arrStart] = tempArr[a];
+
+			return count;
+		}
+	}
 }
