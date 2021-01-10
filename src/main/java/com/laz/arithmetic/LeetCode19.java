@@ -53,7 +53,7 @@ public class LeetCode19 {
 	@Test
 	public void test2() {
 		Assert.assertEquals(2, new Solution2().findCircleNum(new int[][] { { 1, 1, 0 }, { 1, 1, 0 }, { 0, 0, 1 } }));
-		Assert.assertEquals(3, new Solution2().findCircleNum(new int[][] { { 1,0,0 }, { 0,1,0	 }, { 0,0,1 } }));
+		Assert.assertEquals(3, new Solution2().findCircleNum(new int[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }));
 	}
 
 	class Solution2 {
@@ -86,11 +86,11 @@ public class LeetCode19 {
 			public void unionElements(int firstElement, int secondElement) {
 				int firstRoot = find(firstElement);
 				int secondRoot = find(secondElement);
-				//如果已经属于同一个集合了，就不用再合并了。
-		        if (firstRoot == secondRoot) {
-		            return;
-		        }
-		        
+				// 如果已经属于同一个集合了，就不用再合并了。
+				if (firstRoot == secondRoot) {
+					return;
+				}
+
 				if (height[firstRoot] < height[secondRoot]) {
 					parent[firstRoot] = secondRoot;
 				} else if (height[firstRoot] > height[secondRoot]) {
@@ -102,23 +102,59 @@ public class LeetCode19 {
 			}
 
 		}
+
 		public int findCircleNum(int[][] isConnected) {
 			int n = isConnected.length;
 			UnionFind union = new UnionFind(n);
-			for (int i=0;i<n;i++) {
-				for (int j=0;j<n;j++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
 					if (isConnected[i][j] == 1) {
 						union.unionElements(i, j);
 					}
 				}
 			}
 			int count = 0;
-			for (int i=0;i<union.parent.length;i++) {
+			for (int i = 0; i < union.parent.length; i++) {
 				if (union.parent[i] == i) {
 					count++;
 				}
 			}
 			return count;
 		}
+	}
+
+	// 228. 汇总区间
+	@Test
+	public void test3() {
+		List<String> ret = summaryRanges(new int[] { 0, 1, 2, 4, 5, 7 });
+		System.out.println(Joiner.on(",").join(ret));
+	}
+
+	public List<String> summaryRanges(int[] nums) {
+		List<String> ret = new ArrayList<String>();
+		if (nums.length==0) {
+			return ret;
+		}
+		int start = nums[0];
+		int end = nums[0];
+		for (int i=1;i<nums.length;i++) {
+			if (nums[i]!=end+1) {
+				if (start==end) {
+					ret.add(start+"");
+				} else {
+					ret.add(start+"->"+end);
+				}
+				start = nums[i];
+				end = nums[i];
+			} else {
+				end = nums[i];
+			}
+		}
+		if (start==end) {
+			ret.add(start+"");
+		} else {
+			ret.add(start+"->"+end);
+		}
+		return ret;
 	}
 }
