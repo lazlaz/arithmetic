@@ -1170,4 +1170,29 @@ public class Offer1 {
 			return count;
 		}
 	}
+
+	// 剑指 Offer 56 - II. 数组中数字出现的次数 II
+	@Test
+	public void test39() {
+		Assert.assertEquals(4, singleNumber(new int[] { 3, 4, 3, 3 }));
+		Assert.assertEquals(1, singleNumber(new int[] { 9,1,7,9,7,9,7 }));
+	}
+	//https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/solution/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-ha-xi-bi/ 位运算参考
+	public int singleNumber(int[] nums) {
+		Set<Integer> containSet = new HashSet<Integer>();
+		Set<Integer> noContainSet = new HashSet<Integer>();
+		for (int i=0;i<nums.length;i++) {
+			if (containSet.contains(nums[i])) {
+				noContainSet.add(nums[i]);
+			}
+			containSet.add(nums[i]);
+		}
+		int ret = -1;
+		for (int i=0;i<nums.length;i++) {
+			if (!noContainSet.contains(nums[i])) {
+				return nums[i];
+			}
+		}
+		return ret;
+	}
 }
