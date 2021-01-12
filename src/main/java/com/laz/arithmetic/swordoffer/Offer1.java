@@ -1175,24 +1175,43 @@ public class Offer1 {
 	@Test
 	public void test39() {
 		Assert.assertEquals(4, singleNumber(new int[] { 3, 4, 3, 3 }));
-		Assert.assertEquals(1, singleNumber(new int[] { 9,1,7,9,7,9,7 }));
+		Assert.assertEquals(1, singleNumber(new int[] { 9, 1, 7, 9, 7, 9, 7 }));
 	}
-	//https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/solution/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-ha-xi-bi/ 位运算参考
+
+	// https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/solution/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-ha-xi-bi/
+	// 位运算参考
 	public int singleNumber(int[] nums) {
 		Set<Integer> containSet = new HashSet<Integer>();
 		Set<Integer> noContainSet = new HashSet<Integer>();
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			if (containSet.contains(nums[i])) {
 				noContainSet.add(nums[i]);
 			}
 			containSet.add(nums[i]);
 		}
 		int ret = -1;
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			if (!noContainSet.contains(nums[i])) {
 				return nums[i];
 			}
 		}
 		return ret;
+	}
+
+	// 剑指 Offer 57. 和为s的两个数字
+	@Test
+	public void test40() {
+		Assert.assertArrayEquals(new int[] { 7,2 }, twoSum(new int[] { 2, 7, 11, 15 }, 9));
+	}
+
+	public int[] twoSum(int[] nums, int target) {
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		for (int i=0;i<nums.length;i++) {
+			map.put(nums[i], -1);
+			if (target-nums[i]!=nums[i]&&map.get(target-nums[i])!=null) {
+				return new int[] {nums[i],target-nums[i]};
+			}
+		}
+		return null;
 	}
 }

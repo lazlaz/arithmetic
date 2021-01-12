@@ -1,5 +1,10 @@
 package com.laz.arithmetic.competition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +44,7 @@ public class Competition17 {
 //			Utils.printListNode(node);
 		}
 		{
-			ListNode node = swapNodes(Utils.createListNode(new Integer[] {100,90}), 2);
+			ListNode node = swapNodes(Utils.createListNode(new Integer[] { 100, 90 }), 2);
 			Utils.printListNode(node);
 		}
 	}
@@ -49,8 +54,8 @@ public class Competition17 {
 		virtual.next = head;
 		ListNode kNodePre = virtual;
 		int count = 1;
-		while (head!=null && k!=1) {
-			if (count==k-1) {
+		while (head != null && k != 1) {
+			if (count == k - 1) {
 				kNodePre = head;
 				head = head.next;
 				break;
@@ -59,28 +64,28 @@ public class Competition17 {
 			count++;
 		}
 		ListNode inverseKNodePre = virtual;
-		while (head!=null) {
+		while (head != null) {
 			head = head.next;
-			if (head!=null) {
+			if (head != null) {
 				inverseKNodePre = inverseKNodePre.next;
 			}
 		}
-		//swap k inverseK
+		// swap k inverseK
 		ListNode kNode = kNodePre.next;
 		ListNode inverseKNode = inverseKNodePre.next;
 		ListNode inverseKNodePost = inverseKNode.next;
 		ListNode kNodePost = kNode.next;
-		if (inverseKNodePre==kNode) {
-			//说明两个值挨在一起
+		if (inverseKNodePre == kNode) {
+			// 说明两个值挨在一起
 			kNodePre.next = inverseKNode;
 			inverseKNode.next = kNode;
 			kNode.next = inverseKNodePost;
-		} else if (  inverseKNodePost==kNode) {
-			//说明两个值挨在一起,后面的在前面
+		} else if (inverseKNodePost == kNode) {
+			// 说明两个值挨在一起,后面的在前面
 			inverseKNodePre.next = kNode;
 			kNode.next = inverseKNode;
 			inverseKNode.next = kNodePost;
-		}else {
+		} else {
 			kNodePre.next = inverseKNode;
 			inverseKNode.next = kNode.next;
 			kNode.next = inverseKNodePost;
@@ -88,4 +93,98 @@ public class Competition17 {
 		}
 		return virtual.next;
 	}
+
+	// 1722. 执行交换操作后的最小汉明距离
+	@Test
+	public void test3() {
+//		Assert.assertEquals(1, new Solution3().minimumHammingDistance(new int[] { 1, 2, 3, 4 }, new int[] { 2, 1, 4, 5 },
+//				new int[][] { { 0, 1 }, { 2, 3 } }));
+		Assert.assertEquals(1, new Solution3().minimumHammingDistance(new int[] { 2,3,1 }, new int[] { 1,2,2 },
+				new int[][] { { 0, 2 }, { 1,2 } }));
+	}
+
+	class Solution3 {
+		public int minimumHammingDistance(int[] source, int[] target, int[][] allowedSwaps) {
+			// 第 1 步：将任意交换的结点对输入并查集
+			int len = source.length;
+			UnionFind unionFind = new UnionFind(len);
+			for (int[] allowedSwap : allowedSwaps) {
+				int index1 = allowedSwap[0];
+				int index2 = allowedSwap[1];
+				unionFind.union(index1, index2);
+			}
+			// 第 2 步：构建映射关系
+			Map<Integer, Map<Integer,Integer>> hashMap = new HashMap<>(len);
+			for (int i = 0; i < source.length; i++) {
+				int root = unionFind.find(i);
+				if (hashMap.containsKey(root)) {
+					int v = hashMap.get(root).getOrDefault(source[i],0);
+					hashMap.get(root).put(source[i],(v+1));
+				} else {
+					Map<Integer,Integer> map = new HashMap<>();
+					map.put(source[i],1);
+					hashMap.put(root, map);
+				}
+			}
+			int count = 0;
+			for (int i = 0; i < target.length; i++) {
+				int root = unionFind.find(i);
+				Map<Integer,Integer> map = hashMap.get(root);
+				if (!map.containsKey(target[i]) || map.get(target[i]) == 0) {
+					count++;
+				} else {
+					//移除值，防止有重复的
+					int v = hashMap.get(root).get(target[i]);
+					hashMap.get(root).put(target[i],(v-1));
+				}
+			}
+			return count;
+		}
+
+		private class UnionFind {
+
+			private int[] parent;
+			/**
+			 * 以 i 为根结点的子树的高度（引入了路径压缩以后该定义并不准确）
+			 */
+			private int[] rank;
+
+			public UnionFind(int n) {
+				this.parent = new int[n];
+				this.rank = new int[n];
+				for (int i = 0; i < n; i++) {
+					this.parent[i] = i;
+					this.rank[i] = 1;
+				}
+			}
+
+			public void union(int x, int y) {
+				int rootX = find(x);
+				int rootY = find(y);
+				if (rootX == rootY) {
+					return;
+				}
+
+				if (rank[rootX] == rank[rootY]) {
+					parent[rootX] = rootY;
+					// 此时以 rootY 为根结点的树的高度仅加了 1
+					rank[rootY]++;
+				} else if (rank[rootX] < rank[rootY]) {
+					parent[rootX] = rootY;
+					// 此时以 rootY 为根结点的树的高度不变
+				} else {
+					// 同理，此时以 rootX 为根结点的树的高度不变
+					parent[rootY] = rootX;
+				}
+			}
+
+			public int find(int x) {
+				if (x != parent[x]) {
+					parent[x] = find(parent[x]);
+				}
+				return parent[x];
+			}
+		}
+	}
+
 }
