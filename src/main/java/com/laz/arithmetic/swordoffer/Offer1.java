@@ -1201,17 +1201,55 @@ public class Offer1 {
 	// 剑指 Offer 57. 和为s的两个数字
 	@Test
 	public void test40() {
-		Assert.assertArrayEquals(new int[] { 7,2 }, twoSum(new int[] { 2, 7, 11, 15 }, 9));
+		Assert.assertArrayEquals(new int[] { 7, 2 }, twoSum(new int[] { 2, 7, 11, 15 }, 9));
 	}
 
 	public int[] twoSum(int[] nums, int target) {
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-		for (int i=0;i<nums.length;i++) {
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums.length; i++) {
 			map.put(nums[i], -1);
-			if (target-nums[i]!=nums[i]&&map.get(target-nums[i])!=null) {
-				return new int[] {nums[i],target-nums[i]};
+			if (target - nums[i] != nums[i] && map.get(target - nums[i]) != null) {
+				return new int[] { nums[i], target - nums[i] };
 			}
 		}
 		return null;
+	}
+
+	// 剑指 Offer 57 - II. 和为s的连续正数序列
+	@Test
+	public void test41() {
+		Assert.assertArrayEquals(new int[][] { { 2, 3, 4 }, { 4, 5 } }, findContinuousSequence(9));
+	}
+	//https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/solution/shi-yao-shi-hua-dong-chuang-kou-yi-ji-ru-he-yong-h/
+	public int[][] findContinuousSequence(int target) {
+		int i = 1; // 滑动窗口的左边界
+	    int j = 1; // 滑动窗口的右边界
+	    int sum = 0; // 滑动窗口中数字的和
+	    List<int[]> res = new ArrayList<>();
+
+	    while (i <= target / 2) {
+	        if (sum < target) {
+	            // 右边界向右移动
+	            sum += j;
+	            j++;
+	        } else if (sum > target) {
+	            // 左边界向右移动
+	            sum -= i;
+	            i++;
+	        } else {
+	            // 记录结果
+	            int[] arr = new int[j-i];
+	            for (int k = i; k < j; k++) {
+	                arr[k-i] = k;
+	            }
+	            res.add(arr);
+	            // 左边界向右移动
+	            sum -= i;
+	            i++;
+	        }
+	    }
+
+	    return res.toArray(new int[res.size()][]);
+
 	}
 }
