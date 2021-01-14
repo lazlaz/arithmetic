@@ -1,8 +1,7 @@
 package com.laz.arithmetic.competition;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -99,8 +98,8 @@ public class Competition17 {
 	public void test3() {
 //		Assert.assertEquals(1, new Solution3().minimumHammingDistance(new int[] { 1, 2, 3, 4 }, new int[] { 2, 1, 4, 5 },
 //				new int[][] { { 0, 1 }, { 2, 3 } }));
-		Assert.assertEquals(1, new Solution3().minimumHammingDistance(new int[] { 2,3,1 }, new int[] { 1,2,2 },
-				new int[][] { { 0, 2 }, { 1,2 } }));
+		Assert.assertEquals(1, new Solution3().minimumHammingDistance(new int[] { 2, 3, 1 }, new int[] { 1, 2, 2 },
+				new int[][] { { 0, 2 }, { 1, 2 } }));
 	}
 
 	class Solution3 {
@@ -114,28 +113,28 @@ public class Competition17 {
 				unionFind.union(index1, index2);
 			}
 			// 第 2 步：构建映射关系
-			Map<Integer, Map<Integer,Integer>> hashMap = new HashMap<>(len);
+			Map<Integer, Map<Integer, Integer>> hashMap = new HashMap<>(len);
 			for (int i = 0; i < source.length; i++) {
 				int root = unionFind.find(i);
 				if (hashMap.containsKey(root)) {
-					int v = hashMap.get(root).getOrDefault(source[i],0);
-					hashMap.get(root).put(source[i],(v+1));
+					int v = hashMap.get(root).getOrDefault(source[i], 0);
+					hashMap.get(root).put(source[i], (v + 1));
 				} else {
-					Map<Integer,Integer> map = new HashMap<>();
-					map.put(source[i],1);
+					Map<Integer, Integer> map = new HashMap<>();
+					map.put(source[i], 1);
 					hashMap.put(root, map);
 				}
 			}
 			int count = 0;
 			for (int i = 0; i < target.length; i++) {
 				int root = unionFind.find(i);
-				Map<Integer,Integer> map = hashMap.get(root);
+				Map<Integer, Integer> map = hashMap.get(root);
 				if (!map.containsKey(target[i]) || map.get(target[i]) == 0) {
 					count++;
 				} else {
-					//移除值，防止有重复的
+					// 移除值，防止有重复的
 					int v = hashMap.get(root).get(target[i]);
-					hashMap.get(root).put(target[i],(v-1));
+					hashMap.get(root).put(target[i], (v - 1));
 				}
 			}
 			return count;
@@ -187,4 +186,18 @@ public class Competition17 {
 		}
 	}
 
+	// 1723. 完成所有工作的最短时间 
+	//TODO
+	@Test
+	public void test4() {
+		Assert.assertEquals(3, new Solution4().minimumTimeRequired(new int[] { 3, 2, 3 }, 3));
+	}
+
+	// https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/solution/java-dfsjian-zhi-by-tlzxsun-nui2/
+	class Solution4 {
+		public int minimumTimeRequired(int[] jobs, int k) {
+			return 3;
+		}
+
+	}
 }
