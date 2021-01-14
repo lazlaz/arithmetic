@@ -481,4 +481,22 @@ public class LeetCode19 {
 			visited[node] = 2;
 		}
 	}
+
+	// 1018. 可被 5 整除的二进制前缀
+	@Test
+	public void test7() {
+		Assert.assertEquals(Arrays.asList(true,false,false), prefixesDivBy5(new int[] { 0, 1, 1 }));
+	}
+
+	// https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/solution/ke-bei-5-zheng-chu-de-er-jin-zhi-qian-zh-asih/
+	public List<Boolean> prefixesDivBy5(int[] A) {
+		List<Boolean> list = new ArrayList<Boolean>();
+		int prefix = 0;
+		int length = A.length;
+		for (int i = 0; i < length; i++) {
+			prefix = ((prefix << 1) + A[i]) % 5;
+			list.add(prefix == 0);
+		}
+		return list;
+	}
 }
