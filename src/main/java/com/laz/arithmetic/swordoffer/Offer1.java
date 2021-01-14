@@ -1252,4 +1252,41 @@ public class Offer1 {
 	    return res.toArray(new int[res.size()][]);
 
 	}
+	
+	//剑指 Offer 58 - I. 翻转单词顺序
+	@Test
+	public void test42() {
+	//	Assert.assertEquals("blue is sky the", reverseWords("the sky is blue"));
+		Assert.assertEquals("world! hello", reverseWords("  hello world!  "));
+		Assert.assertEquals("example good a", reverseWords("a good   example"));
+		Assert.assertEquals("Alice Loves Bob", reverseWords("  Bob    Loves  Alice   "));
+		Assert.assertEquals("bob like even not does Alice", reverseWords("Alice does not even like bob"));
+	}
+	public String reverseWords(String s) {
+		List<String> list = new ArrayList<String>();
+		StringBuilder sb  = new StringBuilder();
+		for (int i=0;i<s.length();i++) {
+			char c = s.charAt(i);
+			if (c != ' ') {
+				sb.append(c);
+			} else {
+				if (sb.length()!=0) {
+					list.add(sb.toString());
+					sb.delete(0, sb.length());
+				}
+			}
+		}
+		if (sb.length()!=0) {
+			list.add(sb.toString());
+		}
+		StringBuilder res  = new StringBuilder();
+		for (int i=list.size()-1;i>=0;i--) {
+			res.append(list.get(i));
+			if (i>0) {
+				res.append(" ");
+			}
+		}
+		return res.toString();
+    }
+	
 }
