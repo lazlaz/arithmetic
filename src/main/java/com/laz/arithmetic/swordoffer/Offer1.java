@@ -1220,73 +1220,91 @@ public class Offer1 {
 	public void test41() {
 		Assert.assertArrayEquals(new int[][] { { 2, 3, 4 }, { 4, 5 } }, findContinuousSequence(9));
 	}
-	//https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/solution/shi-yao-shi-hua-dong-chuang-kou-yi-ji-ru-he-yong-h/
+
+	// https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/solution/shi-yao-shi-hua-dong-chuang-kou-yi-ji-ru-he-yong-h/
 	public int[][] findContinuousSequence(int target) {
 		int i = 1; // 滑动窗口的左边界
-	    int j = 1; // 滑动窗口的右边界
-	    int sum = 0; // 滑动窗口中数字的和
-	    List<int[]> res = new ArrayList<>();
+		int j = 1; // 滑动窗口的右边界
+		int sum = 0; // 滑动窗口中数字的和
+		List<int[]> res = new ArrayList<>();
 
-	    while (i <= target / 2) {
-	        if (sum < target) {
-	            // 右边界向右移动
-	            sum += j;
-	            j++;
-	        } else if (sum > target) {
-	            // 左边界向右移动
-	            sum -= i;
-	            i++;
-	        } else {
-	            // 记录结果
-	            int[] arr = new int[j-i];
-	            for (int k = i; k < j; k++) {
-	                arr[k-i] = k;
-	            }
-	            res.add(arr);
-	            // 左边界向右移动
-	            sum -= i;
-	            i++;
-	        }
-	    }
+		while (i <= target / 2) {
+			if (sum < target) {
+				// 右边界向右移动
+				sum += j;
+				j++;
+			} else if (sum > target) {
+				// 左边界向右移动
+				sum -= i;
+				i++;
+			} else {
+				// 记录结果
+				int[] arr = new int[j - i];
+				for (int k = i; k < j; k++) {
+					arr[k - i] = k;
+				}
+				res.add(arr);
+				// 左边界向右移动
+				sum -= i;
+				i++;
+			}
+		}
 
-	    return res.toArray(new int[res.size()][]);
+		return res.toArray(new int[res.size()][]);
 
 	}
-	
-	//剑指 Offer 58 - I. 翻转单词顺序
+
+	// 剑指 Offer 58 - I. 翻转单词顺序
 	@Test
 	public void test42() {
-	//	Assert.assertEquals("blue is sky the", reverseWords("the sky is blue"));
+		// Assert.assertEquals("blue is sky the", reverseWords("the sky is blue"));
 		Assert.assertEquals("world! hello", reverseWords("  hello world!  "));
 		Assert.assertEquals("example good a", reverseWords("a good   example"));
 		Assert.assertEquals("Alice Loves Bob", reverseWords("  Bob    Loves  Alice   "));
 		Assert.assertEquals("bob like even not does Alice", reverseWords("Alice does not even like bob"));
 	}
+
 	public String reverseWords(String s) {
 		List<String> list = new ArrayList<String>();
-		StringBuilder sb  = new StringBuilder();
-		for (int i=0;i<s.length();i++) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			if (c != ' ') {
 				sb.append(c);
 			} else {
-				if (sb.length()!=0) {
+				if (sb.length() != 0) {
 					list.add(sb.toString());
 					sb.delete(0, sb.length());
 				}
 			}
 		}
-		if (sb.length()!=0) {
+		if (sb.length() != 0) {
 			list.add(sb.toString());
 		}
-		StringBuilder res  = new StringBuilder();
-		for (int i=list.size()-1;i>=0;i--) {
+		StringBuilder res = new StringBuilder();
+		for (int i = list.size() - 1; i >= 0; i--) {
 			res.append(list.get(i));
-			if (i>0) {
+			if (i > 0) {
 				res.append(" ");
 			}
 		}
 		return res.toString();
-    }
-	
+	}
+
+	// 剑指 Offer 58 - II. 左旋转字符串
+	@Test
+	public void test43() {
+		Assert.assertEquals("cdefgab", reverseLeftWords("abcdefg",2));
+	}
+
+	public String reverseLeftWords(String s, int n) {
+		StringBuilder sb = new StringBuilder();
+		for (int i=n;i<s.length();i++) {
+				sb.append(s.charAt(i));
+		}
+		for (int i=0;i<n;i++) {
+			sb.append(s.charAt(i));
+		}
+		return sb.toString();
+	}
 }
