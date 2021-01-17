@@ -1307,4 +1307,66 @@ public class Offer1 {
 		}
 		return sb.toString();
 	}
+	
+	//剑指 Offer 59 - II. 队列的最大值
+	@Test
+	public void test44() {
+		{
+//			MaxQueue queue = new MaxQueue();
+//			queue.push_back(1); 
+//			queue.push_back(2); 
+//			Assert.assertEquals(2, queue.max_value());
+//			Assert.assertEquals(1, queue.pop_front());
+//			Assert.assertEquals(2, queue.max_value());
+		}
+		{
+			MaxQueue queue = new MaxQueue();
+			queue.push_back(4); 
+			queue.push_back(2); 
+			queue.push_back(0); 
+			queue.push_back(3); 
+			Assert.assertEquals(4, queue.max_value());
+			queue.pop_front();
+			Assert.assertEquals(3, queue.max_value());
+			queue.pop_front();
+			Assert.assertEquals(3, queue.max_value());
+			queue.pop_front();
+			Assert.assertEquals(3, queue.max_value());
+		}
+	}
+	class MaxQueue {
+		LinkedList<Integer> max = new LinkedList<Integer>();
+		LinkedList<Integer> queue = new LinkedList<Integer>();
+		
+	    public MaxQueue() {
+
+	    }
+	    
+	    public int max_value() {
+	    	return max.isEmpty()?-1:max.peek();
+	    }
+	    
+	    public void push_back(int value) {
+	    	queue.offer(value);
+	    	if (max.isEmpty()) {
+	    		max.addFirst(value);
+	    	} else {
+	    		while (!max.isEmpty() && max.peekLast()<value) {
+	    			max.pollLast();
+	    		}
+	    		max.addLast(value);
+	    	}
+	    }
+	    
+	    public int pop_front() {
+	    	if (queue.isEmpty()) {
+	    		return -1;
+	    	}
+	    	int v= queue.pop();
+	    	if (max.peek()==v) {
+	    		max.pollFirst();
+	    	}
+	    	return v;
+	    }
+	}
 }
