@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -581,4 +582,102 @@ public class LeetCode19 {
 		return true;
 
 	}
+	
+	//721. 账户合并
+	@Test
+	public void test10() {
+		{
+//			List<List<String>> accounts = new ArrayList<>();
+//			accounts.add(Arrays.asList("John", "johnsmith@mail.com", "john00@mail.com"));
+//			accounts.add(Arrays.asList("John", "johnnybravo@mail.com"));
+//			accounts.add(Arrays.asList("John", "johnsmith@mail.com", "john_newyork@mail.com"));
+//			accounts.add(Arrays.asList("Mary", "mary@mail.com"));
+//			List<List<String>> res = new Solution10().accountsMerge(accounts);
+//			for (List<String> list : res) {
+//				System.out.println(Joiner.on(" ").join(list));
+//			}
+		}
+		{
+			List<List<String>> accounts = new ArrayList<>();
+			accounts.add(Arrays.asList("David", "David0@m.com", "David1@m.com"));
+			accounts.add(Arrays.asList("David", "David3@m.com", "David4@m.com"));
+			accounts.add(Arrays.asList("David", "David4@m.com", "David5@m.com"));
+			accounts.add(Arrays.asList("David", "David2@m.com", "David3@m.com"));
+			accounts.add(Arrays.asList("David", "David1@m.com", "David2@m.com"));
+			List<List<String>> res = new Solution10().accountsMerge(accounts);
+			for (List<String> list : res) {
+				System.out.println(Joiner.on(" ").join(list));
+			}
+		}
+	}
+
+	// https://leetcode-cn.com/problems/accounts-merge/solution/tu-jie-yi-ran-shi-bing-cha-ji-by-yexiso-5ncf/
+	class Solution10 {
+		public List<List<String>> accountsMerge(List<List<String>> accounts) {
+			// 作用：存储每个邮箱属于哪个账户 ，同时 在遍历邮箱时，判断邮箱是否出现过[去重]
+			// 格式：<邮箱，账户id>
+			Map<String, Integer> emailToId = new HashMap<>();
+			int n = accounts.size();// id个数
+			UnionFind myUnion = new UnionFind(n);
+			for (int i = 0; i < n; i++) {
+				int num = accounts.get(i).size();
+				for (int j = 1; j < num; j++) {
+					String curEmail = accounts.get(i).get(j);
+					// 当前邮箱没有出现过
+					if (!emailToId.containsKey(curEmail)) {
+						emailToId.put(curEmail, i);
+					} else {// 当前邮箱已经出现过，那么代表这两个用户是同一个
+						myUnion.union(i, emailToId.get(curEmail));
+					}
+				}
+			}
+			// 进行完上面的步骤，同一个用户的所有邮箱已经属于同一个连通域了，但是就算在同一个连通域，不同的邮箱还是可能会对应不同的id
+			// 作用： 存储每个账户下的邮箱
+			// 格式： <账户id, 邮箱列表> >
+			// 注意：这里的key必须是账户id，不能是账户名称，名称可能相同，会造成覆盖
+			Map<Integer, List<String>> idToEmails = new HashMap<>();
+			// 将同一个连通域内的
+			for (Map.Entry<String, Integer> entry : emailToId.entrySet()) {
+				int id = myUnion.find(entry.getValue());
+				List<String> emails = idToEmails.getOrDefault(id, new ArrayList<>());
+				emails.add(entry.getKey());
+				idToEmails.put(id, emails);
+			}
+			// 经过上面的步骤，已经做到了id和邮箱集合对应起来，接下来把用户名对应起来就可以了
+			List<List<String>> res = new ArrayList<>();
+			for (Map.Entry<Integer, List<String>> entry : idToEmails.entrySet()) {
+				List<String> emails = entry.getValue();
+				Collections.sort(emails);
+				List<String> tmp = new ArrayList<>();
+				tmp.add(accounts.get(entry.getKey()).get(0));// 先添加用户名
+				tmp.addAll(emails);
+				res.add(tmp);
+			}
+			return res;
+		}
+
+		class UnionFind {
+			int[] parent;
+
+			public UnionFind(int n) {
+				parent = new int[n];
+				for (int i = 0; i < n; i++) {
+					parent[i] = i;
+				}
+			}
+
+			public void union(int index1, int index2) {
+				parent[find(index2)] = find(index1);
+			}
+
+			public int find(int index) {
+				if (parent[index] != index) {
+					parent[index] = find(parent[index]);
+				}
+				return parent[index];
+			}
+
+		}
+	}
+
 }
