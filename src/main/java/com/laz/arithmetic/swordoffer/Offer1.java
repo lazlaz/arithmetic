@@ -1294,21 +1294,21 @@ public class Offer1 {
 	// 剑指 Offer 58 - II. 左旋转字符串
 	@Test
 	public void test43() {
-		Assert.assertEquals("cdefgab", reverseLeftWords("abcdefg",2));
+		Assert.assertEquals("cdefgab", reverseLeftWords("abcdefg", 2));
 	}
 
 	public String reverseLeftWords(String s, int n) {
 		StringBuilder sb = new StringBuilder();
-		for (int i=n;i<s.length();i++) {
-				sb.append(s.charAt(i));
+		for (int i = n; i < s.length(); i++) {
+			sb.append(s.charAt(i));
 		}
-		for (int i=0;i<n;i++) {
+		for (int i = 0; i < n; i++) {
 			sb.append(s.charAt(i));
 		}
 		return sb.toString();
 	}
-	
-	//剑指 Offer 59 - II. 队列的最大值
+
+	// 剑指 Offer 59 - II. 队列的最大值
 	@Test
 	public void test44() {
 		{
@@ -1321,10 +1321,10 @@ public class Offer1 {
 		}
 		{
 			MaxQueue queue = new MaxQueue();
-			queue.push_back(4); 
-			queue.push_back(2); 
-			queue.push_back(0); 
-			queue.push_back(3); 
+			queue.push_back(4);
+			queue.push_back(2);
+			queue.push_back(0);
+			queue.push_back(3);
 			Assert.assertEquals(4, queue.max_value());
 			queue.pop_front();
 			Assert.assertEquals(3, queue.max_value());
@@ -1334,39 +1334,85 @@ public class Offer1 {
 			Assert.assertEquals(3, queue.max_value());
 		}
 	}
+
 	class MaxQueue {
 		LinkedList<Integer> max = new LinkedList<Integer>();
 		LinkedList<Integer> queue = new LinkedList<Integer>();
-		
-	    public MaxQueue() {
 
-	    }
-	    
-	    public int max_value() {
-	    	return max.isEmpty()?-1:max.peek();
-	    }
-	    
-	    public void push_back(int value) {
-	    	queue.offer(value);
-	    	if (max.isEmpty()) {
-	    		max.addFirst(value);
-	    	} else {
-	    		while (!max.isEmpty() && max.peekLast()<value) {
-	    			max.pollLast();
-	    		}
-	    		max.addLast(value);
-	    	}
-	    }
-	    
-	    public int pop_front() {
-	    	if (queue.isEmpty()) {
-	    		return -1;
-	    	}
-	    	int v= queue.pop();
-	    	if (max.peek()==v) {
-	    		max.pollFirst();
-	    	}
-	    	return v;
-	    }
+		public MaxQueue() {
+
+		}
+
+		public int max_value() {
+			return max.isEmpty() ? -1 : max.peek();
+		}
+
+		public void push_back(int value) {
+			queue.offer(value);
+			if (max.isEmpty()) {
+				max.addFirst(value);
+			} else {
+				while (!max.isEmpty() && max.peekLast() < value) {
+					max.pollLast();
+				}
+				max.addLast(value);
+			}
+		}
+
+		public int pop_front() {
+			if (queue.isEmpty()) {
+				return -1;
+			}
+			int v = queue.pop();
+			if (max.peek() == v) {
+				max.pollFirst();
+			}
+			return v;
+		}
+	}
+
+	// 剑指 Offer 61. 扑克牌中的顺子
+	@Test
+	public void test45() {
+//		Assert.assertEquals(true, isStraight(new int[] { 1, 2, 3, 4, 5 }));
+//		Assert.assertEquals(true, isStraight(new int[] { 0, 0, 1, 2, 5 }));
+//		Assert.assertEquals(true, isStraight(new int[] { 0, 0, 8, 5, 4 }));
+//		Assert.assertEquals(false, isStraight(new int[] { 8,2,9,7,10 }));
+//		Assert.assertEquals(false, isStraight(new int[] { 0,0,2,2,5 }));
+//		Assert.assertEquals(false, isStraight(new int[] { 1,2,12,0,3 }));
+		Assert.assertEquals(true, isStraight(new int[] { 11,0,9,0,0 }));
+	}
+
+	public boolean isStraight(int[] nums) {
+		Arrays.sort(nums);
+		int start = -1;
+		int zeroCount = 0;
+		int index = 0;
+		for (int i=0;i<nums.length;i++) {
+			if (nums[i] == 0) {
+				zeroCount++;
+			} else {
+				index = i;
+				break;
+			}
+		}
+		int count = 1;
+		start = nums[index];
+		while (count<5 && index<nums.length-1) {
+			int num = nums[index+1];
+			if (num!=start+1) {
+				if (zeroCount<=0) {
+					return false;
+				}
+				zeroCount--;
+				
+			} else {
+				index++;
+			}
+			count++;
+			start++;
+		}
+		return true;
+		
 	}
 }
