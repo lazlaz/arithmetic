@@ -485,7 +485,7 @@ public class LeetCode19 {
 	// 1018. 可被 5 整除的二进制前缀
 	@Test
 	public void test7() {
-		Assert.assertEquals(Arrays.asList(true,false,false), prefixesDivBy5(new int[] { 0, 1, 1 }));
+		Assert.assertEquals(Arrays.asList(true, false, false), prefixesDivBy5(new int[] { 0, 1, 1 }));
 	}
 
 	// https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/solution/ke-bei-5-zheng-chu-de-er-jin-zhi-qian-zh-asih/
@@ -499,59 +499,86 @@ public class LeetCode19 {
 		}
 		return list;
 	}
-	//947. 移除最多的同行或同列石头
+
+	// 947. 移除最多的同行或同列石头
 	@Test
 	public void test8() {
-		Assert.assertEquals(5, new Solution8().removeStones(new int[][] {
-			{0,0},{0,1},{1,0},{1,2},{2,1},{2,2}
-		}));
-		
-		Assert.assertEquals(0, new Solution8().removeStones(new int[][] {
-			{0,0},{1,1}
-		}));
+		Assert.assertEquals(5, new Solution8()
+				.removeStones(new int[][] { { 0, 0 }, { 0, 1 }, { 1, 0 }, { 1, 2 }, { 2, 1 }, { 2, 2 } }));
+
+		Assert.assertEquals(0, new Solution8().removeStones(new int[][] { { 0, 0 }, { 1, 1 } }));
 	}
-	//https://leetcode-cn.com/problems/most-stones-removed-with-same-row-or-column/solution/947-yi-chu-zui-duo-de-tong-xing-huo-tong-ezha/
-	class Solution8{
+
+	// https://leetcode-cn.com/problems/most-stones-removed-with-same-row-or-column/solution/947-yi-chu-zui-duo-de-tong-xing-huo-tong-ezha/
+	class Solution8 {
 		public int removeStones(int[][] stones) {
 			UnionFind unionFind = new UnionFind();
-	        for (int[] stone : stones) {
-	            unionFind.union(stone[0] + 10001, stone[1]);
-	        }
-	        return stones.length - unionFind.getCount();
+			for (int[] stone : stones) {
+				unionFind.union(stone[0] + 10001, stone[1]);
+			}
+			return stones.length - unionFind.getCount();
 
 		}
+
 		private class UnionFind {
-			private Map<Integer,Integer> parent;
-			private  int count;
+			private Map<Integer, Integer> parent;
+			private int count;
+
 			public UnionFind() {
 				// TODO Auto-generated constructor stub
-				this.parent = new HashMap<Integer,Integer>();
+				this.parent = new HashMap<Integer, Integer>();
 				this.count = 0;
 			}
+
 			public int getCount() {
 				return count;
 			}
+
 			public int find(int x) {
 				if (!parent.containsKey(x)) {
 					parent.put(x, x);
-					  // 并查集集中新加入一个结点，结点的父亲结点是它自己，所以连通分量的总数 +1
+					// 并查集集中新加入一个结点，结点的父亲结点是它自己，所以连通分量的总数 +1
 					count++;
 				}
-				if (x!=parent.get(x)) {
-					 parent.put(x, find(parent.get(x)));
+				if (x != parent.get(x)) {
+					parent.put(x, find(parent.get(x)));
 				}
 				return parent.get(x);
 			}
-			public void union(int x,int y) {
+
+			public void union(int x, int y) {
 				int rootX = find(x);
 				int rootY = find(y);
 				if (rootX == rootY) {
 					return;
 				}
 				parent.put(rootX, rootY);
-				 // 两个连通分量合并成为一个，连通分量的总数 -1
-	            count--;
+				// 两个连通分量合并成为一个，连通分量的总数 -1
+				count--;
 			}
 		}
+	}
+
+	// 1232. 缀点成线
+	@Test
+	public void test9() {
+//		Assert.assertEquals(true,
+//				checkStraightLine(new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 }, { 5, 6 }, { 6, 7 } }));
+		Assert.assertEquals(true, checkStraightLine(new int[][] { { 0, 0 }, { 0, 1 }, { 0, -1 } }));
+	}
+
+	// https://leetcode-cn.com/problems/check-if-it-is-a-straight-line/solution/san-dian-xiang-chai-zhi-bi-li-chao-99-by-co4x/
+	public boolean checkStraightLine(int[][] coordinates) {
+		// 斜率
+		int n = coordinates.length;
+		for (int i = 1; i + 1 < n; i++) {
+			if ((long) (coordinates[i][0] - coordinates[i - 1][0])
+					* (coordinates[i + 1][1] - coordinates[i][1]) != (long) (coordinates[i][1] - coordinates[i - 1][1])
+							* (coordinates[i + 1][0] - coordinates[i][0])) {
+				return false;
+			}
+		}
+		return true;
+
 	}
 }
