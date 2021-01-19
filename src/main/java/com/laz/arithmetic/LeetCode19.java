@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -582,8 +581,8 @@ public class LeetCode19 {
 		return true;
 
 	}
-	
-	//721. 账户合并
+
+	// 721. 账户合并
 	@Test
 	public void test10() {
 		{
@@ -679,5 +678,6 @@ public class LeetCode19 {
 
 		}
 	}
+
 
 }
