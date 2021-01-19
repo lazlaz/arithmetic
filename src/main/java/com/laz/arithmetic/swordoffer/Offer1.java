@@ -1380,7 +1380,7 @@ public class Offer1 {
 //		Assert.assertEquals(false, isStraight(new int[] { 8,2,9,7,10 }));
 //		Assert.assertEquals(false, isStraight(new int[] { 0,0,2,2,5 }));
 //		Assert.assertEquals(false, isStraight(new int[] { 1,2,12,0,3 }));
-		Assert.assertEquals(true, isStraight(new int[] { 11,0,9,0,0 }));
+		Assert.assertEquals(true, isStraight(new int[] { 11, 0, 9, 0, 0 }));
 	}
 
 	public boolean isStraight(int[] nums) {
@@ -1388,7 +1388,7 @@ public class Offer1 {
 		int start = -1;
 		int zeroCount = 0;
 		int index = 0;
-		for (int i=0;i<nums.length;i++) {
+		for (int i = 0; i < nums.length; i++) {
 			if (nums[i] == 0) {
 				zeroCount++;
 			} else {
@@ -1398,14 +1398,14 @@ public class Offer1 {
 		}
 		int count = 1;
 		start = nums[index];
-		while (count<5 && index<nums.length-1) {
-			int num = nums[index+1];
-			if (num!=start+1) {
-				if (zeroCount<=0) {
+		while (count < 5 && index < nums.length - 1) {
+			int num = nums[index + 1];
+			if (num != start + 1) {
+				if (zeroCount <= 0) {
 					return false;
 				}
 				zeroCount--;
-				
+
 			} else {
 				index++;
 			}
@@ -1413,6 +1413,22 @@ public class Offer1 {
 			start++;
 		}
 		return true;
-		
+
+	}
+
+	// 剑指 Offer 62. 圆圈中最后剩下的数字
+	@Test
+	public void test46() {
+		Assert.assertEquals(3, lastRemaining(5, 3));
+		Assert.assertEquals(2, lastRemaining(10, 17));
+	}
+	//https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/javajie-jue-yue-se-fu-huan-wen-ti-gao-su-ni-wei-sh/
+	public int lastRemaining(int n, int m) {
+		int ans = 0;
+        // 最后一轮剩下2个人，所以从2开始反推
+        for (int i = 2; i <= n; i++) {
+            ans = (ans + m) % i;
+        }
+        return ans;
 	}
 }
