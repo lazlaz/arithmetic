@@ -1,5 +1,6 @@
 package com.laz.arithmetic.swordoffer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1422,13 +1423,51 @@ public class Offer1 {
 		Assert.assertEquals(3, lastRemaining(5, 3));
 		Assert.assertEquals(2, lastRemaining(10, 17));
 	}
-	//https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/javajie-jue-yue-se-fu-huan-wen-ti-gao-su-ni-wei-sh/
+
+	// https://leetcode-cn.com/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solution/javajie-jue-yue-se-fu-huan-wen-ti-gao-su-ni-wei-sh/
 	public int lastRemaining(int n, int m) {
 		int ans = 0;
-        // 最后一轮剩下2个人，所以从2开始反推
-        for (int i = 2; i <= n; i++) {
-            ans = (ans + m) % i;
-        }
-        return ans;
+		// 最后一轮剩下2个人，所以从2开始反推
+		for (int i = 2; i <= n; i++) {
+			ans = (ans + m) % i;
+		}
+		return ans;
+	}
+
+	// 剑指 Offer 60. n个骰子的点数
+	@Test
+	public void test47() {
+		double[] res = dicesProbability(2);
+		for (double d : res) {
+			BigDecimal db = new BigDecimal(d);
+			db = db.setScale(5, BigDecimal.ROUND_HALF_UP);
+			System.out.print(db.doubleValue() + " ");
+		}
+	}
+	//https://leetcode-cn.com/problems/nge-tou-zi-de-dian-shu-lcof/solution/dong-tai-gui-hua-by-shy-14/
+	public double[] dicesProbability(int n) {
+		// 第i次取j的次数
+		int[][] dp = new int[n + 1][6 * n + 1];
+		// 初始化
+		for (int i = 1; i <= 6; i++) {
+			dp[1][i] = 1;
+		}
+		for (int i = 2; i <= n; i++) {
+			for (int j = i; j <= (6 * i); j++) {
+				for (int z = 1; z <= 6; z++) {
+					if (j - z < i - 1) { // 需要是能要到的数，小于i-1的数都无法摇到
+						break;
+					}
+					dp[i][j] += dp[i-1][j - z];
+				}
+			}
+		}
+		// 总共结果数组大小为5*n+1
+		double[] ans = new double[5 * n + 1];
+
+		for (int i = 0; i < ans.length; i++) {
+			ans[i] = dp[n][n + i] / (Math.pow(6, n));
+		}
+		return ans;
 	}
 }
