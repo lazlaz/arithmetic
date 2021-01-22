@@ -678,6 +678,63 @@ public class LeetCode19 {
 
 		}
 	}
-
+	
+	//989. 数组形式的整数加法
+	@Test
+	public void test11() {
+//		Assert.assertEquals("1,2,3,4", Joiner.on(",").join(addToArrayForm(new int[] {
+//				1,2,0,0
+//		},34)));
+//		
+//		Assert.assertEquals("1,0,2,1", Joiner.on(",").join(addToArrayForm(new int[] {
+//				2,1,5
+//		},806)));
+		
+		Assert.assertEquals("4,5,5", Joiner.on(",").join(addToArrayForm(new int[] {
+				2,7,4
+		},181)));
+	}
+	public List<Integer> addToArrayForm(int[] A, int K) {
+		//获取k的长度
+		int kLen = 0;
+		int v = K;
+		while (v!=0) {
+			v=v/10;
+			kLen++;
+		}
+		//转换为数组
+		int[] kArr = new int[kLen];
+		int post = kLen-1;
+		for (int i=0;i<kArr.length;i++) {
+			kArr[i] = K/((int)Math.pow(10, post));
+			K = K%(int)Math.pow(10, post);
+			post--;
+		}
+		int aLen = A.length;
+		LinkedList<Integer> res = new LinkedList<Integer>();
+		int len = kLen>aLen?kLen:aLen;
+		int aIndex = A.length-1;
+		int bIndex = kArr.length-1;
+		int c = 0;//进位
+		while (len>0) {
+			int a = aIndex>=0?A[aIndex]:0;
+			int b = bIndex>=0?kArr[bIndex]:0;
+			int result = a+b+c;
+			if (result>=10) {
+				c = result/10;
+				result=result%10;
+			} else {
+				c=0;
+			}
+			res.addFirst(result);
+			len--;
+			aIndex--;
+			bIndex--;
+		}
+		if (c!=0) {
+			res.addFirst(c);
+		}
+		return res;
+    }
 
 }
