@@ -678,8 +678,8 @@ public class LeetCode19 {
 
 		}
 	}
-	
-	//989. 数组形式的整数加法
+
+	// 989. 数组形式的整数加法
 	@Test
 	public void test11() {
 //		Assert.assertEquals("1,2,3,4", Joiner.on(",").join(addToArrayForm(new int[] {
@@ -689,52 +689,99 @@ public class LeetCode19 {
 //		Assert.assertEquals("1,0,2,1", Joiner.on(",").join(addToArrayForm(new int[] {
 //				2,1,5
 //		},806)));
-		
-		Assert.assertEquals("4,5,5", Joiner.on(",").join(addToArrayForm(new int[] {
-				2,7,4
-		},181)));
+
+		Assert.assertEquals("4,5,5", Joiner.on(",").join(addToArrayForm(new int[] { 2, 7, 4 }, 181)));
 	}
+
 	public List<Integer> addToArrayForm(int[] A, int K) {
-		//获取k的长度
+		// 获取k的长度
 		int kLen = 0;
 		int v = K;
-		while (v!=0) {
-			v=v/10;
+		while (v != 0) {
+			v = v / 10;
 			kLen++;
 		}
-		//转换为数组
+		// 转换为数组
 		int[] kArr = new int[kLen];
-		int post = kLen-1;
-		for (int i=0;i<kArr.length;i++) {
-			kArr[i] = K/((int)Math.pow(10, post));
-			K = K%(int)Math.pow(10, post);
+		int post = kLen - 1;
+		for (int i = 0; i < kArr.length; i++) {
+			kArr[i] = K / ((int) Math.pow(10, post));
+			K = K % (int) Math.pow(10, post);
 			post--;
 		}
 		int aLen = A.length;
 		LinkedList<Integer> res = new LinkedList<Integer>();
-		int len = kLen>aLen?kLen:aLen;
-		int aIndex = A.length-1;
-		int bIndex = kArr.length-1;
-		int c = 0;//进位
-		while (len>0) {
-			int a = aIndex>=0?A[aIndex]:0;
-			int b = bIndex>=0?kArr[bIndex]:0;
-			int result = a+b+c;
-			if (result>=10) {
-				c = result/10;
-				result=result%10;
+		int len = kLen > aLen ? kLen : aLen;
+		int aIndex = A.length - 1;
+		int bIndex = kArr.length - 1;
+		int c = 0;// 进位
+		while (len > 0) {
+			int a = aIndex >= 0 ? A[aIndex] : 0;
+			int b = bIndex >= 0 ? kArr[bIndex] : 0;
+			int result = a + b + c;
+			if (result >= 10) {
+				c = result / 10;
+				result = result % 10;
 			} else {
-				c=0;
+				c = 0;
 			}
 			res.addFirst(result);
 			len--;
 			aIndex--;
 			bIndex--;
 		}
-		if (c!=0) {
+		if (c != 0) {
 			res.addFirst(c);
 		}
 		return res;
-    }
+	}
+
+	// 1319. 连通网络的操作次数
+	@Test
+	public void test12() {
+		Assert.assertEquals(1, new Solution12().makeConnected(4,new int[][] {
+			{0,1},{0,2},{1,2}
+		}));
+		Assert.assertEquals(2, new Solution12().makeConnected(6,new int[][] {
+			{0,1},{0,2},{0,3},{1,2},{1,3}
+		}));
+	}
+	class Solution12 {
+		public int makeConnected(int n, int[][] connections) {
+			//线条数少于n-1
+			if (connections.length<n-1) {
+				return -1;
+			}
+			UnionFind uf = new UnionFind(n);
+			for (int i=0;i<connections.length;i++) {
+				uf.union(connections[i][0], connections[i][1]);
+			}
+			int count = 0;
+			for (int i=0;i<n;i++) {
+				if (uf.find(i) == i) {
+					count++;
+				}
+			}
+			return count-1;
+		}
+		class UnionFind {
+			int[] parent;
+			public UnionFind(int n) {
+				parent = new int[n];
+				for (int i=0;i<n;i++) {
+					parent[i] = i;
+				}
+			}
+			public void union(int x,int y) {
+				parent[find(x)] = find(y);
+			}
+			public int find(int index) {
+				if (parent[index] != index) {
+					parent[index] = find(parent[index]);
+				}
+				return parent[index];
+			}
+		}
+	}
 
 }
