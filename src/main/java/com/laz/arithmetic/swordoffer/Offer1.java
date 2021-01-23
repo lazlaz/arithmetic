@@ -1444,7 +1444,8 @@ public class Offer1 {
 			System.out.print(db.doubleValue() + " ");
 		}
 	}
-	//https://leetcode-cn.com/problems/nge-tou-zi-de-dian-shu-lcof/solution/dong-tai-gui-hua-by-shy-14/
+
+	// https://leetcode-cn.com/problems/nge-tou-zi-de-dian-shu-lcof/solution/dong-tai-gui-hua-by-shy-14/
 	public double[] dicesProbability(int n) {
 		// 第i次取j的次数
 		int[][] dp = new int[n + 1][6 * n + 1];
@@ -1458,7 +1459,7 @@ public class Offer1 {
 					if (j - z < i - 1) { // 需要是能要到的数，小于i-1的数都无法摇到
 						break;
 					}
-					dp[i][j] += dp[i-1][j - z];
+					dp[i][j] += dp[i - 1][j - z];
 				}
 			}
 		}
@@ -1469,5 +1470,26 @@ public class Offer1 {
 			ans[i] = dp[n][n + i] / (Math.pow(6, n));
 		}
 		return ans;
+	}
+
+	// 剑指 Offer 63. 股票的最大利润
+	@Test
+	public void test48() {
+		Assert.assertEquals(5, maxProfit(new int[] { 7, 1, 5, 3, 6, 4 }));
+	}
+
+	public int maxProfit(int[] prices) {
+		int n = prices.length;
+		if (n==0) {
+			return 0;
+		}
+		int[][] dp = new int[n+1][2]; //两个状态持股与不持股
+		dp[1][0] =  0; //不持股
+		dp[1][1] = -prices[0]; //持股
+		for (int i=2;i<=n;i++) {
+			dp[i][0] = Math.max(dp[i-1][0],dp[i-1][1]+prices[i-1]);
+			dp[i][1] = Math.max(dp[i-1][1],-prices[i-1]); //昨天不持股，今天买入股票（注意：只允许交易一次，因此手上的现金数就是当天的股价的相反数）。
+		}
+		return dp[n][0];
 	}
 }
