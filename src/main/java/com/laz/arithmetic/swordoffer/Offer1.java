@@ -1480,16 +1480,32 @@ public class Offer1 {
 
 	public int maxProfit(int[] prices) {
 		int n = prices.length;
-		if (n==0) {
+		if (n == 0) {
 			return 0;
 		}
-		int[][] dp = new int[n+1][2]; //两个状态持股与不持股
-		dp[1][0] =  0; //不持股
-		dp[1][1] = -prices[0]; //持股
-		for (int i=2;i<=n;i++) {
-			dp[i][0] = Math.max(dp[i-1][0],dp[i-1][1]+prices[i-1]);
-			dp[i][1] = Math.max(dp[i-1][1],-prices[i-1]); //昨天不持股，今天买入股票（注意：只允许交易一次，因此手上的现金数就是当天的股价的相反数）。
+		int[][] dp = new int[n + 1][2]; // 两个状态持股与不持股
+		dp[1][0] = 0; // 不持股
+		dp[1][1] = -prices[0]; // 持股
+		for (int i = 2; i <= n; i++) {
+			dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i - 1]);
+			dp[i][1] = Math.max(dp[i - 1][1], -prices[i - 1]); // 昨天不持股，今天买入股票（注意：只允许交易一次，因此手上的现金数就是当天的股价的相反数）。
 		}
 		return dp[n][0];
+	}
+
+	// 剑指 Offer 65. 不用加减乘除做加法
+	@Test
+	public void test49() {
+		Assert.assertEquals(3, add(2, 1));
+	}
+
+	// https://leetcode-cn.com/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/solution/mian-shi-ti-65-bu-yong-jia-jian-cheng-chu-zuo-ji-7/
+	public int add(int a, int b) {
+		while (b != 0) { // 当进位为 0 时跳出
+			int c = (a & b) << 1; // c = 进位
+			a ^= b; // a = 非进位和
+			b = c; // b = 进位
+		}
+		return a;
 	}
 }

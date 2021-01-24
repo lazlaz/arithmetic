@@ -739,42 +739,44 @@ public class LeetCode19 {
 	// 1319. 连通网络的操作次数
 	@Test
 	public void test12() {
-		Assert.assertEquals(1, new Solution12().makeConnected(4,new int[][] {
-			{0,1},{0,2},{1,2}
-		}));
-		Assert.assertEquals(2, new Solution12().makeConnected(6,new int[][] {
-			{0,1},{0,2},{0,3},{1,2},{1,3}
-		}));
+		Assert.assertEquals(1, new Solution12().makeConnected(4, new int[][] { { 0, 1 }, { 0, 2 }, { 1, 2 } }));
+		Assert.assertEquals(2,
+				new Solution12().makeConnected(6, new int[][] { { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 2 }, { 1, 3 } }));
 	}
+
 	class Solution12 {
 		public int makeConnected(int n, int[][] connections) {
-			//线条数少于n-1
-			if (connections.length<n-1) {
+			// 线条数少于n-1
+			if (connections.length < n - 1) {
 				return -1;
 			}
 			UnionFind uf = new UnionFind(n);
-			for (int i=0;i<connections.length;i++) {
+			for (int i = 0; i < connections.length; i++) {
 				uf.union(connections[i][0], connections[i][1]);
 			}
 			int count = 0;
-			for (int i=0;i<n;i++) {
+			for (int i = 0; i < n; i++) {
 				if (uf.find(i) == i) {
 					count++;
 				}
 			}
-			return count-1;
+			return count - 1;
 		}
+
 		class UnionFind {
 			int[] parent;
+
 			public UnionFind(int n) {
 				parent = new int[n];
-				for (int i=0;i<n;i++) {
+				for (int i = 0; i < n; i++) {
 					parent[i] = i;
 				}
 			}
-			public void union(int x,int y) {
+
+			public void union(int x, int y) {
 				parent[find(x)] = find(y);
 			}
+
 			public int find(int index) {
 				if (parent[index] != index) {
 					parent[index] = find(parent[index]);
@@ -784,4 +786,29 @@ public class LeetCode19 {
 		}
 	}
 
+	// 674. 最长连续递增序列
+	@Test
+	public void test13() {
+		Assert.assertEquals(3, findLengthOfLCIS(new int[] { 1, 3, 5, 4, 7 }));
+		Assert.assertEquals(1, findLengthOfLCIS(new int[] { 2,2,2,2,2 }));
+	}
+
+	public int findLengthOfLCIS(int[] nums) {
+		if (nums.length==0) {
+			return 0;
+		}
+		int l=0,r=0;
+		int maxLen = 0;
+		while (r<nums.length-1) {
+			if (nums[r+1]>nums[r]) {
+				r++;
+			} else {
+				maxLen = Math.max(maxLen, r-l+1);
+				r++;
+				l = r;
+			}
+		}
+		maxLen = Math.max(maxLen, r-l+1);
+		return maxLen;
+	}
 }
