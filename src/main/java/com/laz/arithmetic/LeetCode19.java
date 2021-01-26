@@ -739,42 +739,44 @@ public class LeetCode19 {
 	// 1319. 连通网络的操作次数
 	@Test
 	public void test12() {
-		Assert.assertEquals(1, new Solution12().makeConnected(4,new int[][] {
-			{0,1},{0,2},{1,2}
-		}));
-		Assert.assertEquals(2, new Solution12().makeConnected(6,new int[][] {
-			{0,1},{0,2},{0,3},{1,2},{1,3}
-		}));
+		Assert.assertEquals(1, new Solution12().makeConnected(4, new int[][] { { 0, 1 }, { 0, 2 }, { 1, 2 } }));
+		Assert.assertEquals(2,
+				new Solution12().makeConnected(6, new int[][] { { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 2 }, { 1, 3 } }));
 	}
+
 	class Solution12 {
 		public int makeConnected(int n, int[][] connections) {
-			//线条数少于n-1
-			if (connections.length<n-1) {
+			// 线条数少于n-1
+			if (connections.length < n - 1) {
 				return -1;
 			}
 			UnionFind uf = new UnionFind(n);
-			for (int i=0;i<connections.length;i++) {
+			for (int i = 0; i < connections.length; i++) {
 				uf.union(connections[i][0], connections[i][1]);
 			}
 			int count = 0;
-			for (int i=0;i<n;i++) {
+			for (int i = 0; i < n; i++) {
 				if (uf.find(i) == i) {
 					count++;
 				}
 			}
-			return count-1;
+			return count - 1;
 		}
+
 		class UnionFind {
 			int[] parent;
+
 			public UnionFind(int n) {
 				parent = new int[n];
-				for (int i=0;i<n;i++) {
+				for (int i = 0; i < n; i++) {
 					parent[i] = i;
 				}
 			}
-			public void union(int x,int y) {
+
+			public void union(int x, int y) {
 				parent[find(x)] = find(y);
 			}
+
 			public int find(int index) {
 				if (parent[index] != index) {
 					parent[index] = find(parent[index]);
@@ -784,4 +786,28 @@ public class LeetCode19 {
 		}
 	}
 
+	// 1128. 等价多米诺骨牌对的数量
+	@Test
+	public void test13() {
+		Assert.assertEquals(1, new Solution13().numEquivDominoPairs(new int[][] {
+			{1,2},{2,1},{3,4},{5,6}
+		}));
+		Assert.assertEquals(3,
+				new Solution13().numEquivDominoPairs(new int[][] { { 1, 2 }, { 1, 2 }, { 1, 1 }, { 1, 2 }, { 2, 2 } }));
+	}
+
+	class Solution13 {
+		public int numEquivDominoPairs(int[][] dominoes) {
+			Map<String, Integer> pairs = new HashMap<String, Integer>();
+			int ret = 0;
+			for (int[] domino : dominoes) {
+				String key = domino[0] < domino[1] ? domino[0] + domino[1] +"": domino[1]  + domino[0] +"";
+				int v = pairs.getOrDefault(key, 0);
+				ret+=v;
+				pairs.put(key, (v+1));
+			}
+			return ret;
+		}
+
+	}
 }
