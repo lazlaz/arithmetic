@@ -790,25 +790,141 @@ public class LeetCode19 {
 	@Test
 	public void test13() {
 		Assert.assertEquals(3, findLengthOfLCIS(new int[] { 1, 3, 5, 4, 7 }));
-		Assert.assertEquals(1, findLengthOfLCIS(new int[] { 2,2,2,2,2 }));
+		Assert.assertEquals(1, findLengthOfLCIS(new int[] { 2, 2, 2, 2, 2 }));
 	}
 
 	public int findLengthOfLCIS(int[] nums) {
-		if (nums.length==0) {
+		if (nums.length == 0) {
 			return 0;
 		}
-		int l=0,r=0;
+		int l = 0, r = 0;
 		int maxLen = 0;
-		while (r<nums.length-1) {
-			if (nums[r+1]>nums[r]) {
+		while (r < nums.length - 1) {
+			if (nums[r + 1] > nums[r]) {
 				r++;
 			} else {
-				maxLen = Math.max(maxLen, r-l+1);
+				maxLen = Math.max(maxLen, r - l + 1);
 				r++;
 				l = r;
 			}
 		}
-		maxLen = Math.max(maxLen, r-l+1);
+		maxLen = Math.max(maxLen, r - l + 1);
 		return maxLen;
+	}
+
+	// 1128. 等价多米诺骨牌对的数量
+	@Test
+	public void test14() {
+		Assert.assertEquals(1,
+				new Solution14().numEquivDominoPairs(new int[][] { { 1, 2 }, { 2, 1 }, { 3, 4 }, { 5, 6 } }));
+		Assert.assertEquals(3,
+				new Solution14().numEquivDominoPairs(new int[][] { { 1, 2 }, { 1, 2 }, { 1, 1 }, { 1, 2 }, { 2, 2 } }));
+	}
+
+	class Solution14 {
+		public int numEquivDominoPairs(int[][] dominoes) {
+			Map<String, Integer> pairs = new HashMap<String, Integer>();
+			int ret = 0;
+			for (int[] domino : dominoes) {
+				String key = domino[0] < domino[1] ? domino[0] + domino[1] + "" : domino[1] + domino[0] + "";
+				int v = pairs.getOrDefault(key, 0);
+				ret += v;
+				pairs.put(key, (v + 1));
+			}
+			return ret;
+		}
+
+	}
+
+	// 1579. 保证图可完全遍历
+	@Test
+	public void test15() {
+		Assert.assertEquals(2, new Solution15().maxNumEdgesToRemove(4,
+				new int[][] { { 3, 1, 2 }, { 3, 2, 3 }, { 1, 1, 3 }, { 1, 2, 4 }, { 1, 1, 2 }, { 2, 3, 4 } }));
+	}
+
+	class Solution15 {
+		public int maxNumEdgesToRemove(int n, int[][] edges) {
+			UnionFind a = new UnionFind(5);
+			List<String> aRemoveKey = new ArrayList<String>();
+			List<Integer> aRemoveType = new ArrayList<Integer>();
+			for (int i = 0; i < edges.length; i++) {
+				if (edges[i][0] == 1 || edges[i][0] == 3) {
+					if (a.find(edges[i][1]) == edges[i][2]) {
+						aRemoveKey.add(edges[i][1] + "" + edges[i][2]);
+						aRemoveType.add(edges[i][0]);
+					}
+					a.union(edges[i][1], edges[i][2]);
+				}
+			}
+
+			UnionFind b = new UnionFind(5);
+			List<String> bRemoveKey = new ArrayList<String>();
+			List<Integer> bRemoveType = new ArrayList<Integer>();
+			for (int i = 0; i < edges.length; i++) {
+				if (edges[i][0] == 2 || edges[i][0] == 3) {
+					if (b.find(edges[i][1]) == edges[i][2]) {
+						bRemoveKey.add(edges[i][1] + "" + edges[i][2]);
+						bRemoveType.add(edges[i][0]);
+					}
+					b.union(edges[i][1], edges[i][2]);
+				}
+			}
+			// 先判断是否都连通
+			int aCount = 0;
+			int bCount = 0;
+			for (int i = 1; i <= n; i++) {
+				if (a.find(i) != i) {
+					aCount++;
+				}
+				if (b.find(i) != i) {
+					bCount++;
+				}
+			}
+			if (aCount > 1 || bCount > 1) {
+				return -1;
+			}
+			int res = 0;
+			for (int i = 0; i < aRemoveKey.size(); i++) {
+				if (aRemoveType.get(i) == 1) {
+					res++;
+				} else {
+					if (bRemoveKey.contains(aRemoveKey.get(i))) {
+						res++;
+					}
+				}
+
+			}
+			for (int i = 0; i < bRemoveKey.size(); i++) {
+				if (bRemoveType.get(i) == 1) {
+					res++;
+				} else {
+				}
+
+			}
+			return res;
+		}
+
+		class UnionFind {
+			int[] parent;
+
+			public UnionFind(int n) {
+				parent = new int[n];
+				for (int i = 0; i < n; i++) {
+					parent[i] = i;
+				}
+			}
+
+			public void union(int x, int y) {
+				parent[find(x)] = find(y);
+			}
+
+			public int find(int index) {
+				if (parent[index] != index) {
+					parent[index] = find(parent[index]);
+				}
+				return parent[index];
+			}
+		}
 	}
 }
