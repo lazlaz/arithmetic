@@ -789,9 +789,8 @@ public class LeetCode19 {
 	// 1128. 等价多米诺骨牌对的数量
 	@Test
 	public void test13() {
-		Assert.assertEquals(1, new Solution13().numEquivDominoPairs(new int[][] {
-			{1,2},{2,1},{3,4},{5,6}
-		}));
+		Assert.assertEquals(1,
+				new Solution13().numEquivDominoPairs(new int[][] { { 1, 2 }, { 2, 1 }, { 3, 4 }, { 5, 6 } }));
 		Assert.assertEquals(3,
 				new Solution13().numEquivDominoPairs(new int[][] { { 1, 2 }, { 1, 2 }, { 1, 1 }, { 1, 2 }, { 2, 2 } }));
 	}
@@ -801,13 +800,44 @@ public class LeetCode19 {
 			Map<String, Integer> pairs = new HashMap<String, Integer>();
 			int ret = 0;
 			for (int[] domino : dominoes) {
-				String key = domino[0] < domino[1] ? domino[0] + domino[1] +"": domino[1]  + domino[0] +"";
+				String key = domino[0] < domino[1] ? domino[0] + domino[1] + "" : domino[1] + domino[0] + "";
 				int v = pairs.getOrDefault(key, 0);
-				ret+=v;
-				pairs.put(key, (v+1));
+				ret += v;
+				pairs.put(key, (v + 1));
 			}
 			return ret;
 		}
 
+	}
+
+	// 724. 寻找数组的中心索引
+	@Test
+	public void test16() {
+		Assert.assertEquals(3, pivotIndex(new int[] { 1, 7, 3, 6, 5, 6 }));
+		Assert.assertEquals(0, pivotIndex(new int[] { -1,-1,-1,0,1,1 }));
+	}
+
+	public int pivotIndex(int[] nums) {
+		if (nums.length==0) {
+			return -1;
+		}
+		int n = nums.length;
+		int[] preSum = new int[n];
+		preSum[0] = nums[0];
+		for (int i=1;i<n;i++) {
+			preSum[i] = preSum[i-1]+nums[i];
+		}
+		for (int i=0;i<n;i++) {
+			if (i==0) {
+				if (preSum[n-1]-preSum[i]==0) {
+					return i;
+				}
+			} else {
+				if (preSum[i-1] == preSum[n-1]-preSum[i]) {
+					return i;
+				}
+			}
+		}
+		return -1;
 	}
 }
