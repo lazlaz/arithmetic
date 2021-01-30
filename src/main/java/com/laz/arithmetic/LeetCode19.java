@@ -3,6 +3,7 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -814,30 +815,120 @@ public class LeetCode19 {
 	@Test
 	public void test16() {
 		Assert.assertEquals(3, pivotIndex(new int[] { 1, 7, 3, 6, 5, 6 }));
-		Assert.assertEquals(0, pivotIndex(new int[] { -1,-1,-1,0,1,1 }));
+		Assert.assertEquals(0, pivotIndex(new int[] { -1, -1, -1, 0, 1, 1 }));
 	}
 
 	public int pivotIndex(int[] nums) {
-		if (nums.length==0) {
+		if (nums.length == 0) {
 			return -1;
 		}
 		int n = nums.length;
 		int[] preSum = new int[n];
 		preSum[0] = nums[0];
-		for (int i=1;i<n;i++) {
-			preSum[i] = preSum[i-1]+nums[i];
+		for (int i = 1; i < n; i++) {
+			preSum[i] = preSum[i - 1] + nums[i];
 		}
-		for (int i=0;i<n;i++) {
-			if (i==0) {
-				if (preSum[n-1]-preSum[i]==0) {
+		for (int i = 0; i < n; i++) {
+			if (i == 0) {
+				if (preSum[n - 1] - preSum[i] == 0) {
 					return i;
 				}
 			} else {
-				if (preSum[i-1] == preSum[n-1]-preSum[i]) {
+				if (preSum[i - 1] == preSum[n - 1] - preSum[i]) {
 					return i;
 				}
 			}
 		}
 		return -1;
+	}
+
+	// 778. 水位上升的泳池中游泳
+	@Test
+	public void test17() {
+		Assert.assertEquals(16, new Solution17().swimInWater(new int[][] { { 0, 1, 2, 3, 4 }, { 24, 23, 22, 21, 5 },
+				{ 12, 13, 14, 15, 16 }, { 11, 17, 18, 19, 20 }, { 10, 9, 8, 7, 6 } }));
+	}
+	//https://leetcode-cn.com/problems/swim-in-rising-water/solution/shui-wei-shang-sheng-de-yong-chi-zhong-y-862o/
+	class Solution17 {
+		public int swimInWater(int[][] grid) {
+			int m = grid.length;
+			int n = grid[0].length;
+			List<int[]> edges = new ArrayList<int[]>();
+			for (int i = 0; i < m; ++i) {
+				for (int j = 0; j < n; ++j) {
+					int id = i * n + j;
+					if (i > 0) {
+						edges.add(new int[] { id - n, id, Math.max(grid[i][j], grid[i - 1][j]) });
+					}
+					if (j > 0) {
+						edges.add(new int[] { id - 1, id, Math.max(grid[i][j], grid[i][j - 1]) });
+					}
+				}
+			}
+			Collections.sort(edges, new Comparator<int[]>() {
+				public int compare(int[] edge1, int[] edge2) {
+					return edge1[2] - edge2[2];
+				}
+			});
+			UnionFind uf = new UnionFind(m * n);
+			int ans = 0;
+			for (int[] edge : edges) {
+				int x = edge[0], y = edge[1], v = edge[2];
+				uf.unite(x, y);
+				if (uf.connected(0, m * n - 1)) {
+					ans = v;
+					break;
+				}
+			}
+			return ans;
+		}
+
+		// 并查集模板
+		class UnionFind {
+			int[] parent;
+			int[] size;
+			int n;
+			// 当前连通分量数目
+			int setCount;
+
+			public UnionFind(int n) {
+				this.n = n;
+				this.setCount = n;
+				this.parent = new int[n];
+				this.size = new int[n];
+				Arrays.fill(size, 1);
+				for (int i = 0; i < n; ++i) {
+					parent[i] = i;
+				}
+			}
+
+			public int findset(int x) {
+				return parent[x] == x ? x : (parent[x] = findset(parent[x]));
+			}
+
+			public boolean unite(int x, int y) {
+				x = findset(x);
+				y = findset(y);
+				if (x == y) {
+					return false;
+				}
+				if (size[x] < size[y]) {
+					int temp = x;
+					x = y;
+					y = temp;
+				}
+				parent[y] = x;
+				size[x] += size[y];
+				--setCount;
+				return true;
+			}
+
+			public boolean connected(int x, int y) {
+				x = findset(x);
+				y = findset(y);
+				return x == y;
+			}
+
+		}
 	}
 }
