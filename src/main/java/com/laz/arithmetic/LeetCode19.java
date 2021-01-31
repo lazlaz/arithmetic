@@ -3,6 +3,7 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -843,83 +844,67 @@ public class LeetCode19 {
 				new int[][] { { 3, 1, 2 }, { 3, 2, 3 }, { 1, 1, 3 }, { 1, 2, 4 }, { 1, 1, 2 }, { 2, 3, 4 } }));
 	}
 
+	// https://leetcode-cn.com/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/solution/bao-zheng-tu-ke-wan-quan-bian-li-by-leet-mtrw/
 	class Solution15 {
 		public int maxNumEdgesToRemove(int n, int[][] edges) {
-			UnionFind a = new UnionFind(n);
-			List<String> aRemoveKey = new ArrayList<String>();
-			List<Integer> aRemoveType = new ArrayList<Integer>();
-			for (int i = 0; i < edges.length; i++) {
-				if (edges[i][0] == 1 || edges[i][0] == 3) {
-					if (a.find(edges[i][1]) == a.find(edges[i][2])) {
-						aRemoveKey.add(edges[i][1] + "" + edges[i][2]);
-						aRemoveType.add(edges[i][0]);
+			UnionFind ufa = new UnionFind(n + 1);
+			UnionFind ufb = new UnionFind(n + 1);
+			int ans = 0;
+			// 公共边
+			for (int[] edge : edges) {
+				if (edge[0] == 3) {
+					// 如果A能连通，则B也能连通，则该边多余
+					if (!ufa.union(edge[1], edge[2])) {
+						++ans;
+					} else {
+						ufb.union(edge[1], edge[2]);
 					}
-					a.union(edges[i][1], edges[i][2]);
 				}
 			}
 
-			UnionFind b = new UnionFind(n);
-			List<String> bRemoveKey = new ArrayList<String>();
-			List<Integer> bRemoveType = new ArrayList<Integer>();
-			for (int i = 0; i < edges.length; i++) {
-				if (edges[i][0] == 2 || edges[i][0] == 3) {
-					if (b.find(edges[i][1]) == b.find(edges[i][2])) {
-						bRemoveKey.add(edges[i][1] + "" + edges[i][2]);
-						bRemoveType.add(edges[i][0]);
+			// 独占边
+			for (int[] edge : edges) {
+				if (edge[0] == 1) {
+					// Alice 独占边
+					if (!ufa.union(edge[1], edge[2])) {
+						++ans;
 					}
-					b.union(edges[i][1], edges[i][2]);
+				} else if (edge[0] == 2) {
+					// Bob 独占边
+					if (!ufb.union(edge[1], edge[2])) {
+						++ans;
+					}
 				}
 			}
-			// 先判断是否都连通
-			int aCount = 0;
-			int bCount = 0;
-			for (int i = 1; i <= n; i++) {
-				if (a.find(i) == i) {
-					aCount++;
-				}
-				if (b.find(i) == i) {
-					bCount++;
-				}
-			}
-			if (aCount > 1 || bCount > 1) {
+
+			if (ufa.setCount != 2 || ufb.setCount != 2) {
 				return -1;
 			}
-			int res = 0;
-			for (int i = 0; i < aRemoveKey.size(); i++) {
-				if (aRemoveType.get(i) == 1) {
-					res++;
-				} else {
-					if (bRemoveKey.contains(aRemoveKey.get(i))) {
-						res++;
-					}
-				}
-
-			}
-			for (int i = 0; i < bRemoveKey.size(); i++) {
-				if (bRemoveType.get(i) == 1) {
-					res++;
-				} else {
-					if (bRemoveKey.contains(aRemoveKey.get(i))) {
-						res++;
-					}
-				}
-
-			}
-			return res;
+			return ans;
 		}
 
 		class UnionFind {
 			int[] parent;
+			// 当前连通分量数目
+			int setCount;
 
 			public UnionFind(int n) {
+				this.setCount = n;
 				parent = new int[n];
 				for (int i = 0; i < n; i++) {
 					parent[i] = i;
 				}
 			}
 
-			public void union(int x, int y) {
+			public boolean union(int x, int y) {
+				x = find(x);
+				y = find(y);
+				if (x == y) {
+					return false;
+				}
 				parent[find(x)] = find(y);
+				--setCount;
+				return true;
 			}
 
 			public int find(int index) {
@@ -928,6 +913,175 @@ public class LeetCode19 {
 				}
 				return parent[index];
 			}
+
+			public boolean connected(int x, int y) {
+				x = find(x);
+				y = find(y);
+				return x == y;
+			}
+
+		}
+	}
+
+	// 724. 寻找数组的中心索引
+	@Test
+	public void test16() {
+		Assert.assertEquals(3, pivotIndex(new int[] { 1, 7, 3, 6, 5, 6 }));
+		Assert.assertEquals(0, pivotIndex(new int[] { -1, -1, -1, 0, 1, 1 }));
+	}
+
+	public int pivotIndex(int[] nums) {
+		if (nums.length == 0) {
+			return -1;
+		}
+		int n = nums.length;
+		int[] preSum = new int[n];
+		preSum[0] = nums[0];
+		for (int i = 1; i < n; i++) {
+			preSum[i] = preSum[i - 1] + nums[i];
+		}
+		for (int i = 0; i < n; i++) {
+			if (i == 0) {
+				if (preSum[n - 1] - preSum[i] == 0) {
+					return i;
+				}
+			} else {
+				if (preSum[i - 1] == preSum[n - 1] - preSum[i]) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
+	// 778. 水位上升的泳池中游泳
+	@Test
+	public void test17() {
+		Assert.assertEquals(16, new Solution17().swimInWater(new int[][] { { 0, 1, 2, 3, 4 }, { 24, 23, 22, 21, 5 },
+				{ 12, 13, 14, 15, 16 }, { 11, 17, 18, 19, 20 }, { 10, 9, 8, 7, 6 } }));
+	}
+
+	// https://leetcode-cn.com/problems/swim-in-rising-water/solution/shui-wei-shang-sheng-de-yong-chi-zhong-y-862o/
+	class Solution17 {
+		public int swimInWater(int[][] grid) {
+			int m = grid.length;
+			int n = grid[0].length;
+			List<int[]> edges = new ArrayList<int[]>();
+			for (int i = 0; i < m; ++i) {
+				for (int j = 0; j < n; ++j) {
+					int id = i * n + j;
+					if (i > 0) {
+						edges.add(new int[] { id - n, id, Math.max(grid[i][j], grid[i - 1][j]) });
+					}
+					if (j > 0) {
+						edges.add(new int[] { id - 1, id, Math.max(grid[i][j], grid[i][j - 1]) });
+					}
+				}
+			}
+			Collections.sort(edges, new Comparator<int[]>() {
+				public int compare(int[] edge1, int[] edge2) {
+					return edge1[2] - edge2[2];
+				}
+			});
+			UnionFind uf = new UnionFind(m * n);
+			int ans = 0;
+			for (int[] edge : edges) {
+				int x = edge[0], y = edge[1], v = edge[2];
+				uf.unite(x, y);
+				if (uf.connected(0, m * n - 1)) {
+					ans = v;
+					break;
+				}
+			}
+			return ans;
+		}
+
+		// 并查集模板
+		class UnionFind {
+			int[] parent;
+			int[] size;
+			int n;
+			// 当前连通分量数目
+			int setCount;
+
+			public UnionFind(int n) {
+				this.n = n;
+				this.setCount = n;
+				this.parent = new int[n];
+				this.size = new int[n];
+				Arrays.fill(size, 1);
+				for (int i = 0; i < n; ++i) {
+					parent[i] = i;
+				}
+			}
+
+			public int findset(int x) {
+				return parent[x] == x ? x : (parent[x] = findset(parent[x]));
+			}
+
+			public boolean unite(int x, int y) {
+				x = findset(x);
+				y = findset(y);
+				if (x == y) {
+					return false;
+				}
+				if (size[x] < size[y]) {
+					int temp = x;
+					x = y;
+					y = temp;
+				}
+				parent[y] = x;
+				size[x] += size[y];
+				--setCount;
+				return true;
+			}
+
+			public boolean connected(int x, int y) {
+				x = findset(x);
+				y = findset(y);
+				return x == y;
+			}
+		}
+	}
+
+	// 839. 相似字符串组
+	@Test
+	public void test18() {
+		Assert.assertEquals(2, new Solution18().numSimilarGroups(new String[] {
+				"tars","rats","arts","star"
+		}));
+	}
+	//https://leetcode-cn.com/problems/similar-string-groups/solution/xiang-si-zi-fu-chuan-zu-by-leetcode-solu-8jt9/
+	class Solution18 {
+		public int numSimilarGroups(String[] strs) {
+			int n = strs.length;
+			UnionFind uf = new UnionFind(n);
+			for (int i=0;i<strs.length;i++) {
+				for (int j=i+1;j<strs.length;j++) {
+					if (uf.connected(i, j)) {
+						continue;
+					}
+					//判断是否相似
+					if (check(strs[j],strs[i])) {
+						uf.unite(i, j);
+					}
+				}
+			}
+		    return uf.setCount;
+		}
+
+		private boolean check(String a, String b) {
+			int num = 0;
+			int len = a.length();
+			for (int i = 0; i < len; i++) {
+				if (a.charAt(i) != b.charAt(i)) {
+					num++;
+					if (num > 2) {
+						return false;
+					}
+				}
+			}
+			return true;
 		}
 	}
 }

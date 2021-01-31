@@ -1514,10 +1514,104 @@ public class Offer1 {
 	public void test50() {
 		Assert.assertEquals(6, sumNums(3));
 	}
-
 	// https://leetcode-cn.com/problems/qiu-12n-lcof/solution/mian-shi-ti-64-qiu-1-2-nluo-ji-fu-duan-lu-qing-xi-/
 	public int sumNums(int n) {
 		boolean x = n > 1 && (n += sumNums(n - 1)) > 0;
 		return n;
+	}
+	// 剑指 Offer 66. 构建乘积数组
+	@Test
+	public void test51() {
+		Assert.assertArrayEquals(new int[] { 120, 60, 40, 30, 24 }, constructArr(new int[] { 1, 2, 3, 4, 5 }));
+	}
+
+	// https://leetcode-cn.com/problems/gou-jian-cheng-ji-shu-zu-lcof/solution/mian-shi-ti-66-gou-jian-cheng-ji-shu-zu-biao-ge-fe/
+	public int[] constructArr(int[] a) {
+		if (a.length == 0)
+			return new int[0];
+		int[] b = new int[a.length];
+		b[0] = 1;
+		int tmp = 1;
+		for (int i = 1; i < a.length; i++) {
+			b[i] = b[i - 1] * a[i - 1];
+		}
+		for (int i = a.length - 2; i >= 0; i--) {
+			tmp *= a[i + 1];
+			b[i] *= tmp;
+		}
+		return b;
+	}
+
+	// 剑指 Offer 68 - II. 二叉树的最近公共祖先
+	@Test
+	public void test52() {
+		TreeNode root = new TreeNode(3);
+		TreeNode l1 = new TreeNode(5);
+		TreeNode r1 = new TreeNode(1);
+		root.left = l1;
+		root.right = r1;
+		TreeNode l2 = new TreeNode(6);
+		TreeNode r2 = new TreeNode(2);
+		l1.left = l2;
+		l1.right = r2;
+		TreeNode l21 = new TreeNode(0);
+		TreeNode r21 = new TreeNode(8);
+		r1.left = l21;
+		r1.right = r21;
+		
+		TreeNode l3= new TreeNode(7);
+		TreeNode r3= new TreeNode(4);
+		r2.left = l3;
+		r2.right = r3;
+		
+		Assert.assertEquals(5, new Solution52().lowestCommonAncestor(root,l1,r3).val);
+	}
+	//https://leetcode-cn.com/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/solution/mian-shi-ti-68-ii-er-cha-shu-de-zui-jin-gong-gon-7/
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null) return null; // 如果树为空，直接返回null
+        if(root == p || root == q) return root; // 如果 p和q中有等于 root的，那么它们的最近公共祖先即为root（一个节点也可以是它自己的祖先）
+        TreeNode left = lowestCommonAncestor(root.left, p, q); // 递归遍历左子树，只要在左子树中找到了p或q，则先找到谁就返回谁
+        TreeNode right = lowestCommonAncestor(root.right, p, q); // 递归遍历右子树，只要在右子树中找到了p或q，则先找到谁就返回谁
+        if(left == null) return right; // 如果在左子树中 p和 q都找不到，则 p和 q一定都在右子树中，右子树中先遍历到的那个就是最近公共祖先（一个节点也可以是它自己的祖先）
+        else if(right == null) return left; // 否则，如果 left不为空，在左子树中有找到节点（p或q），这时候要再判断一下右子树中的情况，如果在右子树中，p和q都找不到，则 p和q一定都在左子树中，左子树中先遍历到的那个就是最近公共祖先（一个节点也可以是它自己的祖先）
+        else return root; //否则，当 left和 right均不为空时，说明 p、q节点分别在 root异侧, 最近公共祖先即为 root
+    }
+	class Solution52 {
+		public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+			List<TreeNode> pParent = new ArrayList<>();
+			dfs(root,p,pParent);
+			
+			List<TreeNode> qParent = new ArrayList<>();
+			dfs(root,q,qParent);
+			
+			for (int i=0;i<pParent.size();i++) {
+				for (int j=0;j<qParent.size();j++) {
+					if (qParent.get(j) == pParent.get(i)) {
+						return qParent.get(j);
+					}
+				}
+			}
+			return null;
+		}
+
+		private boolean dfs(TreeNode root, TreeNode p, List<TreeNode> parent) {
+			if (root==null) {
+				return false;
+			}
+			if (root == p) {
+				parent.add(root);
+				return true;
+			}
+			if (dfs(root.left,p,parent)) {
+				parent.add(root);
+				return true;
+			}
+			if (dfs(root.right,p,parent)) {
+				parent.add(root);
+				return true;
+			}
+			return false;
+		}
+		
 	}
 }
