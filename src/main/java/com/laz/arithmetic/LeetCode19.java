@@ -1051,6 +1051,7 @@ public class LeetCode19 {
 				"tars","rats","arts","star"
 		}));
 	}
+	
 	//https://leetcode-cn.com/problems/similar-string-groups/solution/xiang-si-zi-fu-chuan-zu-by-leetcode-solu-8jt9/
 	class Solution18 {
 		public int numSimilarGroups(String[] strs) {
