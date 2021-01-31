@@ -1493,7 +1493,6 @@ public class Offer1 {
 		return dp[n][0];
 	}
 
-<<<<<<< HEAD
 	// 剑指 Offer 65. 不用加减乘除做加法
 	@Test
 	public void test49() {
@@ -1508,10 +1507,11 @@ public class Offer1 {
 			b = c; // b = 进位
 		}
 		return a;
-=======
+	}
+
 	// 剑指 Offer 64. 求1+2+…+n
 	@Test
-	public void test49() {
+	public void test50() {
 		Assert.assertEquals(6, sumNums(3));
 	}
 
@@ -1519,6 +1519,5 @@ public class Offer1 {
 	public int sumNums(int n) {
 		boolean x = n > 1 && (n += sumNums(n - 1)) > 0;
 		return n;
->>>>>>> branch 'master' of https://github.com/lazlaz/arithmetic.git
 	}
 }

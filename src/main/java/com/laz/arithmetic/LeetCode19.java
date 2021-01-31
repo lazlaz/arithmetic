@@ -845,12 +845,12 @@ public class LeetCode19 {
 
 	class Solution15 {
 		public int maxNumEdgesToRemove(int n, int[][] edges) {
-			UnionFind a = new UnionFind(5);
+			UnionFind a = new UnionFind(n);
 			List<String> aRemoveKey = new ArrayList<String>();
 			List<Integer> aRemoveType = new ArrayList<Integer>();
 			for (int i = 0; i < edges.length; i++) {
 				if (edges[i][0] == 1 || edges[i][0] == 3) {
-					if (a.find(edges[i][1]) == edges[i][2]) {
+					if (a.find(edges[i][1]) == a.find(edges[i][2])) {
 						aRemoveKey.add(edges[i][1] + "" + edges[i][2]);
 						aRemoveType.add(edges[i][0]);
 					}
@@ -858,12 +858,12 @@ public class LeetCode19 {
 				}
 			}
 
-			UnionFind b = new UnionFind(5);
+			UnionFind b = new UnionFind(n);
 			List<String> bRemoveKey = new ArrayList<String>();
 			List<Integer> bRemoveType = new ArrayList<Integer>();
 			for (int i = 0; i < edges.length; i++) {
 				if (edges[i][0] == 2 || edges[i][0] == 3) {
-					if (b.find(edges[i][1]) == edges[i][2]) {
+					if (b.find(edges[i][1]) == b.find(edges[i][2])) {
 						bRemoveKey.add(edges[i][1] + "" + edges[i][2]);
 						bRemoveType.add(edges[i][0]);
 					}
@@ -874,10 +874,10 @@ public class LeetCode19 {
 			int aCount = 0;
 			int bCount = 0;
 			for (int i = 1; i <= n; i++) {
-				if (a.find(i) != i) {
+				if (a.find(i) == i) {
 					aCount++;
 				}
-				if (b.find(i) != i) {
+				if (b.find(i) == i) {
 					bCount++;
 				}
 			}
@@ -899,6 +899,9 @@ public class LeetCode19 {
 				if (bRemoveType.get(i) == 1) {
 					res++;
 				} else {
+					if (bRemoveKey.contains(aRemoveKey.get(i))) {
+						res++;
+					}
 				}
 
 			}
