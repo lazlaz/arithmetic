@@ -1047,28 +1047,26 @@ public class LeetCode19 {
 	// 839. 相似字符串组
 	@Test
 	public void test18() {
-		Assert.assertEquals(2, new Solution18().numSimilarGroups(new String[] {
-				"tars","rats","arts","star"
-		}));
+		Assert.assertEquals(2, new Solution18().numSimilarGroups(new String[] { "tars", "rats", "arts", "star" }));
 	}
-	
-	//https://leetcode-cn.com/problems/similar-string-groups/solution/xiang-si-zi-fu-chuan-zu-by-leetcode-solu-8jt9/
+
+	// https://leetcode-cn.com/problems/similar-string-groups/solution/xiang-si-zi-fu-chuan-zu-by-leetcode-solu-8jt9/
 	class Solution18 {
 		public int numSimilarGroups(String[] strs) {
 			int n = strs.length;
 			UnionFind uf = new UnionFind(n);
-			for (int i=0;i<strs.length;i++) {
-				for (int j=i+1;j<strs.length;j++) {
+			for (int i = 0; i < strs.length; i++) {
+				for (int j = i + 1; j < strs.length; j++) {
 					if (uf.connected(i, j)) {
 						continue;
 					}
-					//判断是否相似
-					if (check(strs[j],strs[i])) {
+					// 判断是否相似
+					if (check(strs[j], strs[i])) {
 						uf.unite(i, j);
 					}
 				}
 			}
-		    return uf.setCount;
+			return uf.setCount;
 		}
 
 		private boolean check(String a, String b) {
@@ -1084,5 +1082,32 @@ public class LeetCode19 {
 			}
 			return true;
 		}
+	}
+
+	// 888. 公平的糖果棒交换
+	@Test
+	public void test19() {
+		Assert.assertArrayEquals(new int[] { 1, 2 }, fairCandySwap(new int[] { 1, 1 }, new int[] { 2, 2 }));
+	}
+
+	public int[] fairCandySwap(int[] A, int[] B) {
+		 int sumA = Arrays.stream(A).sum();
+	        int sumB = Arrays.stream(B).sum();
+	        int delta = (sumA - sumB) / 2;
+	        Set<Integer> rec = new HashSet<Integer>();
+	        for (int num : A) {
+	            rec.add(num);
+	        }
+	        int[] ans = new int[2];
+	        for (int y : B) {
+	            int x = y + delta;
+	            if (rec.contains(x)) {
+	                ans[0] = x;
+	                ans[1] = y;
+	                break;
+	            }
+	        }
+	        return ans;
+
 	}
 }
