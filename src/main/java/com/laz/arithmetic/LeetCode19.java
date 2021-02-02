@@ -1110,4 +1110,31 @@ public class LeetCode19 {
 	        return ans;
 
 	}
+	
+	//424. 替换后的最长重复字符
+	@Test
+	public void test20() {
+		//Assert.assertEquals(4, characterReplacement("ABAB",2));
+		Assert.assertEquals(4, characterReplacement("AABABBA",1));
+	}
+	//https://leetcode-cn.com/problems/longest-repeating-character-replacement/solution/tong-guo-ci-ti-liao-jie-yi-xia-shi-yao-shi-hua-don/
+	public int characterReplacement(String s, int k) {
+		int[] map = new int[26];
+		if (s==null) {
+			return 0;
+		}
+		char[] chars = s.toCharArray();
+		int left=0,right=0;
+		int historyCharMax = 0;
+		for (right=0;right<chars.length;right++) {
+			int index = chars[right]-'A';
+			map[index]++;
+			historyCharMax  = Math.max(historyCharMax, map[index]);
+			if (right-left+1>historyCharMax+k) {
+				map[chars[left]-'A']--;
+				left++;
+			}
+		}
+		return chars.length-left;
+    }
 }
