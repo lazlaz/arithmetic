@@ -80,7 +80,7 @@ public class LeetCode20 {
 					large.offer(num);
 					++largeSize;
 				}
-				//保持平衡 small里面的数比large里面的数>=1
+				// 保持平衡 small里面的数比large里面的数>=1
 				makeBalance();
 			}
 
@@ -179,5 +179,27 @@ public class LeetCode20 {
 		}
 
 		return res;
+	}
+
+	// 643. 子数组最大平均数 I
+	@Test
+	public void test2() {
+		Assert.assertEquals(12.75, findMaxAverage(new int[] { 1, 12, -5, -6, 50, 3 }, 4),0.001);
+		Assert.assertEquals(5, findMaxAverage(new int[] {5}, 1),0.001);
+	}
+
+	public double findMaxAverage(int[] nums, int k) {
+		double maxSum = 0;
+		double sum = 0;
+		for (int i=0;i<k;i++) {
+			sum+=nums[i];
+		}
+		maxSum = sum;
+		//少做除法，用int代替double，后面使用dubbo 效率高些
+		for (int i=k;i<nums.length;i++) {
+			sum = sum+nums[i]-nums[i-k];
+			maxSum = Math.max(maxSum, sum);
+		}
+		return maxSum/k;
 	}
 }
