@@ -184,22 +184,55 @@ public class LeetCode20 {
 	// 643. 子数组最大平均数 I
 	@Test
 	public void test2() {
-		Assert.assertEquals(12.75, findMaxAverage(new int[] { 1, 12, -5, -6, 50, 3 }, 4),0.001);
-		Assert.assertEquals(5, findMaxAverage(new int[] {5}, 1),0.001);
+		Assert.assertEquals(12.75, findMaxAverage(new int[] { 1, 12, -5, -6, 50, 3 }, 4), 0.001);
+		Assert.assertEquals(5, findMaxAverage(new int[] { 5 }, 1), 0.001);
 	}
 
 	public double findMaxAverage(int[] nums, int k) {
 		double maxSum = 0;
 		double sum = 0;
-		for (int i=0;i<k;i++) {
-			sum+=nums[i];
+		for (int i = 0; i < k; i++) {
+			sum += nums[i];
 		}
 		maxSum = sum;
-		//少做除法，用int代替double，后面使用dubbo 效率高些
-		for (int i=k;i<nums.length;i++) {
-			sum = sum+nums[i]-nums[i-k];
+		// 少做除法，用int代替double，后面使用dubbo 效率高些
+		for (int i = k; i < nums.length; i++) {
+			sum = sum + nums[i] - nums[i - k];
 			maxSum = Math.max(maxSum, sum);
 		}
-		return maxSum/k;
+		return maxSum / k;
+	}
+
+	// 1208. 尽可能使字符串相等
+	@Test
+	public void test3() {
+		Assert.assertEquals(3, equalSubstring("abcd", "bcdf", 3));
+		Assert.assertEquals(1, equalSubstring("abcd", "cdef", 3));
+	Assert.assertEquals(2, equalSubstring("krrgw", "zjxss", 19));
+		Assert.assertEquals(4, equalSubstring("krpgjbjjznpzdfy", "nxargkbydxmsgby", 14));
+	}
+
+	public int equalSubstring(String s, String t, int maxCost) {
+		//审题，要连续的子串
+		int[] diff = new int[s.length()];
+		for (int i=0;i<s.length();i++) {
+			diff[i] = Math.abs(s.charAt(i)-t.charAt(i));
+		}
+		int l=0,r=0;
+		int maxCount = 0;
+		int sum = 0;
+		while (r<diff.length) {
+			while (r<diff.length&&sum<=maxCost) {
+				sum+=diff[r];
+				r++;
+			}
+			maxCount = Math.max(maxCount, r-l-1);
+			if (sum>maxCost) {
+				sum-=diff[l];
+				l++;
+			}
+		}
+		maxCount = Math.max(maxCount, r-l);
+		return maxCount;
 	}
 }
