@@ -1,12 +1,11 @@
 package com.laz.arithmetic.competition;
 
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 //https://leetcode-cn.com/contest/weekly-contest-224/
 public class Competition18 {
@@ -81,7 +80,7 @@ public class Competition18 {
 			for (int i = 0; i < n - 1; i++) {
 				for (int j = i + 1; j < n; j++) {
 					int key = nums[i] * nums[j];
-					//应为a!=b!=c!=d,所以只要乘积重复就会组成元组
+					// 应为a!=b!=c!=d,所以只要乘积重复就会组成元组
 					Integer count = map.getOrDefault(key, 0);
 					if (count > 0) {
 						// 说明：之前已经有count组不同的(x,y)，满足nums[x]*nums[y]=key
@@ -96,5 +95,35 @@ public class Competition18 {
 
 		}
 
+	}
+
+	// 1727. 重新排列后的最大子矩阵
+	@Test
+	public void test3() {
+		Assert.assertEquals(4, largestSubmatrix(new int[][] { { 0, 0, 1 }, { 1, 1, 1 }, { 1, 0, 1 } }));
+	}
+	//https://leetcode-cn.com/problems/largest-submatrix-with-rearrangements/solution/java-yu-chu-li-shu-zu-bian-li-mei-xing-p-qpqu/
+	public int largestSubmatrix(int[][] matrix) {
+		int n=matrix.length;
+        int m=matrix[0].length;
+        int res=0;
+        for(int i=1;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(matrix[i][j]==1){
+                    //记录向上连续1的个数
+                    matrix[i][j]+=matrix[i-1][j];
+                }
+            }
+        }
+        for(int i=0;i<n;i++){
+            Arrays.sort(matrix[i]);
+            for(int j=m-1;j>=0;j--){
+                //更新矩形的最大高度
+                int height=matrix[i][j];
+                //更新最大面积
+                res=Math.max(res,height*(m-j));
+            }
+        }
+        return res;
 	}
 }
