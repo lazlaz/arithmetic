@@ -1,6 +1,7 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,31 +209,59 @@ public class LeetCode20 {
 	public void test3() {
 		Assert.assertEquals(3, equalSubstring("abcd", "bcdf", 3));
 		Assert.assertEquals(1, equalSubstring("abcd", "cdef", 3));
-	Assert.assertEquals(2, equalSubstring("krrgw", "zjxss", 19));
+		Assert.assertEquals(2, equalSubstring("krrgw", "zjxss", 19));
 		Assert.assertEquals(4, equalSubstring("krpgjbjjznpzdfy", "nxargkbydxmsgby", 14));
 	}
 
 	public int equalSubstring(String s, String t, int maxCost) {
-		//审题，要连续的子串
+		// 审题，要连续的子串
 		int[] diff = new int[s.length()];
-		for (int i=0;i<s.length();i++) {
-			diff[i] = Math.abs(s.charAt(i)-t.charAt(i));
+		for (int i = 0; i < s.length(); i++) {
+			diff[i] = Math.abs(s.charAt(i) - t.charAt(i));
 		}
-		int l=0,r=0;
+		int l = 0, r = 0;
 		int maxCount = 0;
 		int sum = 0;
-		while (r<diff.length) {
-			while (r<diff.length&&sum<=maxCost) {
-				sum+=diff[r];
+		while (r < diff.length) {
+			while (r < diff.length && sum <= maxCost) {
+				sum += diff[r];
 				r++;
 			}
-			maxCount = Math.max(maxCount, r-l-1);
-			if (sum>maxCost) {
-				sum-=diff[l];
+			maxCount = Math.max(maxCount, r - l - 1);
+			if (sum > maxCost) {
+				sum -= diff[l];
 				l++;
 			}
 		}
-		maxCount = Math.max(maxCount, r-l);
+		maxCount = Math.max(maxCount, r - l);
 		return maxCount;
+	}
+
+	// 1423. 可获得的最大点数
+	@Test
+	public void test4() {
+		Assert.assertEquals(12, maxScore(new int[] { 1, 2, 3, 4, 5, 6, 1 }, 3));
+	}
+
+	// https://leetcode-cn.com/problems/maximum-points-you-can-obtain-from-cards/solution/ke-huo-de-de-zui-da-dian-shu-by-leetcode-7je9/
+	public int maxScore(int[] cardPoints, int k) {
+		int n = cardPoints.length;
+		// 找出剩余n-k中最小的
+		int windowSize = n - k;
+		int sum = 0;
+		for (int i = 0; i < windowSize; i++) {
+			sum += cardPoints[i];
+		}
+		int minSum = sum;
+		for (int i = windowSize; i < n; i++) {
+			// 滑动窗口每向右移动一格，增加从右侧进入窗口的元素值，并减少从左侧离开窗口的元素值
+			sum += cardPoints[i] - cardPoints[i - windowSize];
+			minSum = Math.min(minSum, sum);
+		}
+		int tolsum = 0;
+		for (int h : cardPoints) {
+			tolsum += h;
+		}
+		return tolsum - minSum;
 	}
 }
