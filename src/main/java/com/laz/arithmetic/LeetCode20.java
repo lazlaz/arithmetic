@@ -1,12 +1,13 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Comparator;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -263,5 +264,35 @@ public class LeetCode20 {
 			tolsum += h;
 		}
 		return tolsum - minSum;
+	}
+
+	// 665. 非递减数列
+	@Test
+	public void test5() {
+//		Assert.assertEquals(true, checkPossibility(new int[] {
+//				4,2,3
+//		}));
+
+		Assert.assertEquals(false, checkPossibility(new int[] { 2, 3, 3, 2, 2 }));
+		Assert.assertEquals(true, checkPossibility(new int[] { 5, 7, 1, 8 }));
+	}
+
+//https://leetcode-cn.com/problems/non-decreasing-array/solution/fei-di-jian-shu-lie-by-leetcode-solution-zdsm/
+	public boolean checkPossibility(int[] nums) {
+		int n = nums.length, cnt = 0;
+		for (int i = 0; i < n - 1; ++i) {
+			int x = nums[i], y = nums[i + 1];
+			if (x > y) {
+				cnt++;
+				if (cnt > 1) {
+					return false;
+				}
+				if (i > 0 && y < nums[i - 1]) {
+					nums[i + 1] = x;
+				}
+			}
+		}
+		return true;
+
 	}
 }
