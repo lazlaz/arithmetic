@@ -1,10 +1,9 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -294,5 +293,21 @@ public class LeetCode20 {
 		}
 		return true;
 
+	}
+
+	// 561. 数组拆分 I
+	@Test
+	public void test6() {
+		Assert.assertEquals(4, arrayPairSum(new int[] { 1, 4, 3, 2 }));
+	}
+
+	// https://leetcode-cn.com/problems/array-partition-i/solution/jian-dan-ti-jiu-yong-jian-dan-jie-fa-xia-ew5r/
+	public int arrayPairSum(int[] nums) {
+		Arrays.sort(nums);
+		int sum = 0;
+		for (int i = 0; i < nums.length; i = i + 2) {
+			sum += nums[i];
+		}
+		return sum;
 	}
 }
