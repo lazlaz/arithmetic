@@ -310,4 +310,37 @@ public class LeetCode20 {
 		}
 		return sum;
 	}
+	
+	//566. 重塑矩阵
+	@Test
+	public void test7() {
+		Assert.assertArrayEquals(new int[][] {
+			{1,2,3,4}
+		}, matrixReshape(new int[][] {
+			{1,2},
+			{3,4}
+		},1,4));
+	}
+	public int[][] matrixReshape(int[][] nums, int r, int c) {
+		int numR = nums.length;
+		int numC = nums[0].length;
+		int newC = (numR*numC)/r;
+		int[][] newNums = new int[r][newC];
+		int indexR = 0;
+		int indexC = 0;
+		if (r*c>numR*numC || r*c<numR*numC) {
+			return nums;
+		}
+		for (int i=0;i<r;i++) {
+			for (int j=0;j<newC;j++) {
+				newNums[i][j] = nums[indexR][indexC];
+				indexC++;
+				if (indexC>=numC) {
+					indexR++;
+					indexC=0;
+				}
+			}
+		}
+		return newNums;
+	}
 }
