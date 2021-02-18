@@ -3,7 +3,9 @@ package com.laz.arithmetic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -310,37 +312,61 @@ public class LeetCode20 {
 		}
 		return sum;
 	}
-	
-	//566. 重塑矩阵
+
+	// 566. 重塑矩阵
 	@Test
 	public void test7() {
-		Assert.assertArrayEquals(new int[][] {
-			{1,2,3,4}
-		}, matrixReshape(new int[][] {
-			{1,2},
-			{3,4}
-		},1,4));
+		Assert.assertArrayEquals(new int[][] { { 1, 2, 3, 4 } },
+				matrixReshape(new int[][] { { 1, 2 }, { 3, 4 } }, 1, 4));
 	}
+
 	public int[][] matrixReshape(int[][] nums, int r, int c) {
 		int numR = nums.length;
 		int numC = nums[0].length;
-		int newC = (numR*numC)/r;
+		int newC = (numR * numC) / r;
 		int[][] newNums = new int[r][newC];
 		int indexR = 0;
 		int indexC = 0;
-		if (r*c>numR*numC || r*c<numR*numC) {
+		if (r * c > numR * numC || r * c < numR * numC) {
 			return nums;
 		}
-		for (int i=0;i<r;i++) {
-			for (int j=0;j<newC;j++) {
+		for (int i = 0; i < r; i++) {
+			for (int j = 0; j < newC; j++) {
 				newNums[i][j] = nums[indexR][indexC];
 				indexC++;
-				if (indexC>=numC) {
+				if (indexC >= numC) {
 					indexR++;
-					indexC=0;
+					indexC = 0;
 				}
 			}
 		}
 		return newNums;
+	}
+
+	// 995. K 连续位的最小翻转次数
+	@Test
+	public void test8() {
+		//Assert.assertEquals(2, minKBitFlips(new int[] { 0, 1, 0 }, 1));
+		
+		Assert.assertEquals(3, minKBitFlips(new int[] { 0,0,0,1,0,1,1,0}, 3));
+	}
+	//https://leetcode-cn.com/problems/minimum-number-of-k-consecutive-bit-flips/solution/hua-dong-chuang-kou-shi-ben-ti-zui-rong-z403l/
+	public int minKBitFlips(int[] A, int K) {
+		int n = A.length;
+		Deque<Integer> queue = new LinkedList<Integer>();
+		int res = 0;
+		for (int i=0;i<n;i++) {
+			if (!queue.isEmpty() && i>=queue.peek()+K) {
+				queue.poll();
+			}
+			if (queue.size()%2==A[i]) {
+				if (i+K>n) {
+					return -1;
+				}
+				queue.offer(i);
+				res++;
+			}
+		}
+		return res;
 	}
 }
