@@ -346,21 +346,22 @@ public class LeetCode20 {
 	// 995. K 连续位的最小翻转次数
 	@Test
 	public void test8() {
-		//Assert.assertEquals(2, minKBitFlips(new int[] { 0, 1, 0 }, 1));
-		
-		Assert.assertEquals(3, minKBitFlips(new int[] { 0,0,0,1,0,1,1,0}, 3));
+		// Assert.assertEquals(2, minKBitFlips(new int[] { 0, 1, 0 }, 1));
+
+		Assert.assertEquals(3, minKBitFlips(new int[] { 0, 0, 0, 1, 0, 1, 1, 0 }, 3));
 	}
-	//https://leetcode-cn.com/problems/minimum-number-of-k-consecutive-bit-flips/solution/hua-dong-chuang-kou-shi-ben-ti-zui-rong-z403l/
+
+	// https://leetcode-cn.com/problems/minimum-number-of-k-consecutive-bit-flips/solution/hua-dong-chuang-kou-shi-ben-ti-zui-rong-z403l/
 	public int minKBitFlips(int[] A, int K) {
 		int n = A.length;
 		Deque<Integer> queue = new LinkedList<Integer>();
 		int res = 0;
-		for (int i=0;i<n;i++) {
-			if (!queue.isEmpty() && i>=queue.peek()+K) {
+		for (int i = 0; i < n; i++) {
+			if (!queue.isEmpty() && i >= queue.peek() + K) {
 				queue.poll();
 			}
-			if (queue.size()%2==A[i]) {
-				if (i+K>n) {
+			if (queue.size() % 2 == A[i]) {
+				if (i + K > n) {
 					return -1;
 				}
 				queue.offer(i);
@@ -368,5 +369,33 @@ public class LeetCode20 {
 			}
 		}
 		return res;
+	}
+
+	// 1004. 最大连续1的个数 III
+	@Test
+	public void test9() {
+		Assert.assertEquals(6, longestOnes(new int[] { 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 }, 2));
+		Assert.assertEquals(10, longestOnes(new int[] { 0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1 }, 3));
+	}
+	//https://leetcode-cn.com/problems/max-consecutive-ones-iii/solution/fen-xiang-hua-dong-chuang-kou-mo-ban-mia-f76z/
+	public int longestOnes(int[] A, int K) {
+		int n = A.length;
+		int count = 0;
+		int max = 0;
+		int l = 0,r=0;
+		while (r<n) {
+			if (A[r]==0) {
+				count++;
+			}
+			while (count>K) {
+				if (A[l] ==0) {
+					count--;
+				}
+				l++;
+			}
+			max = Math.max(max, r-l+1);
+			r++;
+		}
+		return max;
 	}
 }
