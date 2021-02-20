@@ -375,27 +375,117 @@ public class LeetCode20 {
 	@Test
 	public void test9() {
 		Assert.assertEquals(6, longestOnes(new int[] { 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 }, 2));
-		Assert.assertEquals(10, longestOnes(new int[] { 0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1 }, 3));
+		Assert.assertEquals(10, longestOnes(new int[] { 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1 }, 3));
 	}
-	//https://leetcode-cn.com/problems/max-consecutive-ones-iii/solution/fen-xiang-hua-dong-chuang-kou-mo-ban-mia-f76z/
+
+	// https://leetcode-cn.com/problems/max-consecutive-ones-iii/solution/fen-xiang-hua-dong-chuang-kou-mo-ban-mia-f76z/
 	public int longestOnes(int[] A, int K) {
 		int n = A.length;
 		int count = 0;
 		int max = 0;
-		int l = 0,r=0;
-		while (r<n) {
-			if (A[r]==0) {
+		int l = 0, r = 0;
+		while (r < n) {
+			if (A[r] == 0) {
 				count++;
 			}
-			while (count>K) {
-				if (A[l] ==0) {
+			while (count > K) {
+				if (A[l] == 0) {
 					count--;
 				}
 				l++;
 			}
-			max = Math.max(max, r-l+1);
+			max = Math.max(max, r - l + 1);
 			r++;
 		}
 		return max;
+	}
+
+	// 697. 数组的度
+	@Test
+	public void test10() {
+		// Assert.assertEquals(2, new Solution10_2().findShortestSubArray(new int[] { 1,
+		// 2, 2, 3, 1 }));
+		Assert.assertEquals(6, new Solution10_2().findShortestSubArray(new int[] { 1, 2, 2, 3, 1, 4, 2, 1 }));
+	}
+
+	// https://leetcode-cn.com/problems/degree-of-an-array/solution/xiang-xi-fen-xi-ti-yi-yu-si-lu-jian-ji-d-nvdy/
+	class Solution10_2 {
+		public int findShortestSubArray(int[] nums) {
+			Map<Integer, int[]> map = new HashMap<Integer, int[]>();
+			int n = nums.length;
+			for (int i = 0; i < n; i++) {
+				if (map.containsKey(nums[i])) {
+					map.get(nums[i])[0]++;
+					map.get(nums[i])[2] = i;
+				} else {
+					//存储三个值，分别是数量，起始位置，结束位置
+					map.put(nums[i], new int[] { 1, i, i });
+				}
+			}
+			int maxNum = 0, minLen = 0;
+			for (Map.Entry<Integer, int[]> entry : map.entrySet()) {
+				int[] arr = entry.getValue();
+				if (maxNum < arr[0]) {
+					maxNum = arr[0];
+					minLen = arr[2] - arr[1] + 1;
+				} else if (maxNum == arr[0]) {
+					if (minLen > arr[2] - arr[1] + 1) {
+						minLen = arr[2] - arr[1] + 1;
+					}
+				}
+			}
+			return minLen;
+
+		}
+	}
+
+	class Solution10 {
+		public int findShortestSubArray(int[] nums) {
+			// 原数组的度
+			int max = 0;
+			Map<Integer, Integer> map = new HashMap<>();
+			for (int i = 0; i < nums.length; i++) {
+				int value = map.compute(nums[i], (k, v) -> {
+					if (v == null)
+						return 1;
+					return v + 1;
+				});
+				max = Math.max(max, value);
+			}
+
+			// 找到最小的长度
+			int l = 0, r = 0;
+			int n = nums.length;
+			int minLen = Integer.MAX_VALUE;
+			Map<Integer, Integer> values = new HashMap<>();
+			while (r < n) {
+				while (r < n && maxLen(values) < max) {
+					values.compute(nums[r], (k, v) -> {
+						if (v == null)
+							return 1;
+						return v + 1;
+					});
+					r++;
+				}
+				while (l < r && maxLen(values) >= max) {
+					values.compute(nums[l], (k, v) -> {
+						if (v == null)
+							return 0;
+						return v - 1;
+					});
+					l++;
+				}
+				minLen = Math.min(minLen, r - l + 1);
+			}
+			return minLen;
+		}
+
+		private int maxLen(Map<Integer, Integer> values) {
+			int maxLen = 0;
+			for (Integer v : values.values()) {
+				maxLen = Math.max(v, maxLen);
+			}
+			return maxLen;
+		}
 	}
 }
