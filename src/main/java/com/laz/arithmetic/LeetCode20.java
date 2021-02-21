@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -418,7 +419,7 @@ public class LeetCode20 {
 					map.get(nums[i])[0]++;
 					map.get(nums[i])[2] = i;
 				} else {
-					//存储三个值，分别是数量，起始位置，结束位置
+					// 存储三个值，分别是数量，起始位置，结束位置
 					map.put(nums[i], new int[] { 1, i, i });
 				}
 			}
@@ -486,6 +487,104 @@ public class LeetCode20 {
 				maxLen = Math.max(v, maxLen);
 			}
 			return maxLen;
+		}
+	}
+
+	// 1438. 绝对差不超过限制的最长连续子数组
+	@Test
+	public void test11() {
+//		Assert.assertEquals(2, new Solution11().longestSubarray(new int[] { 8, 2, 4, 7 }, 4));
+//		Assert.assertEquals(4, new Solution11().longestSubarray(new int[] { 10,1,2,4,7,2 }, 5));
+//		Assert.assertEquals(3, new Solution11().longestSubarray(new int[] { 4,2,2,2,4,4,2,2 }, 0));
+//		Assert.assertEquals(6, new Solution11().longestSubarray(new int[] { 2,2,2,4,4,2,5,5,5,5,5,2
+//				 }, 2));
+		int[] nums = new int[100000];
+		for (int i = 0; i < 100000; i++) {
+			nums[i] = 1;
+		}
+		Assert.assertEquals(100000, new Solution11().longestSubarray(nums, 10));
+	}
+
+	// https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/solution/jue-dui-chai-bu-chao-guo-xian-zhi-de-zui-5bki/
+	class Solution12 {
+		public int longestSubarray(int[] nums, int limit) {
+			TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
+			int n = nums.length;
+			int left = 0, right = 0;
+			int ret = 0;
+			while (right < n) {
+				map.put(nums[right], map.getOrDefault(nums[right], 0) + 1);
+				while (map.lastKey() - map.firstKey() > limit) {
+					map.put(nums[left], map.get(nums[left]) - 1);
+					if (map.get(nums[left]) == 0) {
+						map.remove(nums[left]);
+					}
+					left++;
+				}
+				ret = Math.max(ret, right - left + 1);
+				right++;
+			}
+			return ret;
+		}
+	}
+
+	class Solution11 {
+		public int longestSubarray(int[] nums, int limit) {
+			int l = 0, r = 0;
+			int n = nums.length;
+			List<Integer> list = new ArrayList<>();
+			int len = 0;
+			while (r < n) {
+				int min = nums[r];
+				int max = nums[r];
+				if (list.size() == 0) {
+					list.add(nums[r]);
+				} else {
+					insertValue(list, nums[r]);
+				}
+				min = list.get(0);
+				max = list.get(list.size() - 1);
+				while (r < n - 1 && max - min <= limit) {
+					r++;
+					insertValue(list, nums[r]);
+					min = list.get(0);
+					max = list.get(list.size() - 1);
+				}
+				if (max - min <= limit) {
+					len = Math.max(len, r - l + 1);
+				} else {
+					len = Math.max(len, r - l);
+
+				}
+				while (l < n && max - min > limit) {
+					removeValue(list, nums[l]);
+					l++;
+					min = list.get(0);
+					max = list.get(list.size() - 1);
+				}
+				r++;
+			}
+			return len;
+		}
+
+		private void removeValue(List<Integer> list, int v) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i) == v) {
+					list.remove(i);
+					return;
+				}
+			}
+		}
+
+		private void insertValue(List<Integer> list, int v) {
+			int index = list.size();
+			for (int i = 0; i < list.size(); i++) {
+				if (v <= list.get(i)) {
+					index = i;
+					break;
+				}
+			}
+			list.add(index, v);
 		}
 	}
 }
