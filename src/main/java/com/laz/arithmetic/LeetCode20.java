@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -594,33 +596,33 @@ public class LeetCode20 {
 //		Assert.assertEquals(true, isToeplitzMatrix(new int[][] { { 1, 2, 3, 4 }, { 5, 1, 2, 3 }, { 9, 5, 1, 2 } }));
 //		
 //		Assert.assertEquals(false, isToeplitzMatrix(new int[][] { { 1, 2 }, { 2,2 }}));
-		
-		Assert.assertEquals(true, isToeplitzMatrix(new int[][] { { 18 }, { 66 }}));
+
+		Assert.assertEquals(true, isToeplitzMatrix(new int[][] { { 18 }, { 66 } }));
 	}
 
 	public boolean isToeplitzMatrix(int[][] matrix) {
 		int m = matrix.length;
 		int n = matrix[0].length;
-		
-		for (int i=0;i<m;i++) {
+
+		for (int i = 0; i < m; i++) {
 			int v = matrix[i][0];
-			int y = i+1;
-			int x = 0+1;
-			while (x<n&&y<m) {
-				if (matrix[y][x]!=v) {
+			int y = i + 1;
+			int x = 0 + 1;
+			while (x < n && y < m) {
+				if (matrix[y][x] != v) {
 					return false;
 				}
 				y++;
 				x++;
 			}
 		}
-		
-		for (int i=0;i<n;i++) {
+
+		for (int i = 0; i < n; i++) {
 			int v = matrix[0][i];
-			int x = i+1;
-			int y = 0+1;
-			while (x<n&&y<m) {
-				if (matrix[y][x]!=v) {
+			int x = i + 1;
+			int y = 0 + 1;
+			while (x < n && y < m) {
+				if (matrix[y][x] != v) {
 					return false;
 				}
 				y++;
@@ -628,5 +630,42 @@ public class LeetCode20 {
 			}
 		}
 		return true;
+	}
+
+	// 1052. 爱生气的书店老板
+	@Test
+	public void test13() {
+		Assert.assertEquals(16,
+				maxSatisfied(new int[] { 1, 0, 1, 2, 1, 1, 7, 5 }, new int[] { 0, 1, 0, 1, 0, 1, 0, 1 }, 3));
+		
+		Assert.assertEquals(15,
+				maxSatisfied(new int[] { 1, 0, 1, 2, 1, 1, 7, 5 }, new int[] { 0, 1, 0, 1, 0, 1, 0, 1 }, 2));
+	}
+	//https://leetcode-cn.com/problems/grumpy-bookstore-owner/solution/yong-mi-mi-ji-qiao-wan-liu-zhu-zui-duo-d-py41/
+	public int maxSatisfied(int[] customers, int[] grumpy, int X) {
+		int n = customers.length;
+		int sum = 0;
+		for (int i=0;i<n;i++) {
+			if (grumpy[i] == 0) {
+				sum+=customers[i];
+			}
+		}
+		//生气的 X 分钟内，会让多少顾客不满意
+	    int curValue = 0;
+	    for (int i=0;i<X;i++) {
+	    	if (grumpy[i] == 1) {
+	    		curValue+=customers[i];
+	    	}
+	    }
+	    int resValue = curValue;
+	    //然后利用滑动窗口，每次向右移动一步
+	    for (int i=X;i<n;i++) {
+	    	if (grumpy[i] == 1) 
+	    		curValue += customers[i];
+	    	if (grumpy[i-X] == 1)
+	    		curValue -= customers[i-X];
+	    	resValue = Math.max(resValue, curValue);
+	    }
+	    return sum+resValue;
 	}
 }
