@@ -637,35 +637,65 @@ public class LeetCode20 {
 	public void test13() {
 		Assert.assertEquals(16,
 				maxSatisfied(new int[] { 1, 0, 1, 2, 1, 1, 7, 5 }, new int[] { 0, 1, 0, 1, 0, 1, 0, 1 }, 3));
-		
+
 		Assert.assertEquals(15,
 				maxSatisfied(new int[] { 1, 0, 1, 2, 1, 1, 7, 5 }, new int[] { 0, 1, 0, 1, 0, 1, 0, 1 }, 2));
 	}
-	//https://leetcode-cn.com/problems/grumpy-bookstore-owner/solution/yong-mi-mi-ji-qiao-wan-liu-zhu-zui-duo-d-py41/
+
+	// https://leetcode-cn.com/problems/grumpy-bookstore-owner/solution/yong-mi-mi-ji-qiao-wan-liu-zhu-zui-duo-d-py41/
 	public int maxSatisfied(int[] customers, int[] grumpy, int X) {
 		int n = customers.length;
 		int sum = 0;
-		for (int i=0;i<n;i++) {
+		for (int i = 0; i < n; i++) {
 			if (grumpy[i] == 0) {
-				sum+=customers[i];
+				sum += customers[i];
 			}
 		}
-		//生气的 X 分钟内，会让多少顾客不满意
-	    int curValue = 0;
-	    for (int i=0;i<X;i++) {
-	    	if (grumpy[i] == 1) {
-	    		curValue+=customers[i];
-	    	}
-	    }
-	    int resValue = curValue;
-	    //然后利用滑动窗口，每次向右移动一步
-	    for (int i=X;i<n;i++) {
-	    	if (grumpy[i] == 1) 
-	    		curValue += customers[i];
-	    	if (grumpy[i-X] == 1)
-	    		curValue -= customers[i-X];
-	    	resValue = Math.max(resValue, curValue);
-	    }
-	    return sum+resValue;
+		// 生气的 X 分钟内，会让多少顾客不满意
+		int curValue = 0;
+		for (int i = 0; i < X; i++) {
+			if (grumpy[i] == 1) {
+				curValue += customers[i];
+			}
+		}
+		int resValue = curValue;
+		// 然后利用滑动窗口，每次向右移动一步
+		for (int i = X; i < n; i++) {
+			if (grumpy[i] == 1)
+				curValue += customers[i];
+			if (grumpy[i - X] == 1)
+				curValue -= customers[i - X];
+			resValue = Math.max(resValue, curValue);
+		}
+		return sum + resValue;
 	}
+
+	// 832. 翻转图像
+	@Test
+	public void test14() {
+		Assert.assertArrayEquals(new int[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 1, 1, 1 } },
+				flipAndInvertImage(new int[][] { { 1, 1, 0 }, { 1, 0, 1 }, { 0, 0, 0 } }));
+	}
+
+	public int[][] flipAndInvertImage(int[][] A) {
+		int m = A.length;
+		int n = A[0].length;
+		int[][] newA =new int[m][n];
+		//水平翻转
+		for (int i=0;i<m;i++) {
+			int col = 0;
+			for (int j=n-1;j>=0;j--) {
+				newA[i][col] = A[i][j];
+				col++;
+			}
+		}
+		//反转
+		for (int i=0;i<m;i++) {
+			for (int j=0;j<n;j++) {
+				newA[i][j]=newA[i][j]==0?1:0;
+			}
+		}
+		return newA;
+	}
+
 }
