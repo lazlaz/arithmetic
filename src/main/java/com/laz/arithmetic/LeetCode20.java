@@ -16,6 +16,8 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 public class LeetCode20 {
 	// 480. 滑动窗口中位数
 	@Test
@@ -680,22 +682,69 @@ public class LeetCode20 {
 	public int[][] flipAndInvertImage(int[][] A) {
 		int m = A.length;
 		int n = A[0].length;
-		int[][] newA =new int[m][n];
-		//水平翻转
-		for (int i=0;i<m;i++) {
+		int[][] newA = new int[m][n];
+		// 水平翻转
+		for (int i = 0; i < m; i++) {
 			int col = 0;
-			for (int j=n-1;j>=0;j--) {
+			for (int j = n - 1; j >= 0; j--) {
 				newA[i][col] = A[i][j];
 				col++;
 			}
 		}
-		//反转
-		for (int i=0;i<m;i++) {
-			for (int j=0;j<n;j++) {
-				newA[i][j]=newA[i][j]==0?1:0;
+		// 反转
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				newA[i][j] = newA[i][j] == 0 ? 1 : 0;
 			}
 		}
 		return newA;
 	}
 
+	// 1178. 猜字谜
+	@Test
+	public void test15() {
+		List<Integer> list = new Solution15().findNumOfValidWords(
+				new String[] { "aaaa", "asas", "able", "ability", "actt", "actor", "access" },
+				new String[] { "aboveyz", "abrodyz", "abslute", "absoryz", "actresz", "gaswxyz" });
+		Assert.assertEquals("1,1,3,2,4,0", Joiner.on(",").join(list));
+	}
+
+	// https://leetcode-cn.com/problems/number-of-valid-words-for-each-puzzle/solution/cai-zi-mi-by-leetcode-solution-345u/
+	class Solution15 {
+		public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
+			Map<Integer, Integer> frequency = new HashMap<Integer, Integer>();
+
+			for (String word : words) {
+				int mask = 0;
+				for (int i = 0; i < word.length(); ++i) {
+					char ch = word.charAt(i);
+					mask |= (1 << (ch - 'a'));
+				}
+				// puzzle中单词个数为7，大于7的mask不可能作为谜底
+				if (Integer.bitCount(mask) <= 7) {
+					frequency.put(mask, frequency.getOrDefault(mask, 0) + 1);
+				}
+			}
+			List<Integer> ans = new ArrayList<Integer>();
+			for (String puzzle : puzzles) {
+				int total = 0;
+				//遍历求puzzles除首字母外的每一种子集情况
+				for (int choose = 0; choose < (1 << 6); ++choose) {
+					int mask = 0;
+					for (int i = 0; i < 6; ++i) {
+						if ((choose & (1 << i)) != 0) {
+							mask |= (1 << (puzzle.charAt(i + 1) - 'a'));
+						}
+					}
+					mask |= (1 << (puzzle.charAt(0) - 'a'));
+					if (frequency.containsKey(mask)) {
+						total += frequency.get(mask);
+					}
+				}
+				ans.add(total);
+			}
+
+			return ans;
+		}
+	}
 }
