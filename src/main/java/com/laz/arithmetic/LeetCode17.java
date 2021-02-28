@@ -969,13 +969,13 @@ public class LeetCode17 {
 	// 至少有K个重复字符的最长子串
 	@Test
 	public void test18() {
-		Assert.assertEquals(3, new Solution18().longestSubstring("aaabb", 3));
+	//	Assert.assertEquals(3, new Solution18().longestSubstring("aaabb", 3));
 
-		Assert.assertEquals(5, new Solution18().longestSubstring("ababbc", 2));
+		//	Assert.assertEquals(5, new Solution18_2().longestSubstring("ababbc", 2));
 
-		Assert.assertEquals(5, new Solution18().longestSubstring("aaaaadabcbb", 3));
+		Assert.assertEquals(5, new Solution18_2().longestSubstring("aaaaadabcbb", 3));
 
-		Assert.assertEquals(3, new Solution18().longestSubstring("bbaaacddcaabdbd", 3));
+	//	Assert.assertEquals(3, new Solution18().longestSubstring("bbaaacddcaabdbd", 3));
 	}
 
 	// https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/395-zhi-shao-you-kge-zhong-fu-zi-fu-de-zui-chang-5/
