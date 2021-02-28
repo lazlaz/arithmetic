@@ -728,7 +728,7 @@ public class LeetCode20 {
 			List<Integer> ans = new ArrayList<Integer>();
 			for (String puzzle : puzzles) {
 				int total = 0;
-				//遍历求puzzles除首字母外的每一种子集情况
+				// 遍历求puzzles除首字母外的每一种子集情况
 				for (int choose = 0; choose < (1 << 6); ++choose) {
 					int mask = 0;
 					for (int i = 0; i < 6; ++i) {
@@ -746,5 +746,34 @@ public class LeetCode20 {
 
 			return ans;
 		}
+	}
+
+	// 896. 单调数列
+	@Test
+	public void test16() {
+		Assert.assertEquals(true, isMonotonic(new int[] { 1, 2, 2, 3 }));
+		
+		Assert.assertEquals(true, isMonotonic(new int[] { 6,5,4,4 }));
+		
+		Assert.assertEquals(false, isMonotonic(new int[] { 1,3,2}));
+		
+		Assert.assertEquals(true, isMonotonic(new int[] { 1,1,2}));
+	}
+
+	public boolean isMonotonic(int[] A) {
+		List<Integer> increse = new ArrayList<Integer>();
+		List<Integer> decrease = new ArrayList<Integer>();
+		increse.add(A[0]);
+		decrease.add(A[0]);
+		for (int i=1;i<A.length;i++) {
+			if (A[i]>=increse.get(increse.size()-1)) {
+				increse.add(A[i]);
+			}
+			if (A[i]<=decrease.get(decrease.size()-1)) {
+				decrease.add(A[i]);
+			}
+		}
+		return increse.size()==A.length||decrease.size()==A.length;
+		
 	}
 }
