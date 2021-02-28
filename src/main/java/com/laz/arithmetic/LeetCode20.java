@@ -759,7 +759,22 @@ public class LeetCode20 {
 		
 		Assert.assertEquals(true, isMonotonic(new int[] { 1,1,2}));
 	}
-
+	public boolean isMonotonic2(int[] A) {
+		boolean inc = false,dec=false;
+		for (int i=0;i<A.length-1;i++) {
+			if (A[i]>A[i+1]) {
+				inc=true;
+			}
+			if (A[i]<A[i+1]) {
+				dec=true;
+			}
+			if (inc && dec) {
+				return false;
+			}
+		}
+		return true;
+		
+	}
 	public boolean isMonotonic(int[] A) {
 		List<Integer> increse = new ArrayList<Integer>();
 		List<Integer> decrease = new ArrayList<Integer>();
