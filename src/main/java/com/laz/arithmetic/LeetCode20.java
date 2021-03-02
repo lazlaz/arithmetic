@@ -728,7 +728,7 @@ public class LeetCode20 {
 			List<Integer> ans = new ArrayList<Integer>();
 			for (String puzzle : puzzles) {
 				int total = 0;
-				//遍历求puzzles除首字母外的每一种子集情况
+				// 遍历求puzzles除首字母外的每一种子集情况
 				for (int choose = 0; choose < (1 << 6); ++choose) {
 					int mask = 0;
 					for (int i = 0; i < 6; ++i) {
@@ -745,6 +745,38 @@ public class LeetCode20 {
 			}
 
 			return ans;
+		}
+	}
+
+	// 304. 二维区域和检索 - 矩阵不可变
+	@Test
+	public void test16() {
+		NumMatrix nm = new NumMatrix(new int[][] { { 3, 0, 1, 4, 2 }, { 5, 6, 3, 2, 1 }, { 1, 2, 0, 1, 5 },
+				{ 4, 1, 0, 1, 7 }, { 1, 0, 3, 0, 5 } });
+		Assert.assertEquals(8, nm.sumRegion(2, 1, 4, 3));
+		Assert.assertEquals(11, nm.sumRegion(1, 1, 2, 2));
+		Assert.assertEquals(12, nm.sumRegion(1, 2, 2, 4));
+	}
+
+	// https://leetcode-cn.com/problems/range-sum-query-2d-immutable/solution/ru-he-qiu-er-wei-de-qian-zhui-he-yi-ji-y-6c21/
+	class NumMatrix {
+		private int[][] sums;
+
+		public NumMatrix(int[][] matrix) {
+			int m = matrix.length;
+			if (m > 0) {
+				int n = matrix[0].length;
+				sums = new int[m + 1][n + 1];
+				for (int i = 0; i < m; i++) {
+					for (int j = 0; j < n; j++) {
+						sums[i + 1][j + 1] = sums[i][j + 1] + sums[i + 1][j] - sums[i][j] + matrix[i][j];
+					}
+				}
+			}
+		}
+
+		public int sumRegion(int row1, int col1, int row2, int col2) {
+			return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
 		}
 	}
 }
