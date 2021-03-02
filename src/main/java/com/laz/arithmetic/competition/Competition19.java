@@ -82,4 +82,47 @@ public class Competition19 {
 		return answer;
 
 	}
+
+	// 1770. 执行乘法运算的最大分数
+	@Test
+	public void test3() {
+		Assert.assertEquals(14, maximumScore(new int[] { 1, 2, 3 }, new int[] { 3, 2, 1 }));
+	}
+
+	// https://leetcode-cn.com/problems/maximum-score-from-performing-multiplication-operations/solution/java-dpjie-fa-by-sadfriedrice-8su0/
+	public int maximumScore(int[] nums, int[] multipliers) {
+		int m = multipliers.length;
+		/**
+		 * 
+		 * dp[i][j] i代表左边选取了多少个数时的最大值 j代表右边选取了多少个数时的最大值
+		 * 
+		 * 公式： dp[l][r] = dp[l][r - 1] + mul * （右边最后一个数字); dp[l][r] = max(dp[l][r],dp[l
+		 * - 1][r] + mul * (左边最后一个数字));
+		 */
+		int[][] dp = new int[m + 1][m + 1];
+		dp[1][0] = nums[0] * multipliers[0];
+		dp[0][1] = nums[nums.length - 1] * multipliers[0];
+		for (int i = 2; i <= m; i++) {
+			int mul = multipliers[i - 1];
+			for (int l = 0; l <= i; l++) {
+				int r = i - l;
+				int nums_index = nums.length - (i - l);
+				if (l == 0) {
+					dp[l][r] = dp[l][r - 1] + mul * nums[nums_index];
+					continue;
+				}
+				if (r == 0) {
+					dp[l][r] = dp[l - 1][r] + mul * nums[l - 1];
+					continue;
+				}
+				dp[l][r] = dp[l - 1][r] + mul * nums[l - 1];
+				dp[l][r] = Math.max(dp[l][r], dp[l][r - 1] + mul * nums[nums_index]);
+			}
+		}
+		int ans = Integer.MIN_VALUE;
+		for (int i = 0; i <= m; i++) {
+			ans = Math.max(dp[i][m - i], ans);
+		}
+		return ans;
+	}
 }
