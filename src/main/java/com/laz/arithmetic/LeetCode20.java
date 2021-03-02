@@ -748,9 +748,55 @@ public class LeetCode20 {
 		}
 	}
 
-	// 304. 二维区域和检索 - 矩阵不可变
+	// 896. 单调数列
 	@Test
 	public void test16() {
+		Assert.assertEquals(true, isMonotonic(new int[] { 1, 2, 2, 3 }));
+
+		Assert.assertEquals(true, isMonotonic(new int[] { 6, 5, 4, 4 }));
+
+		Assert.assertEquals(false, isMonotonic(new int[] { 1, 3, 2 }));
+
+		Assert.assertEquals(true, isMonotonic(new int[] { 1, 1, 2 }));
+	}
+
+	public boolean isMonotonic2(int[] A) {
+		boolean inc = false, dec = false;
+		for (int i = 0; i < A.length - 1; i++) {
+			if (A[i] > A[i + 1]) {
+				inc = true;
+			}
+			if (A[i] < A[i + 1]) {
+				dec = true;
+			}
+			if (inc && dec) {
+				return false;
+			}
+		}
+		return true;
+
+	}
+
+	public boolean isMonotonic(int[] A) {
+		List<Integer> increse = new ArrayList<Integer>();
+		List<Integer> decrease = new ArrayList<Integer>();
+		increse.add(A[0]);
+		decrease.add(A[0]);
+		for (int i = 1; i < A.length; i++) {
+			if (A[i] >= increse.get(increse.size() - 1)) {
+				increse.add(A[i]);
+			}
+			if (A[i] <= decrease.get(decrease.size() - 1)) {
+				decrease.add(A[i]);
+			}
+		}
+		return increse.size() == A.length || decrease.size() == A.length;
+
+	}
+
+	// 304. 二维区域和检索 - 矩阵不可变
+	@Test
+	public void test17() {
 		NumMatrix nm = new NumMatrix(new int[][] { { 3, 0, 1, 4, 2 }, { 5, 6, 3, 2, 1 }, { 1, 2, 0, 1, 5 },
 				{ 4, 1, 0, 1, 7 }, { 1, 0, 3, 0, 5 } });
 		Assert.assertEquals(8, nm.sumRegion(2, 1, 4, 3));
