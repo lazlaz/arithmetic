@@ -1,5 +1,7 @@
 package com.laz.arithmetic.competition;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -124,5 +126,44 @@ public class Competition19 {
 			ans = Math.max(dp[i][m - i], ans);
 		}
 		return ans;
+	}
+
+	// 1771. 由子序列构造的最长回文串的长度
+	@Test
+	public void test4() {
+		Assert.assertEquals(5, longestPalindrome("cacb", "cbba"));
+	}
+	//https://leetcode-cn.com/problems/maximize-palindrome-length-from-subsequences/solution/dong-tai-gui-hua-jie-jue-hui-wen-chuan-w-yfvc/
+	public int longestPalindrome(String word1, String word2) {
+		int w1 = word1.length();
+		int w2 = word2.length();
+		int len = w1 + w2;
+		String newWord = new StringBuilder(word1).append(word2).toString();//合并word1,word2形成新的字符串
+		int[][] dp = new int[len][len]; //i,j区间字符串回文最大数
+		// 特殊判断word1的最后一个字符是否与word2第一个字符相等，若相等则res初始化为2.
+		int res = newWord.charAt(w1-1)==newWord.charAt(w1)?2:0;
+		for (int i=0;i<len;i++) {
+			dp[i][i] = 1;
+		}
+		for(int i = 0 ; i < len - 1 ; i ++) {
+            dp[i][i+1] = newWord.charAt(i)==newWord.charAt(i+1)? 2: 1;
+        }
+		for (int l=2;l<len;l++) { //长度区间逐渐增大
+			for (int i=0;i<len-l;i++) { //区间起点
+				int j = i+l; //区间终点
+				if (newWord.charAt(i)==newWord.charAt(j)) {
+					dp[i][j] = dp[i+1][j-1]+2;
+					// 唯一的区别就在于当两端字符相等更新最长回文子串时
+                    // 若 i j 分别属于两个字符串，才更新最终结果值
+					if (i<w1&&j>=w1) {
+						res = Math.max(res, dp[i][j]);
+					}
+				} else {
+					dp[i][j] = Math.max(dp[i][j-1], dp[i+1][j]);
+				}
+			}
+		}
+		return res;
+		
 	}
 }
