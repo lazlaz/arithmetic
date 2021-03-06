@@ -722,7 +722,55 @@ public class LeetCode11 {
 	// 俄罗斯套娃信封问题
 	@Test
 	public void test19() {
-		Assert.assertEquals(3, maxEnvelopes(new int[][] { { 5, 4 }, { 6, 4 }, { 6, 7 }, { 2, 3 } }));
+		Assert.assertEquals(3, new Solution19().maxEnvelopes(new int[][] { { 5, 4 }, { 6, 4 }, { 6, 7 }, { 2, 3 } }));
+	}
+
+	// https://leetcode-cn.com/problems/russian-doll-envelopes/solution/e-luo-si-tao-wa-xin-feng-wen-ti-by-leetc-wj68/
+	class Solution19 {
+		public int maxEnvelopes(int[][] envelopes) {
+			if (envelopes==null || envelopes.length==0) {
+				return 0;
+			}
+			// 先根据第一个元素升序，相同则根据第二个元素降序
+			Arrays.sort(envelopes,new Comparator<int[]>() {
+				@Override
+				public int compare(int[] o1, int[] o2) {
+					if (o1[0]==o2[0]) {
+						return o2[1]-o1[1];
+					}
+					return o1[0]-o2[0];
+				}
+			});
+			
+			//查找第二个序列中最长递增的长度
+			List<Integer> f = new ArrayList<Integer>();
+			f.add(envelopes[0][1]);
+			for (int i=1;i<envelopes.length;i++) {
+				int num = envelopes[i][1];
+				//num大于f中的最大值
+				if (num>f.get(f.size()-1)) {
+					f.add(num);
+				} else {
+					//二分查找num在f中的位置，进行替换
+					//比如原来f中为 1,3,5,10 num=6时，替换为1,3,5,6，这样如果后面有7就可以加入进去，长度更大
+					int index = binarySearch(f,num);
+					f.set(index,num);
+				}
+			}
+			return f.size();
+		}
+		private int binarySearch(List<Integer> f, int target) {
+			int l=0,r=f.size()-1;
+			while (l<r) {
+				int mid = l+(r-l)/2;
+				if (f.get(mid) < target) {
+					l=mid+1;
+				} else {
+					r = mid;
+				}
+			}
+			return l;
+		}
 	}
 
 	public int maxEnvelopes(int[][] envelopes) {
@@ -793,14 +841,14 @@ public class LeetCode11 {
 
 	public boolean PredictTheWinner(int[] nums) {
 		int length = nums.length;
-		//dp[i][j] 表示当数组剩下的部分为下标 i 到下标 j 时
+		// dp[i][j] 表示当数组剩下的部分为下标 i 到下标 j 时
 		int[][] dp = new int[length][length];
 		for (int i = 0; i < length; i++) {
 			dp[i][i] = nums[i];
 		}
 		for (int i = length - 2; i >= 0; i--) {
 			for (int j = i + 1; j < length; j++) {
-				//dp[i][j] 等于取i的值减去对方i+1到j与我方差值 或 取j的值减去对方i到j-1与我方差值中较大的值
+				// dp[i][j] 等于取i的值减去对方i+1到j与我方差值 或 取j的值减去对方i到j-1与我方差值中较大的值
 				dp[i][j] = Math.max(nums[i] - dp[i + 1][j], nums[j] - dp[i][j - 1]);
 			}
 		}
