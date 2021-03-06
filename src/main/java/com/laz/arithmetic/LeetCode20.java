@@ -752,43 +752,77 @@ public class LeetCode20 {
 	@Test
 	public void test16() {
 		Assert.assertEquals(true, isMonotonic(new int[] { 1, 2, 2, 3 }));
-		
-		Assert.assertEquals(true, isMonotonic(new int[] { 6,5,4,4 }));
-		
-		Assert.assertEquals(false, isMonotonic(new int[] { 1,3,2}));
-		
-		Assert.assertEquals(true, isMonotonic(new int[] { 1,1,2}));
+
+		Assert.assertEquals(true, isMonotonic(new int[] { 6, 5, 4, 4 }));
+
+		Assert.assertEquals(false, isMonotonic(new int[] { 1, 3, 2 }));
+
+		Assert.assertEquals(true, isMonotonic(new int[] { 1, 1, 2 }));
 	}
+
 	public boolean isMonotonic2(int[] A) {
-		boolean inc = false,dec=false;
-		for (int i=0;i<A.length-1;i++) {
-			if (A[i]>A[i+1]) {
-				inc=true;
+		boolean inc = false, dec = false;
+		for (int i = 0; i < A.length - 1; i++) {
+			if (A[i] > A[i + 1]) {
+				inc = true;
 			}
-			if (A[i]<A[i+1]) {
-				dec=true;
+			if (A[i] < A[i + 1]) {
+				dec = true;
 			}
 			if (inc && dec) {
 				return false;
 			}
 		}
 		return true;
-		
+
 	}
+
 	public boolean isMonotonic(int[] A) {
 		List<Integer> increse = new ArrayList<Integer>();
 		List<Integer> decrease = new ArrayList<Integer>();
 		increse.add(A[0]);
 		decrease.add(A[0]);
-		for (int i=1;i<A.length;i++) {
-			if (A[i]>=increse.get(increse.size()-1)) {
+		for (int i = 1; i < A.length; i++) {
+			if (A[i] >= increse.get(increse.size() - 1)) {
 				increse.add(A[i]);
 			}
-			if (A[i]<=decrease.get(decrease.size()-1)) {
+			if (A[i] <= decrease.get(decrease.size() - 1)) {
 				decrease.add(A[i]);
 			}
 		}
-		return increse.size()==A.length||decrease.size()==A.length;
-		
+		return increse.size() == A.length || decrease.size() == A.length;
+
+	}
+
+	// 304. 二维区域和检索 - 矩阵不可变
+	@Test
+	public void test17() {
+		NumMatrix nm = new NumMatrix(new int[][] { { 3, 0, 1, 4, 2 }, { 5, 6, 3, 2, 1 }, { 1, 2, 0, 1, 5 },
+				{ 4, 1, 0, 1, 7 }, { 1, 0, 3, 0, 5 } });
+		Assert.assertEquals(8, nm.sumRegion(2, 1, 4, 3));
+		Assert.assertEquals(11, nm.sumRegion(1, 1, 2, 2));
+		Assert.assertEquals(12, nm.sumRegion(1, 2, 2, 4));
+	}
+
+	// https://leetcode-cn.com/problems/range-sum-query-2d-immutable/solution/ru-he-qiu-er-wei-de-qian-zhui-he-yi-ji-y-6c21/
+	class NumMatrix {
+		private int[][] sums;
+
+		public NumMatrix(int[][] matrix) {
+			int m = matrix.length;
+			if (m > 0) {
+				int n = matrix[0].length;
+				sums = new int[m + 1][n + 1];
+				for (int i = 0; i < m; i++) {
+					for (int j = 0; j < n; j++) {
+						sums[i + 1][j + 1] = sums[i][j + 1] + sums[i + 1][j] - sums[i][j] + matrix[i][j];
+					}
+				}
+			}
+		}
+
+		public int sumRegion(int row1, int col1, int row2, int col2) {
+			return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
+		}
 	}
 }

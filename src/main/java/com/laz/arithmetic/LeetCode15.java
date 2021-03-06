@@ -41,7 +41,20 @@ public class LeetCode15 {
 		}
 		return ans;
 	}
-
+	//https://leetcode-cn.com/problems/counting-bits/solution/bi-te-wei-ji-shu-by-leetcode-solution-0t1i/
+	public int[] countBits2(int num) {
+		int[] bits = new int[num+1]; //dp表示i中 1的个数
+		bits[0] = 0;
+		int heightBit = 0;
+		for (int i=1;i<=num;i++) {
+			//是否是2的几次冥
+			if ((i & (i-1)) == 0) {
+				heightBit = i;
+			}
+			bits[i] = bits[i-heightBit]+1;
+		}
+		return bits;
+	}
 	// 有序数组的平方
 	@Test
 	public void test2() {
