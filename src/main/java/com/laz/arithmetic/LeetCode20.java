@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -824,5 +825,45 @@ public class LeetCode20 {
 		public int sumRegion(int row1, int col1, int row2, int col2) {
 			return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
 		}
+	}
+
+	// 分割回文串 II
+	@Test
+	public void test18() {
+		//Assert.assertEquals(1, new Solution18().minCut("aab"));
+		Assert.assertEquals(3, new Solution18().minCut("cabababcbc"));
+//		Assert.assertEquals(0, new Solution18().minCut("a"));
+//		Assert.assertEquals(1, new Solution18().minCut("ab"));
+	}
+	//https://leetcode-cn.com/problems/palindrome-partitioning-ii/solution/fen-ge-hui-wen-chuan-ii-by-leetcode-solu-norx/
+	class Solution18 {
+		public int minCut(String s) {
+			int n = s.length();
+			boolean[][] g = new boolean[n][n];
+			for (int i=0;i<g.length;i++) {
+				Arrays.fill(g[i], true);
+			}
+			for (int i=n-1;i>=0;i--) { //必须从n-1开始，因为这样动态规划全部值才已知
+				for (int j=i+1;j<n;j++) {
+					g[i][j] =  s.charAt(i)==s.charAt(j)&&g[i+1][j-1];//首尾字符串相等，且中间为回文串
+				}
+			}
+			
+			int[] dp = new int[n]; //字符串的前缀s[0..i] 的最少分割次数
+			Arrays.fill(dp, Integer.MAX_VALUE);
+			for (int i=0;i<n;i++) {
+				if (g[0][i]) {
+					dp[i] = 0;
+				} else {
+					for (int j=0;j<i;j++) {
+						if (g[j+1][i]) {
+							dp[i] = Math.min(dp[i], dp[j]+1); 
+						}
+					}
+				}
+			}
+			return dp[n-1];
+		}
+	
 	}
 }
