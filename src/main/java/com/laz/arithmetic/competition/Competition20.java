@@ -1,7 +1,9 @@
 package com.laz.arithmetic.competition;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 
 import org.junit.Assert;
@@ -44,42 +46,97 @@ public class Competition20 {
 	// 5690. 最接近目标价格的甜点成本
 	@Test
 	public void test2() {
-		//	Assert.assertEquals(10, closestCost(new int[] { 1, 7 }, new int[] { 3, 4 }, 10));
-		
-		Assert.assertEquals(17, new Solution2().closestCost(new int[] { 2,3 }, new int[] {4,5,100 }, 18));
-		
-		Assert.assertEquals(100, new Solution2().closestCost(new int[] { 2,3 }, new int[] {1,40,45,97 }, 100));
+		// Assert.assertEquals(10, closestCost(new int[] { 1, 7 }, new int[] { 3, 4 },
+		// 10));
+
+		Assert.assertEquals(17, new Solution2().closestCost(new int[] { 2, 3 }, new int[] { 4, 5, 100 }, 18));
+
+		Assert.assertEquals(100, new Solution2().closestCost(new int[] { 2, 3 }, new int[] { 1, 40, 45, 97 }, 100));
 	}
+
 	class Solution2 {
-		
-		int ans=Integer.MAX_VALUE;
+
+		int ans = Integer.MAX_VALUE;
+
 		public int closestCost(int[] baseCosts, int[] toppingCosts, int target) {
-			for(int i=0;i<baseCosts.length;i++){
-				int sum=baseCosts[i];
-				if(sum==target) return target;
-				dfs(toppingCosts,sum,target,0);
-				if(ans==target) return target;
-				
+			for (int i = 0; i < baseCosts.length; i++) {
+				int sum = baseCosts[i];
+				if (sum == target)
+					return target;
+				dfs(toppingCosts, sum, target, 0);
+				if (ans == target)
+					return target;
+
 			}
 			return ans;
 		}
-		public void dfs(int[] toppingCosts,int sum, int target,int index) {
-			if(Math.abs(sum-target)<Math.abs(ans-target)){
-				ans=sum;
-			}else if(Math.abs(sum-target)==Math.abs(ans-target)&&sum<ans){
-				ans=sum;
-			}else if(sum>target){
+
+		public void dfs(int[] toppingCosts, int sum, int target, int index) {
+			if (Math.abs(sum - target) < Math.abs(ans - target)) {
+				ans = sum;
+			} else if (Math.abs(sum - target) == Math.abs(ans - target) && sum < ans) {
+				ans = sum;
+			} else if (sum > target) {
 				return;
 			}
-			if(sum==target) return;
-			if(index==toppingCosts.length){
+			if (sum == target)
+				return;
+			if (index == toppingCosts.length) {
 				return;
 			}
-			dfs(toppingCosts,sum,target,index+1);
-			dfs(toppingCosts,sum+toppingCosts[index],target,index+1);
-			dfs(toppingCosts,sum+2*toppingCosts[index],target,index+1);
+			dfs(toppingCosts, sum, target, index + 1);
+			dfs(toppingCosts, sum + toppingCosts[index], target, index + 1);
+			dfs(toppingCosts, sum + 2 * toppingCosts[index], target, index + 1);
 		}
 	}
-	
-	
+
+	// 1776. 车队 II
+	@Test
+	public void test4() {
+//		Assert.assertArrayEquals(new double[] { 1.00000, -1.00000, 3.00000, -1.00000 },
+//				new Solution4().getCollisionTimes(new int[][] { { 1, 2 }, { 2, 1 }, { 4, 3 }, { 7, 2 } }), 5);
+		double[] x= new Solution4().getCollisionTimes(new int[][] { { 3, 1 }, { 9, 4 }, { 19, 4 }});
+		System.out.println(Arrays.toString(x));
+	}
+
+	// https://leetcode-cn.com/problems/car-fleet-ii/solution/javadan-diao-zhan-jie-jue-che-dui-zhui-j-8744/
+	class Solution4 {
+		public double[] getCollisionTimes(int[][] cars) {
+			// 单调栈
+			Deque<Integer> stack = new ArrayDeque();
+			int n = cars.length;
+			double[] res = new double[n];
+			for (int i = n - 1; i >= 0; --i) {
+				while (!stack.isEmpty()) {
+					if (cars[i][1] <= cars[stack.peek()][1]) { // 追不上,尝试追前前车
+						stack.pop();
+					} else {
+						// 栈顶车撞不上它前面的车，因此，当前车一定可以撞上栈顶车
+						if (res[stack.peek()] < 0) {
+							break;
+						} else {
+							double v = (double) (cars[stack.peek()][0] - cars[i][0])
+									/ (double)(cars[i][1] - cars[stack.peek()][1]);// 追上的时间
+							if (v > res[stack.peek()]) { // 大于了前车追上前前车的时间，则该车改为追上前前车
+								stack.pop();
+							} else {// 追上
+								break;
+							}
+						}
+
+					}
+
+				}
+				if (stack.isEmpty()) {
+					res[i] = -1;
+				} else {
+					res[i] = (double) (cars[stack.peek()][0] - cars[i][0]) / (double)(cars[i][1] - cars[stack.peek()][1]);
+				}
+				stack.push(i);
+			}
+
+			return res;
+		}
+	}
+
 }
