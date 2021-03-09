@@ -971,19 +971,23 @@ public class LeetCode12 {
 
 		Assert.assertArrayEquals(new int[] { -1, -1, -1, -1, -1 }, nextGreaterElements(new int[] { 1, 1, 1, 1, 1 }));
 	}
-
+//https://leetcode-cn.com/problems/next-greater-element-ii/solution/xia-yi-ge-geng-da-yuan-su-ii-by-leetcode-bwam/
 	public int[] nextGreaterElements(int[] nums) {
-		int[] res = new int[nums.length];
-		Deque<Integer> stack = new LinkedList<>();
-		for (int i = 2 * nums.length - 1; i >= 0; --i) {
-			while (!stack.isEmpty() && nums[stack.peek()] <= nums[i % nums.length]) {
-				stack.pop();
+		int n = nums.length;
+		int[] res = new int[n];
+		Arrays.fill(res, -1);
+		Deque<Integer> stack = new LinkedList();
+		//数值扩大为2*n-1
+		for (int i=0;i<2*n-1;i++) {
+			while (!stack.isEmpty() && nums[i%n]>nums[stack.peek()]) {
+				res[stack.pop()] = nums[i%n];
 			}
-			res[i % nums.length] = stack.isEmpty() ? -1 : nums[stack.peek()];
-			stack.push(i % nums.length);
+			stack.push(i%n);
 		}
 		return res;
 	}
+	
+	
 
 	// 超时
 	public int[] nextGreaterElements2(int[] nums) {
