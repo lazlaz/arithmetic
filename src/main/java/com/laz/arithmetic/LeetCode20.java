@@ -825,4 +825,31 @@ public class LeetCode20 {
 			return sums[row2 + 1][col2 + 1] - sums[row1][col2 + 1] - sums[row2 + 1][col1] + sums[row1][col1];
 		}
 	}
+
+	// 1047. 删除字符串中的所有相邻重复项
+	@Test
+	public void test19() {
+		Assert.assertEquals("ca", new Solution19().removeDuplicates("abbaca"));
+	}
+	class Solution19 {
+		//https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/solution/shan-chu-zi-fu-chuan-zhong-de-suo-you-xi-4ohr/
+		public String removeDuplicates(String S) {
+			//利用sb栈
+			StringBuffer stack = new StringBuffer();
+	        int top = -1;
+	        for (int i = 0; i < S.length(); ++i) {
+	            char ch = S.charAt(i);
+	            if (top >= 0 && stack.charAt(top) == ch) {
+	                stack.deleteCharAt(top);
+	                --top;
+	            } else {
+	                stack.append(ch);
+	                ++top;
+	            }
+	        }
+	        return stack.toString();
+
+		}
+	
+	}
 }
