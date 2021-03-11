@@ -1065,6 +1065,57 @@ public class LeetCode16 {
 		// Assert.assertEquals(3, new Solution19().calculate("1+1+1"));
 		Assert.assertEquals(1, new Solution19().calculate("1-1+1"));
 		Assert.assertEquals(8, new Solution19().calculate("14/3*2"));
+		Assert.assertEquals(1, new Solution19_2().calculate("1-1+1"));
+		Assert.assertEquals(1, new Solution19_2().calculate("1+1-1"));
+	}
+
+	class Solution19_2 {
+		public int calculate(String s) {
+			Deque<Character> opt = new ArrayDeque<Character>();
+			Deque<Integer> nums = new ArrayDeque<Integer>();
+			//去除空格
+			s = s.replace(" ", "");
+			int n = s.length();
+			for (int i=0;i<n;i++) {
+				char c = s.charAt(i);
+				if (c=='+' || c == '-' || c == '*' || c == '/') {
+					opt.push(c);
+				} else {
+					int j = i;
+					int num = 0;
+					while (j<n && Character.isDigit(s.charAt(j))) {
+						if (Character.isDigit(s.charAt(j))) {
+							num = num*10+(s.charAt(j)-'0');
+						}
+						j++;
+					}
+					i=j-1;
+					if (!nums.isEmpty() && !opt.isEmpty() && (opt.peek()=='*' || opt.peek()=='/')) {
+						if (opt.peek()=='*') {
+							nums.push(nums.pop()*num);
+						}
+						if (opt.peek()=='/') {
+							nums.push(nums.pop()/num);
+						}
+						opt.pop();
+					} else {
+						nums.push(num);
+					}
+				}
+			}
+			while (!opt.isEmpty()) {
+				int num1 = nums.pollLast();
+				int num2 = nums.pollLast();
+				if (opt.getLast()=='+') {
+					nums.addLast(num1+num2);
+				}
+				if (opt.getLast()=='-') {
+					nums.addLast(num1-num2);
+				}
+				opt.removeLast();
+			}
+			return nums.peek();
+		}
 	}
 
 	class Solution19 {
