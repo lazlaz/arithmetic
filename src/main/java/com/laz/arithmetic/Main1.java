@@ -10,6 +10,7 @@ import java.util.concurrent.SynchronousQueue;
 
 import org.junit.Test;
 
+
 public class Main1 {
 	@Test
 	//线程交换
