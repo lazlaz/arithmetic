@@ -90,6 +90,7 @@ public class Competition20 {
 		}
 	}
 
+<<<<<<< HEAD
 	// 1776. 车队 II
 	@Test
 	public void test4() {
@@ -139,4 +140,46 @@ public class Competition20 {
 		}
 	}
 
+=======
+	// 1775. 通过最少操作次数使数组的和相等
+	@Test
+	public void test3() {
+		Assert.assertEquals(3, minOperations(new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 2, 2, 2, 2 }));
+	}
+	//https://leetcode-cn.com/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/tong-guo-zui-shao-cao-zuo-ci-shu-shi-shu-o8no/
+	//贪心
+	public int minOperations(int[] nums1, int[] nums2) {
+		int sum1=0;
+		int sum2=0;
+		for (int i=0;i<nums1.length;i++) {
+			sum1+=nums1[i];
+		}
+		for (int i=0;i<nums2.length;i++) {
+			sum2+=nums2[i];
+		}
+		if (sum1==sum2) {
+			return 0;
+		}
+		if (sum1>sum2) {
+			return minOperations(nums2,nums1);
+		}
+		int[] arr = new int[6];//存储1-6之间可以操作的次数
+		for (int num :nums1) {
+			arr[6-num]++; //最多可以加
+		}
+		for (int num :nums2) {
+			arr[num-1]++; //最多可以减
+		}
+		int ans = 0;
+		int diff = sum2-sum1;
+		for (int i=5;i>=1;i--) { //从最大的数开始操作
+			while (arr[i]!=0 && diff>0) {
+				diff-=i;
+				arr[i]--;
+				ans++;
+			}
+		}
+		return diff>0?-1:ans;
+	}
+>>>>>>> branch 'master' of https://github.com/lazlaz/arithmetic.git
 }
