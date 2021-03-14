@@ -863,6 +863,8 @@ public class LeetCode20 {
 				}
 			}
 			return dp[n-1];
+		}
+	}
 	// 1047. 删除字符串中的所有相邻重复项
 	@Test
 	public void test19() {

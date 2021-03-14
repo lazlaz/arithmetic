@@ -90,13 +90,12 @@ public class Competition20 {
 		}
 	}
 
-<<<<<<< HEAD
 	// 1776. 车队 II
 	@Test
 	public void test4() {
 //		Assert.assertArrayEquals(new double[] { 1.00000, -1.00000, 3.00000, -1.00000 },
 //				new Solution4().getCollisionTimes(new int[][] { { 1, 2 }, { 2, 1 }, { 4, 3 }, { 7, 2 } }), 5);
-		double[] x= new Solution4().getCollisionTimes(new int[][] { { 3, 1 }, { 9, 4 }, { 19, 4 }});
+		double[] x = new Solution4().getCollisionTimes(new int[][] { { 3, 1 }, { 9, 4 }, { 19, 4 } });
 		System.out.println(Arrays.toString(x));
 	}
 
@@ -117,7 +116,7 @@ public class Competition20 {
 							break;
 						} else {
 							double v = (double) (cars[stack.peek()][0] - cars[i][0])
-									/ (double)(cars[i][1] - cars[stack.peek()][1]);// 追上的时间
+									/ (double) (cars[i][1] - cars[stack.peek()][1]);// 追上的时间
 							if (v > res[stack.peek()]) { // 大于了前车追上前前车的时间，则该车改为追上前前车
 								stack.pop();
 							} else {// 追上
@@ -131,7 +130,8 @@ public class Competition20 {
 				if (stack.isEmpty()) {
 					res[i] = -1;
 				} else {
-					res[i] = (double) (cars[stack.peek()][0] - cars[i][0]) / (double)(cars[i][1] - cars[stack.peek()][1]);
+					res[i] = (double) (cars[stack.peek()][0] - cars[i][0])
+							/ (double) (cars[i][1] - cars[stack.peek()][1]);
 				}
 				stack.push(i);
 			}
@@ -139,47 +139,45 @@ public class Competition20 {
 			return res;
 		}
 	}
-
-=======
 	// 1775. 通过最少操作次数使数组的和相等
-	@Test
-	public void test3() {
-		Assert.assertEquals(3, minOperations(new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 2, 2, 2, 2 }));
-	}
-	//https://leetcode-cn.com/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/tong-guo-zui-shao-cao-zuo-ci-shu-shi-shu-o8no/
-	//贪心
-	public int minOperations(int[] nums1, int[] nums2) {
-		int sum1=0;
-		int sum2=0;
-		for (int i=0;i<nums1.length;i++) {
-			sum1+=nums1[i];
+		@Test
+		public void test3() {
+			Assert.assertEquals(3, minOperations(new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 2, 2, 2, 2 }));
 		}
-		for (int i=0;i<nums2.length;i++) {
-			sum2+=nums2[i];
-		}
-		if (sum1==sum2) {
-			return 0;
-		}
-		if (sum1>sum2) {
-			return minOperations(nums2,nums1);
-		}
-		int[] arr = new int[6];//存储1-6之间可以操作的次数
-		for (int num :nums1) {
-			arr[6-num]++; //最多可以加
-		}
-		for (int num :nums2) {
-			arr[num-1]++; //最多可以减
-		}
-		int ans = 0;
-		int diff = sum2-sum1;
-		for (int i=5;i>=1;i--) { //从最大的数开始操作
-			while (arr[i]!=0 && diff>0) {
-				diff-=i;
-				arr[i]--;
-				ans++;
+
+		// https://leetcode-cn.com/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/tong-guo-zui-shao-cao-zuo-ci-shu-shi-shu-o8no/
+		// 贪心
+		public int minOperations(int[] nums1, int[] nums2) {
+			int sum1 = 0;
+			int sum2 = 0;
+			for (int i = 0; i < nums1.length; i++) {
+				sum1 += nums1[i];
 			}
+			for (int i = 0; i < nums2.length; i++) {
+				sum2 += nums2[i];
+			}
+			if (sum1 == sum2) {
+				return 0;
+			}
+			if (sum1 > sum2) {
+				return minOperations(nums2, nums1);
+			}
+			int[] arr = new int[6];// 存储1-6之间可以操作的次数
+			for (int num : nums1) {
+				arr[6 - num]++; // 最多可以加
+			}
+			for (int num : nums2) {
+				arr[num - 1]++; // 最多可以减
+			}
+			int ans = 0;
+			int diff = sum2 - sum1;
+			for (int i = 5; i >= 1; i--) { // 从最大的数开始操作
+				while (arr[i] != 0 && diff > 0) {
+					diff -= i;
+					arr[i]--;
+					ans++;
+				}
+			}
+			return diff > 0 ? -1 : ans;
 		}
-		return diff>0?-1:ans;
-	}
->>>>>>> branch 'master' of https://github.com/lazlaz/arithmetic.git
 }
