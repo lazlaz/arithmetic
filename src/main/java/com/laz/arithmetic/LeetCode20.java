@@ -870,25 +870,70 @@ public class LeetCode20 {
 	public void test19() {
 		Assert.assertEquals("ca", new Solution19().removeDuplicates("abbaca"));
 	}
+
 	class Solution19 {
-		//https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/solution/shan-chu-zi-fu-chuan-zhong-de-suo-you-xi-4ohr/
+		// https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/solution/shan-chu-zi-fu-chuan-zhong-de-suo-you-xi-4ohr/
 		public String removeDuplicates(String S) {
-			//利用sb栈
+			// 利用sb栈
 			StringBuffer stack = new StringBuffer();
-	        int top = -1;
-	        for (int i = 0; i < S.length(); ++i) {
-	            char ch = S.charAt(i);
-	            if (top >= 0 && stack.charAt(top) == ch) {
-	                stack.deleteCharAt(top);
-	                --top;
-	            } else {
-	                stack.append(ch);
-	                ++top;
-	            }
-	        }
-	        return stack.toString();
+			int top = -1;
+			for (int i = 0; i < S.length(); ++i) {
+				char ch = S.charAt(i);
+				if (top >= 0 && stack.charAt(top) == ch) {
+					stack.deleteCharAt(top);
+					--top;
+				} else {
+					stack.append(ch);
+					++top;
+				}
+			}
+			return stack.toString();
 
 		}
-	
+
+	}
+
+	// 115. 不同的子序列
+	@Test
+	public void test20() {
+//		Assert.assertEquals(3, new Solution20().numDistinct("rabbbit", "rabbit"));
+//		Assert.assertEquals(5, new Solution20().numDistinct("babgbag", "bag"));
+		Assert.assertEquals(700531452, new Solution20().numDistinct("adbdadeecadeadeccaeaabdabdbcdabddddabcaaadbabaaedeeddeaeebcdeabcaaaeeaeeabcddcebddebeebedaecccbdcbcedbdaeaedcdebeecdaaedaacadbdccabddaddacdddc", "bcddceeeebecbc"));
+		
+	}
+
+	class Solution20 {
+
+		public int numDistinct(String s, String t) {
+			if (t.length() == 0) {
+				return 1;
+			}
+			if (s.length() == 0) {
+				return 0;
+			}
+			int n = t.length();
+			int m = s.length();
+			if (m<n) {
+				return 0;
+			}
+			int[][] dp = new int[m+1][n+1];
+			for (int i=0;i<=m;++i) {
+				dp[i][n] = 1;
+			}
+			for (int i=m-1;i>=0;i--) {
+				char sChar = s.charAt(i);
+				for (int j=n-1;j>=0;j--) {
+					char tChar = t.charAt(j);
+					if (sChar == tChar) {
+						dp[i][j] = dp[i + 1][j + 1] + dp[i + 1][j];
+					} else {
+						dp[i][j] = dp[i+1][j];
+					}
+				}
+			}
+			return dp[0][0];
+		}
+
+		
 	}
 }
