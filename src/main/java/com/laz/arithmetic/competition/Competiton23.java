@@ -113,4 +113,57 @@ public class Competiton23 {
 			return res;
 		}
 	}
+	
+	//1802 有界数组中指定下标处的最大值
+	@Test
+	public void test3() {
+//		Assert.assertEquals(2, new Solution3().maxValue(4, 2, 6));
+//		Assert.assertEquals(3, new Solution3().maxValue(6, 1, 10));
+//		Assert.assertEquals(1, new Solution3().maxValue(4, 0, 4));
+		Assert.assertEquals(155230825, new Solution3().maxValue(6, 2, 931384943));
+	}
+	
+	class Solution3 {
+		public int maxValue(int n,int index,int maxSum) {
+			//二分法
+			int l = 1,r=maxSum;
+			int res=0;
+			while (l<=r) {
+				int mid = l+(r-l)/2; //这种方式可以防止溢出
+				//假设值为mid时，最小的sum值
+				long sum = minSum(mid,n,index);
+				if (sum==maxSum) {
+					return mid;
+				}
+				if (sum<maxSum) {
+					l = mid+1;
+					res=mid;
+				}
+				if (sum>maxSum) {
+					r = mid-1;
+				}
+			}
+			return res;
+		}
+
+		private long minSum(long value, long len, long index) {
+			//index左边的最小和
+			long leftSum=0;
+			if (index>=value) {
+				leftSum=value*(value-1)-(value*(value-1))/2+(index-(value-1));
+			} else {
+				leftSum=index*value-(index*(index+1))/2;
+			}
+			
+			//index右边的最小和
+			long rightSum=0;
+			long rightLen = (len-index)-1;
+			if (rightLen>=value) {
+				rightSum=value*(value-1)-(value*(value-1))/2+(rightLen-(value-1));
+			} else {
+				rightSum=rightLen*value-(rightLen*(rightLen+1))/2;
+			}
+			return (rightSum+leftSum+value);
+		}
+	}
 }
