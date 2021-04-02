@@ -115,4 +115,37 @@ public class LeetCode21 {
 			return sum;
 		}
 	}
+	
+	//面试题 17.21. 直方图的水量
+	@Test
+	public void test4() {
+		Assert.assertEquals(6, new Solution4().trap(new int[] {
+				0,1,0,2,1,0,1,3,2,1,2,1
+		}));
+	}
+	//https://leetcode-cn.com/problems/volume-of-histogram-lcci/solution/zhi-fang-tu-de-shui-liang-by-leetcode-so-7rla/
+	class Solution4 {
+		public int trap(int[] height) {
+			Deque<Integer> stack = new ArrayDeque<Integer>(); //单独递减
+			int n = height.length;
+			int ans = 0;
+			for (int i=0;i<n;i++) {
+				while (!stack.isEmpty()&&height[i]>height[stack.peek()]) {
+					int top = stack.pop();
+					if (stack.isEmpty()) {
+	                    break;
+	                }
+					//有间隙，可放水计算
+					int left = stack.peek();
+					int currWidth=(i-left-1);
+					int currHeight = Math.min(height[left], height[i])-height[top];
+					int area = currWidth*currHeight;
+					ans+=area;
+				}
+				stack.push(i);
+			
+			}
+			return ans;
+		}
+	}
 }
