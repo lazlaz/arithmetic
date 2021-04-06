@@ -115,37 +115,61 @@ public class LeetCode21 {
 			return sum;
 		}
 	}
-	
-	//面试题 17.21. 直方图的水量
+
+	// 面试题 17.21. 直方图的水量
 	@Test
 	public void test4() {
-		Assert.assertEquals(6, new Solution4().trap(new int[] {
-				0,1,0,2,1,0,1,3,2,1,2,1
-		}));
+		Assert.assertEquals(6, new Solution4().trap(new int[] { 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 }));
 	}
-	//https://leetcode-cn.com/problems/volume-of-histogram-lcci/solution/zhi-fang-tu-de-shui-liang-by-leetcode-so-7rla/
+
+	// https://leetcode-cn.com/problems/volume-of-histogram-lcci/solution/zhi-fang-tu-de-shui-liang-by-leetcode-so-7rla/
 	class Solution4 {
 		public int trap(int[] height) {
-			Deque<Integer> stack = new ArrayDeque<Integer>(); //单独递减
+			Deque<Integer> stack = new ArrayDeque<Integer>(); // 单独递减
 			int n = height.length;
 			int ans = 0;
-			for (int i=0;i<n;i++) {
-				while (!stack.isEmpty()&&height[i]>height[stack.peek()]) {
+			for (int i = 0; i < n; i++) {
+				while (!stack.isEmpty() && height[i] > height[stack.peek()]) {
 					int top = stack.pop();
 					if (stack.isEmpty()) {
-	                    break;
-	                }
-					//有间隙，可放水计算
+						break;
+					}
+					// 有间隙，可放水计算
 					int left = stack.peek();
-					int currWidth=(i-left-1);
-					int currHeight = Math.min(height[left], height[i])-height[top];
-					int area = currWidth*currHeight;
-					ans+=area;
+					int currWidth = (i - left - 1);
+					int currHeight = Math.min(height[left], height[i]) - height[top];
+					int area = currWidth * currHeight;
+					ans += area;
 				}
 				stack.push(i);
-			
+
 			}
 			return ans;
+		}
+	}
+
+	@Test
+	// 80. 删除有序数组中的重复项 II
+	public void test5() {
+		Assert.assertEquals(5, new Solution5().removeDuplicates(new int[] { 1, 1, 1, 2, 2, 3 }));
+		Assert.assertEquals(7, new Solution5().removeDuplicates(new int[] { 0, 0, 1, 1, 1, 1, 2, 3, 3 }));
+	}
+
+	class Solution5 {
+		public int removeDuplicates(int[] nums) {
+			int n = nums.length;
+			if (n <= 2) {
+				return n;
+			}
+			int slow = 2, fast = 2;
+			while (fast < n) {
+				if (nums[slow - 2] != nums[fast]) {
+					nums[slow] = nums[fast];
+					++slow;
+				}
+				++fast;
+			}
+			return slow;
 		}
 	}
 }
