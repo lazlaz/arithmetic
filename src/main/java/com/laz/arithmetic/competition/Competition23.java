@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 //https://leetcode-cn.com/contest/weekly-contest-233/
-public class Competiton23 {
+public class Competition23 {
 	// 1801. 积压订单中的订单总数
 	@Test
 	public void test2() {
