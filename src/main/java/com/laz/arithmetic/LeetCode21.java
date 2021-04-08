@@ -172,4 +172,24 @@ public class LeetCode21 {
 			return slow;
 		}
 	}
+	
+	//153. 寻找旋转排序数组中的最小值
+	@Test
+	public void test6() {
+		Assert.assertEquals(1, new Solution6().findMin(new int[] {
+				3,4,5,1,2
+		}));
+	}
+	class Solution6 {
+	    public int findMin(int[] nums) {
+	        Deque<Integer> stack = new ArrayDeque<Integer>();
+	        for (int i=0;i<nums.length;i++) {
+	        	if (!stack.isEmpty()&&stack.peek()>nums[i]) {
+	        		return nums[i];
+	        	} 
+	        	stack.push(nums[i]);
+	        }
+	        return stack.getLast();
+	    }
+	}
 }
