@@ -10,7 +10,7 @@ public class Utils {
 		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));
 		 if (q.peek()==null) {
 			 return null;
-        }
+        } 
 		return rdeserialize(q);
 	}
 	public static int[] listToIntArr(List<Integer> list) {
