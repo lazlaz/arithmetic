@@ -54,7 +54,7 @@ public class Competition25 {
 		List<Integer> list1 = new ArrayList<Integer>();
 		{
 			List<String> lines = IOUtils.readLines(this.getClass().getResourceAsStream("25_3_case_input.txt"));
-			for (String line:lines) {
+			for (String line : lines) {
 				String[] str = line.split(",");
 				for (String num : str) {
 					list1.add(Integer.valueOf(num));
@@ -64,55 +64,120 @@ public class Competition25 {
 		List<Integer> list2 = new ArrayList<Integer>();
 		{
 			List<String> lines = IOUtils.readLines(this.getClass().getResourceAsStream("25_3_case_input2.txt"));
-			for (String line:lines) {
+			for (String line : lines) {
 				String[] str = line.split(",");
 				for (String num : str) {
 					list2.add(Integer.valueOf(num));
 				}
 			}
 		}
-		Assert.assertEquals(999979264, new Solution3().minAbsoluteSumDiff(Utils.listToIntArr(list1),Utils.listToIntArr(list2)));
+		Assert.assertEquals(999979264,
+				new Solution3().minAbsoluteSumDiff(Utils.listToIntArr(list1), Utils.listToIntArr(list2)));
 	}
 
 	class Solution3 {
 		int MOD = 1000_000_007;
+
 		public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
 			int n = nums1.length;
 			int[] minArr = new int[n];
 			long res = 0;
 			TreeSet<Integer> set = new TreeSet<>();
-			for (int i=0;i<n;i++) {
-				minArr[i] = Math.abs(nums1[i]-nums2[i]);
-				res=(res+minArr[i]);
+			for (int i = 0; i < n; i++) {
+				minArr[i] = Math.abs(nums1[i] - nums2[i]);
+				res = (res + minArr[i]);
 				set.add(nums1[i]);
 			}
-			if (res==0) {
+			if (res == 0) {
 				return 0;
 			}
-			//计算每个min可优化的的值
+			// 计算每个min可优化的的值
 			int diff = 0;
-			for (int i=0;i<n;i++) {
-				diff = Math.max(optimize(set,nums2[i],minArr[i]), diff);
+			for (int i = 0; i < n; i++) {
+				diff = Math.max(optimize(set, nums2[i], minArr[i]), diff);
 			}
-			
-			return (int)((res-diff)%MOD);
+
+			return (int) ((res - diff) % MOD);
 		}
 
-		private int optimize(TreeSet<Integer> set,int num2, int source) {
+		private int optimize(TreeSet<Integer> set, int num2, int source) {
 			int floorV = 0;
 			try {
-				floorV=set.floor(num2);
-			} catch(NullPointerException e) {
-				floorV = num2-source;
+				floorV = set.floor(num2);
+			} catch (NullPointerException e) {
+				floorV = num2 - source;
 			}
-			int ceilV  = 0;
+			int ceilV = 0;
 			try {
-				ceilV= set.ceiling(num2);
-			} catch(NullPointerException e) {
-				ceilV = num2-source;
+				ceilV = set.ceiling(num2);
+			} catch (NullPointerException e) {
+				ceilV = num2 - source;
 			}
-			int diff = Math.min(Math.abs(num2-floorV)%MOD, Math.abs(num2-ceilV)%MOD);
-			return source>diff?(source-diff)%MOD:0;
+			int diff = Math.min(Math.abs(num2 - floorV) % MOD, Math.abs(num2 - ceilV) % MOD);
+			return source > diff ? (source - diff) % MOD : 0;
 		}
+	}
+
+	// 1819. 序列中不同最大公约数的数目
+	@Test
+	public void test4() {
+		Assert.assertEquals(5, new Solution4().countDifferentSubsequenceGCDs(new int[] { 6, 10, 3 }));
+	}
+
+	// https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/solution/mei-ju-mei-ge-ke-neng-de-gong-yue-shu-by-rsd3/
+	class Solution4 {
+		public int countDifferentSubsequenceGCDs(int[] nums) {
+			boolean[] visited = new boolean[200005];
+			int max = Integer.MIN_VALUE;
+			for (int num : nums) {
+				visited[num] = true;
+				max = Math.max(max, num);
+			}
+			int count = 0;
+			// 公约数可能的范围【1, max】
+			for (int i = 1; i <= max; i++) {
+				//存在数组中的值符合条件
+				if (visited[i]) {
+					count++;
+					continue;
+				}
+				int commonGCD = -1;
+				// 检查所有i的倍数
+				for (int j = i; j <= max; j += i) {
+					// 在数组中的值，才能组成序列
+					if (visited[j]) {
+						if (commonGCD == -1) {
+							commonGCD = j;
+						} else {
+							commonGCD = gcd(commonGCD, j);
+						}
+					}
+				}
+				// 如果这批序列的最大公约数=i,说明i符合条件
+				if (i == commonGCD) {
+					count++;
+				}
+			}
+			return count;
+		}
+
+		// 遍历效率更高
+		public int gcd(int x, int y) {
+			int temp = 0;
+			while (y != 0) {
+				temp = x % y;
+				x = y;
+				y = temp;
+			}
+			return x;
+		}
+		// 求最大公约数
+//		private int gcd(int x, int y) {
+//			if (x == 0) {
+//				return y;
+//			}
+//			return gcd(y % x, x);
+//		}
+
 	}
 }
