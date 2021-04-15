@@ -2,10 +2,14 @@ package com.laz.arithmetic;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -172,24 +176,57 @@ public class LeetCode21 {
 			return slow;
 		}
 	}
-	
-	//153. 寻找旋转排序数组中的最小值
+
+	// 153. 寻找旋转排序数组中的最小值
 	@Test
 	public void test6() {
-		Assert.assertEquals(1, new Solution6().findMin(new int[] {
-				3,4,5,1,2
-		}));
+		Assert.assertEquals(1, new Solution6().findMin(new int[] { 3, 4, 5, 1, 2 }));
 	}
+
 	class Solution6 {
-	    public int findMin(int[] nums) {
-	        Deque<Integer> stack = new ArrayDeque<Integer>();
-	        for (int i=0;i<nums.length;i++) {
-	        	if (!stack.isEmpty()&&stack.peek()>nums[i]) {
-	        		return nums[i];
-	        	} 
-	        	stack.push(nums[i]);
-	        }
-	        return stack.getLast();
-	    }
+		public int findMin(int[] nums) {
+			Deque<Integer> stack = new ArrayDeque<Integer>();
+			for (int i = 0; i < nums.length; i++) {
+				if (!stack.isEmpty() && stack.peek() > nums[i]) {
+					return nums[i];
+				}
+				stack.push(nums[i]);
+			}
+			return stack.getLast();
+		}
+	}
+
+	// 213. 打家劫舍 II
+	@Test
+	public void test7() {
+		Assert.assertEquals(4, new Solution7().rob(new int[] { 1, 2, 3, 1 }));
+		Assert.assertEquals(3, new Solution7().rob(new int[] { 2, 3, 2 }));
+		Assert.assertEquals(1, new Solution7().rob(new int[] { 1 }));
+		Assert.assertEquals(103, new Solution7().rob(new int[] { 1, 3, 1, 3, 100 }));
+	}
+
+	class Solution7 {
+		public int rob(int[] nums) {
+			int length = nums.length;
+			if (length == 1) {
+				return nums[0];
+			} else if (length == 2) {
+				return Math.max(nums[0], nums[1]);
+			}
+			//偷0~（n-2)之间 或者 偷1~(n-1)之间，去大的值
+			return Math.max(robRange(nums, 0, length - 2), robRange(nums, 1, length - 1));
+		}
+
+		public int robRange(int[] nums, int start, int end) {
+			int n = end-start+1;
+			int[] dp = new int[n];
+			dp[0] = nums[start];
+			dp[1] = Math.max(nums[start], nums[start+1]);
+			for (int i =2; i < n; i++) {
+				dp[i] = Math.max(dp[i-1], dp[i-2]+nums[i+start]);
+			}
+			return dp[n-1];
+		}
+
 	}
 }
