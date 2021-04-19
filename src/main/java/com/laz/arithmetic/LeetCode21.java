@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -213,20 +214,58 @@ public class LeetCode21 {
 			} else if (length == 2) {
 				return Math.max(nums[0], nums[1]);
 			}
-			//偷0~（n-2)之间 或者 偷1~(n-1)之间，去大的值
+			// 偷0~（n-2)之间 或者 偷1~(n-1)之间，去大的值
 			return Math.max(robRange(nums, 0, length - 2), robRange(nums, 1, length - 1));
 		}
 
 		public int robRange(int[] nums, int start, int end) {
-			int n = end-start+1;
+			int n = end - start + 1;
 			int[] dp = new int[n];
 			dp[0] = nums[start];
-			dp[1] = Math.max(nums[start], nums[start+1]);
-			for (int i =2; i < n; i++) {
-				dp[i] = Math.max(dp[i-1], dp[i-2]+nums[i+start]);
+			dp[1] = Math.max(nums[start], nums[start + 1]);
+			for (int i = 2; i < n; i++) {
+				dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i + start]);
 			}
-			return dp[n-1];
+			return dp[n - 1];
 		}
 
+	}
+
+	// 220. 存在重复元素 III
+	@Test
+	public void test8() {
+//		Assert.assertEquals(true, new Solution8().containsNearbyAlmostDuplicate(new int[] {
+//				1,2,3,1
+//		}, 3, 0));
+//		Assert.assertEquals(false, new Solution8().containsNearbyAlmostDuplicate(new int[] {
+//				1,5,9,1,5,9
+//		}, 2, 3));
+		Assert.assertEquals(false, new Solution8().containsNearbyAlmostDuplicate(new int[] { -2147483648, 2147483647
+
+		}, 1, 1));
+	}
+
+	class Solution8 {
+		public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+			int n = nums.length;
+			TreeSet<Long> ts = new TreeSet<>();
+			for (int i = 0; i < n; i++) {
+				Long u = nums[i] * 1L;
+				// 从 ts 中找到小于等于 u 的最大值（小于等于 u 的最接近 u 的数）
+				Long l = ts.floor(u);
+				// 从 ts 中找到大于等于 u 的最小值（大于等于 u 的最接近 u 的数）
+				Long r = ts.ceiling(u);
+				if (l != null && u - l <= t)
+					return true;
+				if (r != null && r - u <= t)
+					return true;
+				// 将当前数加到 ts 中，并移除下标范围不在 [max(0, i - k), i) 的数（维持滑动窗口大小为 k）
+				ts.add(u);
+				if (i >= k)
+					ts.remove(nums[i - k] * 1L);
+			}
+			return false;
+
+		}
 	}
 }
