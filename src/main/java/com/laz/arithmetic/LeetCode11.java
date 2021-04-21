@@ -22,6 +22,8 @@ public class LeetCode11 {
 //		Assert.assertEquals(3, numDecodings("226"));
 //		Assert.assertEquals(0, numDecodings("0"));
 		Assert.assertEquals(0, numDecodings2("01"));
+		Assert.assertEquals(1836311903, numDecodings2("111111111111111111111111111111111111111111111"));
+		//Assert.assertEquals(0, new Solution1().numDecodings("111111111111111111111111111111111111111111111"));
 	}
 
 	public int numDecodings2(String s) {
@@ -57,34 +59,33 @@ public class LeetCode11 {
 	}
 
 	// 回溯算法超时
-	public int numDecodings(String s) {
-		if (s == null) {
-			return 0;
-		}
-		List<List<String>> ret = new ArrayList<List<String>>();
-
-		backtrack(ret, new ArrayList<String>(), 0, s);
-		return ret.size();
-	}
-
-	private void backtrack(List<List<String>> ret, List<String> list, int start, String s) {
-		int len = s.length();
-		if (start < len) {
-			String str = s.substring(start, start + 1);
-			if (Integer.parseInt(str) > 0) {
-				list.add(str);
-				backtrack(ret, list, start + 1, s);
+	class Solution1 {
+		int count = 0;
+		public int numDecodings(String s) {
+			if (s == null) {
+				return 0;
 			}
+			backtrack( 0, s);
+			return count;
 		}
-		if (start + 1 < len) {
-			String str = s.substring(start, start + 2);
-			if (Integer.parseInt(str) <= 26 && Integer.parseInt(str) >= 10) {
-				list.add(str);
-				backtrack(ret, list, start + 2, s);
+		
+		private void backtrack( int start, String s) {
+			int len = s.length();
+			if (start < len) {
+				String str = s.substring(start, start + 1);
+				if (Integer.parseInt(str) > 0) {
+					backtrack(start + 1, s);
+				}
 			}
-		}
-		if (start >= len) {
-			ret.add(new ArrayList<String>(list));
+			if (start + 1 < len) {
+				String str = s.substring(start, start + 2);
+				if (Integer.parseInt(str) <= 26 && Integer.parseInt(str) >= 10) {
+					backtrack(start + 2, s);
+				}
+			}
+			if (start >= len) {
+				count++;
+			}
 		}
 	}
 
