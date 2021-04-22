@@ -268,4 +268,47 @@ public class LeetCode21 {
 
 		}
 	}
+	
+	//363. 矩形区域不超过 K 的最大数值和
+	@Test
+	public void test9() {
+		Assert.assertEquals(2, new Solution9().maxSumSubmatrix(new int[][] {
+			{1,0,1},
+			{0,-2,3}
+		}, 2));
+	}
+	//https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/solution/javacong-bao-li-kai-shi-you-hua-pei-tu-pei-zhu-shi/
+	class Solution9 {
+		public int maxSumSubmatrix(int[][] matrix, int k) {
+			int row = matrix.length;
+			int col = matrix[0].length;
+			int max = Integer.MIN_VALUE;
+			for (int l=0;l<col;l++) { //从左边界开始
+				int[] rowSum = new int[row]; // 左边界改变才算区域的重新开始
+				for (int r=l;r<col;r++) {//右边界
+					for (int i=0;i<row;i++) { //计算每一行的和
+						rowSum[i] += matrix[i][r]; 
+					}
+					// 求 rowSum 连续子数组 的 和
+		            // 和 尽量大，但不大于 k
+		            max = Math.max(max, dpmax(rowSum, k));
+				}
+			}
+			return max;
+	    }
+
+		// 在数组 arr 中，求不超过 k 的最大值
+		private int dpmax(int[] arr, int k) {
+		    // O(rows ^ 2)
+		    int max = Integer.MIN_VALUE;
+		    for (int l = 0; l < arr.length; l++) {
+		        int sum = 0;
+		        for (int r = l; r < arr.length; r++) {
+		            sum += arr[r];
+		            if (sum > max && sum <= k) max = sum;
+		        }
+		    }
+		    return max;
+		}
+	}
 }
