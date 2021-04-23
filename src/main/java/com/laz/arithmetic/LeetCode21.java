@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
@@ -14,6 +15,8 @@ import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode21 {
 	// 456. 132 模式
@@ -268,47 +271,97 @@ public class LeetCode21 {
 
 		}
 	}
-	
-	//363. 矩形区域不超过 K 的最大数值和
+
+	// 363. 矩形区域不超过 K 的最大数值和
 	@Test
 	public void test9() {
-		Assert.assertEquals(2, new Solution9().maxSumSubmatrix(new int[][] {
-			{1,0,1},
-			{0,-2,3}
-		}, 2));
+		Assert.assertEquals(2, new Solution9().maxSumSubmatrix(new int[][] { { 1, 0, 1 }, { 0, -2, 3 } }, 2));
 	}
-	//https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/solution/javacong-bao-li-kai-shi-you-hua-pei-tu-pei-zhu-shi/
+
+	// https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/solution/javacong-bao-li-kai-shi-you-hua-pei-tu-pei-zhu-shi/
 	class Solution9 {
 		public int maxSumSubmatrix(int[][] matrix, int k) {
 			int row = matrix.length;
 			int col = matrix[0].length;
 			int max = Integer.MIN_VALUE;
-			for (int l=0;l<col;l++) { //从左边界开始
+			for (int l = 0; l < col; l++) { // 从左边界开始
 				int[] rowSum = new int[row]; // 左边界改变才算区域的重新开始
-				for (int r=l;r<col;r++) {//右边界
-					for (int i=0;i<row;i++) { //计算每一行的和
-						rowSum[i] += matrix[i][r]; 
+				for (int r = l; r < col; r++) {// 右边界
+					for (int i = 0; i < row; i++) { // 计算每一行的和
+						rowSum[i] += matrix[i][r];
 					}
 					// 求 rowSum 连续子数组 的 和
-		            // 和 尽量大，但不大于 k
-		            max = Math.max(max, dpmax(rowSum, k));
+					// 和 尽量大，但不大于 k
+					max = Math.max(max, dpmax(rowSum, k));
 				}
 			}
 			return max;
-	    }
+		}
 
 		// 在数组 arr 中，求不超过 k 的最大值
 		private int dpmax(int[] arr, int k) {
-		    // O(rows ^ 2)
-		    int max = Integer.MIN_VALUE;
-		    for (int l = 0; l < arr.length; l++) {
-		        int sum = 0;
-		        for (int r = l; r < arr.length; r++) {
-		            sum += arr[r];
-		            if (sum > max && sum <= k) max = sum;
-		        }
-		    }
-		    return max;
+			// O(rows ^ 2)
+			int max = Integer.MIN_VALUE;
+			for (int l = 0; l < arr.length; l++) {
+				int sum = 0;
+				for (int r = l; r < arr.length; r++) {
+					sum += arr[r];
+					if (sum > max && sum <= k)
+						max = sum;
+				}
+			}
+			return max;
+		}
+	}
+
+	// 368. 最大整除子集
+	@Test
+	public void test10() {
+		List<Integer> list = new Solution10().largestDivisibleSubset(new int[] { 1, 2, 3 });
+		Assert.assertEquals("2,1", Joiner.on(",").join(list));
+	}
+
+	// https://leetcode-cn.com/problems/largest-divisible-subset/solution/zui-da-zheng-chu-zi-ji-by-leetcode-solut-t4pz/
+	class Solution10 {
+		public List<Integer> largestDivisibleSubset(int[] nums) {
+			int len = nums.length;
+			Arrays.sort(nums);
+
+			// 第 1 步：动态规划找出最大子集的个数、最大子集中的最大整数
+			int[] dp = new int[len]; //以 nums[i] 为最大整数的「整除子集」的大小
+			Arrays.fill(dp, 1);
+			int maxSize = 1;
+			int maxVal = dp[0];
+			for (int i = 1; i < len; i++) {
+				for (int j = 0; j < i; j++) {
+					// 题目中说「没有重复元素」很重要
+					if (nums[i] % nums[j] == 0) {
+						dp[i] = Math.max(dp[i], dp[j] + 1);
+					}
+				}
+
+				if (dp[i] > maxSize) {
+					maxSize = dp[i];
+					maxVal = nums[i];
+				}
+			}
+
+			// 第 2 步：倒推获得最大子集
+			List<Integer> res = new ArrayList<Integer>();
+			if (maxSize == 1) { //如果是1个的化，随便选择一个
+				res.add(nums[0]);
+				return res;
+			}
+
+			for (int i = len - 1; i >= 0 && maxSize > 0; i--) {
+				if (dp[i] == maxSize && maxVal % nums[i] == 0) {
+					res.add(nums[i]);
+					maxVal = nums[i];
+					maxSize--;
+				}
+			}
+			return res;
+
 		}
 	}
 }
