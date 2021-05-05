@@ -364,4 +364,44 @@ public class LeetCode21 {
 
 		}
 	}
+	
+	//740. 删除并获得点数
+	@Test
+	public void test11() {
+			Assert.assertEquals(6, new Solution11().deleteAndEarn(new int[] {
+					3,4,2
+			}));
+			
+			Assert.assertEquals(9, new Solution11().deleteAndEarn(new int[] {
+					2,2,3,3,3,4
+			}));
+			
+			Assert.assertEquals(4, new Solution11().deleteAndEarn(new int[] {
+					3,1
+			}));
+	}
+	class Solution11 {
+	    public int deleteAndEarn(int[] nums) {
+	    	int len = nums.length;
+	    	if (len == 1) {
+	    		return nums[0];
+	    	}
+	    	int maxVal = Integer.MIN_VALUE;
+	    	for (int i=0;i<nums.length;i++) {
+	    		maxVal = Math.max(maxVal, nums[i]);
+	    	}
+	    	int[] sums = new int[maxVal+1];
+	    	for (int i=0;i<nums.length;i++) {
+	    		sums[nums[i]]+=nums[i];
+	    	}
+	    	//动态规划求最大
+	    	int[] dp = new int[maxVal+1];
+	    	dp[1] = sums[1];
+	    	dp[2] = Math.max(sums[1], sums[2]);
+	    	for (int i=3;i<=maxVal;i++) {
+	    		dp[i] = Math.max(dp[i-1], dp[i-2]+sums[i]);
+	    	}
+	    	return dp[maxVal];
+	    }
+	}
 }
