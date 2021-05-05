@@ -1,6 +1,8 @@
 package com.laz.arithmetic.competition;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.junit.Assert;
@@ -164,6 +166,46 @@ public class Competiton23 {
 				rightSum=rightLen*value-(rightLen*(rightLen+1))/2;
 			}
 			return (rightSum+leftSum+value);
+		}
+	}
+	
+	//1803. 统计异或值在范围内的数对有多少
+	@Test
+	public void test4() {
+		Assert.assertEquals(6, new Solution4().countPairs(new int[] {
+				1,4,2,7
+		}, 2, 6));
+		Assert.assertEquals(8, new Solution4().countPairs(new int[] {
+				9,8,4,2,1
+		}, 5, 14));
+	}
+	class Solution4 {
+		public int countPairs(int[] nums, int low, int high) {
+			Map<String,Boolean> map = new HashMap<>();
+			int n = nums.length;
+			int res = 0;
+			for (int i=0;i<n;i++) {
+				for (int j=i;j<n;j++) {
+					String key = nums[i]+"-"+nums[j];
+					String key2 = nums[j]+"-"+nums[i];
+					if (map.containsKey(key)) {
+						if (map.get(key)) {
+							res++;
+						}
+					} else {
+						int value  = nums[i]^nums[j];
+						if (value>=low && value<=high) {
+							map.put(key, true);
+							map.put(key2, true);
+							res++;
+						} else {
+							map.put(key, false);
+							map.put(key2, false);
+						}
+					}
+				}
+			}
+			return res;
 		}
 	}
 }
