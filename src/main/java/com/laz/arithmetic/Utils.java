@@ -2,6 +2,7 @@ package com.laz.arithmetic;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class Utils {
@@ -9,8 +10,11 @@ public class Utils {
 		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));
 		 if (q.peek()==null) {
 			 return null;
-        }
+        } 
 		return rdeserialize(q);
+	}
+	public static int[] listToIntArr(List<Integer> list) {
+		return list.stream().mapToInt(Integer::valueOf).toArray();
 	}
 	@Deprecated
 	public  static TreeNode  createTree(Integer[] arr,int i) {
