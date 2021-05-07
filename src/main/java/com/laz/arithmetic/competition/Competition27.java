@@ -57,4 +57,39 @@ public class Competition27 {
 	        return ans;
 	    }
 	}
+	
+	//1829. 每个查询的最大异或值
+	@Test
+	public void test3() {
+		Assert.assertArrayEquals(new int[] {0,3,2,3}, new Solution3().getMaximumXor(new int[] {
+				0,1,1,3
+		}, 2));
+		
+		Assert.assertArrayEquals(new int[] {5,2,6,5}, new Solution3().getMaximumXor(new int[] {
+				2,3,4,7
+		}, 3));
+		
+		Assert.assertArrayEquals(new int[] {4,3,6,4,6,7}, new Solution3().getMaximumXor(new int[] {
+				0,1,2,2,5,7
+		}, 3));
+	}
+	class Solution3 {
+	    public int[] getMaximumXor(int[] nums, int maximumBit) {
+	    	//提示：最大值为 2的maximumBit次方-1
+	    	//由于0 <= nums[i] < 2的maximumBit次方这个条件，与k进行异或最大值为每位全位1 ，即2的maximumBit次方-1
+	    	int max = (int) (Math.pow(2, maximumBit)-1);
+	    	int xorValue = 0;
+	    	for (int i=0;i<nums.length;i++) {
+	    		xorValue ^= nums[i];	
+	    	}
+	    	int[] ans  = new int[nums.length];
+	    	int index = 0;
+	    	for (int i=nums.length-1;i>=0;i--) {
+	    		ans[index++] = xorValue^max;
+	    		xorValue = xorValue^nums[i];
+	    		
+	    	}
+	    	return ans;
+	    }
+	}
 }
