@@ -404,4 +404,23 @@ public class LeetCode21 {
 	    	return dp[maxVal];
 	    }
 	}
+	//1486. 数组异或操作
+	@Test
+	public void test12() {
+		Assert.assertEquals(8, new Solution12().xorOperation(5, 0));
+		Assert.assertEquals(8, new Solution12().xorOperation(4, 3));
+		Assert.assertEquals(7, new Solution12().xorOperation(1, 7));
+	}
+	
+	class Solution12 {
+	    public int xorOperation(int n, int start) {
+	    	int[] num = new int[n];
+	    	int res = 0;
+	    	for (int i=0;i<n;i++) {
+	    		num[i] = start + 2*i;
+	    		res = res^num[i];
+	    	}
+	    	return res;
+	    }
+	}
 }
