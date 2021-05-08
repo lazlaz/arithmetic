@@ -328,7 +328,7 @@ public class LeetCode21 {
 			Arrays.sort(nums);
 
 			// 第 1 步：动态规划找出最大子集的个数、最大子集中的最大整数
-			int[] dp = new int[len]; //以 nums[i] 为最大整数的「整除子集」的大小
+			int[] dp = new int[len]; // 以 nums[i] 为最大整数的「整除子集」的大小
 			Arrays.fill(dp, 1);
 			int maxSize = 1;
 			int maxVal = dp[0];
@@ -348,7 +348,7 @@ public class LeetCode21 {
 
 			// 第 2 步：倒推获得最大子集
 			List<Integer> res = new ArrayList<Integer>();
-			if (maxSize == 1) { //如果是1个的化，随便选择一个
+			if (maxSize == 1) { // 如果是1个的化，随便选择一个
 				res.add(nums[0]);
 				return res;
 			}
@@ -364,63 +364,127 @@ public class LeetCode21 {
 
 		}
 	}
-	
-	//740. 删除并获得点数
+
+	// 740. 删除并获得点数
 	@Test
 	public void test11() {
-			Assert.assertEquals(6, new Solution11().deleteAndEarn(new int[] {
-					3,4,2
-			}));
-			
-			Assert.assertEquals(9, new Solution11().deleteAndEarn(new int[] {
-					2,2,3,3,3,4
-			}));
-			
-			Assert.assertEquals(4, new Solution11().deleteAndEarn(new int[] {
-					3,1
-			}));
+		Assert.assertEquals(6, new Solution11().deleteAndEarn(new int[] { 3, 4, 2 }));
+
+		Assert.assertEquals(9, new Solution11().deleteAndEarn(new int[] { 2, 2, 3, 3, 3, 4 }));
+
+		Assert.assertEquals(4, new Solution11().deleteAndEarn(new int[] { 3, 1 }));
 	}
+
 	class Solution11 {
-	    public int deleteAndEarn(int[] nums) {
-	    	int len = nums.length;
-	    	if (len == 1) {
-	    		return nums[0];
-	    	}
-	    	int maxVal = Integer.MIN_VALUE;
-	    	for (int i=0;i<nums.length;i++) {
-	    		maxVal = Math.max(maxVal, nums[i]);
-	    	}
-	    	int[] sums = new int[maxVal+1];
-	    	for (int i=0;i<nums.length;i++) {
-	    		sums[nums[i]]+=nums[i];
-	    	}
-	    	//动态规划求最大
-	    	int[] dp = new int[maxVal+1];
-	    	dp[1] = sums[1];
-	    	dp[2] = Math.max(sums[1], sums[2]);
-	    	for (int i=3;i<=maxVal;i++) {
-	    		dp[i] = Math.max(dp[i-1], dp[i-2]+sums[i]);
-	    	}
-	    	return dp[maxVal];
-	    }
+		public int deleteAndEarn(int[] nums) {
+			int len = nums.length;
+			if (len == 1) {
+				return nums[0];
+			}
+			int maxVal = Integer.MIN_VALUE;
+			for (int i = 0; i < nums.length; i++) {
+				maxVal = Math.max(maxVal, nums[i]);
+			}
+			int[] sums = new int[maxVal + 1];
+			for (int i = 0; i < nums.length; i++) {
+				sums[nums[i]] += nums[i];
+			}
+			// 动态规划求最大
+			int[] dp = new int[maxVal + 1];
+			dp[1] = sums[1];
+			dp[2] = Math.max(sums[1], sums[2]);
+			for (int i = 3; i <= maxVal; i++) {
+				dp[i] = Math.max(dp[i - 1], dp[i - 2] + sums[i]);
+			}
+			return dp[maxVal];
+		}
 	}
-	//1486. 数组异或操作
+
+	// 1486. 数组异或操作
 	@Test
 	public void test12() {
 		Assert.assertEquals(8, new Solution12().xorOperation(5, 0));
 		Assert.assertEquals(8, new Solution12().xorOperation(4, 3));
 		Assert.assertEquals(7, new Solution12().xorOperation(1, 7));
 	}
-	
+
 	class Solution12 {
-	    public int xorOperation(int n, int start) {
-	    	int[] num = new int[n];
-	    	int res = 0;
-	    	for (int i=0;i<n;i++) {
-	    		num[i] = start + 2*i;
-	    		res = res^num[i];
-	    	}
-	    	return res;
-	    }
+		public int xorOperation(int n, int start) {
+			int[] num = new int[n];
+			int res = 0;
+			for (int i = 0; i < n; i++) {
+				num[i] = start + 2 * i;
+				res = res ^ num[i];
+			}
+			return res;
+		}
+	}
+
+	// 1723. 完成所有工作的最短时间
+	@Test
+	public void test13() {
+		Assert.assertEquals(11, new Solution13().minimumTimeRequired(new int[] { 1, 2, 4, 7, 8 }, 2));
+	}
+
+	// https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/solution/wan-cheng-suo-you-gong-zuo-de-zui-duan-s-hrhu/
+	class Solution13 {
+		public int minimumTimeRequired(int[] jobs, int k) {
+			Arrays.sort(jobs);
+			// 翻转数组，使其降序排列，从最大的开始分配
+			reverse(jobs);
+			int l = jobs[0], r = Arrays.stream(jobs).sum();
+			while (l < r) {
+				int mid = (l + r) >> 1;
+				// 如果时间取mid，是否能完成所有工作
+				if (check(jobs, k, mid)) {
+					r = mid;
+				} else {
+					l = mid + 1;
+				}
+
+			}
+			return l;
+		}
+
+		private void reverse(int[] jobs) {
+			int low = 0, high = jobs.length - 1;
+			while (low < high) {
+				int temp = jobs[low];
+				jobs[low] = jobs[high];
+				jobs[high] = temp;
+				low++;
+				high--;
+			}
+		}
+
+		private boolean check(int[] jobs, int k, int limit) {
+			int[] workloads = new int[k];
+			return backtrack(jobs, workloads, 0, limit);
+		}
+
+		// 回溯
+		public boolean backtrack(int[] jobs, int[] workloads, int i, int limit) {
+			if (i >= jobs.length) {
+				return true;
+			}
+			int cur = jobs[i];
+			for (int j = 0; j < workloads.length; ++j) {
+				if (workloads[j] + cur <= limit) {
+					workloads[j] += cur;
+					if (backtrack(jobs, workloads, i + 1, limit)) {
+						return true;
+					}
+					workloads[j] -= cur;
+				}
+				// 如果当前工人未被分配工作，那么下一个工人也必然未被分配工作
+				// 或者当前工作恰能使该工人的工作量达到了上限
+				// 这两种情况下我们无需尝试继续分配工作
+				if (workloads[j] == 0 || workloads[j] + cur == limit) {
+					break;
+				}
+			}
+			return false;
+		}
+
 	}
 }
