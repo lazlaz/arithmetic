@@ -487,4 +487,53 @@ public class LeetCode21 {
 		}
 
 	}
+	
+	//1482. 制作 m 束花所需的最少天数
+	@Test
+	public void test14() {
+		Assert.assertEquals(3, new Solution14().minDays(new int[] {
+				1,10,3,10,2
+		}, 3, 1));
+	}
+	//https://leetcode-cn.com/problems/minimum-number-of-days-to-make-m-bouquets/solution/zhi-zuo-m-shu-hua-suo-xu-de-zui-shao-tia-mxci/
+	class Solution14 {
+	    public int minDays(int[] bloomDay, int m, int k) {
+	    	int dayLen = bloomDay.length;
+	    	if (dayLen/k<m) {
+	    		return -1;
+	    	}
+	    	int low = Integer.MAX_VALUE,high = Integer.MIN_VALUE;
+	    	for (int i=0;i<bloomDay.length;i++) {
+	    		low = Math.min(bloomDay[i], low);
+	    		high = Math.max(bloomDay[i], high);
+	    	}
+	    	while (low<high) {
+	    		int mid = ((high-low)>>1)+low;
+	    		if (check(bloomDay,m,k,mid)) {
+	    			high = mid;
+	    		} else {
+	    			low = mid+1;
+	    		}
+	    	}
+	    	return low;
+	    }
+
+		private boolean check(int[] bloomDay, int m, int k, int day) {
+			int bouquets = 0; //多少束
+	        int flowers = 0; //多少朵
+	        int length = bloomDay.length;
+			for (int i=0;i<length&&bouquets<m;i++) {
+				if (bloomDay[i]<=day) {
+					flowers++;
+					if (flowers==k) {
+						bouquets++;
+						flowers=0;
+					}
+				} else {
+					flowers=0;
+				}
+			}
+			return bouquets>=m;
+		}
+	}
 }
