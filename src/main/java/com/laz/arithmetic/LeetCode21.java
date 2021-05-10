@@ -487,53 +487,91 @@ public class LeetCode21 {
 		}
 
 	}
-	
-	//1482. 制作 m 束花所需的最少天数
+
+	// 1482. 制作 m 束花所需的最少天数
 	@Test
 	public void test14() {
-		Assert.assertEquals(3, new Solution14().minDays(new int[] {
-				1,10,3,10,2
-		}, 3, 1));
+		Assert.assertEquals(3, new Solution14().minDays(new int[] { 1, 10, 3, 10, 2 }, 3, 1));
 	}
-	//https://leetcode-cn.com/problems/minimum-number-of-days-to-make-m-bouquets/solution/zhi-zuo-m-shu-hua-suo-xu-de-zui-shao-tia-mxci/
-	class Solution14 {
-	    public int minDays(int[] bloomDay, int m, int k) {
-	    	int dayLen = bloomDay.length;
-	    	if (dayLen/k<m) {
-	    		return -1;
-	    	}
-	    	int low = Integer.MAX_VALUE,high = Integer.MIN_VALUE;
-	    	for (int i=0;i<bloomDay.length;i++) {
-	    		low = Math.min(bloomDay[i], low);
-	    		high = Math.max(bloomDay[i], high);
-	    	}
-	    	while (low<high) {
-	    		int mid = ((high-low)>>1)+low;
-	    		if (check(bloomDay,m,k,mid)) {
-	    			high = mid;
-	    		} else {
-	    			low = mid+1;
-	    		}
-	    	}
-	    	return low;
-	    }
 
-		private boolean check(int[] bloomDay, int m, int k, int day) {
-			int bouquets = 0; //多少束
-	        int flowers = 0; //多少朵
-	        int length = bloomDay.length;
-			for (int i=0;i<length&&bouquets<m;i++) {
-				if (bloomDay[i]<=day) {
-					flowers++;
-					if (flowers==k) {
-						bouquets++;
-						flowers=0;
-					}
+	// https://leetcode-cn.com/problems/minimum-number-of-days-to-make-m-bouquets/solution/zhi-zuo-m-shu-hua-suo-xu-de-zui-shao-tia-mxci/
+	class Solution14 {
+		public int minDays(int[] bloomDay, int m, int k) {
+			int dayLen = bloomDay.length;
+			if (dayLen / k < m) {
+				return -1;
+			}
+			int low = Integer.MAX_VALUE, high = Integer.MIN_VALUE;
+			for (int i = 0; i < bloomDay.length; i++) {
+				low = Math.min(bloomDay[i], low);
+				high = Math.max(bloomDay[i], high);
+			}
+			while (low < high) {
+				int mid = ((high - low) >> 1) + low;
+				if (check(bloomDay, m, k, mid)) {
+					high = mid;
 				} else {
-					flowers=0;
+					low = mid + 1;
 				}
 			}
-			return bouquets>=m;
+			return low;
 		}
+
+		private boolean check(int[] bloomDay, int m, int k, int day) {
+			int bouquets = 0; // 多少束
+			int flowers = 0; // 多少朵
+			int length = bloomDay.length;
+			for (int i = 0; i < length && bouquets < m; i++) {
+				if (bloomDay[i] <= day) {
+					flowers++;
+					if (flowers == k) {
+						bouquets++;
+						flowers = 0;
+					}
+				} else {
+					flowers = 0;
+				}
+			}
+			return bouquets >= m;
+		}
+	}
+
+	// 872. 叶子相似的树
+	@Test
+	public void test15() {
+		TreeNode root1 = Utils.createTree(new Integer[] { 3, 5, 1, 6, 2, 9, 8, null, null, 7, 4 });
+		TreeNode root2 = Utils
+				.createTree(new Integer[] { 3, 5, 1, 6, 7, 4, 2, null, null, null, null, null, null, 9, 8 });
+		Assert.assertEquals(true, new Solution15().leafSimilar(root1, root2));
+	}
+	//https://leetcode-cn.com/problems/leaf-similar-trees/solution/xiao-ming-zhao-bu-tong-tong-bu-bian-li-b-0te2/
+	class Solution15 {
+		public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+			List<Integer> seq1 = new ArrayList<Integer>();
+			if (root1 != null) {
+				dfs(root1, seq1);
+			}
+
+			List<Integer> seq2 = new ArrayList<Integer>();
+			if (root2 != null) {
+				dfs(root2, seq2);
+			}
+
+			return seq1.equals(seq2);
+		}
+
+		public void dfs(TreeNode node, List<Integer> seq) {
+			if (node.left == null && node.right == null) {
+				seq.add(node.val);
+			} else {
+				if (node.left != null) {
+					dfs(node.left, seq);
+				}
+				if (node.right != null) {
+					dfs(node.right, seq);
+				}
+			}
+		}
+
 	}
 }
