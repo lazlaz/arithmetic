@@ -574,4 +574,35 @@ public class LeetCode21 {
 		}
 
 	}
+	
+	//1734. 解码异或后的排列
+	@Test
+	public void test16() {
+		Assert.assertArrayEquals(new int[] {1,2,3}, new Solution16().decode(new int[] {3,1}));
+		Assert.assertArrayEquals(new int[] {2,4,1,5,3}, new Solution16().decode(new int[] {6,5,4,6}));
+	}
+	//https://leetcode-cn.com/problems/decode-xored-permutation/solution/jie-ma-yi-huo-hou-de-pai-lie-by-leetcode-9gw4/
+	class Solution16 {
+	    public int[] decode(int[] encoded) {
+	    		//计算前n个数异或的结果
+	    		int n = encoded.length+1;
+	    		int total = 0;
+	    		for (int i=1;i<=n;i++) {
+	    			total^=i;
+	    		}
+	    		//计算除perm[0]以外的异或结果
+	    		int odd=0;
+	    		for (int i=1;i<n-1;i+=2) {
+	    			odd ^= encoded[i]; //encoded[i]=perm[i] xor perm[i+1]
+	    		}
+	    		//获取perm中第一个数
+	    		int[] prem = new int[n];
+	    		prem[0] = total^odd;
+	    		//在计算其他数
+	    		for (int i=1;i<n;i++) {
+	    			prem[i] = encoded[i-1]^prem[i-1];
+	    		}
+	    		return prem;
+	    }	
+	}
 }
