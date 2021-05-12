@@ -605,4 +605,47 @@ public class LeetCode21 {
 	    		return prem;
 	    }	
 	}
+	
+	//1310. 子数组异或查询
+	@Test
+	public void test17() {
+		Assert.assertArrayEquals(new int[] {
+				2,7,14,8	
+		}, new Solution17().xorQueries(new int[] {
+				1,3,4,8
+		}, new int[][] {
+			{0,1},{1,2},{0,3},{3,3}
+		}));
+		
+		Assert.assertArrayEquals(new int[] {
+				8,0,4,4
+		}, new Solution17().xorQueries(new int[] {
+				4,8,2,10
+		}, new int[][] {
+			{2,3},{1,3},{0,0},{0,3}
+		}));
+	}
+	class Solution17 {
+	    public int[] xorQueries(int[] arr, int[][] queries) {
+	    	//前缀异或数组
+	    	int n = arr.length;
+	    	int[] xorArr = new int[n];
+	    	xorArr[0] = arr[0];
+	    	for (int i=1;i<n;i++) {
+	    		xorArr[i] = xorArr[i-1]^arr[i];
+	    	}
+	    	int len = queries.length;
+	    	int[] ans = new int[len];
+	    	for (int i=0;i<len;i++) {
+	    		int start = queries[i][0];
+	    		int end = queries[i][1];
+	    		if (start==0) {
+	    			ans[i] = xorArr[end];
+	    		} else {
+	    			ans[i] = xorArr[end] ^ xorArr[start-1];
+	    		}
+	    	}
+	    	return ans;
+	    }
+	}
 }
