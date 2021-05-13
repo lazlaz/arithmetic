@@ -648,4 +648,34 @@ public class LeetCode21 {
 	    	return ans;
 	    }
 	}
+	
+	//1269. 停在原地的方案数
+	@Test
+	public void test18() {
+		Assert.assertEquals(4, new Solution18().numWays(3, 2));
+	}
+	
+	//https://leetcode-cn.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/solution/ting-zai-yuan-di-de-fang-an-shu-by-leetcode-soluti/
+	class Solution18 {
+	    public int numWays(int steps, int arrLen) {
+	    	final int MOD = 1000_000_007;
+	    	int maxColumn = Math.min(arrLen-1, steps);
+	    	//dp[i][j] 表示在 ii 步操作之后，指针位于下标 jj 的方案数
+	    	int[][] dp = new int[steps+1][maxColumn+1];
+	    	//转移方程 dp[i][j]=dp[i−1][j−1]+dp[i−1][j]+dp[i−1][j+1]
+	    	dp[0][0] = 1;
+	    	for (int i=1;i<=steps;i++) {
+	    		for (int j=0;j<=maxColumn;j++) {
+	    			dp[i][j] = dp[i-1][j];
+	    			if (j-1>=0) {//可通过前一步右移得到这一步
+	    				dp[i][j] = (dp[i][j]+dp[i-1][j-1])%MOD;
+	    			}
+	    			if (j+1<=maxColumn) {//可通过前一步左移得到这一步
+	    				dp[i][j] = (dp[i][j]+dp[i-1][j+1])%MOD;
+	    			}
+	    		}
+	    	}
+	    	return dp[steps][0];
+	    }
+	}
 }
