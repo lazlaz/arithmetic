@@ -3,14 +3,12 @@ package com.laz.arithmetic;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.junit.Assert;
@@ -734,5 +732,38 @@ public class LeetCode21 {
 	        dfs(node.right, depth + 1, node);
 	    }
 
+	}
+	
+	//1442 形成两个异或相等数组的三元组数目
+	@Test
+	public void test20() {
+		Assert.assertEquals(4, new Solution20().countTriplets(new int[] {
+				2,3,1,6,7
+		}));
+	}
+	//https://leetcode-cn.com/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/solution/xing-cheng-liang-ge-yi-huo-xiang-deng-sh-jud0/
+	class Solution20 {
+		 public int countTriplets(int[] arr) {
+			 int n = arr.length;
+			 int[] s = new int[n+1];
+			 //求前缀异或和
+			 for (int i=0;i<n;i++) {
+				 s[i+1] = s[i]^arr[i];
+			 }
+			 //存放s[i]的值的数量
+			 Map<Integer,Integer> cnt = new HashMap<>();
+			 //存放i下标之和
+			 Map<Integer,Integer> total = new HashMap<>();
+			 int res = 0;
+			 for (int k=0;k<n;k++) {
+				 if (cnt.containsKey(s[k+1])) {
+					 //公式 res = 下标k*当前异或值数量-(等于当前异或值下标和）
+					 res += (cnt.get(s[k+1])*k-total.get(s[k+1]));
+				 }
+				 cnt.put(s[k], cnt.getOrDefault(s[k], 0)+1);
+				 total.put(s[k], total.getOrDefault(s[k], 0)+k);
+			 }
+			 return res;
+		 }
 	}
 }
