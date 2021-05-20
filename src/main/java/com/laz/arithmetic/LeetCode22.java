@@ -1,13 +1,16 @@
 package com.laz.arithmetic;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
 
 public class LeetCode22 {
 	// 1738. 找出第 K 大的异或坐标值
@@ -37,5 +40,51 @@ public class LeetCode22 {
 			}
 			return queue.peek();
 		}
+	}
+	
+	//692. 前K个高频单词
+	@Test
+	public void test2() {
+		Assert.assertEquals("i,love", Joiner.on(",").join(new Solution2().topKFrequent(new String[] {
+				"i", "love", "leetcode", "i", "love", "coding"
+		}, 2)));
+	}
+	class Solution2 {
+		class Word {
+			String word;
+			int count;
+		}
+	    public List<String> topKFrequent(String[] words, int k) {
+	    	Map<String,Integer> wordMap = new HashMap<String,Integer>();
+	    	for (int i=0;i<words.length;i++) {
+	    		wordMap.put(words[i], wordMap.getOrDefault(words[i], 0)+1);
+	    	}
+	    	PriorityQueue<Word> wordStack = new PriorityQueue<Word>(new Comparator<Word>() {
+
+				@Override
+				public int compare(Word o1, Word o2) {
+					if (o1.count>o2.count) {
+						return -1;
+					}
+					if (o1.count<o2.count) {
+						return 1;
+					}
+					return o1.word.compareTo(o2.word);
+				}
+			});
+	    	for (Map.Entry<String,Integer> entry : wordMap.entrySet()) {
+				Word w = new Word();
+				w.count = entry.getValue();
+				w.word = entry.getKey();
+				wordStack.add(w);
+			}
+	    	List<String> res = new ArrayList<>();
+	    	int index = 0;
+	    	while (!wordStack.isEmpty() && index<k) {
+	    		res.add(wordStack.poll().word);
+	    		index++;
+	    	}
+	    	return res;
+	    }
 	}
 }
