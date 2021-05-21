@@ -87,4 +87,34 @@ public class LeetCode22 {
 	    	return res;
 	    }
 	}
+	
+	//1035. 不相交的线
+	@Test
+	public void test3() {
+		Assert.assertEquals(2, new Solution3().maxUncrossedLines(new int[] {
+				1,4,2
+		}, new int[] {
+				1,2,4
+		}));
+	}
+	//https://leetcode-cn.com/problems/uncrossed-lines/solution/bu-xiang-jiao-de-xian-by-leetcode-soluti-6tqz/
+	class Solution3 {
+	    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+	    	//最长公共子序列
+	    	int m = nums1.length,n = nums2.length;
+	    	int[][]dp = new int[m+1][n+1];
+	    	for (int i=1;i<=m;i++) {
+	    		int num1 = nums1[i-1];
+	    		for (int j=1;j<=n;j++) {
+	    			int num2 = nums2[j-1];
+	    			if (num1 == num2) {
+	    				dp[i][j] = dp[i-1][j-1]+1;
+	    			} else {
+	    				dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+	    			}
+	    		}
+	    	}
+	    	return dp[m][n];
+	    }
+	}
 }
