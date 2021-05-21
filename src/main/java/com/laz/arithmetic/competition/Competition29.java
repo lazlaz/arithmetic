@@ -1,7 +1,10 @@
 package com.laz.arithmetic.competition;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -76,16 +79,18 @@ public class Competition29 {
 			int[] numK = intnum;
 			int res = 0;
 			// 2 为了得到numK字符串原字符串交换的次数
-			for (int i=0;i<len;i++) {
-				//此位置不相等，需要进行交换
+			for (int i = 0; i < len; i++) {
+				// 此位置不相等，需要进行交换
 				if (beginnum[i] != numK[i]) {
-					int j = i+1;
-	                while(beginnum[j]!=numK[i]){j++;}//找到相同数据，开始交换
-	                while(j != i){
-	                    swap(beginnum, j-1, j);//只能两两交换
-	                    res++;
-	                    j--;
-	                }
+					int j = i + 1;
+					while (beginnum[j] != numK[i]) {
+						j++;
+					} // 找到相同数据，开始交换
+					while (j != i) {
+						swap(beginnum, j - 1, j);// 只能两两交换
+						res++;
+						j--;
+					}
 				}
 			}
 			return res;
@@ -114,12 +119,63 @@ public class Competition29 {
 			return nums;
 
 		}
-		//交换nums数组第i和第j处的元素
-	    public void swap(int[] nums, int i, int j){
-	        int m = nums[i];
-	        nums[i] = nums[j];
-	        nums[j] = m;
-	    }
 
+		// 交换nums数组第i和第j处的元素
+		public void swap(int[] nums, int i, int j) {
+			int m = nums[i];
+			nums[i] = nums[j];
+			nums[j] = m;
+		}
+
+	}
+
+	// 1851. 包含每个查询的最小区间
+	@Test
+	public void test4() {
+		Assert.assertArrayEquals(new int[] { 3, 3, 1, 4 }, new Solution4()
+				.minInterval(new int[][] { { 1, 4 }, { 2, 4 }, { 3, 6 }, { 4, 4 } }, new int[] { 2, 3, 4, 5 }));
+	}
+
+	// https://leetcode-cn.com/problems/minimum-interval-to-include-each-query/solution/javayou-xian-ji-dui-lie-jie-ti-qian-xian-v4s6/
+	class Solution4 {
+		public int[] minInterval(int[][] intervals, int[] queries) {
+	    	// intervals根据最边排序
+	    	Arrays.sort(intervals,(o1,o2)->(o1[0]-o2[0]));
+	    	// queries 升序 并记录queries小标
+	    	int len = queries.length;
+	    	int[][] que = new int[len][2];
+	    	 for(int i = 0; i < queries.length; ++i) {
+	             que[i][0] = queries[i];
+	             que[i][1] = i;
+	         }
+	         //将值排序，小的在前
+	         Arrays.sort(que, (o1, o2) -> (o1[0] - o2[0]));
+	    	int[] res = new int[len];
+	    	Arrays.fill(res, -1);
+	        //优先级队列，区间长度小的区间优先，在队列头
+	        PriorityQueue<int[]> queue = new PriorityQueue<int[]>((o1, o2) -> ((o1[1] - o1[0]) - (o2[1] - o2[0])));
+	        //记录第几个区间，因为intervals和queries都是排好序的，所以用index记录目前走到哪里了
+	        int index = 0;
+	    	for (int i=0;i<len;i++) {
+	    		//因为后续的query比当前的大，不满足当前条件的interval,肯定也不再后续中
+	    		//先把区间左边界小于等于queries[i]的区间加进去
+	            while(index < intervals.length && que[i][0] >= intervals[index][0]) {
+	                queue.offer(new int[]{intervals[index][0], intervals[index][1]});
+	                ++index;
+	            }
+	    		//如果右边界小于queries就移除
+	            while (!queue.isEmpty() && queue.peek()[1]<que[i][0]) {
+	            	queue.poll();
+	            }
+	            //从queue选取头元素，即为本次答案
+	            if (!queue.isEmpty()) {
+	            	int[] interval = queue.peek();
+	            	//序号保持
+	            	res[que[i][1]] = interval[1]-interval[0]+1;
+	            }
+	    	}
+	    	
+	    	return res;
+	    }
 	}
 }
