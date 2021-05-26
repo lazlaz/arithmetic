@@ -2,7 +2,9 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -115,6 +117,39 @@ public class LeetCode22 {
 	    		}
 	    	}
 	    	return dp[m][n];
+	    }
+	}
+	
+	//1190. 反转每对括号间的子串
+	@Test
+	public void test4() {
+		Assert.assertEquals("iloveu", new Solution4().reverseParentheses("(u(love)i)"));
+		Assert.assertEquals("dcba", new Solution4().reverseParentheses("(abcd)"));
+		Assert.assertEquals("leetcode", new Solution4().reverseParentheses("(ed(et(oc))el)"));
+		Assert.assertEquals("apmnolkjihgfedcbq", new Solution4().reverseParentheses("a(bcdefghijkl(mno)p)q"));
+	}
+	class Solution4 {
+	    public String reverseParentheses(String s) {
+	    	if (s.length()==0) {
+	    		return s;
+	    	}
+	    	char[] chars = s.toCharArray();
+	    	Deque<StringBuilder> stack = new LinkedList<>();
+	    	StringBuilder sb = new StringBuilder();
+	    	for (int i=0;i<chars.length;i++) {
+	    		char c = chars[i];
+	    		if (c == '(') {
+	    			stack.push(new StringBuilder(sb));
+	    			sb = new StringBuilder();
+	    		} else if (c == ')') {
+	    			StringBuilder sb2 = stack.pop();
+	    			sb2.append(sb.reverse().toString());
+	    			sb = sb2;
+	    		} else {
+	    			sb.append(c);
+	    		}
+	    	}
+	    	return sb.toString();
 	    }
 	}
 }
