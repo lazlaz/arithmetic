@@ -44,4 +44,41 @@ public class Competition30 {
 			return actualHour <= hour;
 		}
 	}
+	
+
+	//1871. 跳跃游戏 VII
+	@Test
+	public void test3() {
+		Assert.assertEquals(true, new Solution3().canReach("011010", 2, 3));
+	}
+	//https://leetcode-cn.com/problems/jump-game-vii/solution/tiao-yue-you-xi-vii-by-leetcode-solution-rsyv/
+	class Solution3 {
+	    public boolean canReach(String s, int minJump, int maxJump) {
+	    	//动态规划
+	    	int n = s.length();
+	    	int[] dp = new int[n]; //能够顺利达到i，且i对应的值为0，为true
+	    	int[] pre = new int[n]; //dp[i]前缀和，true为1，false为0，降低时间复杂度
+	    	dp[0] = 1;
+	    	for (int i=0;i<minJump;i++) {
+	    		pre[i] = 1; //minJump之前的点不能正常达到，所以前缀和为1
+	    	}
+	    	for (int i=minJump;i<n;i++) {
+	    		int right = i-minJump;
+	    		int left = i-maxJump;
+	    		if (s.charAt(i) == '0') {
+	    			int v = pre[right]- (left>0?pre[left-1]:0);
+	    			if (v>0) { //说明有位置能够顺利到达i
+	    				dp[i] = 1;
+	    			} else {
+	    				dp[i] = 0;
+	    			}
+	    		} else {
+	    			dp[i] = 0;
+	    		}
+	    		pre[i] = pre[i-1]+dp[i];
+	    		
+	    	}
+	    	return dp[n-1]==1;
+	    }
+	}
 }
