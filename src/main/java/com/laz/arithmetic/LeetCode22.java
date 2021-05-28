@@ -152,4 +152,26 @@ public class LeetCode22 {
 	    	return sb.toString();
 	    }
 	}
+	//477. 汉明距离总和
+	@Test
+	public void test5() {
+		Assert.assertEquals(6, new Solution5().totalHammingDistance(new int[] {
+				4, 14, 2
+		}));
+	}
+	//https://leetcode-cn.com/problems/total-hamming-distance/solution/yi-ming-ju-chi-zong-he-by-leetcode-solut-t0ev/
+	class Solution5 {
+	    public int totalHammingDistance(int[] nums) {
+	    	  int ans = 0, n = nums.length;
+	          for (int i = 0; i < 30; ++i) {
+	              int c = 0;
+	              for (int val : nums) {
+	                  c += (val >> i) & 1;
+	              }
+	              ans += c * (n - c);
+	          }
+	          return ans;
+
+	    }
+	}
 }
