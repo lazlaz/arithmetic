@@ -81,4 +81,31 @@ public class Competition30 {
 	    	return dp[n-1]==1;
 	    }
 	}
+	
+	//1872. 石子游戏 VIII
+	@Test
+	public void test4() {
+		Assert.assertEquals(5, new Solution4().stoneGameVIII(new int[] {
+				-1,2,-3,4,-5
+		}));
+	}
+	//https://leetcode-cn.com/problems/stone-game-viii/solution/shi-zi-you-xi-viii-by-leetcode-solution-e8dx/
+	class Solution4 {
+	    public int stoneGameVIII(int[] stones) {
+	    	//前缀和
+	    	int n = stones.length;
+	    	int[]  pre = new int[n+1];
+	    	for (int i=0;i<n;i++) {
+	    		pre[i+1] = pre[i]+stones[i];
+	    	}
+	    	//动态规划，dp[i]表示当Alice 可以选择的下标 u 在 [i,n) 范围内时，Alice 与 Bob 分数的最大差值。
+	    	int[] dp = new int[n];
+	    	dp[n-1] = pre[n];
+	    	for (int i=n-2;i>=1;i--) {
+	    		dp[i] = Math.max(dp[i+1], pre[i+1]-dp[i+1]);//转移方程
+	    	}
+	    	return dp[1]; //条件x>1,至少选择两个
+	    	
+	    }
+	}
 }
