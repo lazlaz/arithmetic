@@ -174,4 +174,41 @@ public class LeetCode22 {
 
 	    }
 	}
+	
+	//1744. 你能在你最喜欢的那天吃到你最喜欢的糖果吗？
+	@Test
+	public void test6() {
+		Assert.assertArrayEquals(new boolean[] {
+				true,false,true
+		}, new Solution6().canEat(new int[] {
+				7,4,5,3,8
+		}, new int[][] {
+			{0,2,2},{4,2,4},{2,13,1000000000}
+		}));
+	}
+	class Solution6 {
+	    public boolean[] canEat(int[] candiesCount, int[][] queries) {
+	    	int  n = candiesCount.length;
+	    	//前缀和 用long 范围
+	    	long[] pre = new long[n+1]; 
+	    	for (int i=1;i<=n;i++) {
+	    		pre[i] = pre[i-1]+candiesCount[i-1];
+	    	}
+	    	int len = queries.length;
+	    	boolean[] ans = new boolean[len];
+	    	for (int i=0;i<len;i++) {
+	    		int[] query = queries[i];
+	    		int favoriteType = query[0], favoriteDay = query[1], dailyCap = query[2];
+	    		//求query的区间
+	    		long x1 = favoriteDay +1;
+	    		long y1 = (long)(favoriteDay+1)*dailyCap;
+	    		
+	    		//能够吃到i类糖果的区间
+	    		long x2 = favoriteType ==0?1:pre[favoriteType]+1;
+	    		long y2 = pre[favoriteType+1];
+	    		ans[i] = !(x1>y2||y1<x2);
+	    	}
+	    	return ans;
+	    }
+	}
 }
