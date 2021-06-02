@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -209,6 +211,38 @@ public class LeetCode22 {
 	    		ans[i] = !(x1>y2||y1<x2);
 	    	}
 	    	return ans;
+	    }
+	}
+	
+	//523. 连续的子数组和
+	@Test
+	public void test7() {
+//		Assert.assertEquals(true, new Solution7().checkSubarraySum(new int[] {
+//				23,2,4,6,7
+//		}, 6));
+		Assert.assertEquals(true, new Solution7().checkSubarraySum(new int[] {
+				5,0,0,0
+		}, 3));
+	}
+	class Solution7 {
+	    public boolean checkSubarraySum(int[] nums, int k) {
+	    		//提示：要使得两者除 k相减为整数，需要满足 sum[j] 和 sum[i - 1] 对 k取余相同。
+	    		int n = nums.length;
+	    		if (n<2) {
+	    			return false;
+	    		}
+	    		int[] preSum = new int[n+1];
+	    		for (int i=1;i<preSum.length;i++) {
+	    			preSum[i] = preSum[i-1]+nums[i-1];
+	    		}
+	    		Set<Integer> set = new HashSet<>();
+	    		for (int i=2;i<preSum.length;i++) {
+	    			set.add(preSum[i-2]%k); //添加当前值左移2的位的值，因为不少于2 的长度
+	    			if (set.contains(preSum[i]%k)) {
+	    				return true;
+	    			}
+	    		}
+	    		return false;
 	    }
 	}
 }
