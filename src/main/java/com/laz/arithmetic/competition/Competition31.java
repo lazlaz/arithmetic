@@ -89,7 +89,7 @@ public class Competition31 {
 		class Server {
 			int index;
 			int weight;
-			long time; //什么时间恢复空闲状态，默认0
+			long time; //什么时间恢复空闲状态，默认0 考虑task过多超出int范围
 			
 			@Override
 			public boolean equals(Object obj) {
