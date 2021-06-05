@@ -243,4 +243,44 @@ public class Competition31 {
 	    	return ans;
 	    }
 	}
+	
+	//1883. 准时抵达会议现场的最小跳过休息次数
+	@Test
+	public void test4() {
+		Assert.assertEquals(1, new Solution4().minSkips(new int[] {
+				1,3,2
+		}, 4, 2));
+	}
+	//https://leetcode-cn.com/problems/minimum-skips-to-arrive-at-meeting-on-time/solution/minimum-skips-to-arrive-at-meeting-on-ti-dp7v/
+	class Solution4 {
+		static final double EPS = 1e-7;//控制取整是的精度差
+	    public int minSkips(int[] dist, int speed, int hoursBefore) {
+	    	int n = dist.length;
+	    	double[][] dp = new double[n+1][n+1];//表示经过了dist[0] 到dist[i−1] 的 i 段道路，并且跳过了 j 次的最短用时
+	    	for (int i=0;i<n+1;i++) {
+	    		Arrays.fill(dp[i], Integer.MAX_VALUE);
+	    	}
+	    	dp[0][0] = 0;
+	    	for (int i=1;i<=n;i++) {
+	    		for (int j=0;j<=i;j++) {
+	    			//j==i时，最后一步无法跳过
+	    			if (j != i) {
+	                    dp[i][j] = Math.min(dp[i][j], Math.ceil(dp[i - 1][j] + (double)dist[i - 1] / speed - EPS));
+	                }
+	                if (j != 0) {
+	                	dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - 1] + (double)dist[i - 1] / speed);
+	                }
+
+	    		}
+	    	}
+	    	//找到dp[n][j]满足条件最小的j
+	    	for (int j = 0; j <= n; ++j) {
+	            if (dp[n][j] < (hoursBefore + EPS)) {
+	                return j;
+	            }
+	        }
+	        return -1;
+
+	    }
+	}
 }
