@@ -1,5 +1,9 @@
 package com.laz.arithmetic.competition;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -81,5 +85,49 @@ public class Competition32 {
 	    	return false;
 			
 		}
+	}
+	
+	//5777. 使数组元素相等的减少操作次数
+	@Test
+	public void test2() {
+		Assert.assertEquals(3, new Solution2().reductionOperations(new int[] {
+				5,1,3
+		}));
+		
+		Assert.assertEquals(4, new Solution2().reductionOperations(new int[] {
+				1,1,2,2,3
+		}));
+		
+		Assert.assertEquals(45, new Solution2().reductionOperations(new int[] {
+				7,9,10,8,6,4,1,5,2,3
+		}));
+		
+		
+	}
+	class Solution2 {
+	    public int reductionOperations(int[] nums) {
+	    	//根据key降序
+	    	TreeMap<Integer,Integer> map = new TreeMap<>((o1,o2)->{
+	    		return o2-o1;
+	    	});
+	    	for (int i=0;i<nums.length;i++) {
+	    		int v = map.getOrDefault(nums[i], 0);
+	    		map.put(nums[i], ++v);
+	    	}
+	    	int sum = 0;
+	    	int lastV = 0;
+	    	
+	    	for (Map.Entry<Integer,Integer> entry:map.entrySet()) {
+	    		//最后一个数不用管
+	    		if (entry.getKey() == map.lastKey()) {
+	    			break;
+	    		}
+	    		int total = lastV+entry.getValue(); 
+	    		//该值变为下一个值的次数
+	    		lastV  = total;
+	    		sum += total;
+	    	}
+	    	return sum;
+	    }
 	}
 }
