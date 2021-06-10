@@ -245,4 +245,35 @@ public class LeetCode22 {
 	    		return false;
 	    }
 	}
+	
+	//518. 零钱兑换 II
+	@Test
+	public void test8() {
+		Assert.assertEquals(4, new Solution8().change(5, new int[] {
+				1,2,5
+		}));
+		
+		Assert.assertEquals(0, new Solution8().change(3, new int[] {
+				2
+		}));
+		
+		Assert.assertEquals(1, new Solution8().change(0, new int[] {
+				7
+		}));
+	}
+	//https://leetcode-cn.com/problems/coin-change-2/solution/gong-shui-san-xie-xiang-jie-wan-quan-bei-6hxv/
+	class Solution8 {
+		public int change(int cnt, int[] cs) {
+			int n = cs.length;
+	        int[] f = new int[cnt + 1]; 
+	        f[0] = 1;
+	        for (int i = 1; i <= n; i++) {
+	            int val = cs[i - 1];
+	            for (int j = val; j <= cnt; j++) {
+	                f[j] += f[j - val];
+	            }
+	        }
+	        return f[cnt];
+		}
+	}
 }
