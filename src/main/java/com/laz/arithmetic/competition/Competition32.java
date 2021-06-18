@@ -130,4 +130,43 @@ public class Competition32 {
 	    	return sum;
 	    }
 	}
+	
+	//1888. 使二进制字符串字符交替的最少反转次数
+	@Test
+	public void test3() {
+		Assert.assertEquals(2, new Solution3().minFlips("111000"));
+	}
+	//https://leetcode-cn.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/solution/minimum-number-of-flips-by-ikaruga-lu32/
+	class Solution3 {
+	    public int minFlips(String s) {
+
+	    	String target = "01";
+	    	//达到01的结果，达到10的结果就是len-cnt
+	    	int cnt = 0;
+	    	//初始情况下到达01标准的次数
+	    	for (int i=0;i<s.length();i++) {
+	    		if ((s.charAt(i) != target.charAt(i%2))) {
+	    			cnt += 1;
+	    		}
+	    	}
+	    	
+	    	int ans = Math.min(cnt, s.length()-cnt);
+	    	//扩充两倍
+	    	StringBuffer sb  = new StringBuffer();
+	    	sb.append(s).append(s);
+	    	//滑动逐步右移动一位
+	    	for (int i=0;i<s.length();i++) {
+	    		if (sb.charAt(i) != target.charAt(i%2)) {
+	    			//这一位是不符合的，就可以少算一位
+	    			cnt = cnt-1;
+	    		}
+	    		if (sb.charAt(i+s.length()) != target.charAt((i+s.length())%2)) {
+	    			//这一位是不符合，需要加算一位
+	    			cnt = cnt+1;
+	    		}
+	    		ans = Math.min(ans, Math.min(cnt, s.length()-cnt));
+	    	}
+	    	return ans;
+	    }
+	}
 }
