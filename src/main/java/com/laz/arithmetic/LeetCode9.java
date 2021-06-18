@@ -62,12 +62,9 @@ public class LeetCode9 {
 //			}
 //			System.out.println();
 //		}
-		
-		Assert.assertArrayEquals(new int[][] {
-				{1,2},{3,10},{12,16}
-		}, insert(new int[][] {
-			{1,2},{3,5},{6,7},{8,10},{12,16}
-		},new int[] {4,8}));
+
+		Assert.assertArrayEquals(new int[][] { { 1, 2 }, { 3, 10 }, { 12, 16 } },
+				insert(new int[][] { { 1, 2 }, { 3, 5 }, { 6, 7 }, { 8, 10 }, { 12, 16 } }, new int[] { 4, 8 }));
 	}
 
 	public int[][] insert(int[][] intervals, int[] newInterval) {
@@ -305,7 +302,119 @@ public class LeetCode9 {
 	// 有效数字
 	@Test
 	public void test8() {
-		Assert.assertEquals(true, isNumber("-90e3"));
+		Assert.assertEquals(true, new Solution8().isNumber("-90e3"));
+	}
+
+	enum State {
+		STATE_INITIAL, STATE_INT_SIGN, STATE_INTEGER, STATE_POINT, STATE_POINT_WITHOUT_INT, STATE_FRACTION, STATE_EXP,
+		STATE_EXP_SIGN, STATE_EXP_NUMBER, STATE_END
+	}
+
+	enum CharType {
+		CHAR_NUMBER, CHAR_EXP, CHAR_POINT, CHAR_SIGN, CHAR_ILLEGAL
+	}
+
+	// 利用状态机方式解决
+	// https://leetcode-cn.com/problems/valid-number/solution/you-xiao-shu-zi-by-leetcode-solution-298l/
+	class Solution8 {
+		public boolean isNumber(String s) {
+			// 首先梳理转换状态，然后定义状态转义逻辑
+			Map<State, Map<CharType, State>> transfer = new HashMap<State, Map<CharType, State>>();
+			Map<CharType, State> initialMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_INTEGER);
+					put(CharType.CHAR_POINT, State.STATE_POINT_WITHOUT_INT);
+					put(CharType.CHAR_SIGN, State.STATE_INT_SIGN);
+				}
+			};
+			// 如行意思是：初始状态，只能转换为数字状态、无左整数小数点状态、符合状态
+			transfer.put(State.STATE_INITIAL, initialMap);
+			Map<CharType, State> intSignMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_INTEGER);
+					put(CharType.CHAR_POINT, State.STATE_POINT_WITHOUT_INT);
+				}
+			};
+			transfer.put(State.STATE_INT_SIGN, intSignMap);
+			Map<CharType, State> integerMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_INTEGER);
+					put(CharType.CHAR_EXP, State.STATE_EXP);
+					put(CharType.CHAR_POINT, State.STATE_POINT);
+				}
+			};
+			transfer.put(State.STATE_INTEGER, integerMap);
+			Map<CharType, State> pointMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_FRACTION);
+					put(CharType.CHAR_EXP, State.STATE_EXP);
+				}
+			};
+			transfer.put(State.STATE_POINT, pointMap);
+			Map<CharType, State> pointWithoutIntMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_FRACTION);
+				}
+			};
+			transfer.put(State.STATE_POINT_WITHOUT_INT, pointWithoutIntMap);
+			Map<CharType, State> fractionMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_FRACTION);
+					put(CharType.CHAR_EXP, State.STATE_EXP);
+				}
+			};
+			transfer.put(State.STATE_FRACTION, fractionMap);
+			Map<CharType, State> expMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_EXP_NUMBER);
+					put(CharType.CHAR_SIGN, State.STATE_EXP_SIGN);
+				}
+			};
+			transfer.put(State.STATE_EXP, expMap);
+			Map<CharType, State> expSignMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_EXP_NUMBER);
+				}
+			};
+			transfer.put(State.STATE_EXP_SIGN, expSignMap);
+			Map<CharType, State> expNumberMap = new HashMap<CharType, State>() {
+				{
+					put(CharType.CHAR_NUMBER, State.STATE_EXP_NUMBER);
+				}
+			};
+			transfer.put(State.STATE_EXP_NUMBER, expNumberMap);
+
+			int length = s.length();
+			State state = State.STATE_INITIAL;
+
+			for (int i = 0; i < length; i++) {
+				CharType type = toCharType(s.charAt(i));
+				// 当通过一个状态无法向下转义时，出现错误
+				if (!transfer.get(state).containsKey(type)) {
+					return false;
+				} else {
+					state = transfer.get(state).get(type);
+				}
+			}
+			// 最终状态定位到数字状态、小数点有左整数状态、字符e状态、指数数字状态、结束状态都是合理的
+			return state == State.STATE_INTEGER || state == State.STATE_POINT || state == State.STATE_FRACTION
+					|| state == State.STATE_EXP_NUMBER || state == State.STATE_END;
+		}
+
+		public CharType toCharType(char ch) {
+			if (ch >= '0' && ch <= '9') {
+				return CharType.CHAR_NUMBER;
+			} else if (ch == 'e' || ch == 'E') {
+				return CharType.CHAR_EXP;
+			} else if (ch == '.') {
+				return CharType.CHAR_POINT;
+			} else if (ch == '+' || ch == '-') {
+				return CharType.CHAR_SIGN;
+			} else {
+				return CharType.CHAR_ILLEGAL;
+			}
+		}
+
 	}
 
 	/**
@@ -1082,7 +1191,8 @@ public class LeetCode9 {
 	public void test20() {
 		Assert.assertEquals(false, canFinish(2, new int[][] { { 1, 0 }, { 0, 1 } }));
 	}
-	//https://leetcode-cn.com/problems/course-schedule/solution/course-schedule-tuo-bu-pai-xu-bfsdfsliang-chong-fa/
+
+	// https://leetcode-cn.com/problems/course-schedule/solution/course-schedule-tuo-bu-pai-xu-bfsdfsliang-chong-fa/
 	public boolean canFinish(int numCourses, int[][] prerequisites) {
 		List<List<Integer>> adjacency = new ArrayList<>();
 		for (int i = 0; i < numCourses; i++)
