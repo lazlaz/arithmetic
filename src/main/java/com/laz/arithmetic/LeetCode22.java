@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -306,7 +307,7 @@ public class LeetCode22 {
 			int i = 9, j = target;
 			while (i > 0) {
 				if (j == from[i][j]) {
-					//说明该位置没有被选中
+					// 说明该位置没有被选中
 					--i;
 				} else {
 					sb.append(i);
@@ -314,6 +315,79 @@ public class LeetCode22 {
 				}
 			}
 			return sb.toString();
+		}
+	}
+
+	// 909. 蛇梯棋
+	@Test
+	public void test10() {
+		Assert.assertEquals(4,
+				new Solution10().snakesAndLadders(new int[][] { { -1, -1, -1, -1, -1, -1 }, { -1, -1, -1, -1, -1, -1 },
+						{ -1, -1, -1, -1, -1, -1 }, { -1, 35, -1, -1, 13, -1 }, { -1, -1, -1, -1, -1, -1 },
+						{ -1, 15, -1, -1, -1, -1 } }));
+		
+		Assert.assertEquals(2,
+				new Solution10().snakesAndLadders(new int[][] { {-1,-1,19,10,-1 }, { 2,-1,-1,6,-1 },
+						{ -1,17,-1,19,-1 }, { 25,-1,20,-1,-1 }, { -1,-1,-1,-1,15 } }));
+	}
+
+	class Solution10 {
+		private int n;
+		private int[][] board;
+
+		public int snakesAndLadders(int[][] board) {
+			n = board.length;
+			this.board = board;
+			Queue<Integer> queue = new LinkedList<>();
+			Set<Integer> seen = new HashSet<>();
+			queue.add(1);
+			seen.add(1);
+			int level = 0;
+			int target = n*n;
+			while (!queue.isEmpty()) {
+				int size = queue.size();
+				level++;
+				for (int i = 0; i < size; i++) {
+					Integer status = queue.poll();
+					for (Integer coordinates : getNext(status)) {
+						// 没有走过
+						if (!seen.contains(coordinates)) {
+							if (coordinates == target) {
+								return level;
+							}
+							queue.offer(coordinates);
+							seen.add(coordinates);
+						}
+					}
+				}
+			}
+			return -1;
+		}
+
+		private List<Integer> getNext(Integer coord) {
+			List<Integer> list = new ArrayList<>();
+			for (int i = coord + 1; i <= n * n && i<= coord+6; i++) {
+				int[] indexs = getCoordinates(i);
+				if (this.board[indexs[0]][indexs[1]] != -1) {
+					list.add(this.board[indexs[0]][indexs[1]]);
+				} else {
+					list.add(i);
+				}
+			}
+			return list;
+		}
+
+		private int[] getCoordinates(int i) {
+			int row = n - (int)Math.ceil((double)i / n); // 第几行
+			int col = 0;// 第几列
+			int times = (i-1)/n;
+			if (times % 2 != 0) {
+				col = n-((i-n*times)-1)-1;
+			} else {
+				col = i-n*times-1;
+			}
+			//System.out.println("i="+i+"row="+row+"col="+col);
+			return new int[] { row, col };
 		}
 	}
 }
