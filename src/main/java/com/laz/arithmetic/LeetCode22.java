@@ -2,10 +2,12 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -388,6 +390,62 @@ public class LeetCode22 {
 			}
 			//System.out.println("i="+i+"row="+row+"col="+col);
 			return new int[] { row, col };
+		}
+	}
+	
+	//LCP 07. 传递信息
+	@Test
+	public void test11() {
+		Assert.assertEquals(3, new Solution11().numWays(5, new int[][] {
+			{0,2},{2,1},{3,4},{2,3},{1,4},{2,0},{0,4}
+		}, 3));
+		
+		Assert.assertEquals(0, new Solution11().numWays(3, new int[][] {
+			{0,2},{2,1}
+		}, 2));
+		
+		Assert.assertEquals(11, new Solution11().numWays(3, new int[][] {
+			{0,1},{0,2},{2,1},{1,2},{1,0},{2,0}
+		}, 5));
+	}
+	class Solution11 {
+		private int result;
+		private int end;
+		private int k;
+	    public int numWays(int n, int[][] relation, int k) {
+	    	//注意，可以重复路径
+	    	Map<Integer,List<Integer>> relationMap = new HashMap<>();
+	    	for (int i=0;i<relation.length;i++) {
+	    		int[] r = relation[i];
+	    		List<Integer> list = relationMap.getOrDefault(r[0], new ArrayList<Integer>());
+	    		list.add(r[1]);
+	    		relationMap.put(r[0], list);
+	    	}
+	    	this.end = n-1;
+	    	this.k = k;
+	    	//dfs
+	    	dfs(relationMap,0,new ArrayList<String>());
+	    	return result;
+	    }
+		private void dfs(Map<Integer, List<Integer>> relationMap, int node, List<String> pathSet) {
+			List<Integer> list = relationMap.get(node);
+			if (pathSet.size()>this.k) {
+				return;
+			}
+			if (node==end && pathSet.size()==this.k) {
+				result++;
+				return;
+			}
+			if (list == null) {
+				return;
+			}
+			for (Integer n : list) {
+				String path = node+">"+n;
+				pathSet.add(path);
+				dfs(relationMap,n,pathSet);
+				int index = pathSet.size()-1;
+				pathSet.remove(index);//删除
+			}
 		}
 	}
 }
