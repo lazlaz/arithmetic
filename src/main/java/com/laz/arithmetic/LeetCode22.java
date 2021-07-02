@@ -448,4 +448,37 @@ public class LeetCode22 {
 			}
 		}
 	}
+	//1833. 雪糕的最大数量
+	@Test
+	public void test12() {
+		Assert.assertEquals(4, new Solution12().maxIceCream(new int[] {
+				1,3,2,4,1
+		}, 7));
+		
+		Assert.assertEquals(0, new Solution12().maxIceCream(new int[] {
+				10,6,8,7,7,8
+		},5));
+		
+		Assert.assertEquals(6, new Solution12().maxIceCream(new int[] {
+				1,6,3,1,2,5
+		},20));
+	}
+	
+	class Solution12 {
+	    public int maxIceCream(int[] costs, int coins) {
+	    	int n = costs.length;
+	    	Arrays.sort(costs);
+	    	//贪心，从最便宜的开始买
+	    	int res = 0;
+	    	int sum = 0;
+	    	for (int i=0;i<n;i++) {
+	    		sum += costs[i];
+	    		if (sum>coins) {
+	    			break;
+	    		}
+	    		res++;
+	    	}
+	    	return res;
+	    }
+	}
 }
