@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -479,6 +480,36 @@ public class LeetCode22 {
 	    		res++;
 	    	}
 	    	return res;
+	    }
+	}
+	
+	//451. 根据字符出现频率排序
+	@Test
+	public void test13() {
+		Assert.assertEquals("eert", new Solution13().frequencySort("tree"));
+		Assert.assertEquals("aaaccc", new Solution13().frequencySort("cccaaa"));
+		Assert.assertEquals("bbAa", new Solution13().frequencySort("Aabb"));
+	}
+	
+	class Solution13 {
+	    public String frequencySort(String s) {
+	    	Map<Character,Integer> map = new HashMap<>();
+	    	for (int i=0;i<s.length();i++) {
+	    		char c = s.charAt(i);
+	    		int v = map.getOrDefault(c, 0);
+	    		map.put(c, ++v);
+	    	}
+	    	List<Map.Entry<Character,Integer>> list = map.entrySet()
+	    	.stream()
+	    	.sorted((p1,p2)->p2.getValue().compareTo(p1.getValue()))
+	    	.collect(Collectors.toList());
+	    	StringBuilder sb = new StringBuilder();
+	    	for (Map.Entry<Character, Integer> entry : list) {
+	    		for (int i=0;i<entry.getValue();i++) {
+	    			sb.append(entry.getKey());
+	    		}
+			}
+	    	return sb.toString();
 	    }
 	}
 }
