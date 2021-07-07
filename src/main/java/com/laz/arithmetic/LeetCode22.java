@@ -11,9 +11,11 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -511,5 +513,81 @@ public class LeetCode22 {
 			}
 	    	return sb.toString();
 	    }
+	}
+	
+	//1711. 大餐计数
+	@Test
+	public void test14() {
+		Assert.assertEquals(4, new Solution14().countPairs(new int[] {
+				1,3,5,7,9
+		}));
+		
+		Assert.assertEquals(15, new Solution14().countPairs(new int[] {
+				1,1,1,3,3,3,7
+		}));
+		Assert.assertEquals(12, new Solution14().countPairs(new int[] {
+				149,107,1,63,0,1,6867,1325,5611,2581,39,89,46,18,12,20,22,234
+		}));
+	}
+	
+	class Solution14 {
+		//存储一定范围内2的幂数有哪些
+		private Set<Integer> powers = new TreeSet<>();
+    	//记录已经统计了的值
+    	private Set<String> countSet = new HashSet<>();
+		private final int MOD = 1000_000_007;
+	    public int countPairs(int[] deliciousness) {
+	    	Map<Integer,Integer> nums = new HashMap<>();
+	    	for (int num :deliciousness) {
+	    		int count = nums.getOrDefault(num, 0);
+	    		nums.put(num, ++count);
+	    	}
+	    	
+	    	updatePower();
+	    	long ans = 0;
+	    	for (Map.Entry<Integer,Integer> entry:nums.entrySet()) {
+	    		ans += getAnswer(entry,countSet,nums)%MOD;
+	    	}
+	    	return (int)(ans%MOD);
+	    }
+	    //获取该值能够组合得到2的幂的值，并去除已经重复的
+		private long getAnswer(Map.Entry<Integer, Integer> entry, Set<String> countSet, Map<Integer, Integer> nums) {
+			int num = entry.getKey();
+			long ans = 0;
+			for (Integer power:powers) {
+				int secondNum = power-num;
+				if (secondNum >= 0) {
+					int count = nums.getOrDefault(secondNum, 0);
+					if (count==0) {
+						continue;
+					}
+					String key = secondNum+"-"+num;
+					if (countSet.contains(key)) {
+						continue;
+					}
+					//记录已经使用的组合
+					countSet.add(key);
+					countSet.add(num+"-"+secondNum);
+					//和num相同
+					if (secondNum==num) {
+						if (count != 1) {
+							long v = ((long)entry.getValue()*(long)(entry.getValue()-1))/2;
+							ans = ans+v%MOD;
+						}
+					} else {
+						ans = ans+((entry.getValue()*count)%MOD);
+					}
+				}
+				
+			}
+			return ans;
+		}
+		private void updatePower() {
+			int total = (int)Math.pow(2, 20)*2;
+			for (int i=1;i<=total;) {
+				powers.add(i);
+				i = i*2;
+			}
+		}
 	}
 }
