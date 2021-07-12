@@ -590,4 +590,26 @@ public class LeetCode22 {
 			}
 		}
 	}
+	
+	//275. H 指数 II
+	@Test
+	public void test15() {
+		Assert.assertEquals(3, new Solution15().hIndex(new int[] {
+				0,1,3,5,6
+		}));
+	}
+	
+	class Solution15 {
+	    public int hIndex(int[] citations) {
+	    	int h = 0;
+	    	for (int i=citations.length-1;i>=0;i--) {
+	    		if (citations[i]>h) {
+	    			h++;
+	    		} else {
+	    			break;
+	    		}
+	    	}
+	    	return h;
+	    }
+	}
 }
