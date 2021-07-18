@@ -2,16 +2,13 @@ package com.laz.arithmetic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -611,5 +608,39 @@ public class LeetCode22 {
 	    	}
 	    	return h;
 	    }
+	}
+	
+	//面试题 10.02. 变位词组
+	@Test
+	public void test16() {
+         List<List<String>> list = new Solution16().groupAnagrams(new String[] {
+        		 "eat", "tea", "tan", "ate", "nat", "bat"
+         });
+         for (List<String> l : list) {
+			System.out.println(l);
+		}
+	}
+	
+	class Solution16 {
+	    public List<List<String>> groupAnagrams(String[] strs) {
+	    	List<List<String>> res = new ArrayList<>();
+	    	Map<String,List<String>> map = new HashMap<>();
+	    	for (String str : strs) {
+				String key = getKey(str);
+				List<String> list = map.getOrDefault(key, new ArrayList<String>());
+				list.add(str);
+				map.put(key, list);
+			}
+	    	for (List<String> list :map.values()) {
+	    		res.add(list);
+	    	}
+	    	return res;
+	    }
+
+		private String getKey(String str) {
+			char[] cs = str.toCharArray();
+			Arrays.sort(cs);
+			return new String(cs);
+		}
 	}
 }
