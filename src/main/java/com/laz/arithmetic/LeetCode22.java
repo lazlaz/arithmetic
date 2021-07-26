@@ -671,4 +671,29 @@ public class LeetCode22 {
 	    	return res;
 	    }
 	}
+	//1736. 替换隐藏数字得到的最晚时间
+	@Test
+	public void test18() {
+		Assert.assertEquals("23:50",new Solution18().maximumTime("2?:?0"));
+	}
+
+	class Solution18 {
+		public String maximumTime(String time) {
+			char[] arr = time.toCharArray();
+			if (arr[0] == '?') {
+				arr[0] = ('4' <= arr[1] && arr[1] <= '9') ? '1' : '2';
+			}
+			if (arr[1] == '?') {
+				arr[1] = (arr[0] == '2') ? '3' : '9';
+			}
+			if (arr[3] == '?') {
+				arr[3] = '5';
+			}
+			if (arr[4] == '?') {
+				arr[4] = '9';
+			}
+			return new String(arr);
+		}
+	}
+
 }
