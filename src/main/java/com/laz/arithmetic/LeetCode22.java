@@ -696,4 +696,58 @@ public class LeetCode22 {
 		}
 	}
 
+
+	//1337. 矩阵中战斗力最弱的 K 行
+	@Test
+	public void test19() {
+		Assert.assertArrayEquals(new int[]{2,0,3},new Solution19().kWeakestRows(new int[][]{
+				{1,1,0,0,0},
+				{1,1,1,0,0},
+				{1,0,0,0,0},
+				{1,1,0,0,0},
+				{1,1,1,1,1}
+		},3));
+	}
+
+	class Solution19 {
+		public int[] kWeakestRows(int[][] mat, int k) {
+			int m = mat.length, n=mat[0].length;
+			List<int[]> power = new ArrayList<>();
+			for (int i=0;i<m;i++) {
+				//二分查找每个最后一个1的位置，logn获取长度
+				int l = 0, r = n - 1, pos = -1;
+				while (l <= r) {
+					int mid = (l + r) / 2;
+					if (mat[i][mid] == 0) {
+						r = mid - 1;
+					} else {
+						pos = mid;
+						l = mid + 1;
+					}
+				}
+				power.add(new int[]{pos+1,i});
+			}
+			//优先级队列，根据长度和下标排序
+			PriorityQueue<int[]> pq = new PriorityQueue<int[]>(new Comparator<int[]>() {
+				public int compare(int[] pair1, int[] pair2) {
+					if (pair1[0] != pair2[0]) {
+						return pair1[0] - pair2[0];
+					} else {
+						return pair1[1] - pair2[1];
+					}
+				}
+			});
+			for (int[] pair : power) {
+				pq.offer(pair);
+			}
+			int[] ans = new int[k];
+			for (int i = 0; i < k; ++i) {
+				ans[i] = pq.poll()[1];
+			}
+			return ans;
+
+		}
+
+	}
+
 }
