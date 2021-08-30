@@ -1,18 +1,6 @@
 package com.laz.arithmetic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -748,6 +736,37 @@ public class LeetCode22 {
 
 		}
 
+	}
+	//528. 按权重随机选择
+	@Test
+	public void test20() {
+		Solution20 s = new Solution20(new int[]{
+				1,34,5,5,3
+		});
+		for (int i=0;i<100;i++) {
+			System.out.print(s.pickIndex()+" ");
+		}
+
+	}
+
+
+	class Solution20 {
+		private TreeMap<Integer,Integer> map = new TreeMap<>();
+		private int[] w;
+		private int total;
+		public Solution20(int[] w) {
+			this.w = w;
+			for (int i=0;i<w.length;i++) {
+				map.put(total,i);
+				total+=w[i];
+			}
+		}
+
+		public int pickIndex() {
+			int num = new Random().nextInt(total);
+			int index = map.floorEntry(num).getValue();
+			return index;
+		}
 	}
 
 }
