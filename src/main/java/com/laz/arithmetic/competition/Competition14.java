@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.cache.Weigher;
+
 
 //https://leetcode-cn.com/contest/weekly-contest-220/
 public class Competition14 {
