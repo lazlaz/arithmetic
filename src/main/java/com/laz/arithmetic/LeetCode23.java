@@ -3,10 +3,7 @@ package com.laz.arithmetic;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class LeetCode23 {
     //432. 全 O(1) 的数据结构
@@ -18,7 +15,7 @@ public class LeetCode23 {
         obj.inc("goodbye");
         obj.inc("hello");
         obj.inc("hello");
-        Assert.assertEquals("hello",obj.getMaxKey());
+        Assert.assertEquals("hello", obj.getMaxKey());
         obj.inc("leet");
         obj.inc("code");
         obj.inc("leet");
@@ -26,12 +23,12 @@ public class LeetCode23 {
         obj.inc("leet");
         obj.inc("code");
         obj.inc("code");
-        Assert.assertEquals("leet",obj.getMaxKey());
+        Assert.assertEquals("leet", obj.getMaxKey());
 
         //case2
         AllOne obj2 = new AllOne();
-        Assert.assertEquals("",obj2.getMaxKey());
-        Assert.assertEquals("",obj2.getMinKey());
+        Assert.assertEquals("", obj2.getMaxKey());
+        Assert.assertEquals("", obj2.getMinKey());
 
         //case3
         AllOne obj3 = new AllOne();
@@ -41,16 +38,18 @@ public class LeetCode23 {
         obj3.dec("world");
         obj3.inc("hello");
         obj3.inc("leet");
-        Assert.assertEquals("hello",obj3.getMaxKey());
+        Assert.assertEquals("hello", obj3.getMaxKey());
         obj3.dec("hello");
         obj3.dec("hello");
         obj3.dec("hello");
-        Assert.assertEquals("leet",obj3.getMaxKey());
+        Assert.assertEquals("leet", obj3.getMaxKey());
     }
+
     class AllOne {
         class Value {
             int v;
             String key;
+
             public Value(int v, String key) {
                 this.v = v;
                 this.key = key;
@@ -68,17 +67,19 @@ public class LeetCode23 {
                 this.v = v;
             }
         }
-        private Map<String,Value> keyMap;
-        private TreeMap<Value,String> valueMap;
+
+        private Map<String, Value> keyMap;
+        private TreeMap<Value, String> valueMap;
+
         public AllOne() {
-            this.keyMap = new HashMap<String,Value>();
-            this.valueMap = new TreeMap<Value,String>(new Comparator<Value>() {
+            this.keyMap = new HashMap<String, Value>();
+            this.valueMap = new TreeMap<Value, String>(new Comparator<Value>() {
                 @Override
                 public int compare(Value o1, Value o2) {
                     if (o1.getV() == o2.getV()) {
                         return o1.getKey().compareTo(o2.getKey());
                     }
-                    return o1.getV()-o2.getV();
+                    return o1.getV() - o2.getV();
                 }
             });
         }
@@ -87,12 +88,12 @@ public class LeetCode23 {
             Value v = this.keyMap.get(key);
             if (v == null) {
                 v = new Value(1, key);
-                this.keyMap.put(key,v);
+                this.keyMap.put(key, v);
             } else {
                 this.valueMap.remove(v);
-                v.setV(v.getV()+1);
+                v.setV(v.getV() + 1);
             }
-            this.valueMap.put(v,key);
+            this.valueMap.put(v, key);
         }
 
         public void dec(String key) {
@@ -100,31 +101,160 @@ public class LeetCode23 {
             if (v == null) {
                 return;
             }
-            int value = v.getV()-1;
+            int value = v.getV() - 1;
             if (value == 0) {
                 this.keyMap.remove(key);
                 this.valueMap.remove(v);
             } else {
                 this.valueMap.remove(v);
                 v.setV(value);
-                this.valueMap.put(v,key);
+                this.valueMap.put(v, key);
             }
         }
 
         public String getMaxKey() {
-            if (this.valueMap.size()==0) {
+            if (this.valueMap.size() == 0) {
                 return "";
             }
-            Value v= this.valueMap.lastKey();
+            Value v = this.valueMap.lastKey();
             return this.valueMap.get(v);
         }
 
         public String getMinKey() {
-            if (this.valueMap.size()==0) {
+            if (this.valueMap.size() == 0) {
                 return "";
             }
-            Value v= this.valueMap.firstKey();
+            Value v = this.valueMap.firstKey();
             return this.valueMap.get(v);
         }
     }
+
+    //720. 词典中最长的单词
+    @Test
+    public void test2() {
+        Solution2_2 solution2 = new Solution2_2();
+        String[] words = new String[]{"w", "wo", "wor", "worl", "world"};
+        Assert.assertEquals("world", solution2.longestWord(words));
+
+
+        Assert.assertEquals("apple", solution2.longestWord(new String[]{"a", "banana", "app",
+                "appl", "ap", "apply", "apple"}));
+
+        Assert.assertEquals("", new Solution2_3().longestWord(new String[]{"banana"}));
+    }
+
+    class Solution2 {
+        public String longestWord(String[] words) {
+            Map<String, Integer> map = new HashMap<>();
+            Arrays.sort(words);
+            for (int i = 0; i < words.length; i++) {
+                map.put(words[i], i);
+            }
+            int maxLen = 0;
+            String maxWord = "";
+            for (int i = words.length - 1; i >= 0; i--) {
+                if (maxLen > words.length) {
+                    break;
+                }
+                String word = words[i];
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < word.length(); j++) {
+                    sb.append(word.charAt(j));
+                    if (map.get(sb.toString()) == null) {
+                        //不存在子集，排除
+                        break;
+                    }
+                }
+                if (maxLen <= word.length() && sb.toString().equals(word)) {
+                    maxLen = word.length();
+                    maxWord = word;
+                }
+            }
+            return maxWord;
+        }
+    }
+
+
+    class Solution2_2 {
+        public String longestWord(String[] words) {
+            Arrays.sort(words, (a, b) ->  {
+                if (a.length() != b.length()) {
+                    return a.length() - b.length();
+                } else {
+                    return b.compareTo(a);
+                }
+            });
+            String longest = "";
+            Set<String> candidates = new HashSet<String>();
+            candidates.add("");
+            int n = words.length;
+            for (int i = 0; i < n; i++) {
+                String word = words[i];
+                if (candidates.contains(word.substring(0, word.length() - 1))) {
+                    candidates.add(word);
+                    longest = word;
+                }
+            }
+            return longest;
+        }
+    }
+
+    class Solution2_3 {
+        public String longestWord(String[] words) {
+            Trie trie = new Trie();
+            for (String word : words) {
+                trie.insert(word);
+            }
+            String longest = "";
+            for (String word : words) {
+                if (trie.search(word)) {
+                    if (word.length() > longest.length() || (word.length() == longest.length() && word.compareTo(longest) < 0)) {
+                        longest = word;
+                    }
+                }
+            }
+            return longest;
+        }
+
+        class Trie {
+            Trie[] children;
+            boolean isEnd;
+            char chaz;
+
+            public Trie() {
+                children = new Trie[26];
+                isEnd = false;
+            }
+
+            public void insert(String word) {
+                Trie node = this;
+                for (int i = 0; i < word.length(); i++) {
+                    char ch = word.charAt(i);
+                    int index = ch - 'a';
+                    if (node.children[index] == null) {
+                        node.children[index] = new Trie();
+                    }
+                    node.chaz = ch;
+                    node = node.children[index];
+                }
+                node.isEnd = true;
+            }
+
+            public boolean search(String word) {
+                Trie node = this;
+                for (int i = 0; i < word.length(); i++) {
+                    char ch = word.charAt(i);
+                    int index = ch - 'a';
+                    if (node.children[index] == null || !node.children[index].isEnd) {
+                        return false;
+                    }
+                    node = node.children[index];
+                }
+                return node != null && node.isEnd;
+            }
+        }
+    }
+
+
+
 }
