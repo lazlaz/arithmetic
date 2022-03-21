@@ -256,5 +256,41 @@ public class LeetCode23 {
     }
 
 
+    //两数之和 IV - 输入 BST
+    @Test
+    public void test3() {
+        TreeNode treeNode1 = Utils.createTree(new Integer[]{
+                5,3,6,2,4,null,7
+        });
+        Solution3 solution3 = new Solution3();
+        Assert.assertEquals(true, solution3.findTarget(treeNode1,9));
 
+        Assert.assertEquals(false, solution3.findTarget(treeNode1,28));
+    }
+
+    class Solution3 {
+        Set<Integer> set = new HashSet();
+        private boolean find = false;
+        private int target;
+        public boolean findTarget(TreeNode root, int k) {
+            this.find = false;
+            this.target = k;
+            dfs(root);
+            return find;
+        }
+
+        private void dfs(TreeNode root) {
+            if (root == null || find) {
+                return ;
+            }
+            int v = this.target-root.val;
+            if (set.contains(v)) {
+                find = true;
+                return ;
+            }
+            set.add(root.val);
+            dfs(root.left);
+            dfs(root.right);
+        }
+    }
 }
