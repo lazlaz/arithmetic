@@ -293,4 +293,34 @@ public class LeetCode23 {
             dfs(root.right);
         }
     }
+
+    //2038. 如果相邻两个颜色均相同则删除当前颜色
+    @Test
+    public void test4() {
+        Solution4 solution4 = new Solution4();
+        //三个同时的字符才能删除
+        Assert.assertEquals(false,solution4.winnerOfGame("ABAAB"));
+        Assert.assertEquals(true,solution4.winnerOfGame("AAABABB"));
+    }
+    //https://leetcode-cn.com/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/solution/ru-guo-xiang-lin-liang-ge-yan-se-jun-xia-rfbk/
+    class Solution4 {
+        public boolean winnerOfGame(String colors) {
+            int[] freq = {0, 0};
+            char cur = 'C';
+            int cnt = 0;
+            for (int i = 0; i < colors.length(); i++) {
+                char c = colors.charAt(i);
+                if (c != cur) {
+                    cur = c;
+                    cnt = 1;
+                } else {
+                    cnt += 1;
+                    if (cnt >= 3) {
+                        freq[cur - 'A'] += 1;
+                    }
+                }
+            }
+            return freq[0] > freq[1];
+        }
+    }
 }
