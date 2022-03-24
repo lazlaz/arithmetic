@@ -323,4 +323,45 @@ public class LeetCode23 {
             return freq[0] > freq[1];
         }
     }
+
+    //661. 图片平滑器
+    @Test
+    public void test5() {
+        Solution5 solution5 = new Solution5();
+        Assert.assertArrayEquals(new int[][]{
+                {137,141,137},
+                {141,138,141},
+                {137,141,137}
+        },solution5.imageSmoother(new int[][]{
+                {100,200,100},
+                {200,50,200},
+                {100,200,100}
+        }));
+    }
+
+    class Solution5 {
+        public int[][] imageSmoother(int[][] img) {
+            int m = img.length;
+            int n = img[0].length;
+            int[][] newImg =  new int[m][n];
+            for (int i=0;i<m;i++) {
+                for (int j=0;j<n;j++) {
+                    int count = 0;
+                    double sum = 0;
+                    for (int z=-1;z<=1;z++) {
+                        for (int x=-1;x<=1;x++) {
+                            int newX = i+z;
+                            int newY = j+x;
+                            if (newX>=0 && newY>=0 && newX<m && newY<n) {
+                                count++;
+                                sum += img[newX][newY];
+                            }
+                        }
+                    }
+                    newImg[i][j] = (int) Math.floor(sum/count);
+                }
+            }
+            return newImg;
+        }
+    }
 }
