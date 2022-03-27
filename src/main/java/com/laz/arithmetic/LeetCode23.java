@@ -364,4 +364,43 @@ public class LeetCode23 {
             return newImg;
         }
     }
+
+    //2028. 找出缺失的观测数据
+    @Test
+    public void test6() {
+        Solution6 solution6 = new Solution6();
+        Assert.assertArrayEquals(new int[]{6,6},solution6.missingRolls(new int[]{
+                3,2,4,3
+        },4,2));
+
+        Assert.assertArrayEquals(new int[]{},solution6.missingRolls(new int[]{
+                1,2,3,4
+        },6,4));
+    }
+
+    class Solution6 {
+        public int[] missingRolls(int[] rolls, int mean, int n) {
+            int m = rolls.length;
+            int sum = (m+n)*mean;
+            int existSum = 0;
+            for (int i=0;i<rolls.length;i++) {
+                existSum += rolls[i];
+            }
+            int missSum = sum-existSum;
+            if (missSum>(6*n) || missSum<(n)) {
+                return new int[]{};
+            }
+            int a = missSum/n;
+            int b = missSum%n;
+            int[] res = new int[n];
+            for (int i=0;i<n;i++) {
+                if ((b-i)>0) { //还有余数
+                    res[i] = a+1;
+                } else {
+                    res[i] = a;
+                }
+            }
+            return res;
+        }
+    }
 }
