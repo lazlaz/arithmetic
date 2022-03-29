@@ -403,4 +403,76 @@ public class LeetCode23 {
             return res;
         }
     }
+
+    //2024. 考试的最大困扰度
+    @Test
+    public void test7(){
+        Solution7 solution7 =  new Solution7();
+        Assert.assertEquals(4,solution7.maxConsecutiveAnswers("TTFF", 2));
+        Assert.assertEquals(3,solution7.maxConsecutiveAnswers("TFFT", 1));
+        Assert.assertEquals(5,solution7.maxConsecutiveAnswers("TTFTTFTT", 1));
+    }
+
+    class Solution7 {
+        public int maxConsecutiveAnswers(String answerKey, int k) {
+            //考虑T最长的情况下
+            int maxT = maxChar(answerKey,k,'T','F');
+            int maxF = maxChar(answerKey,k,'F','T');
+            return Math.max(maxT,maxF);
+        }
+
+        private int maxChar(String answerKey, int k, char target, char other) {
+            int max = 0;
+            int l=0,r=0;
+            int len = answerKey.length();
+            int num = 0;
+            int remain = k;
+            while (r<len && l<=r) {
+                if (answerKey.charAt(r) == target) {
+                    num++;
+                    r++;
+                    continue;
+                }
+                if (answerKey.charAt(r) == other && remain>0) {
+                    num++;
+                    remain--;
+                    r++;
+                    continue;
+                }
+                if (max<num) {
+                    max = num;
+                }
+                if (answerKey.charAt(l) == other) {
+                    remain++;
+                }
+                l++;
+                num--;
+            }
+            if (max<num) {
+                max = num;
+            }
+            return max;
+        }
+
+    }
+
+    class Solution7_2 {
+        public int maxConsecutiveAnswers(String answerKey, int k) {
+            return Math.max(maxConsecutiveChar(answerKey, k, 'T'), maxConsecutiveChar(answerKey, k, 'F'));
+        }
+
+        public int maxConsecutiveChar(String answerKey, int k, char ch) {
+            int n = answerKey.length();
+            int ans = 0;
+            for (int left = 0, right = 0, sum = 0; right < n; right++) {
+                sum += answerKey.charAt(right) != ch ? 1 : 0;
+                while (sum > k) {
+                    sum -= answerKey.charAt(left++) != ch ? 1 : 0;
+                }
+                ans = Math.max(ans, right - left + 1);
+            }
+            return ans;
+        }
+
+    }
 }
