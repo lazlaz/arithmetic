@@ -1,16 +1,6 @@
 package com.laz.arithmetic.competition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,7 +8,7 @@ import org.junit.Test;
 import com.google.common.base.Joiner;
 
 public class Competition2 {
-	// 找到处理最多请求的服务器
+	// 1606 找到处理最多请求的服务器
 	@Test
 	public void test1() {
 		{
@@ -33,8 +23,47 @@ public class Competition2 {
 			List<Integer> ret = busiestServers(3, new int[] { 1, 2, 3 }, new int[] { 10, 11, 12 });
 			Assert.assertEquals("0,1,2", Joiner.on(",").join(ret));
 		}
+		List<Integer> ret = new Solution_1().busiestServers(3, new int[] { 1, 2, 3 }, new int[] { 10, 11, 12 });
+		Assert.assertEquals("0,1,2", Joiner.on(",").join(ret));
 	}
+   	//https://leetcode-cn.com/problems/find-servers-that-handled-most-number-of-requests/solution/zhao-dao-chu-li-zui-duo-qing-qiu-de-fu-w-e0a5/
+	class Solution_1 {
+		public List<Integer> busiestServers(int k, int[] arrival, int[] load) {
+			TreeSet<Integer> available = new TreeSet<Integer>();
+			for (int i = 0; i < k; i++) {
+				available.add(i);
+			}
+			//优先队列（大小根堆）
+			PriorityQueue<int[]> busy = new PriorityQueue<int[]>((a, b) -> a[0] - b[0]);
+			int[] requests = new int[k];
+			for (int i = 0; i < arrival.length; i++) {
+				//如果队列里面的时间小于等于arrival[i],资源空闲，加入空闲集合中
+				while (!busy.isEmpty() && busy.peek()[0] <= arrival[i]) {
+					available.add(busy.poll()[1]);
+				}
+				if (available.isEmpty()) {
+					continue;
+				}
+				Integer p = available.ceiling(i % k);
+				if (p == null) {
+					p = available.first();
+				}
+				requests[p]++;
+				//arrival[i] + load[i] 完成任务的时间
+				busy.offer(new int[]{arrival[i] + load[i], p});
+				available.remove(p);
+			}
+			int maxRequest = Arrays.stream(requests).max().getAsInt();
+			List<Integer> ret = new ArrayList<Integer>();
+			for (int i = 0; i < k; i++) {
+				if (requests[i] == maxRequest) {
+					ret.add(i);
+				}
+			}
+			return ret;
+		}
 
+	}
 	public List<Integer> busiestServers(int k, int[] arrival, int[] load) {
 		List<Integer> res = new ArrayList<>();
 		int[] map = new int[k];
