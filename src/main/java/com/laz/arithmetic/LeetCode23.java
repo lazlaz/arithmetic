@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import com.google.common.base.Joiner;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -470,6 +471,70 @@ public class LeetCode23 {
                     sum -= answerKey.charAt(left++) != ch ? 1 : 0;
                 }
                 ans = Math.max(ans, right - left + 1);
+            }
+            return ans;
+        }
+
+    }
+
+    //310. 最小高度树
+    @Test
+    public void test8() {
+//        Assert.assertEquals("1", Joiner.on(",").join(new Solution8().findMinHeightTrees(4, new int[][]{
+//                {1,0},
+//                {1,2},
+//                {1,3}
+//        })));
+
+        Assert.assertEquals("3,4",Joiner.on(",").join(new Solution8().findMinHeightTrees(6, new int[][]{
+                {3,0},
+                {3,1},
+                {3,2},
+                {3,4},
+                {5,4}
+        })));
+    }
+    //https://leetcode-cn.com/problems/minimum-height-trees/solution/zui-xiao-gao-du-shu-by-leetcode-solution-6v6f/ 拓扑排序
+    class Solution8 {
+        public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+            List<Integer> ans = new ArrayList<Integer>();
+            if (n == 1) {
+                ans.add(0);
+                return ans;
+            }
+            int[] degree = new int[n];
+            List<Integer>[] adj = new List[n];
+            for (int i = 0; i < n; i++) {
+                adj[i] = new ArrayList<Integer>();
+            }
+            for (int[] edge : edges) {
+                adj[edge[0]].add(edge[1]);
+                adj[edge[1]].add(edge[0]);
+                degree[edge[0]]++;
+                degree[edge[1]]++;
+            }
+            Queue<Integer> queue = new ArrayDeque<Integer>();
+            for (int i = 0; i < n; i++) {
+                if (degree[i] == 1) {
+                    queue.offer(i);
+                }
+            }
+            int remainNodes = n;
+            while (remainNodes > 2) {
+                int sz = queue.size();
+                remainNodes -= sz;
+                for (int i = 0; i < sz; i++) {
+                    int curr = queue.poll();
+                    for (int v : adj[curr]) {
+                        degree[v]--;
+                        if (degree[v] == 1) {
+                            queue.offer(v);
+                        }
+                    }
+                }
+            }
+            while (!queue.isEmpty()) {
+                ans.add(queue.poll());
             }
             return ans;
         }
