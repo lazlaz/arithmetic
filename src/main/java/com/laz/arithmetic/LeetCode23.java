@@ -540,4 +540,56 @@ public class LeetCode23 {
         }
 
     }
+
+    //796. 旋转字符串
+    @Test
+    public void test9() {
+        Solution9 solution9 = new Solution9();
+//        Assert.assertEquals(true, solution9.rotateString("abcde", "cdeab"));
+//        Assert.assertEquals(false, solution9.rotateString("abcde", "abced"));
+            Assert.assertEquals(false, solution9.rotateString("bbbacddceeb", "ceebbbbacdd"));
+    }
+
+    class Solution9 {
+        public boolean rotateString(String s, String goal) {
+            if (s.length() != goal.length()) {
+                return false;
+            }
+            int l1 = 0;
+            char c = s.charAt(l1);
+            int start = goal.indexOf(c);
+            if (start == -1) {
+                return false;
+            }
+            int l2 = start;
+            int count = 1;
+            while (l1<(s.length()-1) && l2!=-1) {
+                l1++;
+                start++;
+                if (start>=goal.length()) {
+                    start = 0;
+                }
+                char a= s.charAt(l1);
+                char b = goal.charAt(start);
+
+                if (a!=b) {
+                    //复位重新找
+                    l1 = 0;
+                    start = goal.indexOf(c,l2+1);
+                    l2 = start;
+                    count = 1;
+                    continue;
+                }
+                count++;
+            }
+            return count==s.length();
+        }
+    }
+
+    class Solution9_2 {
+        //子串
+        public boolean rotateString(String s, String goal) {
+            return s.length() == goal.length() && (s + s).contains(goal);
+        }
+    }
 }
