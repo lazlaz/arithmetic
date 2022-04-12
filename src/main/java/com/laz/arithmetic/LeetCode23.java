@@ -592,4 +592,39 @@ public class LeetCode23 {
             return s.length() == goal.length() && (s + s).contains(goal);
         }
     }
+
+    //806. 写字符串需要的行数
+    @Test
+    public void test10() {
+        Solution10 solution10 = new Solution10();
+        Assert.assertArrayEquals(new int[]{2, 4},solution10.numberOfLines(new int[]{
+                4,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10
+        }, "bbbcccdddaaa"));
+
+        Assert.assertArrayEquals(new int[]{3, 60},solution10.numberOfLines(new int[]{
+                10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10
+        }, "abcdefghijklmnopqrstuvwxyz"));
+    }
+
+    class Solution10 {
+        public int[] numberOfLines(int[] widths, String s) {
+            int[] res = new int[2];
+            int maxWidth = 100;
+            int row = 1;
+            int sum = 0;
+            for (int i=0; i<s.length(); i++) {
+                int index = s.charAt(i) - 'a';
+                int width = widths[index];
+                if (sum+width > 100) {
+                    row++;
+                    sum = width;
+                } else {
+                    sum += width;
+                }
+            }
+            res[0] = row;
+            res[1] = sum;
+            return res;
+        }
+    }
 }
