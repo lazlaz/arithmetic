@@ -627,4 +627,31 @@ public class LeetCode23 {
             return res;
         }
     }
+
+
+    //386. 字典序排数
+    @Test
+    public void test11() {
+        Solution11 solution11 = new Solution11();
+        Assert.assertEquals("1,10,11,12,13,2,3,4,5,6,7,8,9", Joiner.on(",").join(solution11.lexicalOrder(13)));
+    }
+
+    //https://leetcode-cn.com/problems/lexicographical-numbers/solution/by-ac_oier-ktn7/
+    class Solution11 {
+        private List<Integer> ans = new ArrayList<>();
+        public List<Integer> lexicalOrder(int n) {
+            for (int i=1; i<=9; i++) {
+                dfs(i, n);
+            }
+            return ans;
+        }
+
+        private void dfs(int cur, int limit) {
+            if (cur > limit )
+                return ;
+            ans.add(cur);
+            for (int i=0; i<=9; i++)
+                dfs(cur*10+i, limit);
+        }
+    }
 }
