@@ -654,4 +654,36 @@ public class LeetCode23 {
                 dfs(cur*10+i, limit);
         }
     }
+
+    //821. 字符的最短距离
+    @Test
+    public void test12() {
+        Solution12 solution2 = new Solution12();
+        Assert.assertArrayEquals(new int[] {
+                3,2,1,0,1,0,0,1,2,2,1,0
+        }, solution2.shortestToChar("loveleetcode", 'e'));
+
+        Assert.assertArrayEquals(new int[] {
+                3,2,1,0
+        }, solution2.shortestToChar("aaab", 'b'));
+    }
+
+    class Solution12 {
+        public int[] shortestToChar(String s, char c) {
+            TreeSet<Integer> set = new TreeSet<>();
+            for (int i=0; i<s.length(); i++) {
+                if (s.charAt(i) == c) {
+                    set.add(i);
+                }
+            }
+            int[] res = new int[s.length()];
+            for (int i=0; i<s.length(); i++) {
+                int big = (set.floor(i)==null?Integer.MAX_VALUE:set.floor(i));
+                int small = (set.ceiling(i)==null?Integer.MAX_VALUE:set.ceiling(i));
+                int v = Math.min(Math.abs(i-small),Math.abs(i-big));
+                res[i] = v;
+            }
+            return res;
+        }
+    }
 }
