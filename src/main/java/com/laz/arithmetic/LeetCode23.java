@@ -736,4 +736,35 @@ public class LeetCode23 {
             return ans;
         }
     }
+
+    //398. 随机数索引
+    @Test
+    public void test14() {
+        Solution14 solution14 = new Solution14(new int[] {
+                1, 2, 3, 3, 3
+        });
+        solution14.pick(3); // 随机返回索引 2, 3 或者 4 之一。每个索引的返回概率应该相等。
+        solution14.pick(1); // 返回 0 。因为只有 nums[0] 等于 1 。
+        solution14.pick(3); // 随机返回索引 2, 3 或者 4 之一。每个索引的返回概率应该相等。
+    }
+
+    class Solution14 {
+        Map<Integer,List<Integer>> map = new HashMap<>();
+        Random random = new Random();
+        public Solution14(int[] nums) {
+            for (int  i=0; i<nums.length; i++) {
+                List<Integer> list = map.getOrDefault(nums[i], new ArrayList<>());
+                list.add(i);
+                map.put(nums[i], list);
+            }
+        }
+
+        public int pick(int target) {
+            List<Integer> list = map.get(target);
+            if (list.size() == 1) {
+                return list.get(0);
+            }
+            return list.get(random.nextInt(list.size()));
+        }
+    }
 }
