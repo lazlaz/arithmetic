@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.swing.event.TreeSelectionEvent;
 import java.util.*;
 
 public class LeetCode23 {
@@ -765,6 +766,32 @@ public class LeetCode23 {
                 return list.get(0);
             }
             return list.get(random.nextInt(list.size()));
+        }
+    }
+
+    //933. 最近的请求次数
+    @Test
+    public void test15() {
+        RecentCounter recentCounter = new RecentCounter();
+        Assert.assertEquals(1,recentCounter.ping(1)) ;     // requests = [1]，范围是 [-2999,1]，返回 1
+        Assert.assertEquals(2,recentCounter.ping(100));   // requests = [1, 100]，范围是 [-2900,100]，返回 2
+        Assert.assertEquals(3,recentCounter.ping(3001));  // requests = [1, 100, 3001]，范围是 [1,3001]，返回 3
+        Assert.assertEquals(3,recentCounter.ping(3002));  // requests = [1, 100, 3001, 3002]，范围是 [2,3002]，返回 3
+
+    }
+
+    class RecentCounter {
+        private Queue<Integer> queue;
+        public RecentCounter() {
+            queue = new ArrayDeque<>();
+        }
+
+        public int ping(int t) {
+            queue.offer(t);
+            while (queue.peek() < t-3000) {
+                queue.poll();
+            }
+            return queue.size();
         }
     }
 }
