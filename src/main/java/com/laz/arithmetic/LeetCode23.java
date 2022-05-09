@@ -794,4 +794,33 @@ public class LeetCode23 {
             return queue.size();
         }
     }
+
+    //942. 增减字符串匹配
+    @Test
+    public void test16() {
+        Solution16 solution16 = new Solution16();
+        Assert.assertArrayEquals(new int[]{
+                0,4,1,3,2
+        }, solution16.diStringMatch("IDID"));
+    }
+
+    class Solution16 {
+        public int[] diStringMatch(String s) {
+            int min = 0;
+            int max = s.length();
+            int[] res = new int[s.length()+1];
+            for (int i=0; i<s.length(); i++) {
+                if (s.charAt(i) == 'I') {
+                    res[i] = min;
+                    min++;
+                }
+                if (s.charAt(i) == 'D') {
+                    res[i] = max;
+                    max--;
+                }
+            }
+            res[s.length()] = min;
+            return res;
+        }
+    }
 }
