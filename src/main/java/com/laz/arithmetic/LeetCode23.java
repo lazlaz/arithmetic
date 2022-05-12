@@ -823,4 +823,123 @@ public class LeetCode23 {
             return res;
         }
     }
+
+    //449. 序列化和反序列化二叉搜索树
+    @Test
+    public void test17() {
+        Codec codec = new Codec();
+
+    }
+
+
+    public class Codec {
+
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {
+            if (root == null) {
+                return "";
+            }
+            StringBuffer sb = new StringBuffer();
+            Queue<TreeNode> q = new LinkedList();
+            q.add(root);
+            while (!q.isEmpty()) {
+                TreeNode temp = q.poll();
+                if (temp == null) {
+                    sb.append("null,");
+                    continue;
+                } else {
+                    sb.append(temp.val + ",");
+                }
+                if (temp.left != null) {
+                    q.offer(temp.left); // 迭代操作，向左探索
+                } else {
+                    q.offer(null);
+                }
+                if (temp.right != null) {
+                    q.offer(temp.right);
+                } else {
+                    q.offer(null);
+                }
+            }
+            return sb.toString();
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(String data) {
+            String str = data;
+            String[] arr = str.split(",");
+            return createTree(arr, 0);
+        }
+
+        private TreeNode createTree(String[] arr, int index) {
+            Queue<String> q = new LinkedList<String>(Arrays.asList(arr));
+            if (q.peek() == null) {
+                return null;
+            }
+            return rdeserialize(q);
+        }
+
+        private TreeNode rdeserialize(Queue<String> q) {
+            if (q.peek() == null || q.peek().equals("")) {
+                q.poll();
+                return null;
+            }
+            TreeNode root = new TreeNode(Integer.valueOf(q.poll()));
+            Queue<TreeNode> qTree = new LinkedList<TreeNode>();
+            TreeNode node = root;
+            while (!q.isEmpty()) {
+                if (q.peek() != null && !q.peek().equals("null")) {
+                    node.left = new TreeNode(Integer.valueOf(q.poll()));
+                    qTree.offer(node.left);
+                } else {
+                    q.poll();
+                }
+                if (q.peek() != null && !q.peek().equals("null")) {
+                    node.right = new TreeNode(Integer.valueOf(q.poll()));
+                    qTree.offer(node.right);
+                } else {
+                    q.poll();
+                }
+                node = qTree.poll();
+            }
+            return root;
+
+        }
+    }
+
+    //944. 删列造序
+    @Test
+    public void test18() {
+        Solution18 solution18 = new Solution18();
+//        Assert.assertEquals(1, solution18.minDeletionSize(new String[]{
+//                "cba","daf","ghi"
+//        }));
+        Assert.assertEquals(2, solution18.minDeletionSize(new String[]{
+                "rrjk","furt","guzm"
+        }));
+    }
+
+    class Solution18 {
+        public int minDeletionSize(String[] strs) {
+            int num = 0;
+            int row = strs.length;
+            int col = strs[0].length();
+            for (int i=0; i<col; i++) {
+                boolean increase = true;
+                char pre = strs[0].charAt(i);
+                for (int j=1; j<row; j++) {
+                    if (strs[j].charAt(i) < pre) {
+                        increase = false;
+                        break;
+                    }
+                    pre = strs[j].charAt(i);
+                }
+                if (!increase) {
+                    num++;
+                }
+            }
+
+            return num;
+        }
+    }
 }
