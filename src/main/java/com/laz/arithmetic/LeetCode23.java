@@ -942,4 +942,26 @@ public class LeetCode23 {
             return num;
         }
     }
+
+    //462. 最少移动次数使数组元素相等 II
+    @Test
+    public void test19() {
+        Solution19  solution19 = new Solution19();
+        Assert.assertEquals(2, solution19.minMoves2(new int[] {
+                1,2,3
+        }));
+    }
+    //【负雪明烛】图解算法：为什么选择中位数
+    class Solution19 {
+        public int minMoves2(int[] nums) {
+            Arrays.sort(nums);
+            int n = nums.length;
+            int mid = nums[n/2];
+            int res = 0;
+            for (int num: nums) {
+                res += Math.abs(num-mid);
+            }
+            return res;
+        }
+    }
 }
