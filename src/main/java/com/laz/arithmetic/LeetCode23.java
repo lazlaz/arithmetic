@@ -964,4 +964,85 @@ public class LeetCode23 {
             return res;
         }
     }
+
+    //675. 为高尔夫比赛砍树
+    @Test
+    public void test20() {
+        Solution20 solution20 = new Solution20();
+        List<List<Integer>> list = new ArrayList();
+        list.add(new ArrayList(Arrays.asList(1,2,3)));
+        list.add(new ArrayList(Arrays.asList(0,0,4)));
+        list.add(new ArrayList(Arrays.asList(7,6,5)));
+        Assert.assertEquals(6, solution20.cutOffTree(list));
+    }
+    class Solution20 {
+        int[][] dirs = {
+                {-1,0}, {1,0}, {0,-1}, {0,1}
+        };
+        public int cutOffTree(List<List<Integer>> forest) {
+            //存放有树节点
+            List<int[]> trees = new ArrayList<int[]>();
+            int row = forest.size();
+            int col = forest.get(0).size();
+            for (int i=0; i<row; ++i) {
+                for (int j=0; j<col; ++j) {
+                    if (forest.get(i).get(j) > 1) {
+                        trees.add(new int[] {i,j});
+                    }
+                }
+            }
+            //排序
+            Collections.sort(trees, (a,b) -> forest.get(a[0]).get(a[1]) - forest.get(b[0]).get(b[1]));
+            int cx = 0;
+            int cy = 0;
+            int ans = 0;
+            //遍历路径和
+            for (int i=0; i<trees.size(); ++i) {
+                int steps = bfs(forest, cx, cy, trees.get(i)[0], trees.get(i)[1]);
+                if (steps == -1) {
+                    return -1;
+                }
+                ans += steps;
+                cx = trees.get(i)[0];
+                cy = trees.get(i)[1];
+            }
+            return ans;
+        }
+
+        private int bfs(List<List<Integer>> forest, int startX, int startY, int endX, int endY) {
+            if (startX == endX && startY == endY) {
+                return 0;
+            }
+            int row = forest.size();
+            int col = forest.get(0).size();
+            int step = 0;
+            Queue<int[]> queue = new ArrayDeque<int[]>();
+            boolean[][] visited = new boolean[row][col];
+            queue.offer(new int[] {startX, startY});
+            visited[startX][startY]  = true;
+            while (!queue.isEmpty()) {
+                step++;
+                int sz = queue.size();
+                for (int i=0; i<sz; ++i) {
+                    int[] cell = queue.poll();
+                    int cx = cell[0], cy = cell[1];
+                    for (int j=0; j<4; ++j) {
+                        int nx = cx+dirs[j][0];
+                        int ny = cy+dirs[j][1];
+                        if (nx >=0 && nx<row && ny>=0 && ny<col) {
+                            if (!visited[nx][ny] && forest.get(nx).get(ny) > 0) {
+                                if (nx == endX && ny == endY) {
+                                    return step;
+                                }
+                                queue.offer(new int[]{nx,ny});
+                                visited[nx][ny] = true;
+                            }
+                        }
+                    }
+
+                }
+            }
+            return -1;
+        }
+    }
 }
