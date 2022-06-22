@@ -1,7 +1,11 @@
 package com.laz.arithmetic;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class LeetCode24 {
 
@@ -53,5 +57,41 @@ public class LeetCode24 {
             int[] v2 = {points[2][0] - points[0][0], points[2][1] - points[0][1]};
             return v1[0] * v2[1] - v1[1] * v2[0] != 0;
         }
+    }
+
+    //513. 找树左下角的值
+    @Test
+    public void test3() {
+        Solution3 solution3 = new Solution3();
+        Assert.assertEquals(7, solution3.findBottomLeftValue(Utils.createTree(new Integer[] {
+                1,2,3,4,null,5,6,null,null,7}
+                )));
+    }
+
+    class Solution3 {
+        public int findBottomLeftValue(TreeNode root) {
+            Deque<TreeNode> deque = new ArrayDeque();
+            deque.offer(root);
+            int res = 0;
+            while (!deque.isEmpty()) {
+                boolean first = true;
+                int size = deque.size();
+                for (int i=0; i<size; i++) {
+                    TreeNode node = deque.pop();
+                    if (first) {
+                        res = node.val;
+                        first = false;
+                    }
+
+                    if (node.left!=null) {
+                        deque.offer(node.left);
+                    }
+                    if (node.right!=null) {
+                        deque.offer(node.right);
+                    }
+                }
+            }
+            return res;
+         }
     }
 }
