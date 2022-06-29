@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LeetCode24 {
 
@@ -93,5 +95,30 @@ public class LeetCode24 {
             }
             return res;
          }
+    }
+
+    //535. TinyURL 的加密与解密
+    @Test
+    public void test4() {
+        Codec codec = new Codec();
+        String str = codec.encode("http://tinyurl.com/dsfsd");
+        Assert.assertEquals("http://tinyurl.com/dsfsd",codec.decode(str));
+    }
+
+    class Codec {
+        private Map<Integer, String> dataBase = new HashMap<Integer, String>();
+        private int id;
+
+        public String encode(String longUrl) {
+            id++;
+            dataBase.put(id, longUrl);
+            return "http://tinyurl.com/" + id;
+        }
+
+        public String decode(String shortUrl) {
+            int p = shortUrl.lastIndexOf('/') + 1;
+            int key = Integer.parseInt(shortUrl.substring(p));
+            return dataBase.get(key);
+        }
     }
 }
