@@ -3,6 +3,7 @@ package com.laz.arithmetic;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
+import sun.reflect.generics.tree.Tree;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -119,6 +120,53 @@ public class LeetCode24 {
             int p = shortUrl.lastIndexOf('/') + 1;
             int key = Integer.parseInt(shortUrl.substring(p));
             return dataBase.get(key);
+        }
+    }
+
+    //1080. 根到叶路径上的不足节点
+    @Test
+    public void test5() {
+        TreeNode node = Utils.createTree(new Integer[]{
+                1,2,3,4,-99,-99,7,8,9,-99,-99,12,13,-99,14
+        });
+        Solution5 solution5 = new Solution5();
+        TreeNode treeNode = solution5.sufficientSubset(node, 1);
+        Assert.assertEquals(1, treeNode.val);
+
+        TreeNode node2 = Utils.createTree(new Integer[]{
+               100,-99,-99
+        });
+        treeNode = solution5.sufficientSubset(node2, 5);
+        Assert.assertEquals(null, treeNode);
+
+        TreeNode node3 = Utils.createTree(new Integer[]{
+                1,2,-3,-5,null,4,null
+        });
+        treeNode = solution5.sufficientSubset(node3, -1);
+    }
+
+    class Solution5 {
+        public TreeNode sufficientSubset(TreeNode root, int limit) {
+            boolean hasLeaf = checkDeficiencyNoe(root, 0, limit);
+            return hasLeaf ? root : null;
+        }
+
+        private boolean checkDeficiencyNoe(TreeNode node, int sum, int limit) {
+            if (node == null) {
+                return false;
+            }
+            if (node.left == null && node.right == null) {
+                return node.val+sum>=limit;
+            }
+            boolean checkLeft  = checkDeficiencyNoe(node.left, sum+node.val, limit);
+            boolean checkRight  = checkDeficiencyNoe(node.right, sum+node.val, limit);
+            if (!checkLeft) {
+                node.left = null;
+            }
+            if (!checkRight) {
+                node.right = null;
+            }
+            return checkLeft || checkRight;
         }
     }
 }
