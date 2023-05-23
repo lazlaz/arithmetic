@@ -5,10 +5,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import sun.reflect.generics.tree.Tree;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LeetCode24 {
 
@@ -167,6 +165,83 @@ public class LeetCode24 {
                 node.right = null;
             }
             return checkLeft || checkRight;
+        }
+    }
+
+    //1090. 受标签影响的最大值
+    @Test
+    public void test6() {
+        Solution6 solution6 = new Solution6();
+        int r1 = solution6.largestValsFromLabels(new int[] {
+                5,4,3,2,1
+        }, new int[] {
+                1,1,2,2,3
+        },3,1);
+        Assert.assertEquals(9, r1);
+
+        Assert.assertEquals(12, solution6.largestValsFromLabels(new int[] {
+                5,4,3,2,1
+        }, new int[] {
+               1,3,3,3,2
+        },3,2));
+
+        Assert.assertEquals(16, solution6.largestValsFromLabels(new int[] {
+                9,8,8,7,6
+        }, new int[] {
+                0,0,0,1,1
+        },3,1));
+
+        Assert.assertEquals(21, solution6.largestValsFromLabels(new int[] {
+                4,6,3,9,2
+        }, new int[] {
+                2,0,0,0,2
+        },5,2));
+    }
+
+    class Solution6 {
+        public int largestValsFromLabels(int[] values, int[] labels, int numWanted, int useLimit) {
+            List<Pair> list = new ArrayList();
+            for (int i=0; i<values.length; i++) {
+                Pair p = new Pair(values[i],i);
+                list.add(p);
+            }
+            List<Pair> newList = list.stream().sorted(new Comparator<Pair>() {
+                @Override
+                public int compare(Pair o1, Pair o2) {
+                    return o2.value-o1.value;
+                }
+            }).collect(Collectors.toList());
+            int sum = 0;
+            int num = 0;
+            Map<Integer, Integer> hasLabel = new HashMap<>();
+            for (Pair p: newList) {
+                if (num >= numWanted) {
+                    break;
+                }
+                int limit = hasLabel.getOrDefault(labels[p.index],0);
+                if (limit < useLimit) {
+                    sum += p.value;
+                    num++;
+                    hasLabel.put(labels[p.index], ++limit);
+                }
+            }
+            return sum;
+
+        }
+
+        class Pair {
+            private int value;
+            private int index;
+
+            public Pair(int value, int index) {
+                this.value = value;
+                this.index = index;
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(value, index);
+            }
         }
     }
 }
