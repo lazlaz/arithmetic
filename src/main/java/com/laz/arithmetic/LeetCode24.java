@@ -244,4 +244,53 @@ public class LeetCode24 {
             }
         }
     }
+
+    //1377. T 秒后青蛙的位置
+    @Test
+    public void test7() {
+        Solution7 solution7 = new Solution7();
+        Assert.assertEquals(0.16666666666666666, solution7.frogPosition(
+                7, new int[][]{
+            {1,2},{1,3},{1,7},{2,4},{2,6},{3,5}
+        },2,4), 5);
+    }
+
+    class Solution7 {
+        private double ans = 0;
+        public double frogPosition(int n, int[][] edges, int t, int target) {
+            List<Integer>[] g = new ArrayList[n+1];
+            Arrays.setAll(g, e->new ArrayList<>());
+            g[1].add(0); //减少额外的判断
+            for (int[] edge: edges) {
+                int x=  edge[0];
+                int y = edge[1];
+                g[x].add(y);
+                g[y].add(x); //构建树
+            }
+            int value = 1; //初始节点值为1
+            int parent = 0;
+            int prod = 1;
+            dfs(g, target, value, parent, t, prod);
+            return ans;
+
+        }
+
+        private boolean dfs(List<Integer>[] g, int target, int value, int parent, int t, long prod) {
+            // t 秒后必须在 target（恰好到达，或者 target 是叶子停在原地）
+            if (value == target && (t==0 || (g[value].size()-1)==0)) {
+                ans = 1.0/prod;
+                return true;
+            }
+            //如果找到了目标但不是叶子节点，或者时间过了返回false
+            if (value == target || t == 0) {
+                return false;
+            }
+            for (int child: g[value]) {
+                if (child!=parent && dfs(g, target, child, value, t-1, prod*(g[value].size()-1))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }
