@@ -293,4 +293,46 @@ public class LeetCode24 {
             return false;
         }
     }
+
+    //2517. 礼盒的最大甜蜜度
+    @Test
+    public void test8() {
+        Solution8 solution8 = new Solution8();
+        Assert.assertEquals(8, solution8.maximumTastiness(new int[]{
+                13,5,1,8,21,2
+        }, 3));
+    }
+
+    class Solution8 {
+        public int maximumTastiness(int[] price, int k) {
+            Arrays.sort(price);
+            int left = 0;
+            int right = price[price.length-1]-price[0];
+            int mid;
+            int ans = 0;
+            while (left<=right) {
+                mid = left + (right-left)/2; //不用+，反正溢出整形
+                if (check(mid, price, k)) {
+                    ans = mid;
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            return ans;
+        }
+
+        private boolean check(int sweetness, int[] price, int k) {
+            //1,2,5,8,13,21 k=8
+            int pre = Integer.MAX_VALUE;
+            int count = 0;
+            for (int p: price) {
+                if (Math.abs(p-pre)>=sweetness) {
+                    pre = p;
+                    count++;
+                }
+            }
+            return count>=k;
+        }
+    }
 }
