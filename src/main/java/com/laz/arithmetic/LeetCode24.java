@@ -335,4 +335,51 @@ public class LeetCode24 {
             return count>=k;
         }
     }
+
+    //2559. 统计范围内的元音字符串数
+    @Test
+    public void test9() {
+        Solution9 solution9 = new Solution9();
+        Assert.assertArrayEquals(new int[] {
+                2,3,0
+        }, solution9.vowelStrings(new String[] {
+                "aba","bcb","ece","aa","e"
+        }, new int[][] {
+                {0,2},{1,4},{1,1}
+        }));
+
+        Assert.assertArrayEquals(new int[] {
+                3,2,1
+        }, solution9.vowelStrings(new String[] {
+                "a","e","i"
+        }, new int[][] {
+                {0,2},{0,1},{2,2}
+        }));
+    }
+
+    class Solution9 {
+        private String str = "aeiou";
+        public int[] vowelStrings(String[] words, int[][] queries) {
+            //前缀和 preSum[i] words前i个字符串元音数
+            int[] preSum = new int[words.length+1];
+            for (int i=0; i<words.length; i++) {
+                int v = isMatch(words[i]) ? 1 : 0;
+                preSum[i+1] = preSum[i] + v;
+            }
+            int queryLen = queries.length;
+            int[] ans = new int[queryLen];
+            for (int i=0; i<queryLen; i++) {
+                int start = queries[i][0];
+                int end = queries[i][1];
+                ans[i] = preSum[end+1]-preSum[start];
+            }
+            return ans;
+        }
+
+        private boolean isMatch(String word) {
+            String start = String.valueOf(word.charAt(0));
+            String end = String.valueOf(word.charAt(word.length()-1));
+            return str.contains(start) && str.contains(end);
+        }
+    }
 }
