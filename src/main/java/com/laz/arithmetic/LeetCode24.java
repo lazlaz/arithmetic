@@ -382,4 +382,85 @@ public class LeetCode24 {
             return str.contains(start) && str.contains(end);
         }
     }
+
+    //1156. 单字符重复子串的最大长度
+    @Test
+    public void test10() {
+        Solution10 solution10 = new Solution10();
+//        Assert.assertEquals(3, solution10.maxRepOpt1("ababa"));
+//        Assert.assertEquals(6, solution10.maxRepOpt1("aaabaaa"));
+//        Assert.assertEquals(4, solution10.maxRepOpt1("aaabbaaa"));
+//        Assert.assertEquals(5, solution10.maxRepOpt1("aaaaa"));
+//        Assert.assertEquals(6, solution10.maxRepOpt1("babbaaabbbbbaa"));
+        Assert.assertEquals(1, solution10.maxRepOpt1("abcdef"));
+    }
+
+    class Solution10 {
+        public int maxRepOpt1(String text) {
+            Map<Character, Integer> count = new HashMap<>();
+            for (int i=0; i<text.length(); i++) {
+                char c= text.charAt(i);
+                count.put(c, count.getOrDefault(c,0)+1);
+            }
+            int res=0;
+            for (int i=0; i<text.length();) {
+                //找出第一段[i,j)
+                int j=i;
+                while (j<text.length() && text.charAt(j) == text.charAt(i)) {
+                    j++;
+                }
+                //长度小于最长&前后有其他空余
+                int curCount = j-i;
+                if (curCount < count.getOrDefault(text.charAt(i), 0) && ((j<text.length() || i>0))) {
+                    res = Math.max(res, curCount+1);
+                }
+                //找出第二段[j+1,k)
+                int k = j+1;
+                while (k<text.length() && text.charAt(k) == text.charAt(i)) {
+                    k++;
+                }
+                res = Math.max(res, Math.min(k-i, count.getOrDefault(text.charAt(i), 0)));
+                //跳过已经找出的第一段
+                i=j;
+            }
+            return res;
+        }
+    }
+
+    //2352. 相等行列对
+    @Test
+    public void test11() {
+        Solution11 solution11  = new Solution11();
+        Assert.assertEquals(1, solution11.equalPairs(new int[][]{
+                {3,2,1},{1,7,6},{2,7,7}
+        }));
+    }
+
+    class Solution11 {
+            public int equalPairs(int[][] grid) {
+                Map<String,Integer> map = new HashMap<>();
+                for (int i=0; i<grid.length; i++) {
+                    //拼接每一行的数字，为了保证歧义，添加特殊符号分割&
+                    StringBuffer sb = new StringBuffer();
+                    for (int j=0; j<grid[i].length; j++) {
+                        sb.append(grid[i][j]);
+                        sb.append("&");
+                    }
+                    Integer count = map.getOrDefault(sb.toString(), 0);
+                    map.put(sb.toString(), ++count);
+                }
+                int ans = 0;
+                //遍历列，找出重复的
+                for (int i=0; i<grid.length; i++) {
+                    StringBuffer sb = new StringBuffer();
+                    for (int j=0; j<grid[i].length; j++) {
+                        sb.append(grid[j][i]);
+                        sb.append("&");
+                    }
+                    ans += map.getOrDefault(sb.toString(), 0);
+                }
+                return ans;
+            }
+
+    }
 }
