@@ -1,5 +1,6 @@
 package com.laz.arithmetic;
 
+import com.sun.xml.internal.ws.policy.AssertionSet;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
@@ -462,5 +463,36 @@ public class LeetCode24 {
                 return ans;
             }
 
+    }
+
+    @Test
+    //2611. 老鼠和奶酪
+    public void test12() {
+        Solution12 solution12 = new Solution12();
+        Assert.assertEquals(15, solution12.miceAndCheese(new int[] {
+                1,1,3,4
+        }, new int[] {4,4,1,1}, 2));
+    }
+
+    class Solution12 {
+        public int miceAndCheese(int[] reward1, int[] reward2, int k) {
+            PriorityQueue<Integer> queue = new PriorityQueue();
+            int n = reward1.length;
+            int ans = 0;
+            for (int i=0; i<n; i++) {
+                ans += reward2[i];
+                //如果1吃了，2就没法吃了，所以是1-2
+                int diff = reward1[i] - reward2[i];
+                queue.offer(diff);
+                if (queue.size() > k) {
+                    queue.poll(); //移除最小的
+                }
+            }
+            while (!queue.isEmpty()) {
+                ans += queue.poll();
+            }
+            return ans;
+
+        }
     }
 }
