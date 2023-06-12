@@ -495,4 +495,50 @@ public class LeetCode24 {
 
         }
     }
+
+    //1483. 树节点的第 K 个祖先
+    @Test
+    public void test13(){
+        TreeAncestor treeAncestor = new TreeAncestor(7, new int[] {
+                -1, 0, 0, 1, 1, 2, 2
+        });
+        Assert.assertEquals(1, treeAncestor.getKthAncestor(3,1));
+
+        Assert.assertEquals(0, treeAncestor.getKthAncestor(5,2));
+
+        Assert.assertEquals(-1, treeAncestor.getKthAncestor(6,3));
+    }
+
+    class TreeAncestor {
+        static final int LOG = 16; //因为条件是50000，所以2的16次方就可以了
+        int[][] ancestors;
+        public TreeAncestor(int n, int[] parent) {
+            ancestors = new int[n][LOG];
+            for (int i=0; i<n; i++) {
+                Arrays.fill(ancestors[i], -1); //初始化默认没有父为-1
+            }
+            for (int i=0; i<n; i++) {
+                ancestors[i][0] = parent[i];
+            }
+            for (int j=1; j<LOG; j++) {
+                for (int i=0; i<n; i++) {
+                    if (ancestors[i][j-1] != -1) {
+                        ancestors[i][j] = ancestors[ancestors[i][j-1]][j-1]; //转移方程式，倍增
+                    }
+                }
+            }
+        }
+
+        public int getKthAncestor(int node, int k) {
+            for (int j=0; j<LOG; j++) {
+                if (((k >> j) & 1) != 0) {
+                     node = ancestors[node][j];
+                     if (node == -1) {
+                         return -1;
+                     }
+                }
+            }
+            return node;
+        }
+    }
 }
