@@ -541,4 +541,29 @@ public class LeetCode24 {
             return node;
         }
     }
+
+    //1375. 二进制字符串前缀一致的次数
+    @Test
+    public void test14() {
+        Solution14 solution14 = new Solution14();
+        Assert.assertEquals(2, solution14.numTimesAllBlue(new int[] {
+                3,2,4,1,5
+        }));
+        Assert.assertEquals(1, solution14.numTimesAllBlue(new int[] {
+                4,1,2,3
+        }));
+    }
+
+    class Solution14 {
+        public int numTimesAllBlue(int[] flips) {
+            int ans = 0, right = 0;
+            for (int i=0; i<flips.length; i++) {
+                right = Math.max(flips[i], right); //如果前面i次，反转的最大值下标是i，则前面都是1
+                if (right == (i+1)) {
+                    ans++;
+                }
+            }
+            return ans;
+        }
+    }
 }
