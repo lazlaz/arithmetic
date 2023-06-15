@@ -566,4 +566,41 @@ public class LeetCode24 {
             return ans;
         }
     }
+
+    //1177. 构建回文串检测
+    @Test
+    public void test15() {
+        Solution15 solution15 = new Solution15();
+        List<Boolean> list = solution15.canMakePaliQueries("abcda", new int[][]{
+                {3,3,0},{1,2,0},{0,3,1},{0,3,2},{0,4,1}
+        });
+        System.out.println(list);
+    }
+
+    class Solution15 {
+        public List<Boolean> canMakePaliQueries(String s, int[][] queries) {
+            List<Boolean> anss = new ArrayList<>();
+            int n = s.length();
+            int[][] sum = new int[n+1][26]; //26个字母
+            int i=0;
+            for (char c: s.toCharArray()) {
+                sum[i+1] = sum[i].clone(); //复制前一次的结果
+                sum[i+1][c-'a']++;
+                i++;
+            }
+            for (int j=0; j<queries.length; j++) {
+                int l = queries[j][0];
+                int r = queries[j][1];
+                int k = queries[j][2];
+                int m = 0; //奇数字母数量
+                for (int z=0; z<26; z++) {
+                    m += (sum[r+1][z]-sum[l][z]) % 2;
+                }
+                boolean ans = m/2<=k;
+                anss.add(ans);
+            }
+            return anss;
+        }
+
+    }
 }
