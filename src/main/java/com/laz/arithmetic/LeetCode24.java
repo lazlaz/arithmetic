@@ -603,4 +603,30 @@ public class LeetCode24 {
         }
 
     }
+
+    //1262. 可被三整除的最大和
+    @Test
+    public void test16() {
+        Solution16 solution16 =new Solution16();
+        Assert.assertEquals(18, solution16.maxSumDivThree(new int[] {
+                3,6,5,1,8
+        }));
+    }
+
+    class Solution16 {
+        public int maxSumDivThree(int[] nums) {
+            int n = nums.length;
+            int[][] fn = new int[n+1][3];
+            fn[0][0] = 0;
+            fn[0][1] = Integer.MIN_VALUE;
+            fn[0][2] = Integer.MIN_VALUE;
+            for (int i=0; i<n; i++) {
+                int v = nums[i];
+                for (int j=0; j<3; j++) {
+                    fn[i+1][j] = Math.max(fn[i][j], fn[i][(j-v%3+3)%3]+nums[i]);
+                }
+            }
+            return fn[n][0];
+        }
+    }
 }
