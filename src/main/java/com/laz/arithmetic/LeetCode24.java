@@ -629,4 +629,38 @@ public class LeetCode24 {
             return fn[n][0];
         }
     }
+
+    //1186. 删除一次得到子数组最大和
+    @Test
+    public void test17(){
+        Solution17 solution17 = new Solution17();
+        Assert.assertEquals(4, solution17.maximumSum(new int[] {
+                1,-2,0,3
+        }));
+        Assert.assertEquals(3, solution17.maximumSum(new int[] {
+                1,-2,-2,3
+        }));
+        Assert.assertEquals(-1, solution17.maximumSum(new int[] {
+                -1,-1,-1,-1
+        }));
+        Assert.assertEquals(-50, solution17.maximumSum(new int[] {
+                -50
+        }));
+    }
+
+    class Solution17 {
+        public int maximumSum(int[] arr) {
+            int n = arr.length;
+            int[][] dp = new int[n][2];
+            dp[0][0] = arr[0];
+            dp[0][1] = 0; //无效
+            int ans = arr[0];
+            for (int i=1; i<n; i++) {
+                dp[i][0] = Math.max(dp[i-1][0],0)+arr[i];
+                dp[i][1] = Math.max(dp[i-1][1]+arr[i],dp[i-1][0]);
+                ans = Math.max(Math.max(ans, dp[i][0]),dp[i][1]);
+            }
+            return ans;
+        }
+    }
 }
