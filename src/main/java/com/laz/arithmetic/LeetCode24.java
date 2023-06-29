@@ -663,4 +663,67 @@ public class LeetCode24 {
             return ans;
         }
     }
+
+    //1253. 重构 2 行二进制矩阵
+    @Test
+    public void test18() {
+        Solution18 solution18 = new Solution18();
+        List<List<Integer>> ans = solution18.reconstructMatrix(4, 7, new int[] {
+                2,1,2,2,1,1,1
+        });
+        for (List a: ans) {
+            System.out.println(a);
+        }
+    }
+
+    class Solution18 {
+        public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
+            List<List<Integer>> ans = new ArrayList<>();
+            Map<Integer, List<Integer>> columns = new HashMap<>();
+            columns.put(0, new ArrayList<>());
+            columns.put(1, new ArrayList<>());
+            for (int i=0; i<colsum.length; i++) {
+                int v = colsum[i];
+
+                if (v == 2) {
+                    upper--;
+                    lower--;
+                    List<Integer> column1 = columns.get(0);
+                    column1.add(1);
+                    List<Integer> column2 = columns.get(1);
+                    column2.add(1);
+                }
+                if (v==1) {
+                    if (upper>=lower) {
+                        upper--;
+                        List<Integer> column1 = columns.get(0);
+                        column1.add(1);
+                        List<Integer> column2 = columns.get(1);
+                        column2.add(0);
+                    } else {
+                        lower--;
+                        List<Integer> column1 = columns.get(0);
+                        column1.add(0);
+                        List<Integer> column2 = columns.get(1);
+                        column2.add(1);
+                    }
+                }
+                if (v == 0) {
+                    List<Integer> column1 = columns.get(0);
+                    column1.add(0);
+                    List<Integer> column2 = columns.get(1);
+                    column2.add(0);
+                }
+                if (upper<0 || lower<0) {
+                    return new ArrayList<>();
+                }
+            }
+            if (upper>=1 || lower>=1) {
+                return new ArrayList<>();
+            }
+            ans.add(columns.get(0));
+            ans.add(columns.get(1));
+            return ans;
+        }
+    }
 }
