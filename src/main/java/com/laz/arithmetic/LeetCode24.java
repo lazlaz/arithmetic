@@ -726,4 +726,43 @@ public class LeetCode24 {
             return ans;
         }
     }
+
+    //2679. 矩阵中的和
+    @Test
+    public void test19() {
+        Solution19 solution19 = new Solution19();
+        Assert.assertEquals(1, solution19.matrixSum(new int[][]{
+                {1},
+
+        }));
+    }
+
+    class Solution19 {
+        public int matrixSum(int[][] nums) {
+            int ans = 0;
+            List<PriorityQueue> priorityQueues = new ArrayList<>();
+            int row = nums.length;
+            int col = nums[0].length;
+            for (int i=0; i<nums.length; i++) {
+                PriorityQueue<Integer> priorityQueue = new PriorityQueue(new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer o1, Integer o2) {
+                        return o2-o1;
+                    }
+                });
+                for (int j=0; j<nums[i].length; j++) {
+                    priorityQueue.offer(nums[i][j]);
+                }
+                priorityQueues.add(priorityQueue);
+            }
+            for (int i=0; i<col; i++) {
+                int v=0;
+                for (PriorityQueue<Integer> p: priorityQueues) {
+                    v=Math.max(v,p.poll());
+                }
+                ans+=v;
+            }
+            return ans;
+        }
+    }
 }
