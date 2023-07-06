@@ -16,6 +16,9 @@ public class Utils {
 	public static int[] listToIntArr(List<Integer> list) {
 		return list.stream().mapToInt(Integer::valueOf).toArray();
 	}
+	public static long[] listToLongArr(List<Long> list) {
+		return list.stream().mapToLong(Long::valueOf).toArray();
+	}
 	@Deprecated
 	public  static TreeNode  createTree(Integer[] arr,int i) {
 		Queue<Integer> q=new LinkedList<Integer>(Arrays.asList(arr));

@@ -765,4 +765,31 @@ public class LeetCode24 {
             return ans;
         }
     }
+
+    //2178. 拆分成最多数目的正偶数之和
+    @Test
+    public void test20() {
+        Solution20 solution20 = new Solution20();
+        Assert.assertArrayEquals(new long[] {
+                2,4,6
+        }, Utils.listToLongArr(solution20.maximumEvenSplit(12)));
+    }
+
+    class Solution20 {
+        public List<Long> maximumEvenSplit(long finalSum) {
+            List<Long> ans = new ArrayList<>();
+            //贪心
+            if (finalSum%2 != 0) {
+                return ans;
+            }
+            for (long i=2; i<=finalSum; i=i+2) {
+                ans.add(i);
+                finalSum -= i;
+            }
+            if (finalSum>0) {
+                ans.set(ans.size()-1, ans.get(ans.size()-1)+finalSum);
+            }
+            return ans;
+        }
+    }
 }
