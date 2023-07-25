@@ -89,4 +89,40 @@ public class LeetCode25 {
             return res;
         }
     }
+
+    //2208. 将数组和减半的最少操作次数
+    @Test
+    public void test3() {
+        Solution3 solution3 = new Solution3();
+        Assert.assertEquals(3, solution3.halveArray(new int[] {
+                5,19,8,1
+        }));
+
+        Assert.assertEquals(3, solution3.halveArray(new int[] {
+                3,8,20
+        }));
+    }
+
+    class Solution3 {
+        public int halveArray(int[] nums) {
+            int ans = 0;
+            double sum = 0;
+            for (int num : nums) {
+                sum += num;
+            }
+            double average = sum/2;
+            PriorityQueue<Double> queue = new PriorityQueue<>((o1,o2)->{return o2.compareTo(o1);});
+            for (int i=0; i<nums.length; i++) {
+                queue.offer((double)nums[i]);
+            }
+            while (sum>average) {
+                Double v = queue.poll();
+                double newV = v/2;
+                sum -= newV;
+                queue.offer(newV);
+                ans++;
+            }
+            return ans;
+        }
+    }
 }
